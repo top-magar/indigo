@@ -43,6 +43,7 @@ export default async function EditorPage({ searchParams }: { searchParams: Promi
     initialContent: content,
     activePageId: activePage?.id ?? null,
     activePageName: activePage?.name ?? "Home",
+    themeConfig: project.themeConfig as Record<string, string> | null,
   };
 
   return <EditorClient {...props} />;

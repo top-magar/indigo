@@ -28,7 +28,7 @@ export default function Editor(props: EditorProps) {
 }
 
 function EditorInner() {
-  const { state, dispatch, pageId, pageName, tenantId, activePageId } = useEditor();
+  const { state, dispatch, pageId, pageName, tenantId, activePageId, themeConfig } = useEditor();
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
@@ -178,7 +178,7 @@ function EditorInner() {
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
           <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
-            <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z } as React.CSSProperties}>
+            <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z, ...(themeConfig ? { '--primary': themeConfig.primaryColor, backgroundColor: themeConfig.backgroundColor, color: themeConfig.textColor, fontFamily: `${themeConfig.bodyFont || 'Inter'}, system-ui, sans-serif` } : {}) } as React.CSSProperties}>
             {body && <Recursive element={body} />}
             {(() => {
               const isDragging = !!state.editor.dropTarget;

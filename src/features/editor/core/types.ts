@@ -36,4 +36,5 @@ export type EditorProps = {
   initialContent: string | null;
   activePageId?: string | null;
   activePageName?: string;
+  themeConfig?: Record<string, string> | null;
 };

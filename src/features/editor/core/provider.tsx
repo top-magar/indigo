@@ -56,6 +56,7 @@ type EditorContextValue = {
   userId: string;
   activePageId: string | null;
   activePageName: string;
+  themeConfig: Record<string, string> | null;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -125,7 +126,7 @@ export function useEditor() {
 
 type EditorProviderProps = EditorProps & { children: React.ReactNode };
 
-export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName }: EditorProviderProps) {
+export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName, themeConfig }: EditorProviderProps) {
   useEffect(() => {
     if (initialContent) {
       try {
@@ -155,7 +156,7 @@ export function EditorProvider({ children, pageId, pageName, tenantId, userId, i
     useEditorStore.getState().setCurrentPageId(activePageId ?? null);
   }, [activePageId]);
 
-  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home' }), [pageId, pageName, tenantId, userId, activePageId, activePageName]);
+  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home', themeConfig: themeConfig ?? null }), [pageId, pageName, tenantId, userId, activePageId, activePageName, themeConfig]);
 
   return <EditorContext.Provider value={ctx}>{children}</EditorContext.Provider>;
 }
