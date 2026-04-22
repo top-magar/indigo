@@ -796,13 +796,14 @@ export function OrdersListView({
                   <p className="text-sm text-muted-foreground">
                     Showing {Math.min(((currentPage - 1) * pageSize) + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount.toLocaleString()} orders
                   </p>
-                  <select
-                    value={pageSize}
-                    onChange={e => onPageSizeChange(Number(e.target.value))}
-                    className="h-7 rounded-md border border-input bg-background px-2 text-xs outline-none"
-                  >
-                    {[10, 25, 50, 100].map(n => <option key={n} value={n}>{n} / page</option>)}
-                  </select>
+                  <Select value={String(pageSize)} onValueChange={v => onPageSizeChange(Number(v))}>
+                    <SelectTrigger className="h-7 w-[80px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[10, 25, 50, 100].map(n => <SelectItem key={n} value={String(n)}>{n} / page</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
