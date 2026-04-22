@@ -30,7 +30,7 @@ register({ type: 'grid', name: 'Grid', icon: LayoutGrid, color: '#5b21b6', group
   factory: () => ({ id: v4(), type: 'grid', name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '24px', padding: '24px', width: '100%' }, content: [] }) });
 
 register({ type: 'header', name: 'Header', icon: PanelTop, color: '#7c3aed', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: 'header', name: 'Header', styles: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', width: '100%', position: 'sticky', top: '0', zIndex: '10', backgroundColor: '#ffffff', borderBottom: '1px solid #f0f0f0' }, content: [
+  factory: () => ({ id: v4(), type: 'header', name: 'Header', styles: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', width: '100%', position: 'sticky', top: '0', zIndex: '10', backgroundColor: '#ffffff' }, content: [
     { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '18px', fontWeight: '700' }, content: { innerText: 'Logo' } },
     { id: v4(), type: 'container', name: 'Actions', styles: { display: 'flex', gap: '12px', alignItems: 'center' }, content: [
       { id: v4(), type: 'link', name: 'Login', styles: { fontSize: '14px', fontWeight: '500', color: 'inherit', textDecoration: 'none' }, content: { innerText: 'Log in', href: '#' } },
