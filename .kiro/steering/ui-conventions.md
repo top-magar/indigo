@@ -60,6 +60,24 @@ Rules for any UI code across dashboard, editor, and storefront. All agents must 
 - `animate-spin` on Loader2 only
 - Landing pages and editor may use motion libraries
 
+## Primitives (use these, don't reinvent)
+
+All exported from `@/components/dashboard`:
+
+| Primitive | Purpose | File |
+|-----------|---------|------|
+| `PageHeader` | Title, subtitle, count, actions, search, filters | `page-header.tsx` |
+| `SectionHeader` | h2 with optional description and actions | `section-header.tsx` |
+| `SettingsPage` | max-w-2xl wrapper with save-in-header | `settings-page.tsx` |
+| `ToggleRow` | Label + description + switch + optional badge | `toggle-row.tsx` |
+| `StatBar` | Metric cards grid | `stat-bar.tsx` |
+| `EmptyState` | Icon + text + optional CTA | `@/components/ui/empty-state` |
+| `EntityListPage` | Full list page template (tabs, stats, filters) | `templates/entity-list-page.tsx` |
+| `EntityDetailPage` | Detail page with sidebar | `templates/entity-detail-page.tsx` |
+| `Savebar` | Floating save/discard bar for dirty forms | `savebar/savebar.tsx` |
+
+**Rule**: If a pattern exists as a primitive, use it. Don't inline the same layout.
+
 ## Dashboard Patterns
 
 ### Page Layout

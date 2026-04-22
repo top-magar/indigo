@@ -5,27 +5,10 @@ import { toast } from "sonner";
 import { Loader2, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { type TaxSettings, updateTaxSettings } from "./actions";
 
-function ToggleRow({ label, description, checked, onChange, badge }: {
-  label: string; description: string; checked: boolean; onChange: (v: boolean) => void; badge?: string;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 p-4">
-      <div className="space-y-0.5">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-medium">{label}</p>
-          {badge && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{badge}</Badge>}
-        </div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-      <Switch checked={checked} onCheckedChange={onChange} />
-    </div>
-  );
-}
+import { ToggleRow } from "@/components/dashboard/toggle-row";
 
 export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSettings }) {
   const [s, setS] = useState(initialSettings);

@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateCheckoutSettings } from "./actions";
 
@@ -27,22 +25,7 @@ interface CheckoutSettings {
   refundPolicy: string;
 }
 
-function ToggleRow({ label, description, checked, onChange, badge, disabled }: {
-  label: string; description: string; checked: boolean; onChange: (v: boolean) => void; badge?: string; disabled?: boolean;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 p-4">
-      <div className="space-y-0.5">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-medium">{label}</p>
-          {badge && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{badge}</Badge>}
-        </div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-      <Switch checked={checked} onCheckedChange={onChange} disabled={disabled} />
-    </div>
-  );
-}
+import { ToggleRow } from "@/components/dashboard/toggle-row";
 
 export function CheckoutSettingsClient({ settings: initial, userRole }: { settings: CheckoutSettings; userRole: "owner" | "admin" | "staff" }) {
   const router = useRouter();
