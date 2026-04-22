@@ -10,6 +10,21 @@ function cssify(styles: Record<string, unknown>): string {
   return Object.entries(styles).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${String(v).replace(/[;"<>]/g, '')}`).join(';');
 }
 
+const LAYOUT_KEYS = new Set(['display', 'flexDirection', 'gap', 'rowGap', 'columnGap', 'flexWrap', 'alignItems', 'justifyContent', 'justifyItems', 'gridTemplateColumns', 'gridTemplateRows']);
+
+function splitContainerStyles(styles: Record<string, unknown>): { outer: Record<string, unknown>; inner: Record<string, unknown>; needsSplit: boolean } {
+  const outer: Record<string, unknown> = {};
+  const inner: Record<string, unknown> = {};
+  let hasLayout = false;
+  let hasVisual = false;
+  for (const [k, v] of Object.entries(styles)) {
+    if (v === undefined || v === '') continue;
+    if (LAYOUT_KEYS.has(k)) { inner[k] = v; hasLayout = true; }
+    else { outer[k] = v; if (k === 'padding' || k === 'paddingTop' || k === 'paddingRight' || k === 'paddingBottom' || k === 'paddingLeft' || k === 'background' || k === 'backgroundColor' || k === 'border' || k === 'borderRadius') hasVisual = true; }
+  }
+  return { outer, inner, needsSplit: hasLayout && hasVisual };
+}
+
 function renderEl(el: El, fonts: Set<string>): string {
   const style = cssify(el.styles as Record<string, unknown>);
   const c = el.content as Record<string, string>;
@@ -44,15 +59,20 @@ function renderEl(el: El, fonts: Set<string>): string {
     case 'countdown': return `<div${did} style="${style}">Countdown to ${esc(c.targetDate || '')}</div>`;
     case 'starRating': { const r = parseFloat(c.rating || '5'); return `<div${did} style="${style}">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))} <span style="opacity:0.6">(${esc(c.reviews || '0')})</span></div>`; }
     case 'cartButton': return `<button${did} style="${style}">🛒 ${esc(c.innerText || 'Add to Cart')}</button>`;
-    case 'navbar': if (Array.isArray(el.content)) return `<nav${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</nav>`; break;
-    case 'header': if (Array.isArray(el.content)) return `<header${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</header>`; break;
-    case 'footer': if (Array.isArray(el.content)) return `<footer${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</footer>`; break;
-    case 'section': if (Array.isArray(el.content)) return `<section${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</section>`; break;
+    case 'navbar': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<nav${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></nav>` : `<nav${did} style="${style}">${ch}</nav>`; } break;
+    case 'header': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<header${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></header>` : `<header${did} style="${style}">${ch}</header>`; } break;
+    case 'footer': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<footer${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></footer>` : `<footer${did} style="${style}">${ch}</footer>`; } break;
+    case 'section': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<section${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></section>` : `<section${did} style="${style}">${ch}</section>`; } break;
     case 'contactForm': if (Array.isArray(el.content)) return `<form${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</form>`; break;
     default: break;
   }
-  // Container fallback
-  if (Array.isArray(el.content)) return `<div${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</div>`;
+  // Container fallback — split visual/layout like canvas does
+  if (Array.isArray(el.content)) {
+    const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>);
+    const children = el.content.map(child => renderEl(child, fonts)).join('');
+    if (needsSplit) return `<div${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${children}</div></div>`;
+    return `<div${did} style="${style}">${children}</div>`;
+  }
   return `<div${did} style="${style}">${esc(c.innerText || '')}</div>`;
 }
 
