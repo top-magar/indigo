@@ -46,7 +46,6 @@ export function createNavigation(counts: {
                     keywords: ["sales", "purchases", "returns", "refunds", "fulfillment"],
                     children: [
                         { id: "orders-list", title: "All Orders", href: "/dashboard/orders" },
-                        { id: "orders-new", title: "Create Order", href: "/dashboard/orders/new" },
                         { id: "returns", title: "Returns", href: "/dashboard/orders/returns" },
                         { id: "abandoned", title: "Abandoned Carts", href: "/dashboard/orders/abandoned" },
                     ],

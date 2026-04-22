@@ -545,7 +545,7 @@ export function OrdersListView({
           <Button className="gap-2" asChild>
             <Link href="/dashboard/orders/new">
               <Plus className="size-4" />
-              Create order
+              New Order
             </Link>
           </Button>
         </>
