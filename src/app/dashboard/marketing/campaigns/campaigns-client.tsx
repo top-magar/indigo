@@ -354,61 +354,6 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
             }
         >
 
-            {/* Stats */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-lg bg-success/10">
-                                <Send className="size-4 text-success" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-muted-foreground">Sent</p>
-                                <p className="text-xl font-semibold tabular-nums">{totalSent}</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
-                                <MailOpen className="size-4 text-primary" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-muted-foreground">Avg Open Rate</p>
-                                <p className="text-xl font-semibold tabular-nums">{avgOpenRate.toFixed(1)}%</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-lg bg-warning/10">
-                                <MousePointerClick className="size-4 text-warning" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-muted-foreground">Avg Click Rate</p>
-                                <p className="text-xl font-semibold tabular-nums">{avgClickRate.toFixed(1)}%</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
-                                <TrendingUp className="size-4 text-ds-teal-700" />
-                            </div>
-                            <div>
-                                <p className="text-sm text-muted-foreground">Revenue</p>
-                                <p className="text-xl font-semibold tabular-nums">{formatCurrency(totalRevenue, currency)}</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
 
             {/* Campaigns List */}
             <Card>
