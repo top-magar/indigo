@@ -24,10 +24,10 @@ function Toolbar() {
   };
 
   return (
-    <div className="flex items-center gap-0.5 px-1.5 py-1 bg-foreground rounded-lg shadow-lg absolute -top-10 left-0 z-50" onClick={(e) => e.stopPropagation()}>
+    <div className="flex items-center gap-0.5 px-1.5 py-1 bg-background border border-border rounded-lg shadow-lg absolute -top-10 left-0 z-50" onClick={(e) => e.stopPropagation()}>
       {([['bold', 'format_bold', 'B'], ['italic', 'format_italic', 'I'], ['underline', 'format_underlined', 'U'], ['strikethrough', 'format_strikethrough', 'S']] as const).map(([cmd, icon]) => (
         <button key={cmd} onMouseDown={(e) => { e.preventDefault(); fmt(cmd); }}
-          className="flex size-7 items-center justify-center rounded-md text-background/70 hover:text-background hover:bg-white/15 transition-colors">
+          className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
           <MIcon name={icon} size={16} />
         </button>
       ))}
