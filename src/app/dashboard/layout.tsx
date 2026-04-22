@@ -90,9 +90,7 @@ export default async function DashboardLayout({
 
             <SidebarInset>
                 {/* Header - Client component for dynamic breadcrumbs */}
-                <DashboardHeader 
-                    storeSlug={tenant?.slug}
-                />
+                <DashboardHeader />
 
                 {/* Main Content */}
                 <main className="flex-1 p-3 md:p-4" id="main-content" aria-label="Dashboard content">

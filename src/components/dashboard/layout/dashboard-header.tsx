@@ -1,111 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
-  Search, Store, Plus, ShoppingCart, Package, Users, BarChart3,
+  Search, Plus, ShoppingCart, Package, Users, BarChart3,
   Settings, LayoutDashboard, Layers, FolderTree, Tags, Gift,
   Warehouse, Image as ImageIcon, FileText, Star, Megaphone,
-  DollarSign, Percent, Mail, CreditCard, Globe, Bell, Truck,
+  DollarSign, Percent, Mail, CreditCard, Globe, Truck,
 } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
-import { NotificationCenter } from "@/components/dashboard/notifications";
 import { useKeyboardShortcutsHelp } from "@/hooks";
 import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts/keyboard-shortcuts-modal";
 import type { ShortcutCategory } from "@/components/dashboard/keyboard-shortcuts/types";
-
-// ─── Route Config ────────────────────────────────────────
-
-const ROUTES: Record<string, string> = {
-  "/dashboard": "Overview",
-  "/dashboard/orders": "Orders",
-  "/dashboard/orders/returns": "Returns",
-  "/dashboard/orders/abandoned": "Abandoned Carts",
-  "/dashboard/orders/new": "New Order",
-  "/dashboard/products": "Products",
-  "/dashboard/products/new": "New Product",
-  "/dashboard/inventory": "Inventory",
-  "/dashboard/categories": "Categories",
-  "/dashboard/collections": "Collections",
-  "/dashboard/gift-cards": "Gift Cards",
-  "/dashboard/attributes": "Attributes",
-  "/dashboard/customers": "Customers",
-  "/dashboard/customers/groups": "Customer Groups",
-  "/dashboard/media": "Media",
-  "/dashboard/pages": "Pages",
-  "/dashboard/reviews": "Reviews",
-  "/dashboard/marketing/discounts": "Discounts",
-  "/dashboard/marketing/campaigns": "Campaigns",
-  "/dashboard/analytics": "Analytics",
-  "/dashboard/finances": "Finances",
-  "/dashboard/settings": "Settings",
-  "/dashboard/settings/storefront": "Storefront",
-  "/dashboard/settings/payments": "Payments",
-  "/dashboard/settings/checkout": "Checkout",
-  "/dashboard/settings/shipping": "Shipping",
-  "/dashboard/settings/tax": "Tax",
-  "/dashboard/settings/domains": "Domains",
-  "/dashboard/settings/account": "Account",
-  "/dashboard/settings/team": "Team",
-  "/dashboard/settings/notifications": "Notifications",
-};
-
-const PARENTS: Record<string, string> = {
-  "/dashboard/orders/returns": "/dashboard/orders",
-  "/dashboard/orders/abandoned": "/dashboard/orders",
-  "/dashboard/orders/new": "/dashboard/orders",
-  "/dashboard/products/new": "/dashboard/products",
-  "/dashboard/customers/groups": "/dashboard/customers",
-  "/dashboard/marketing/discounts": "/dashboard/marketing/discounts",
-  "/dashboard/marketing/campaigns": "/dashboard/marketing/discounts",
-};
-
-// ─── Breadcrumb ──────────────────────────────────────────
-
-function Crumbs({ pathname }: { pathname: string }) {
-  if (pathname === "/dashboard") {
-    return <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbPage className="text-sm font-medium">Dashboard</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>;
-  }
-
-  const crumbs: { label: string; href: string }[] = [{ label: "Dashboard", href: "/dashboard" }];
-
-  // Settings sub-pages get Settings as parent
-  const segs = pathname.split("/").filter(Boolean);
-  if (segs[1] === "settings" && segs.length > 2) {
-    crumbs.push({ label: "Settings", href: "/dashboard/settings" });
-  }
-
-  // Known parent
-  const parent = PARENTS[pathname];
-  if (parent && ROUTES[parent]) {
-    crumbs.push({ label: ROUTES[parent], href: parent });
-  }
-
-  // Current page
-  crumbs.push({ label: ROUTES[pathname] || "Details", href: pathname });
-
-  return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        {crumbs.map((c, i) => (
-          <React.Fragment key={c.href + i}>
-            {i > 0 && <BreadcrumbSeparator />}
-            <BreadcrumbItem>
-              {i === crumbs.length - 1
-                ? <BreadcrumbPage className="text-sm font-medium">{c.label}</BreadcrumbPage>
-                : <BreadcrumbLink href={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{c.label}</BreadcrumbLink>
-              }
-            </BreadcrumbItem>
-          </React.Fragment>
-        ))}
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 // ─── Command Palette Data ────────────────────────────────
 
@@ -141,7 +49,11 @@ const PAGES: CmdItem[] = [
 
 // ─── Keyboard Shortcuts ──────────────────────────────────
 
-const GO_MAP: Record<string, string> = { d: "/dashboard", o: "/dashboard/orders", p: "/dashboard/products", c: "/dashboard/customers", m: "/dashboard/marketing/discounts", a: "/dashboard/analytics", s: "/dashboard/settings", i: "/dashboard/inventory" };
+const GO_MAP: Record<string, string> = {
+  d: "/dashboard", o: "/dashboard/orders", p: "/dashboard/products",
+  c: "/dashboard/customers", a: "/dashboard/analytics",
+  s: "/dashboard/settings", i: "/dashboard/inventory",
+};
 
 const SHORTCUT_CATS: ShortcutCategory[] = [
   { id: "nav", label: "Navigation", priority: 1, shortcuts: [
@@ -159,7 +71,7 @@ const SHORTCUT_CATS: ShortcutCategory[] = [
   ]},
 ];
 
-// ─── Kbd Component ───────────────────────────────────────
+// ─── Kbd ─────────────────────────────────────────────────
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{children}</kbd>;
@@ -167,8 +79,7 @@ function Kbd({ children }: { children: React.ReactNode }) {
 
 // ─── Header ──────────────────────────────────────────────
 
-export function DashboardHeader({ storeSlug }: { storeSlug?: string }) {
-  const pathname = usePathname();
+export function DashboardHeader() {
   const router = useRouter();
   const [cmdOpen, setCmdOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useKeyboardShortcutsHelp();
@@ -177,18 +88,33 @@ export function DashboardHeader({ storeSlug }: { storeSlug?: string }) {
 
   const go = useCallback((href: string) => { router.push(href); setCmdOpen(false); }, [router]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) {
-        if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setCmdOpen(o => !o); }
+      const inInput = t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable;
+
+      // ⌘K always works
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setCmdOpen(o => !o); return; }
+      if (inInput) return;
+
+      // C → create product
+      if (e.key === "c" && !e.metaKey && !goPending.current) { e.preventDefault(); router.push("/dashboard/products/new"); return; }
+
+      // G → wait for second key
+      if (e.key === "g" && !e.metaKey) {
+        e.preventDefault();
+        goPending.current = true;
+        if (goTimer.current) clearTimeout(goTimer.current);
+        goTimer.current = setTimeout(() => { goPending.current = false; }, 800);
         return;
       }
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setCmdOpen(o => !o); return; }
-      if (e.key === "c" && !e.metaKey && !e.ctrlKey && !goPending.current) { e.preventDefault(); router.push("/dashboard/products/new"); return; }
-      if (e.key === "g" && !e.metaKey && !e.ctrlKey) { e.preventDefault(); goPending.current = true; if (goTimer.current) clearTimeout(goTimer.current); goTimer.current = setTimeout(() => { goPending.current = false; }, 800); return; }
-      if (goPending.current) { goPending.current = false; if (goTimer.current) clearTimeout(goTimer.current); const dest = GO_MAP[e.key.toLowerCase()]; if (dest) { e.preventDefault(); router.push(dest); } }
+
+      if (goPending.current) {
+        goPending.current = false;
+        if (goTimer.current) clearTimeout(goTimer.current);
+        const dest = GO_MAP[e.key.toLowerCase()];
+        if (dest) { e.preventDefault(); router.push(dest); }
+      }
     };
     document.addEventListener("keydown", handler);
     return () => { document.removeEventListener("keydown", handler); if (goTimer.current) clearTimeout(goTimer.current); };
@@ -196,36 +122,21 @@ export function DashboardHeader({ storeSlug }: { storeSlug?: string }) {
 
   return (
     <>
-      {/* ── Header Bar ── */}
       <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4">
         <SidebarTrigger />
-        <div className="hidden md:block"><Crumbs pathname={pathname} /></div>
         <div className="flex-1" />
-
-        <div className="flex items-center gap-1.5">
-          {/* Search */}
-          <Button variant="outline" className="h-8 w-56 lg:w-64 justify-start gap-2 text-muted-foreground text-xs" onClick={() => setCmdOpen(true)}>
-            <Search className="size-3.5 shrink-0" />
-            <span className="flex-1 text-left">Search…</span>
-            <Kbd>⌘K</Kbd>
-          </Button>
-
-          {/* Notifications */}
-          <NotificationCenter tenantId="" userId="" enableRealtime={false} />
-
-          {/* View Store */}
-          {storeSlug && (
-            <Button variant="outline" className="h-8 gap-1.5 text-xs hidden sm:flex" asChild>
-              <Link href={`/store/${storeSlug}`} target="_blank">
-                <Store className="size-3.5" />
-                View Store
-              </Link>
-            </Button>
-          )}
-        </div>
+        <Button
+          variant="outline"
+          className="h-8 w-56 lg:w-64 justify-start gap-2 text-muted-foreground text-xs"
+          onClick={() => setCmdOpen(true)}
+        >
+          <Search className="size-3.5 shrink-0" />
+          <span className="flex-1 text-left">Search…</span>
+          <Kbd>⌘K</Kbd>
+        </Button>
       </header>
 
-      {/* ── Command Palette ── */}
+      {/* Command Palette */}
       <CommandDialog open={cmdOpen} onOpenChange={setCmdOpen}>
         <CommandInput placeholder="Type a command or search…" />
         <CommandList>
