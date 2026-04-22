@@ -1,7 +1,6 @@
 "use server"
 
 import { z } from "zod"
-import { createClient } from "@/infrastructure/supabase/server"
 import { getAuthenticatedClient } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import type { ReturnStatus, ItemCondition } from "@/infrastructure/supabase/types"

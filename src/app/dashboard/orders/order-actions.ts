@@ -5,7 +5,6 @@ const log = createLogger("orders-order-actions");
 
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { sendOrderShipped } from "@/infrastructure/services/email/actions";
 import type {
     Order,

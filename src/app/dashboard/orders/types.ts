@@ -1,4 +1,4 @@
-// Re-export from consolidated types — this file exists for backward compatibility
+// Re-export from consolidated types — backward compatibility
 export {
   type OrderRow,
   type OrderStats,
@@ -17,16 +17,14 @@ export {
   RETURN_STATUSES,
 } from "./_lib/types";
 
-// Legacy — OrdersClientProps was only used here
-export type { OrderRow as _OrderRow } from "./_lib/types";
 export interface OrdersClientProps {
-  orders: OrderRow[];
-  stats: OrderStats;
+  orders: import("./_lib/types").OrderRow[];
+  stats: import("./_lib/types").OrderStats;
   totalCount: number;
   currentPage: number;
   pageSize: number;
   currency: string;
-  aiInsights?: AIInsight[];
+  aiInsights?: import("./_lib/types").AIInsight[];
   filters?: {
     status?: string;
     payment?: string;
@@ -35,5 +33,3 @@ export interface OrdersClientProps {
     to?: string;
   };
 }
-
-import type { OrderRow, OrderStats, AIInsight } from "./_lib/types";

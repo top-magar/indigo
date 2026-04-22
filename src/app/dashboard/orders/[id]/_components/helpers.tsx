@@ -14,7 +14,7 @@ type OrderAddress = {
 type OrderEvent = {
   id: string; type: string; message: string; createdAt: string; user?: string | null;
 };
-import { AlertTriangle, Brain, Loader2, Phone, Activity, History } from "lucide-react"
+import { AlertTriangle, Brain, Loader2, Phone, History } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { STATUS_CONFIG } from "../../_components/order-badges"

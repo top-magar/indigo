@@ -15,8 +15,6 @@ import {
   Eye,
   PackageCheck,
   DollarSign,
-  ChevronRight,
-  Filter,
 } from "lucide-react"
 import {
   Table,

@@ -62,7 +62,6 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
@@ -320,13 +319,10 @@ export function OrdersClient({
     dateRange,
     setDateRange,
     clearAll,
-    hasActiveFilters,
-    page,
     setPage,
     sort,
     sortDir,
     setSort,
-    pageSize: urlPageSize,
     setPageSize,
     isPending: isFilterPending,
   } = useUrlFilters({
@@ -342,7 +338,6 @@ export function OrdersClient({
     toggle: toggleSelection,
     toggleAll,
     reset: clearSelection,
-    isIndeterminate,
   } = useBulkActions({
     paginationKey: `${currentPage}-${pageSize}`,
   });

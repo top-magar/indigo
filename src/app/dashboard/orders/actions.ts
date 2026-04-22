@@ -18,7 +18,6 @@ const cancelOrderSchema = z.object({
 });
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure/workflows/order";
 import * as OrderService from "@/infrastructure/services/order";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
