@@ -59,6 +59,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      {
+        hostname: "cdn.esewa.com.np",
+      },
+      {
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
 
