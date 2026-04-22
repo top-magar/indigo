@@ -44,7 +44,7 @@ function LinkPicker({ value, onChange }: { value: string; onChange: (v: string) 
             <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] font-mono" placeholder="https://..." autoFocus />
           )}
           {tab === 'page' && (
-            <div className="space-y-0.5 max-h-40 overflow-y-auto">
+            <div className="space-y-1 max-h-40 overflow-y-auto">
               {pages.map(p => (
                 <button key={p.slug} onClick={() => onChange(`#page:${p.slug}`)}
                   className={cn("flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-[11px] transition-colors", value === `#page:${p.slug}` ? "bg-primary/10 text-primary" : "hover:bg-muted")}>
@@ -84,7 +84,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {value ? (
         <div className="relative group rounded-lg border border-sidebar-border overflow-hidden">
           <img src={value} alt="" className="w-full h-28 object-cover" onError={(e) => { (e.target as HTMLImageElement).src = ''; }} />
@@ -164,7 +164,7 @@ function ItemsEditor({ value, onChange }: { value: string; onChange: (v: string)
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {items.map((item, i) => (
         <div key={i} className="rounded-lg border border-sidebar-border/50 overflow-hidden bg-sidebar/30">
           <div className="flex items-center gap-1 px-2 py-1 bg-sidebar-accent/20 border-b border-sidebar-border/30">
@@ -232,7 +232,7 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
   const { icon, label } = fieldMeta[fieldKey] ?? { icon: 'edit', label: fieldKey };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <div className="flex items-center gap-2">
         <MIcon name={icon} size={11} className="text-muted-foreground/20" />
         <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
@@ -258,7 +258,7 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
       {type === 'date' && <Input type="datetime-local" value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] bg-sidebar" />}
       {type === 'number' && <Input type="number" value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] bg-sidebar" step={fieldKey === 'rating' ? '0.5' : '1'} min={fieldKey === 'rating' ? '0' : undefined} max={fieldKey === 'rating' ? '5' : undefined} />}
       {type === 'csv' && (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] bg-sidebar" placeholder="item1, item2, item3" />
           {value && (
             <div className="flex flex-wrap gap-1">
@@ -338,7 +338,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
               <div className="px-3 pt-3 pb-1">
                 <p className="text-[9px] font-semibold text-muted-foreground/20 uppercase tracking-wider">{el.name}</p>
               </div>
-              <div className="px-3 pb-3 space-y-2.5">
+              <div className="px-3 pb-3 space-y-2">
                 {fields.map(([key, value]) => (
                   <ContentField key={key} fieldKey={key} value={value}
                     onChange={(v) => onUpdate({ ...el, content: { ...leafContent, [key]: v } })} />

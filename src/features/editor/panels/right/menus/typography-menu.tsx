@@ -29,7 +29,7 @@ function loadFont(family: string) {
 export function TypographyMenu({ get, set }: StyleProps) {
   return (
     <Section title="Typography" icon="text_fields">
-      <div className="space-y-1">
+      <div className="space-y-2">
         {/* Font family */}
         <Select value={get("fontFamily") || "Inter"} onValueChange={(v) => { set("fontFamily", v); loadFont(v); }}>
           <SelectTrigger className="h-5 text-[10px]"><SelectValue /></SelectTrigger>
@@ -71,7 +71,7 @@ export function TypographyMenu({ get, set }: StyleProps) {
           <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Transform</span>
           <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {([["none", "—"], ["uppercase", "AA"], ["lowercase", "aa"], ["capitalize", "Aa"]] as const).map(([val, label]) => (
-              <button key={val} onClick={() => set("textTransform", val)} className={cn("flex-1 h-4 rounded-md text-[9px] font-medium transition-colors", (get("textTransform") || "none") === val ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{label}</button>
+              <button key={val} onClick={() => set("textTransform", val)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium transition-colors", (get("textTransform") || "none") === val ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{label}</button>
             ))}
           </div>
         </div>

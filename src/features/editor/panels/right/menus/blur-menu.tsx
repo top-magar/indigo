@@ -23,7 +23,7 @@ export function BlurMenu({ get, set }: StyleProps) {
 
   return (
     <Section title="Effects" icon="auto_awesome" defaultOpen={false}>
-      <div className="space-y-1">
+      <div className="space-y-2">
         {/* Opacity */}
         <N icon="Op" value={opacity ? String(Math.round(parseFloat(opacity) * 100)) : "100"} onChange={(v) => set("opacity", String((+v || 0) / 100))} placeholder="100" tip="Opacity %" slider={{ min: 0, max: 100 }} />
 

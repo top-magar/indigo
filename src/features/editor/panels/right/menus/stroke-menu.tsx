@@ -45,11 +45,11 @@ export function StrokeMenu({ get, set }: StyleProps) {
         </button>
       </Tip>
     }>
-      <div className="space-y-1">
+      <div className="space-y-2">
         {/* Border / Outline tabs */}
         <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["border", "outline"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-4 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -72,7 +72,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                 set("borderStyle", s.value);
                 if (s.value !== "none" && !get("borderWidth")) set("borderWidth", "1px");
                 if (s.value !== "none" && !get("borderColor")) set("borderColor", "#d4d4d8");
-              }} className={cn("flex-1 h-4 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button></Tip>
             ))}
@@ -94,7 +94,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
             </div>
 
             {perSide && (
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {sides.map(({ side, icon }) => {
                   const wProp = `border${side}Width`;
                   const sProp = `border${side}Style`;
@@ -124,14 +124,14 @@ export function StrokeMenu({ get, set }: StyleProps) {
                 set("outlineStyle", s.value);
                 if (s.value !== "none" && !get("outlineWidth")) set("outlineWidth", "2px");
                 if (s.value !== "none" && !get("outlineColor")) set("outlineColor", "#6366f1");
-              }} className={cn("flex-1 h-4 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button></Tip>
             ))}
           </div>
 
           {hasOutline && (
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="flex items-center gap-1">
                 <div className="flex-1">
                   <ColorField label="" value={get("outlineColor")} onChange={(v) => set("outlineColor", v)} />

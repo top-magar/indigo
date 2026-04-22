@@ -44,7 +44,7 @@ export function IconToggle({ value, options, onChange }: { value: string; option
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-0 rounded-lg overflow-hidden border border-sidebar-border p-0.5 bg-sidebar">
         {options.map((o) => (
           <Tooltip key={o.value}><TooltipTrigger asChild>
-            <ToggleGroupItem value={o.value} className="flex h-6 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
+            <ToggleGroupItem value={o.value} className="flex h-7 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
               {o.icon}
             </ToggleGroupItem>
           </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{o.label}</TooltipContent></Tooltip>
@@ -81,7 +81,7 @@ export function ColorField({ label, value, alpha, onChange, onAlphaChange }: { l
       {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex h-6 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar px-2 hover:border-sidebar-foreground/20 hover:bg-sidebar-accent/30 cursor-pointer transition-colors group">
+          <button className="flex h-7 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar px-2 hover:border-sidebar-foreground/20 hover:bg-sidebar-accent/30 cursor-pointer transition-colors group">
             <span className="size-4 shrink-0 rounded-md border border-sidebar-border shadow-sm" style={{ background: value || "transparent", opacity: alpha ?? 1 }} />
             <span className="text-[10px] font-mono text-sidebar-foreground/70 group-hover:text-sidebar-foreground truncate transition-colors">{value || "none"}</span>
             {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/70 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
@@ -99,7 +99,7 @@ export function Field({ label, value, onChange, placeholder }: { label: string; 
   return (
     <div>
       {label && <label className="mb-0.5 block text-[10px] text-sidebar-foreground/70">{label}</label>}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-6 text-[10px]" placeholder={placeholder} />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[10px]" placeholder={placeholder} />
     </div>
   );
 }
@@ -109,7 +109,7 @@ export function SelectField({ label, value, options, onChange }: { label: string
     <div>
       {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Select value={value || undefined} onValueChange={onChange}>
-        <SelectTrigger className="h-6 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
+        <SelectTrigger className="h-7 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-[11px]">{o || "none"}</SelectItem>)}</SelectContent>
       </Select>
     </div>

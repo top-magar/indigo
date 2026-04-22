@@ -40,7 +40,7 @@ export default function DesignTab({ get, set, selected, onUpdate }: StyleProps &
       {/* 6. Text Overflow */}
       {isText && (
         <Section title="Text Overflow" icon="wrap_text" defaultOpen={false}>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <SelectField label="White Space" value={get("whiteSpace") || "normal"} options={["normal", "nowrap", "pre", "pre-wrap"]} onChange={(v) => set("whiteSpace", v === "normal" ? "" : v)} />
             <SelectField label="Overflow" value={get("textOverflow") || "none"} options={["none", "ellipsis", "clip"]} onChange={(v) => set("textOverflow", v === "none" ? "" : v)} />
           </div>

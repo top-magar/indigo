@@ -79,7 +79,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
         <MIcon name={hasShadow ? "visibility" : "visibility_off"} size={11} />
       </button>
     }>
-      <div className="space-y-1">
+      <div className="space-y-2">
         {hasShadow ? (<>
           {/* Preview */}
           <div className="flex items-center justify-center h-10 rounded-md border border-sidebar-border bg-sidebar">
@@ -88,7 +88,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
 
           {/* Shadow list */}
           {shadows.length > 1 && (
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               {shadows.map((sh, i) => (
                 <div key={i} onClick={() => setActive(i)} className={cn("flex items-center gap-2 h-5 px-1.5 rounded-md text-[9px] cursor-pointer transition-colors", i === active ? "bg-primary/10 text-primary" : "text-muted-foreground/70 hover:bg-sidebar-accent/50")}>
                   <span className="size-2.5 rounded-md shrink-0 border border-sidebar-border" style={{ background: sh.color }} />
@@ -102,7 +102,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
 
           {/* Active shadow controls */}
           {s && (
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="grid grid-cols-2 gap-1">
                 <N icon="X" value={String(s.x)} onChange={(v) => update(active, { x: +v || 0 })} placeholder="0" tip="Offset X" />
                 <N icon="Y" value={String(s.y)} onChange={(v) => update(active, { y: +v || 0 })} placeholder="0" tip="Offset Y" />
@@ -129,7 +129,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
             <span className="text-[9px] text-muted-foreground/40 mb-1 block">Quick add</span>
             <div className="flex gap-1">
               {presets.map((p) => (
-                <button key={p.label} onClick={() => { commit(p.shadows); setActive(0); }} className="flex-1 h-4 rounded-md border border-sidebar-border text-[10px] font-medium text-muted-foreground/70 hover:text-foreground hover:border-primary/30 transition-colors">{p.label}</button>
+                <button key={p.label} onClick={() => { commit(p.shadows); setActive(0); }} className="flex-1 h-5 rounded-md border border-sidebar-border text-[10px] font-medium text-muted-foreground/70 hover:text-foreground hover:border-primary/30 transition-colors">{p.label}</button>
               ))}
             </div>
           </div>
