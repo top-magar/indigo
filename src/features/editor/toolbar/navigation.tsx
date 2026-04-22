@@ -74,7 +74,7 @@ export default function EditorNavigation({
             </Link>
           </Tip>
 
-          <div className="h-5 w-px bg-border/40 mx-0.5" />
+          <div className="h-full w-px bg-sidebar-border" />
 
           <input
             className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-[12px] font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
