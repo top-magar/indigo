@@ -1,28 +1,14 @@
 "use client";
 
-import { memo, useState, useEffect, useRef } from "react";
-import {
-  Video,
-  File,
-  MoreVertical,
-  Download,
-  Copy,
-  Trash2,
-} from "lucide-react";
+import { memo, useState, useEffect } from "react";
+import { Video, File, MoreVertical, Download, Copy, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/shared/utils";
 import type { MediaAsset } from "@/features/media/types";
 import { formatFileSize, getFileTypeCategory } from "@/features/media/types";
-import { ShimmerEffect } from "@/components/ui/shimmer-effect";
-
-type ThumbnailLoadState = "idle" | "loading" | "loaded" | "error";
+import { toast } from "sonner";
 
 interface AssetCardProps {
   asset: MediaAsset;
@@ -35,248 +21,75 @@ interface AssetCardProps {
 }
 
 export const AssetCard = memo(function AssetCard({
-  asset,
-  isSelected,
-  onSelect,
-  onDelete,
-  onClick,
-  onDragStart,
+  asset, isSelected, onSelect, onDelete, onClick, onDragStart,
 }: AssetCardProps) {
   const fileType = getFileTypeCategory(asset.mimeType);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [thumbnailState, setThumbnailState] = useState<ThumbnailLoadState>(
-    fileType === "image" ? "idle" : "loaded"
-  );
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
-  // Detect touch device for showing actions without hover
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  useEffect(() => {
-    setIsTouchDevice("ontouchstart" in window);
-  }, []);
-
-  // Lazy loading with IntersectionObserver
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.disconnect();
-          }
-        });
-      },
-      { rootMargin: "100px" } // Start loading 100px before visible
-    );
-
-    observer.observe(card);
-    return () => observer.disconnect();
-  }, []);
-
-  // Preload image to detect load/error states (only when visible)
-  useEffect(() => {
-    if (fileType !== "image" || !isVisible) {
-      if (fileType !== "image") setThumbnailState("loaded");
-      return;
-    }
-
-    setThumbnailState("loading");
-    const img = new Image();
-    const src = asset.thumbnailUrl || asset.cdnUrl;
-    img.src = src;
-    img.onload = () => setThumbnailState("loaded");
-    img.onerror = () => setThumbnailState("error");
-
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-    };
-  }, [asset.thumbnailUrl, asset.cdnUrl, fileType, isVisible]);
-
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(asset.cdnUrl);
-  };
-
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = asset.cdnUrl;
-    link.download = asset.originalFilename;
-    link.click();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onClick();
-    }
-  };
-
-  const handleCheckboxKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      e.stopPropagation();
-      onSelect();
-    }
-  };
+  useEffect(() => { setImgLoaded(false); setImgError(false); }, [asset.id]);
 
   return (
     <div
-      ref={cardRef}
-      role="button"
-      tabIndex={0}
-      aria-label={`${asset.filename}, ${formatFileSize(asset.sizeBytes)}${asset.width && asset.height ? `, ${asset.width}×${asset.height}` : ""}, ${isSelected ? "selected" : "not selected"}`}
-      aria-selected={isSelected}
-      draggable
-      onDragStart={onDragStart}
-      onKeyDown={handleKeyDown}
+      draggable onDragStart={onDragStart}
       className={cn(
-        "group relative rounded-lg border bg-card overflow-hidden transition-all duration-200 cursor-pointer",
-        "hover:border-border hover:bg-accent/50",
-        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none",
-        isSelected && "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
+        "group rounded-lg border overflow-hidden cursor-pointer transition-colors",
+        isSelected ? "ring-2 ring-foreground" : "hover:bg-accent/50"
       )}
     >
-      {/* Selection checkbox */}
-      <div
-        role="checkbox"
-        aria-checked={isSelected}
-        aria-label={`Select ${asset.filename}`}
-        tabIndex={0}
-        onKeyDown={handleCheckboxKeyDown}
-        className={cn(
-          "absolute top-2 left-2 z-10 transition-opacity",
-          isSelected || isTouchDevice
-            ? "opacity-100"
-            : "opacity-0 group-hover:opacity-100 focus:opacity-100"
+      {/* Thumbnail */}
+      <div className="aspect-square bg-muted relative flex items-center justify-center overflow-hidden" onClick={onClick}>
+        {fileType === "image" && !imgError ? (
+          <img
+            src={asset.thumbnailUrl || asset.cdnUrl}
+            alt={asset.altText || asset.filename}
+            className={cn("size-full object-cover", !imgLoaded && "opacity-0")}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgError(true)}
+            loading="lazy"
+          />
+        ) : fileType === "video" ? (
+          <Video className="size-8 text-muted-foreground" />
+        ) : (
+          <File className="size-8 text-muted-foreground" />
         )}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect(e);
-        }}
-      >
+
+        {/* Checkbox overlay */}
         <div
-          className={cn(
-            "size-5 rounded-sm border-2 flex items-center justify-center transition-colors",
-            "bg-background ",
-            isSelected
-              ? "bg-primary border-primary text-primary-foreground"
-              : "border-muted-foreground/30 hover:border-primary"
-          )}
+          className={cn("absolute top-2 left-2 z-10 transition-opacity", isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100")}
+          onClick={e => { e.stopPropagation(); onSelect(e); }}
         >
-          {isSelected && (
-            <svg
-              className="size-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={3}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          )}
+          <Checkbox checked={isSelected} className="size-4 bg-background border-background" />
+        </div>
+
+        {/* Actions overlay */}
+        <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="size-6 rounded-full">
+                <MoreVertical className="size-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem onClick={() => { navigator.clipboard.writeText(asset.cdnUrl); toast.success("Copied"); }} className="text-xs gap-2">
+                <Copy className="size-3.5" /> Copy URL
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { const a = document.createElement("a"); a.href = asset.cdnUrl; a.download = asset.originalFilename; a.click(); }} className="text-xs gap-2">
+                <Download className="size-3.5" /> Download
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={onDelete} className="text-xs gap-2 text-destructive focus:text-destructive">
+                <Trash2 className="size-3.5" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
-      {/* Thumbnail */}
-      <div
-        className="aspect-square bg-muted/50 flex items-center justify-center overflow-hidden"
-        onClick={onClick}
-      >
-        {fileType === "image" ? (
-          <>
-            {(thumbnailState === "loading" || thumbnailState === "idle") && (
-              <ShimmerEffect className="absolute inset-0 rounded-none" />
-            )}
-            {thumbnailState === "loaded" && (
-              <img
-                src={asset.thumbnailUrl || asset.cdnUrl}
-                alt={asset.altText || asset.filename}
-                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 animate-in fade-in"
-              />
-            )}
-            {thumbnailState === "error" && (
-              <div className="w-full h-full bg-muted/30 flex items-center justify-center">
-                <File className="h-12 w-12 text-muted-foreground/50" />
-              </div>
-            )}
-          </>
-        ) : fileType === "video" ? (
-          <div className="relative w-full h-full bg-linear-to-br from-muted to-muted/50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-            <Video className="h-12 w-12 text-muted-foreground" />
-          </div>
-        ) : (
-          <div className="w-full h-full bg-linear-to-br from-muted to-muted/50 flex items-center justify-center">
-            <File className="h-12 w-12 text-muted-foreground" />
-          </div>
-        )}
-      </div>
-
       {/* Info */}
-      <div className="p-3 space-y-1" onClick={onClick}>
-        <p
-          className="text-sm font-medium truncate leading-tight"
-          title={asset.filename}
-        >
-          {asset.filename}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {formatFileSize(asset.sizeBytes)}
-          {asset.width && asset.height && (
-            <span className="ml-1.5 text-muted-foreground/70">
-              • {asset.width}×{asset.height}
-            </span>
-          )}
-        </p>
-      </div>
-
-      {/* Hover Actions */}
-      <div
-        className={cn(
-          "absolute top-2 right-2 flex gap-1 transition-opacity",
-          isTouchDevice
-            ? "opacity-100"
-            : "opacity-0 group-hover:opacity-100 focus-within:opacity-100"
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon-sm"
-              className="min-h-[44px] min-w-[44px] rounded-lg bg-background "
-              aria-label="More actions"
-            >
-              <MoreVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={handleCopyUrl}>
-              <Copy className="size-3.5" />
-              Copy URL
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDownload}>
-              <Download className="size-3.5" />
-              Download
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={onDelete}
-              className="text-destructive focus:text-destructive"
-            >
-              <Trash2 className="size-3.5" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="p-2" onClick={onClick}>
+        <p className="text-xs font-medium truncate">{asset.filename}</p>
+        <p className="text-[10px] text-muted-foreground">{formatFileSize(asset.sizeBytes)}</p>
       </div>
     </div>
   );
