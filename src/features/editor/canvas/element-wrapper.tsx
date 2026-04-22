@@ -51,6 +51,13 @@ export default function ElementWrapper({ element, children, className, style, co
       ref={wrapperRef}
       data-wrapper
       data-el-id={element.id}
+      draggable={!isBody && !element.locked}
+      onDragStart={(e) => {
+        if (isBody || element.locked) { e.preventDefault(); return; }
+        e.dataTransfer.setData('moveElementId', element.id);
+        e.dataTransfer.effectAllowed = 'move';
+        e.stopPropagation();
+      }}
       className={cn(
         'relative group/el min-w-0',
         isSel && !isBody && 'ring-2 ring-inset ring-blue-500 cursor-move',

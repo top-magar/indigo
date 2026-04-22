@@ -99,8 +99,8 @@ export default function ContainerElement({ element }: { element: El }): ReactNod
 
   const indicator = (
     <div className={cn(
-      "shrink-0 rounded-full bg-primary/70 transition-opacity",
-      isRow ? "w-0.5 self-stretch min-h-[20px]" : "h-0.5 w-full"
+      "shrink-0 rounded-full bg-primary transition-opacity",
+      isRow ? "w-[3px] self-stretch min-h-[20px]" : "h-[3px] w-full"
     )} />
   );
 

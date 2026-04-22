@@ -37,6 +37,13 @@ export function findEl(tree: El[], id: string): El | null {
   return null;
 }
 
+/** Check if childId is a descendant of parentId */
+export function isDescendant(tree: El[], parentId: string, childId: string): boolean {
+  const parent = findEl(tree, parentId);
+  if (!parent || !Array.isArray(parent.content)) return false;
+  return !!findEl(parent.content, childId);
+}
+
 export function moveEl(tree: El[], elId: string, targetContainerId: string, index?: number): El[] {
   const el = findEl(tree, elId);
   if (!el) return tree;

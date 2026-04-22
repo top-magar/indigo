@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { cn } from "@/lib/utils";
 import type { El } from "../../core/types";
 import { useEditor } from "../../core/provider";
-import { findParentId, findEl } from "../../core/tree-helpers";
+import { findParentId, findEl, isDescendant } from "../../core/tree-helpers";
 
 const typeConfig: Record<string, { icon: string; color: string }> = {
   __body: { icon: "public", color: "#6366f1" }, container: { icon: "check_box_outline_blank", color: "#8b5cf6" },
@@ -99,6 +99,8 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
     clearTimeout(expandTimer.current);
     const dragId = e.dataTransfer.getData('layerDragId');
     if (!dragId || dragId === el.id) { setDropPos(null); return; }
+    // Prevent circular: can't drop parent into its own descendant
+    if (isDescendant(elements, dragId, el.id)) { setDropPos(null); return; }
 
     if (dropPos?.position === 'inside') {
       dispatch({ type: 'MOVE_ELEMENT', payload: { elId: dragId, targetContainerId: el.id, index: 0 } });
