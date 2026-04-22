@@ -168,8 +168,6 @@ export type {
 
 // Onboarding components
 export {
-  OnboardingTooltip,
-  ControlledOnboardingTooltip,
   OnboardingProgress,
   InlineOnboardingProgress,
   WelcomeModal,

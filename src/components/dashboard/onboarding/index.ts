@@ -1,7 +1,5 @@
 // Onboarding Tooltip
 export {
-  OnboardingTooltip,
-  ControlledOnboardingTooltip,
 } from "./onboarding-tooltip";
 
 // Onboarding Progress

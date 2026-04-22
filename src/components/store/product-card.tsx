@@ -10,8 +10,8 @@ import { useCart } from "@/features/store/cart-provider"
 import { ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { HoverPrefetchLink } from "@/components/ui/prefetch-link"
-import StarRating from "@/components/commerce-ui/star-rating-basic"
-import PriceFormatSale from "@/components/commerce-ui/price-format-sale"
+import StarRating from "@/components/commerce-ui/star-rating-basic";
+import PriceFormatSale from "@/components/commerce-ui/price-format-sale";
 
 interface ProductCardProps {
   product: Product

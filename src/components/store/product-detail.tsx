@@ -8,8 +8,8 @@ import { useCart } from "@/features/store/cart-provider"
 import { ProductCard } from "./product-card"
 import { ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import StarRating from "@/components/commerce-ui/star-rating-basic"
-import PriceFormatSale from "@/components/commerce-ui/price-format-sale"
+import StarRating from "@/components/commerce-ui/star-rating-basic";
+import PriceFormatSale from "@/components/commerce-ui/price-format-sale";
 import QuantityInput from "@/components/commerce-ui/quantity-input-basic"
 
 interface ProductDetailProps {
