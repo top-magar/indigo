@@ -48,15 +48,15 @@ export interface PresenceAvatarProps {
 // ============================================================================
 
 const SIZE_CLASSES = {
-  sm: "h-6 w-6 text-xs",
-  md: "h-8 w-8 text-sm",
-  lg: "h-10 w-10 text-sm",
+  sm: "size-6 text-xs",
+  md: "size-8 text-sm",
+  lg: "size-10 text-sm",
 };
 
 const STATUS_SIZE_CLASSES = {
   sm: "h-2 w-2",
   md: "h-2.5 w-2.5",
-  lg: "h-3 w-3",
+  lg: "size-3",
 };
 
 const STATUS_COLORS = {

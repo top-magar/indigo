@@ -150,12 +150,12 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               
               {isProcessing ? (
                 <div className="flex flex-col items-center gap-2">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <Loader2 className="size-8 animate-spin text-primary" />
                   <p className="text-sm text-muted-foreground">Processing invoice…</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
-                  <Upload className="h-8 w-8 text-muted-foreground/30" />
+                  <Upload className="size-8 text-muted-foreground/30" />
                   <p className="text-sm text-muted-foreground">
                     Drag and drop an invoice, or click to browse
                   </p>

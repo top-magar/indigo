@@ -224,7 +224,7 @@ export function AdvancedSearch({
                     variant="ghost"
                    
                     onClick={handleClearInput}
-                    className="h-6 w-6 p-0"
+                    className="size-6 p-0"
                   >
                     <X className="size-3.5" />
                     <span className="sr-only">Clear search</span>

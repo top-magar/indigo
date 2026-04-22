@@ -116,7 +116,7 @@ export function ForecastInsights({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
               <TrendingUp className="size-4 text-primary" />
             </div>
             <div>
@@ -144,7 +144,7 @@ export function ForecastInsights({
              
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="h-8 w-8 p-0"
+              className="size-8 p-0"
             >
               <RefreshCw className={cn('size-4', isRefreshing && 'animate-spin')} />
             </Button>
@@ -155,7 +155,7 @@ export function ForecastInsights({
       <CardContent className="space-y-3">
         {displayedInsights.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Package className="h-10 w-10 text-muted-foreground/30 mb-3" />
+            <Package className="size-10 text-muted-foreground/30 mb-3" />
             <p className="text-sm text-muted-foreground">
               No inventory alerts at this time
             </p>

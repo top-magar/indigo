@@ -207,7 +207,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
               <div className="p-4 pb-20">
                 <TabsContent value="info" className="mt-0 space-y-6">
                   <div className="space-y-4">
-                    <div className="aspect-video bg-muted rounded-xl overflow-hidden border flex items-center justify-center relative group">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border flex items-center justify-center relative group">
                       {fileType === "image" ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" />

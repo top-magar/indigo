@@ -281,15 +281,15 @@ export function VariantEditor({
               setOptionDialogOpen(true)
             }}
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="size-4" />
             Add Option
           </Button>
         </CardHeader>
         <CardContent>
           {options.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
-                <Tag className="h-6 w-6 text-muted-foreground" />
+              <div className="flex size-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
+                <Tag className="size-6 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 No options defined. Add options to create product variants.
@@ -315,12 +315,12 @@ export function VariantEditor({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon-sm" aria-label="More options">
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditOption(option)}>
-                        <Pencil className="h-4 w-4 mr-2" />
+                        <Pencil className="size-4" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -328,7 +328,7 @@ export function VariantEditor({
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDeleteOption(option.name)}
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Trash2 className="size-4" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -375,8 +375,8 @@ export function VariantEditor({
                   <TableRow key={variant.title}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded bg-muted flex items-center justify-center">
-                          <Package className="h-4 w-4 text-muted-foreground" />
+                        <div className="size-8 rounded bg-muted flex items-center justify-center">
+                          <Package className="size-4 text-muted-foreground" />
                         </div>
                         <span className="font-medium">{variant.title}</span>
                       </div>
@@ -394,12 +394,12 @@ export function VariantEditor({
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon-sm" aria-label="More options">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openEditVariant(variant)}>
-                            <Pencil className="h-4 w-4 mr-2" />
+                            <Pencil className="size-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -407,7 +407,7 @@ export function VariantEditor({
                             className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteVariant(variant.title)}
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
+                            <Trash2 className="size-4" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

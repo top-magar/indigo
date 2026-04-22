@@ -23,7 +23,7 @@ export default function InventoryLoading() {
                                     <Skeleton className="h-3 w-16" />
                                     <Skeleton className="h-7 w-12" />
                                 </div>
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -79,7 +79,7 @@ export default function InventoryLoading() {
                     <Skeleton className="h-10 w-32" />
                     <Skeleton className="h-10 w-36" />
                 </div>
-                <Skeleton className="h-9 w-9 ml-auto" />
+                <Skeleton className="size-9 ml-auto" />
             </div>
 
             {/* Table */}
@@ -88,7 +88,7 @@ export default function InventoryLoading() {
                     {/* Header */}
                     <div className="flex items-center gap-3 px-4 py-3 border-b">
                         <Skeleton className="size-4" />
-                        <Skeleton className="h-10 w-10" />
+                        <Skeleton className="size-10" />
                         <Skeleton className="h-4 w-20" />
                         <Skeleton className="h-4 w-16 hidden lg:block" />
                         <Skeleton className="h-4 w-12" />
@@ -100,7 +100,7 @@ export default function InventoryLoading() {
                     {Array.from({ length: 10 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-3 px-4 py-3 border-b last:border-0">
                             <Skeleton className="size-4" />
-                            <Skeleton className="h-9 w-9 rounded-lg" />
+                            <Skeleton className="size-9 rounded-lg" />
                             <div className="flex-1 space-y-1">
                                 <Skeleton className="size-40" />
                                 <Skeleton className="h-3 w-24" />

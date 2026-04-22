@@ -95,17 +95,17 @@ function WidgetCatalogCard({
   return (
     <div
       className={cn(
-        "group relative border rounded-lg p-4 transition-all hover:border-primary/50 hover:shadow-sm",
+        "group relative border rounded-lg p-4 transition-colors hover:border-primary/50 hover:shadow-sm",
         isAdded && "bg-muted/50 border-muted"
       )}
     >
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <GripVertical className="size-4 text-muted-foreground" />
       </div>
 
       <div className="flex items-start gap-3 mb-3">
-        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <IconComponent className="h-5 w-5 text-primary" />
+        <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <IconComponent className="size-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-medium text-sm truncate">{item.name}</h4>
@@ -136,7 +136,7 @@ function WidgetCatalogCard({
             "Added"
           ) : (
             <>
-              <Plus className="h-3 w-3 mr-1" />
+              <Plus className="size-3 mr-1" />
               Add
             </>
           )}
@@ -188,7 +188,7 @@ function WidgetCatalogContent({
     <div className="flex flex-col h-full">
       <div className="relative mb-4">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+          className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
         />
         <Input
           aria-label="Search widgets" placeholder="Search widgets..."
@@ -200,10 +200,10 @@ function WidgetCatalogContent({
           <Button
             variant="ghost"
            
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+            className="absolute right-1 top-1/2 -translate-y-1/2 size-7 p-0"
             onClick={() => setSearchQuery("")}
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         )}
       </div>
@@ -231,7 +231,7 @@ function WidgetCatalogContent({
               return (
                 <div key={category}>
                   <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                    <CategoryIcon className="h-4 w-4" />
+                    <CategoryIcon className="size-4" />
                     {CATEGORY_CONFIG[category].label}
                   </h3>
                   <div className="grid gap-3">

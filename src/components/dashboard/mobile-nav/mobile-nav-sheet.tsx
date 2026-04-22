@@ -59,7 +59,7 @@ export function MobileNavSheet({
                 rel={item.external ? "noopener noreferrer" : undefined}
                 onClick={handleNavClick}
                 className={cn(
-                    "flex items-center gap-[13px] p-[13px] rounded-lg transition-all",
+                    "flex items-center gap-[13px] p-[13px] rounded-lg transition-colors",
                     "active:scale-[0.98]",
                     active
                         ? "bg-primary/10 text-primary"

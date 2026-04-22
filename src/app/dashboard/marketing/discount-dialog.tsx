@@ -452,7 +452,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "flex h-9 w-9 items-center justify-center rounded-lg",
+                                                    "flex size-9 items-center justify-center rounded-lg",
                                                     formData.type === type.value ? "bg-primary/10" : "bg-muted"
                                                 )}>
                                                     <type.icon 
@@ -666,7 +666,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 </div>
                                             ) : filteredProducts.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
+                                                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
                                                         <Package className="size-4 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -689,7 +689,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 checked={formData.selected_product_ids.includes(product.id)}
                                                                 onCheckedChange={() => toggleProduct(product.id)}
                                                             />
-                                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted overflow-hidden">
+                                                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted overflow-hidden">
                                                                 {product.image_url ? (
                                                                     <img 
                                                                         src={product.image_url} 
@@ -768,7 +768,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 </div>
                                             ) : filteredCollections.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
+                                                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
                                                         <Folder className="size-4 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -791,7 +791,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 checked={formData.selected_collection_ids.includes(collection.id)}
                                                                 onCheckedChange={() => toggleCollection(collection.id)}
                                                             />
-                                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                                 <Folder className="size-4 text-muted-foreground" />
                                                             </div>
                                                             <div className="flex-1 min-w-0">

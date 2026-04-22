@@ -150,7 +150,7 @@ export function FilterPresetsSelect({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className={cn("gap-2", className)}>
-            <Filter className="w-4 h-4" />
+            <Filter className="size-4" />
             <span className="max-w-[150px] truncate">
               {activePreset?.name || defaultLabel}
             </span>
@@ -166,7 +166,7 @@ export function FilterPresetsSelect({
           <DropdownMenuItem onClick={onClear}>
             <span className="flex-1">{defaultLabel}</span>
             {!activePreset && !hasUnsavedChanges && (
-              <CheckCircle className="w-4 h-4 text-primary" />
+              <CheckCircle className="size-4 text-primary" />
             )}
           </DropdownMenuItem>
 
@@ -191,28 +191,28 @@ export function FilterPresetsSelect({
                 <Button
                   variant="ghost"
                   size="icon-sm" aria-label="Rename preset"
-                  className="h-6 w-6"
+                  className="size-6"
                   onClick={(e) => {
                     e.stopPropagation();
                     openRenameDialog(preset);
                   }}
                 >
-                  <Pencil className="w-3 h-3" />
+                  <Pencil className="size-3" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon-sm" aria-label="Delete preset"
-                  className="h-6 w-6 text-destructive hover:text-destructive"
+                  className="size-6 text-destructive hover:text-destructive"
                   onClick={(e) => {
                     e.stopPropagation();
                     openDeleteDialog(preset);
                   }}
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="size-3" />
                 </Button>
               </div>
               {activePreset?.id === preset.id && !hasUnsavedChanges && (
-                <CheckCircle className="w-4 h-4 text-primary ml-2" />
+                <CheckCircle className="size-4 text-primary ml-2" />
               )}
             </DropdownMenuItem>
           ))}
@@ -222,7 +222,7 @@ export function FilterPresetsSelect({
           {/* Save current filters */}
           {hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => setSaveDialogOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="size-4" />
               Save current filters
             </DropdownMenuItem>
           )}
@@ -230,7 +230,7 @@ export function FilterPresetsSelect({
           {/* Update active preset */}
           {activePreset && hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => onUpdate(activePreset.id)}>
-              <CheckCircle className="w-4 h-4 mr-2" />
+              <CheckCircle className="size-4" />
               Update "{activePreset.name}"
             </DropdownMenuItem>
           )}

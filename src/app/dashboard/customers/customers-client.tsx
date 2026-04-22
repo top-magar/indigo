@@ -241,7 +241,7 @@ export function CustomersClient({
                                     <p className="stat-label">Total</p>
                                     <p className="text-xl font-semibold tabular-nums">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <Users className="size-4 text-primary" />
                                 </div>
                             </div>
@@ -255,7 +255,7 @@ export function CustomersClient({
                                     <p className="text-xl font-semibold tabular-nums text-success">{stats.newThisMonth}</p>
                                     <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                     <UserPlus className="size-4 text-success" />
                                 </div>
                             </div>
@@ -269,7 +269,7 @@ export function CustomersClient({
                                     <p className="text-xl font-semibold tabular-nums text-primary">{stats.returningCustomers}</p>
                                     <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <RefreshCw className="size-4 text-primary" />
                                 </div>
                             </div>
@@ -283,7 +283,7 @@ export function CustomersClient({
                                     <p className="text-xl font-semibold tabular-nums text-info">{stats.subscribedCount}</p>
                                     <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center">
                                     <Mail className="size-4 text-info" />
                                 </div>
                             </div>
@@ -297,7 +297,7 @@ export function CustomersClient({
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.totalRevenue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                     <DollarSign className="size-4 text-success" />
                                 </div>
                             </div>
@@ -311,7 +311,7 @@ export function CustomersClient({
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.avgCustomerValue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                     <ShoppingCart className="size-4 text-warning" />
                                 </div>
                             </div>
@@ -452,7 +452,7 @@ export function CustomersClient({
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar className="h-9 w-9">
+                                                    <Avatar className="size-9">
                                                         <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
                                                             {getInitials(customer.first_name, customer.last_name, customer.email)}
                                                         </AvatarFallback>

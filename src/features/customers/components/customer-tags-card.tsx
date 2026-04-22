@@ -48,7 +48,7 @@ export function CustomerTagsCard({ customer }: Props) {
                 <CardTitle className="text-base flex items-center gap-2">
                     <Tag className="size-4" /> Tags
                 </CardTitle>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowInput(true)}>
+                <Button variant="ghost" size="icon" className="size-7" onClick={() => setShowInput(true)}>
                     <Plus className="size-4" />
                 </Button>
             </CardHeader>

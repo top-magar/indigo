@@ -50,8 +50,8 @@ export function SalesByCategory({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <Folder className="w-6 h-6 text-muted-foreground" />
+                        <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <Folder className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No category data yet</p>
                     </div>
@@ -137,7 +137,7 @@ export function SalesByCategory({
                                 <div key={category.name} className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div
-                                            className={cn("h-3 w-3 rounded-full", category.colorClass)}
+                                            className={cn("size-3 rounded-full", category.colorClass)}
                                         />
                                         <span className="text-sm truncate max-w-[120px]">
                                             {category.name}
@@ -188,7 +188,7 @@ export function SalesByCategorySkeleton() {
                         {Array.from({ length: 5 }).map((_, i) => (
                             <div key={i} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <Skeleton className="h-3 w-3 rounded-full" />
+                                    <Skeleton className="size-3 rounded-full" />
                                     <Skeleton className="h-4 w-20" />
                                 </div>
                                 <Skeleton className="h-4 w-16" />

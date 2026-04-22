@@ -22,7 +22,7 @@ export default function MarketingLoading() {
                     <Card key={i}>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="h-4 w-24" />
                                     <Skeleton className="h-6 w-16" />

@@ -7,14 +7,14 @@ export default function CustomerGroupsLoading() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Skeleton className="h-9 w-9 rounded-lg" />
+          <Skeleton className="size-9 rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-7 w-40" />
             <Skeleton className="h-4 w-56" />
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-9" />
+          <Skeleton className="size-9" />
           <Skeleton className="h-9 w-32" />
         </div>
       </div>
@@ -26,7 +26,7 @@ export default function CustomerGroupsLoading() {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <Skeleton className="h-9 w-9 rounded-lg" />
+                  <Skeleton className="size-9 rounded-lg" />
                   <div className="space-y-1">
                     <Skeleton className="h-5 w-24" />
                     <Skeleton className="h-3 w-16" />

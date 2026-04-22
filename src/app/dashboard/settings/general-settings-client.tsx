@@ -100,7 +100,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
             {/* Logo */}
             <div className="shrink-0">
               {logoUrl ? (
-                <div className="relative size-20 overflow-hidden rounded-xl border group">
+                <div className="relative size-20 overflow-hidden rounded-lg border group">
                   <Image src={logoUrl} alt="Logo" fill className="object-cover" />
                   {canEdit && (
                     <button onClick={() => setLogoUrl("")} className="absolute inset-0 flex items-center justify-center bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -109,7 +109,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
                   )}
                 </div>
               ) : (
-                <label className="flex size-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed hover:border-foreground/20 hover:bg-muted/80 transition-colors">
+                <label className="flex size-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed hover:border-foreground/20 hover:bg-muted/80 transition-colors">
                   <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={isUploading || !canEdit} />
                   {isUploading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : (
                     <>

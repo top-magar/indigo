@@ -61,7 +61,7 @@ export function OfflineBanner({
         className
       )}
     >
-      <WifiOff className="h-4 w-4 text-destructive shrink-0" />
+      <WifiOff className="size-4 text-destructive shrink-0" />
       <div className="flex items-center gap-2 text-sm">
         <span className="font-medium text-destructive">You&apos;re offline</span>
         <span className="text-destructive">—</span>
@@ -157,7 +157,7 @@ export function ReconnectedBanner({ className }: { className?: string }) {
         className
       )}
     >
-      <Info className="h-4 w-4 text-success shrink-0" />
+      <Info className="size-4 text-success shrink-0" />
       <div className="flex items-center gap-2 text-sm">
         <span className="font-medium text-success">Back online</span>
         {pendingCount > 0 && (

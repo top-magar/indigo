@@ -142,9 +142,9 @@ function MobileCollapsibleWidget({
           >
             <span className="font-medium text-sm truncate">{widget.title}</span>
             {isOpen ? (
-              <ChevronUp className="h-5 w-5 text-muted-foreground shrink-0 ml-2" />
+              <ChevronUp className="size-5 text-muted-foreground shrink-0 ml-2" />
             ) : (
-              <ChevronDown className="h-5 w-5 text-muted-foreground shrink-0 ml-2" />
+              <ChevronDown className="size-5 text-muted-foreground shrink-0 ml-2" />
             )}
           </Button>
         </CollapsibleTrigger>
@@ -554,7 +554,7 @@ export function WidgetDropZone({
     <div
       onClick={onDrop}
       className={cn(
-        "border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer transition-all",
+        "border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer transition-colors",
         // Touch-friendly: minimum 44px touch target
         "min-h-[88px]",
         isOver
@@ -563,7 +563,7 @@ export function WidgetDropZone({
         className
       )}
     >
-      <Plus className="h-6 w-6 text-muted-foreground mb-2" />
+      <Plus className="size-6 text-muted-foreground mb-2" />
       <p className="text-sm text-muted-foreground text-center">
         {isOver ? "Drop to add widget" : "Click or drag widget here"}
       </p>

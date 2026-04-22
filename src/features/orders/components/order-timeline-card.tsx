@@ -96,7 +96,7 @@ function TimelineEvent({ event, isLast }: { event: OrderEvent; isLast: boolean }
             {/* Icon */}
             <div
                 className={cn(
-                    "relative z-10 h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+                    "relative z-10 size-8 rounded-full flex items-center justify-center shrink-0",
                     config.bgColor
                 )}
             >

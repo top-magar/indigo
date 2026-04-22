@@ -269,7 +269,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                             onDrop={handleDrop}
                         >
                             <div className="flex flex-col items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-muted flex items-center justify-center">
                                     <Upload className="size-5 text-muted-foreground" />
                                 </div>
                                 <div>
@@ -376,7 +376,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                 {step === "importing" && (
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Upload className="size-5 text-primary animate-pulse" />
                             </div>
                             <p className="font-medium">Importing products...</p>
@@ -393,7 +393,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
                             <div className={cn(
-                                "h-9 w-9 rounded-lg flex items-center justify-center",
+                                "size-9 rounded-lg flex items-center justify-center",
                                 importResult.success > 0 ? "bg-success/10" : "bg-destructive/10"
                             )}>
                                 {importResult.success > 0 ? (

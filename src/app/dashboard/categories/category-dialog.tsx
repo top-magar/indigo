@@ -253,7 +253,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                     <div className="border-b px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
                                     <Grid3x3 className="size-4 text-primary" />
                                 </div>
                                 <div>
@@ -367,7 +367,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     {/* Selected Parent Preview */}
                                     {selectedParent ? (
                                         <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted overflow-hidden shrink-0">
+                                            <div className="flex size-9 items-center justify-center rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {selectedParent.image_url ? (
                                                     <Image
                                                         src={selectedParent.image_url}
@@ -392,7 +392,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed">
-                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+                                            <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
                                                 <Layers className="size-4 text-muted-foreground" />
                                             </div>
                                             <div>
@@ -537,10 +537,10 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         disabled={isUploading}
                                                     />
                                                     {isUploading ? (
-                                                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                                                        <Loader2 className="size-8 animate-spin text-muted-foreground" />
                                                     ) : (
                                                         <>
-                                                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                                                            <ImageIcon className="size-8 text-muted-foreground" />
                                                             <span className="text-sm text-muted-foreground mt-2">Upload image</span>
                                                         </>
                                                     )}

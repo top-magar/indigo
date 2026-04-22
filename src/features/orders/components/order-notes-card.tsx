@@ -50,7 +50,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
             <CardContent className="space-y-4">
                 {/* Internal Notes */}
                 {order.internalNotes && (
-                    <div className="p-3 rounded-xl bg-muted/50">
+                    <div className="p-3 rounded-lg bg-muted/50">
                         <p className="text-xs font-medium text-muted-foreground mb-1">Internal Notes</p>
                         <p className="text-sm whitespace-pre-wrap">{order.internalNotes}</p>
                     </div>

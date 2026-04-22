@@ -27,7 +27,7 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <Skeleton className="h-7 w-7 rounded-full" />
+                  <Skeleton className="size-7 rounded-full" />
                   <div>
                     <Skeleton className="h-4 w-24 mb-1" />
                     <Skeleton className="size-3.52" />
@@ -40,8 +40,8 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
               <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
               <TableCell>
                 <div className="flex justify-end gap-1">
-                  <Skeleton className="h-8 w-8" />
-                  <Skeleton className="h-8 w-8" />
+                  <Skeleton className="size-8" />
+                  <Skeleton className="size-8" />
                 </div>
               </TableCell>
             </TableRow>

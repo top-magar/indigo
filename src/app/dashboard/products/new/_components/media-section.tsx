@@ -55,7 +55,7 @@ export function MediaSection({
                             onDragOver={(e) => handleDragOver(e, index)}
                             onDragEnd={handleDragEnd}
                             className={cn(
-                                "group relative aspect-square rounded-lg border overflow-hidden cursor-move transition-all",
+                                "group relative aspect-square rounded-lg border overflow-hidden cursor-move transition-colors",
                                 index === 0 && "col-span-2 row-span-2",
                                 draggedImageIndex === index && "opacity-50 ring-2 ring-primary",
                                 image.isUploading && "cursor-wait"
@@ -93,7 +93,7 @@ export function MediaSection({
                     {images.length < 10 && (
                         <label
                             className={cn(
-                                "flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed cursor-pointer transition-all hover:border-primary hover:bg-muted/50",
+                                "flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed cursor-pointer transition-colors hover:border-primary hover:bg-muted/50",
                                 images.length === 0 ? "aspect-video p-6" : "aspect-square",
                                 isUploading && "pointer-events-none opacity-50"
                             )}

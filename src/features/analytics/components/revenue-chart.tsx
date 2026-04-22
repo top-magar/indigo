@@ -72,7 +72,7 @@ export function RevenueChart({ data, currency }: RevenueChartProps) {
                                 >
                                     <div
                                         className={cn(
-                                            "w-full rounded-t transition-all duration-200",
+                                            "w-full rounded-t transition-colors duration-200",
                                             "bg-chart-1 group-hover:bg-chart-1/80",
                                             isWeekend && "bg-chart-1/60"
                                         )}

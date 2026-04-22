@@ -112,7 +112,7 @@ export function VoucherCodes({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button>
-                                <Plus className="size-4 mr-2" />
+                                <Plus className="size-4" />
                                 Add Codes
                                 <ChevronDown className="size-4 ml-2" />
                             </Button>
@@ -159,7 +159,7 @@ export function VoucherCodes({
                         <p>No codes yet. Add codes to allow customers to use this voucher.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-xl">
+                    <div className="border rounded-lg">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -221,14 +221,14 @@ export function VoucherCodes({
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => copyToClipboard(code.code)}>
-                                                        <Copy className="size-3.5 mr-2" />
+                                                        <Copy className="size-3.5" />
                                                         Copy code
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-destructive"
                                                         onClick={() => onCodesDelete([code.id])}
                                                     >
-                                                        <Trash2 className="size-3.5 mr-2" />
+                                                        <Trash2 className="size-3.5" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

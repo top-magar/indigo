@@ -261,12 +261,12 @@ export function OrderDetailPanel({
             {/* Customer Info Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <User className="h-4 w-4 text-muted-foreground" />
+                <User className="size-4 text-muted-foreground" />
                 Customer
               </h3>
               <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <span className="text-xs font-semibold text-primary">
                       {customerName[0]?.toUpperCase() || "G"}
                     </span>
@@ -287,7 +287,7 @@ export function OrderDetailPanel({
                     href={`mailto:${order.customer.email}`}
                     className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1.5"
                   >
-                    <Mail className="h-3 w-3" />
+                    <Mail className="size-3" />
                     {order.customer.email}
                   </a>
                 )}
@@ -296,7 +296,7 @@ export function OrderDetailPanel({
                     href={`tel:${order.customer.phone}`}
                     className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1.5"
                   >
-                    <Smartphone className="h-3 w-3" />
+                    <Smartphone className="size-3" />
                     {order.customer.phone}
                   </a>
                 )}
@@ -308,7 +308,7 @@ export function OrderDetailPanel({
             {/* Shipping Address Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <MapPin className="size-4 text-muted-foreground" />
                 Shipping Address
               </h3>
               {shippingLines.length > 0 ? (
@@ -330,7 +330,7 @@ export function OrderDetailPanel({
             {/* Order Items Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <Package className="h-4 w-4 text-muted-foreground" />
+                <Package className="size-4 text-muted-foreground" />
                 Items
                 <Badge variant="secondary" className="text-[10px]">
                   {order.lines.length}
@@ -348,7 +348,7 @@ export function OrderDetailPanel({
             {/* Order Totals Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                <ShoppingCart className="size-4 text-muted-foreground" />
                 Order Summary
               </h3>
               <div className="space-y-2">
@@ -398,7 +398,7 @@ export function OrderDetailPanel({
             {/* Activity Timeline Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <Clock className="h-4 w-4 text-muted-foreground" />
+                <Clock className="size-4 text-muted-foreground" />
                 Activity
               </h3>
               <div className="relative">
@@ -430,7 +430,7 @@ export function OrderDetailPanel({
                 onClick={() => onUpdateStatus(order.id)}
                 className="flex-1"
               >
-                <CheckCircle className="h-4 w-4 mr-1.5" />
+                <CheckCircle className="size-4 mr-1.5" />
                 Update Status
               </Button>
             )}
@@ -441,7 +441,7 @@ export function OrderDetailPanel({
                 onClick={() => onAddTracking(order.id)}
                 className="flex-1"
               >
-                <Truck className="h-4 w-4 mr-1.5" />
+                <Truck className="size-4 mr-1.5" />
                 Add Tracking
               </Button>
             )}
@@ -451,7 +451,7 @@ export function OrderDetailPanel({
                
                 onClick={() => onPrint(order.id)}
               >
-                <Printer className="h-4 w-4" />
+                <Printer className="size-4" />
               </Button>
             )}
             {onRefund && order.paymentStatus === "paid" && (
@@ -461,7 +461,7 @@ export function OrderDetailPanel({
                 onClick={() => onRefund(order.id)}
                 className="text-destructive hover:text-destructive"
               >
-                <Undo2 className="h-4 w-4 mr-1.5" />
+                <Undo2 className="size-4 mr-1.5" />
                 Refund
               </Button>
             )}
@@ -486,7 +486,7 @@ function OrderLineItem({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
+      <div className="size-9 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
         {line.productImage ? (
           <Image
             src={line.productImage}
@@ -496,7 +496,7 @@ function OrderLineItem({
             className="object-cover"
           />
         ) : (
-          <ImageIcon className="h-5 w-5 text-muted-foreground" />
+          <ImageIcon className="size-5 text-muted-foreground" />
         )}
       </div>
       <div className="flex-1 min-w-0">
@@ -523,11 +523,11 @@ function TimelineEventItem({ event }: { event: OrderEvent }) {
     <div className="relative flex gap-3 pl-0">
       <div
         className={cn(
-          "relative z-10 h-6 w-6 rounded-full flex items-center justify-center shrink-0",
+          "relative z-10 size-6 rounded-full flex items-center justify-center shrink-0",
           config.bgColor
         )}
       >
-        <EventIcon className={cn("h-3 w-3", config.color)} />
+        <EventIcon className={cn("size-3", config.color)} />
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
         <p className="text-xs font-medium">{event.message}</p>

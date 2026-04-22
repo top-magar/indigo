@@ -72,8 +72,8 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
     if (displayActivities.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center py-8 text-center", className)}>
-                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
-                    <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+                <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <ShoppingCart className="size-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No recent activity</p>
                 <p className="text-xs text-muted-foreground mt-1">Activity will appear here as it happens</p>
@@ -96,10 +96,10 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
                         
                         {/* Icon */}
                         <div className={cn(
-                            "relative z-10 h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
+                            "relative z-10 size-8 rounded-lg flex items-center justify-center shrink-0",
                             config.bgColor
                         )}>
-                            <config.icon className={cn("w-4 h-4", config.color)} />
+                            <config.icon className={cn("size-4", config.color)} />
                         </div>
 
                         {/* Content */}

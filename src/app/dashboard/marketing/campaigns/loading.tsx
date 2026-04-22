@@ -10,7 +10,7 @@ export function CampaignsLoading() {
                     <Skeleton className="size-8 rounded" />
                     <div className="space-y-1">
                         <Skeleton className="h-8 w-32" />
-                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="size-48" />
                     </div>
                 </div>
                 <Skeleton className="h-9 w-36" />
@@ -22,7 +22,7 @@ export function CampaignsLoading() {
                     <Card key={i}>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="h-4 w-24" />
                                     <Skeleton className="h-6 w-16" />
@@ -39,7 +39,7 @@ export function CampaignsLoading() {
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <Skeleton className="h-5 w-32" />
-                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="size-48" />
                         </div>
                         <div className="flex gap-2">
                             <Skeleton className="h-9 w-[200px]" />
@@ -51,7 +51,7 @@ export function CampaignsLoading() {
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="flex items-center justify-between p-4 rounded-lg border">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="size-40" />
                                     <Skeleton className="size-3.52" />

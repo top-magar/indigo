@@ -289,13 +289,13 @@ export function ActivityItem({
       >
         <div
           className={cn(
-            "flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
+            "flex size-6 shrink-0 items-center justify-center rounded-md",
             config.bgColor
           )}
         >
           {(() => {
             const Icon = config.icon as LucideIcon;
-            return <Icon className={cn("h-3 w-3", config.color)} />;
+            return <Icon className={cn("size-3", config.color)} />;
           })()}
         </div>
 
@@ -357,7 +357,7 @@ export function ActivityItem({
         >
           {(() => {
             const Icon = config.icon as LucideIcon;
-            return <Icon className={cn("h-4 w-4", config.color)} />;
+            return <Icon className={cn("size-4", config.color)} />;
           })()}
         </div>
       )}
@@ -382,7 +382,7 @@ export function ActivityItem({
           <div className="flex items-center gap-1">
             {(() => {
               const Icon = config.icon as LucideIcon;
-              return <Icon className={cn("h-3 w-3", config.color)} />;
+              return <Icon className={cn("size-3", config.color)} />;
             })()}
             <span className="text-xs text-muted-foreground">
               {config.label}

@@ -217,7 +217,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                     <div className="border-b px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
                                     <FolderOpen className="size-4 text-primary" />
                                 </div>
                                 <div>
@@ -322,7 +322,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                 type="button"
                                                 onClick={() => setType(t.value)}
                                                 className={cn(
-                                                    "flex items-center gap-3 p-4 rounded-lg border text-left transition-all",
+                                                    "flex items-center gap-3 p-4 rounded-lg border text-left transition-colors",
                                                     "hover:border-primary/50 hover:bg-accent/50",
                                                     type === t.value
                                                         ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -331,7 +331,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                             >
                                                 <div
                                                     className={cn(
-                                                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                                        "flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors",
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
@@ -412,10 +412,10 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                         disabled={isUploading}
                                                     />
                                                     {isUploading ? (
-                                                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                                                        <Loader2 className="size-8 animate-spin text-muted-foreground" />
                                                     ) : (
                                                         <>
-                                                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                                                            <ImageIcon className="size-8 text-muted-foreground" />
                                                             <span className="text-sm text-muted-foreground mt-2">Upload image</span>
                                                         </>
                                                     )}

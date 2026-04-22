@@ -166,7 +166,7 @@ export function EditValueDialog({ attribute, value, open, onOpenChange }: EditVa
                     <Button onClick={handleSubmit} disabled={isPending || !name.trim()}>
                         {isPending ? (
                             <>
-                                <Loader className="size-4 mr-2 animate-spin" />
+                                <Loader className="size-4 animate-spin" />
                                 Saving...
                             </>
                         ) : (

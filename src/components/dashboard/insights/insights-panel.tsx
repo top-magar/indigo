@@ -66,8 +66,8 @@ export function InsightsPanel({
       <Card className={cn("overflow-hidden", className)}>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <Sparkles className="h-4 w-4 text-primary" />
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+              <Sparkles className="size-4 text-primary" />
             </div>
             <div className="flex-1">
               <CardTitle className="flex items-center gap-2">
@@ -87,13 +87,13 @@ export function InsightsPanel({
           <CardAction className="flex items-center gap-1">
             {showRefresh && (
               <Button variant="ghost" size="icon" aria-label="Refresh" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
-                <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
+                <RefreshCw className={cn("size-4", isLoading && "animate-spin")} />
                 <span className="sr-only">Refresh insights</span>
               </Button>
             )}
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon-sm" aria-label="Toggle insights" className="text-muted-foreground">
-                {isOpen ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+                {isOpen ? <TrendingUp className="size-4" /> : <TrendingDown className="size-4" />}
                 <span className="sr-only">{isOpen ? "Collapse" : "Expand"} insights</span>
               </Button>
             </CollapsibleTrigger>
@@ -142,7 +142,7 @@ export function InsightsPanelSkeleton({ count = 3 }: InsightsPanelSkeletonProps)
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="flex gap-3 p-4 rounded-lg border bg-card animate-pulse">
-          <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+          <Skeleton className="size-10 rounded-lg shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-1/3" />
             <Skeleton className="h-3 w-full" />

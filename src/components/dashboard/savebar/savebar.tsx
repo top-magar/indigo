@@ -104,7 +104,7 @@ export function Savebar({
               disabled={isSaving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash2 className="w-4 h-4" />
               {deleteLabel}
             </Button>
           )}
@@ -127,7 +127,7 @@ export function Savebar({
               onClick={onDiscard}
               disabled={isSaving}
             >
-              <X className="w-4 h-4 mr-2" />
+              <X className="w-4 h-4" />
               {discard}
             </Button>
           )}
@@ -141,14 +141,14 @@ export function Savebar({
               {isSaving ? (
                 <>
                   <Loader2 
-                    className="w-4 h-4 mr-2 animate-spin" 
+                    className="w-4 h-4 animate-spin" 
                   />
                   {saving}
                 </>
               ) : (
                 <>
                   <CheckCircle 
-                    className="w-4 h-4 mr-2" 
+                    className="w-4 h-4" 
                   />
                   {save}
                 </>

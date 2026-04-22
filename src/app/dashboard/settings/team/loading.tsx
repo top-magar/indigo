@@ -17,7 +17,7 @@ export default function TeamSettingsLoading() {
                     <Card key={i}>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="h-7 w-8" />
                                     <Skeleton className="h-3 w-20" />
@@ -38,7 +38,7 @@ export default function TeamSettingsLoading() {
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex items-center justify-between py-4">
                                 <div className="flex items-center gap-4">
-                                    <Skeleton className="h-10 w-10 rounded-full" />
+                                    <Skeleton className="size-10 rounded-full" />
                                     <div className="space-y-1">
                                         <Skeleton className="h-5 w-32" />
                                         <Skeleton className="size-48" />
@@ -47,7 +47,7 @@ export default function TeamSettingsLoading() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Skeleton className="h-6 w-16" />
-                                    <Skeleton className="h-8 w-8" />
+                                    <Skeleton className="size-8" />
                                 </div>
                             </div>
                         ))}

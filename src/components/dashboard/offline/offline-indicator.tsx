@@ -98,7 +98,7 @@ export function OfflineIndicator({
         aria-label="Online"
         disabled
       >
-        <Wifi className="h-4 w-4 text-muted-foreground" />
+        <Wifi className="size-4 text-muted-foreground" />
       </Button>
     );
   }
@@ -110,7 +110,7 @@ export function OfflineIndicator({
       className={cn("relative transition-colors duration-300", bgClass, className)}
       aria-label={ariaLabel}
     >
-      <Icon className={cn("h-4 w-4 transition-all duration-300", iconClass)} />
+      <Icon className={cn("size-4 transition-colors duration-300", iconClass)} />
       {showPendingBadge && (
         <Badge
           variant="secondary"
@@ -164,11 +164,11 @@ export function OfflineIndicatorCompact({ className }: { className?: string }) {
       )}
     >
       {!isOnline ? (
-        <WifiOff className="h-3 w-3" />
+        <WifiOff className="size-3" />
       ) : isSyncing ? (
-        <RotateCw className="h-3 w-3 animate-spin" />
+        <RotateCw className="size-3 animate-spin" />
       ) : (
-        <Wifi className="h-3 w-3" />
+        <Wifi className="size-3" />
       )}
       <span>
         {!isOnline

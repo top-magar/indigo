@@ -116,13 +116,13 @@ export function QuickActions({
                             target={action.external ? "_blank" : undefined}
                         >
                             <div className={cn(
-                                "h-8 w-8 rounded-lg flex items-center justify-center mr-3",
+                                "size-8 rounded-lg flex items-center justify-center mr-3",
                                 action.variant === "primary" ? "bg-primary/10" : 
                                 action.variant === "warning" ? "bg-warning/10" : "bg-muted"
                             )}>
                                 <action.icon 
                                     className={cn(
-                                        "w-4 h-4",
+                                        "size-4",
                                         action.variant === "primary" ? "text-primary" :
                                         action.variant === "warning" ? "text-warning" : "text-muted-foreground"
                                     )} 
@@ -160,7 +160,7 @@ export function QuickActions({
                     >
                         <action.icon 
                             className={cn(
-                                "w-5 h-5",
+                                "size-5",
                                 action.variant === "primary" ? "text-primary" :
                                 action.variant === "warning" ? "text-warning" : "text-muted-foreground"
                             )} 

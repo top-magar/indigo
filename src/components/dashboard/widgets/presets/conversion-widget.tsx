@@ -104,8 +104,8 @@ export function ConversionWidget({
     if (!data || data.stages.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
-                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
-                    <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+                <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <ShoppingCart className="size-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No funnel data available</p>
             </div>
@@ -152,7 +152,7 @@ export function ConversionWidget({
                         {/* Stage bar */}
                         <div
                             className={cn(
-                                "relative h-12 rounded-lg transition-all duration-300",
+                                "relative h-12 rounded-lg transition-colors duration-300",
                                 config.bgColor
                             )}
                             style={{ width: `${Math.max(widthPercent, 25)}%` }}
@@ -161,7 +161,7 @@ export function ConversionWidget({
                                 {/* Left - icon and label */}
                                 <div className="flex items-center gap-2">
                                     <config.icon
-                                        className={cn("w-4 h-4", config.color)}
+                                        className={cn("size-4", config.color)}
                                     />
                                     <div>
                                         <p className="text-xs font-medium">{stage.label}</p>

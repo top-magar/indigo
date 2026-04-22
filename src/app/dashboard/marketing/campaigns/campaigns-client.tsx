@@ -359,7 +359,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
+                            <div className="flex size-9 items-center justify-center rounded-lg bg-success/10">
                                 <Send className="size-4 text-success" />
                             </div>
                             <div>
@@ -372,7 +372,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                            <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
                                 <MailOpen className="size-4 text-primary" />
                             </div>
                             <div>
@@ -385,7 +385,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                            <div className="flex size-9 items-center justify-center rounded-lg bg-warning/10">
                                 <MousePointerClick className="size-4 text-warning" />
                             </div>
                             <div>
@@ -398,7 +398,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
+                            <div className="flex size-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
                                 <TrendingUp className="size-4 text-ds-teal-700" />
                             </div>
                             <div>
@@ -589,7 +589,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-3 min-w-0">
-                                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                             <Mail className="size-4 text-muted-foreground" />
                                                         </div>
                                                         <div className="min-w-0">
@@ -779,7 +779,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                         key={pageNum}
                                                         variant={currentPage === pageNum ? "default" : "outline"}
                                                        
-                                                        className="w-8 h-8 p-0"
+                                                        className="size-8 p-0"
                                                         onClick={() => setCurrentPage(pageNum)}
                                                     >
                                                         {pageNum}

@@ -266,7 +266,7 @@ export function InventoryClient({
                                 <p className="stat-label">Total SKUs</p>
                                 <p className="text-xl font-semibold tabular-nums">{stats.totalProducts}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Package className="size-4 text-primary" />
                             </div>
                         </div>
@@ -280,7 +280,7 @@ export function InventoryClient({
                                 <p className="stat-label">Total Units</p>
                                 <p className="text-xl font-semibold tabular-nums">{stats.totalUnits.toLocaleString()}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Barcode className="size-4 text-primary" />
                             </div>
                         </div>
@@ -294,7 +294,7 @@ export function InventoryClient({
                                 <p className="stat-label">Stock Value</p>
                                 <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.totalValue, currency)}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                 <DollarSign className="size-4 text-success" />
                             </div>
                         </div>
@@ -308,7 +308,7 @@ export function InventoryClient({
                                 <p className="stat-label">Healthy</p>
                                 <p className="text-xl font-semibold tabular-nums text-success">{stats.healthyStockCount}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                 <CheckCircle className="size-4 text-success" />
                             </div>
                         </div>
@@ -322,7 +322,7 @@ export function InventoryClient({
                                 <p className="stat-label">Low Stock</p>
                                 <p className="text-xl font-semibold tabular-nums text-warning">{stats.lowStockCount}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                 <AlertTriangle className="size-4 text-warning" />
                             </div>
                         </div>
@@ -336,7 +336,7 @@ export function InventoryClient({
                                 <p className="stat-label">Out of Stock</p>
                                 <p className="text-xl font-semibold tabular-nums text-destructive">{stats.outOfStockCount}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-destructive/10 flex items-center justify-center">
                                 <XCircle className="size-4 text-destructive" />
                             </div>
                         </div>
@@ -501,7 +501,7 @@ export function InventoryClient({
                     {/* Refresh */}
                     <Button
                         variant="outline"
-                        className="h-9 w-9 ml-auto"
+                        className="size-9 ml-auto"
                         onClick={() => router.refresh()}
                         disabled={isPending}
                     >
@@ -608,7 +608,7 @@ export function InventoryClient({
                                         </TableCell>
                                         <TableCell>
                                             {hasImage ? (
-                                                <div className="relative h-10 w-10 overflow-hidden rounded-lg border bg-muted">
+                                                <div className="relative size-10 overflow-hidden rounded-lg border bg-muted">
                                                     <Image
                                                         src={product.images[0].url}
                                                         alt={product.images[0].alt || product.name}
@@ -617,7 +617,7 @@ export function InventoryClient({
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
+                                                <div className="flex size-10 items-center justify-center rounded-lg border bg-muted">
                                                     <ImageIcon className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}

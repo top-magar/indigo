@@ -23,7 +23,7 @@ export default function DashboardError({
                 <CardContent className="pt-4 text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
                         <AlertCircle
-                            className="h-7 w-7 text-destructive"
+                            className="size-7 text-destructive"
                         />
                     </div>
                     <h2 className="mb-2 text-lg font-semibold tracking-tight text-foreground">

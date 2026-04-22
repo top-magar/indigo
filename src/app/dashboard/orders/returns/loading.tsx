@@ -6,7 +6,7 @@ export default function ReturnsLoading() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Skeleton className="h-9 w-9 rounded-lg" />
+        <Skeleton className="size-9 rounded-lg" />
         <div className="space-y-2">
           <Skeleton className="h-7 w-32" />
           <Skeleton className="size-48" />
@@ -23,7 +23,7 @@ export default function ReturnsLoading() {
                   <Skeleton className="h-3 w-20" />
                   <Skeleton className="h-8 w-16" />
                 </div>
-                <Skeleton className="h-9 w-9 rounded-lg" />
+                <Skeleton className="size-9 rounded-lg" />
               </div>
             </CardContent>
           </Card>
@@ -34,7 +34,7 @@ export default function ReturnsLoading() {
       <div className="flex items-center gap-3">
         <Skeleton className="h-9 w-64" />
         <Skeleton className="h-9 w-32" />
-        <Skeleton className="h-9 w-9 ml-auto" />
+        <Skeleton className="size-9 ml-auto" />
       </div>
 
       {/* Table */}
@@ -50,14 +50,14 @@ export default function ReturnsLoading() {
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-20" />
               <div className="flex items-center gap-2">
-                <Skeleton className="h-7 w-7 rounded-full" />
+                <Skeleton className="size-7 rounded-full" />
                 <Skeleton className="h-4 w-24" />
               </div>
               <Skeleton className="h-4 w-28" />
               <Skeleton className="h-6 w-20 rounded-full" />
               <Skeleton className="h-4 w-16" />
               <Skeleton className="h-4 w-20" />
-              <Skeleton className="h-8 w-8" />
+              <Skeleton className="size-8" />
             </div>
           ))}
         </div>

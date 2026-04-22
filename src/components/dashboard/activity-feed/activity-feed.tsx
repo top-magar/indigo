@@ -118,7 +118,7 @@ export function ActivityFeed({
       {showHeader && (
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
-            <ActivityIcon className="h-4 w-4 text-muted-foreground" />
+            <ActivityIcon className="size-4 text-muted-foreground" />
             <h2 className="text-sm font-semibold tracking-[-0.28px]">Activity Feed</h2>
             {hasUnread && (
               <Badge variant="secondary" className="text-[10px] tabular-nums">
@@ -146,7 +146,7 @@ export function ActivityFeed({
                 onClick={handleMarkAllAsRead}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                <CheckCircle className="h-3 w-3 mr-1" />
+                <CheckCircle className="size-3 mr-1" />
                 Mark all read
               </Button>
             )}
@@ -266,7 +266,7 @@ function ActivityFeedSkeleton() {
     <div className="p-4 space-y-4">
       {[1, 2, 3, 4, 5].map((i) => (
         <div key={i} className="flex gap-3">
-          <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+          <Skeleton className="size-8 rounded-full shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-3 w-full" />

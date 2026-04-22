@@ -60,8 +60,8 @@ export function ConversionFunnel({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+                        <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ShoppingCart className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No funnel data available</p>
                     </div>
@@ -94,7 +94,7 @@ export function ConversionFunnel({
                                     {/* Background bar */}
                                     <div
                                         className={cn(
-                                            "relative h-16 rounded-lg transition-all duration-300",
+                                            "relative h-16 rounded-lg transition-colors duration-300",
                                             config.bgColor
                                         )}
                                         style={{ width: `${Math.max(widthPercent, 20)}%` }}
@@ -104,12 +104,12 @@ export function ConversionFunnel({
                                             <div className="flex items-center gap-3">
                                                 <div
                                                     className={cn(
-                                                        "h-8 w-8 rounded-lg flex items-center justify-center",
+                                                        "size-8 rounded-lg flex items-center justify-center",
                                                         config.bgColor
                                                     )}
                                                 >
                                                 <config.icon
-                                                        className={cn("w-4 h-4", config.color)}
+                                                        className={cn("size-4", config.color)}
                                                     />
                                                 </div>
                                                 <div>
@@ -138,7 +138,7 @@ export function ConversionFunnel({
                                 {/* Dropoff indicator */}
                                 {!isLast && stage.dropoffRate > 0 && (
                                     <div className="flex items-center gap-2 py-1 pl-4">
-                                        <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                                        <ChevronDown className="size-3 text-muted-foreground" />
                                         <span className="text-xs text-muted-foreground">
                                             {stage.dropoffRate.toFixed(1)}% drop-off
                                         </span>
@@ -174,7 +174,7 @@ export function ConversionFunnelSkeleton() {
         <Card>
             <CardHeader>
                 <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-4 w-48" />
+                <Skeleton className="size-48" />
             </CardHeader>
             <CardContent>
                 <div className="space-y-3">

@@ -136,7 +136,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-b px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10">
+                                <div className="flex size-10 items-center justify-center rounded-lg bg-success/10">
                                     <Tag className="size-4 text-success" />
                                 </div>
                                 <div>
@@ -159,7 +159,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         onClick={() => s.id < step && setStep(s.id)}
                                         disabled={s.id > step}
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-success text-white cursor-pointer hover:bg-success/90"
                                                 : step === s.id
@@ -193,12 +193,12 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                                 type="button"
                                                 onClick={() => setType(t.value)}
                                                 className={cn(
-                                                    "flex items-center gap-3 p-4 rounded-xl border text-left transition-all hover:border-success/50 hover:bg-accent/50",
+                                                    "flex items-center gap-3 p-4 rounded-lg border text-left transition-colors hover:border-success/50 hover:bg-accent/50",
                                                     type === t.value ? "border-success bg-success/5 ring-1 ring-success" : "border-border"
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors",
+                                                    "flex size-12 shrink-0 items-center justify-center rounded-lg transition-colors",
                                                     type === t.value ? "bg-success text-white" : "bg-muted"
                                                 )}>
                                                     <t.icon className="size-5" />
@@ -231,7 +231,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     </div>
                                 </div>
 
-                                <div className="rounded-xl bg-muted/50 p-4">
+                                <div className="rounded-lg bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
                                     <p className="text-2xl font-semibold tracking-tight text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
@@ -240,13 +240,13 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                         {step === 2 && (
                             <div className="space-y-6">
-                                <div className="rounded-xl border p-4 space-y-3">
+                                <div className="rounded-lg border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
                                         <Info className="size-4 text-muted-foreground" />
                                         Discount Value
                                     </h3>
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10">
+                                        <div className="flex size-12 items-center justify-center rounded-lg bg-success/10">
                                             {selectedType ? <selectedType.icon className="size-5 text-success" /> : <Percent className="size-5 text-success" />}
                                         </div>
                                         <div>
@@ -272,7 +272,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         <h3 className="font-medium">Schedule</h3>
                                     </div>
                                     
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set start date</Label>
                                             <p className="text-xs text-muted-foreground">Schedule when this sale becomes active</p>
@@ -281,7 +281,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     </div>
                                     {hasStartDate && <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} />}
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set end date</Label>
                                             <p className="text-xs text-muted-foreground">Set when this sale expires</p>
@@ -291,7 +291,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     {hasEndDate && <Input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} />}
                                 </div>
 
-                                <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
+                                <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
                                     <div className="space-y-0.5">
                                         <Label className="text-sm font-medium">Active</Label>
                                         <p className="text-xs text-muted-foreground">Sale is applied to products when active</p>
@@ -299,7 +299,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     <Switch checked={isActive} onCheckedChange={setIsActive} />
                                 </div>
 
-                                <div className="rounded-xl bg-muted/50 p-4 text-sm">
+                                <div className="rounded-lg bg-muted/50 p-4 text-sm">
                                     <p className="font-medium mb-1">Next Steps</p>
                                     <p className="text-muted-foreground">After creating this sale, you can assign products, collections, and categories from the sale details page.</p>
                                 </div>
@@ -310,7 +310,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-t px-6 py-4">
                         <div className="flex items-center justify-between">
                             <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : handleClose()}>
-                                <ArrowLeft className="size-4 mr-2" />
+                                <ArrowLeft className="size-4" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -323,12 +323,12 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                 <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-success hover:bg-success/90">
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="size-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-4 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle2 className="size-4 mr-2" />
+                                            <CheckCircle2 className="size-4" />
                                             Create Sale
                                         </>
                                     )}

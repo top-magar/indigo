@@ -130,7 +130,7 @@ function FolderItem({
               }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               className={cn(
-                "flex-1 text-left px-3 py-2 rounded-xl text-sm flex items-center gap-3 transition-colors outline-none group",
+                "flex-1 text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
                 "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 !hasChildren && depth > 0 && "ml-7",
                 isActive
@@ -282,7 +282,7 @@ export const FolderSidebar = memo(function FolderSidebar({
       <Button
         variant="outline"
         size="icon"
-        className="fixed bottom-4 left-4 z-40 lg:hidden h-12 w-12 rounded-full"
+        className="fixed bottom-4 left-4 z-40 lg:hidden size-12 rounded-full"
         onClick={() => setIsMobileOpen(true)}
         aria-label="Open folders"
       >
@@ -352,7 +352,7 @@ export const FolderSidebar = memo(function FolderSidebar({
             }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             className={cn(
-              "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-colors outline-none group",
+              "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
               currentFolderId === null
                 ? "bg-primary/10 text-primary font-medium"

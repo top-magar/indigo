@@ -122,14 +122,14 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         Subcategories ({subcategories.length})
                     </CardTitle>
                     <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Add
                     </Button>
                 </CardHeader>
                 <CardContent>
                     {subcategories.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-8 text-center">
-                            <Grid3X3 className="h-10 w-10 text-muted-foreground mb-3" />
+                            <Grid3X3 className="size-10 text-muted-foreground mb-3" />
                             <p className="text-sm text-muted-foreground">No subcategories</p>
                             <Button
                                 variant="outline"
@@ -141,13 +141,13 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                             </Button>
                         </div>
                     ) : (
-                        <div className="divide-y border rounded-xl">
+                        <div className="divide-y border rounded-lg">
                             {subcategories.map((sub) => (
                                 <div
                                     key={sub.id}
                                     className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
                                 >
-                                    <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
+                                    <div className="size-10 rounded-lg bg-muted overflow-hidden shrink-0">
                                         {sub.imageUrl ? (
                                             <Image
                                                 src={sub.imageUrl}
@@ -183,7 +183,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem asChild>
                                                 <Link href={`/dashboard/categories/${sub.id}`}>
-                                                    <ArrowRight className="size-4 mr-2" />
+                                                    <ArrowRight className="size-4" />
                                                     View
                                                 </Link>
                                             </DropdownMenuItem>
@@ -195,7 +195,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                                 }}
                                                 disabled={sub.subcategoryCount > 0}
                                             >
-                                                <Trash className="size-4 mr-2" />
+                                                <Trash className="size-4" />
                                                 Delete
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -252,9 +252,9 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         </Button>
                         <Button onClick={handleCreate} disabled={isPending || !name.trim()}>
                             {isPending ? (
-                                <Loader2 className="size-4 mr-2 animate-spin" />
+                                <Loader2 className="size-4 animate-spin" />
                             ) : (
-                                <Plus className="size-4 mr-2" />
+                                <Plus className="size-4" />
                             )}
                             Create
                         </Button>

@@ -69,7 +69,7 @@ export function MediaPickerTrigger({
             {values.map((url, index) => (
               <div
                 key={url}
-                className="relative group rounded-xl border overflow-hidden bg-muted"
+                className="relative group rounded-lg border overflow-hidden bg-muted"
               >
                 <img
                   src={url}
@@ -106,7 +106,7 @@ export function MediaPickerTrigger({
             onClick={() => setPickerOpen(true)}
             disabled={disabled}
             className={cn(
-              "w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-colors",
+              "w-full h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 transition-colors",
               disabled
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:border-primary hover:bg-muted/50 cursor-pointer"

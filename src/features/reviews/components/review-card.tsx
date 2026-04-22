@@ -117,7 +117,7 @@ export function ReviewCard({
         <div className="flex items-start justify-between gap-4">
           {/* Customer info */}
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+            <Avatar className="size-10">
               <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
                 {initials}
               </AvatarFallback>

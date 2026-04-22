@@ -71,7 +71,7 @@ export function DiscountCollections({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Collections</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Assign Collections
                     </Button>
                 </div>
@@ -107,7 +107,7 @@ export function DiscountCollections({
                         <p>No collections assigned. Assign collections to apply this discount to all products in them.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-xl">
+                    <div className="border rounded-lg">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -134,7 +134,7 @@ export function DiscountCollections({
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
+                                                <div className="size-10 rounded bg-muted flex items-center justify-center">
                                                     <Folder
                                                         className="size-4 text-muted-foreground"
                                                     />

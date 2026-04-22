@@ -79,12 +79,12 @@ function WidgetError({
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[100px] text-center p-4">
       <div className="rounded-full bg-destructive/10 p-3 mb-3">
-        <Trash2 className="h-5 w-5 text-destructive" />
+        <Trash2 className="size-5 text-destructive" />
       </div>
       <p className="text-sm text-muted-foreground mb-2">{error}</p>
       {onRetry && (
         <Button variant="outline" onClick={onRetry} className="min-h-[44px]">
-          <RefreshCw className="h-4 w-4 mr-1" />
+          <RefreshCw className="size-4 mr-1" />
           Retry
         </Button>
       )}
@@ -115,7 +115,7 @@ function TouchResizeHandle({
   const positionStyles = {
     bottom: "bottom-0 left-1/2 -translate-x-1/2 w-12 h-3 cursor-ns-resize",
     right: "right-0 top-1/2 -translate-y-1/2 w-3 h-12 cursor-ew-resize",
-    corner: "bottom-0 right-0 w-6 h-6 cursor-nwse-resize",
+    corner: "bottom-0 right-0 size-6 cursor-nwse-resize",
   };
 
   return (
@@ -140,7 +140,7 @@ function TouchResizeHandle({
           "bg-muted-foreground/30 rounded-full",
           position === "bottom" && "w-8 h-1",
           position === "right" && "w-1 h-8",
-          position === "corner" && "w-3 h-3"
+          position === "corner" && "size-3"
         )}
       />
     </div>
@@ -214,14 +214,14 @@ function SwipeToDismiss({
         )}
         style={{ width: translateX }}
       >
-        <Trash2 className="h-5 w-5 text-destructive" />
+        <Trash2 className="size-5 text-destructive" />
       </div>
 
       {/* Content */}
       <div
         className={cn(
           "transition-transform",
-          isDismissing && "transition-all duration-200"
+          isDismissing && "transition-colors duration-200"
         )}
         style={{ transform: `translateX(${translateX}px)` }}
       >
@@ -280,7 +280,7 @@ export function WidgetContainer({
       >
         <div
           className={cn(
-            "relative transition-all duration-200",
+            "relative transition-colors duration-200",
             className
           )}
           data-widget-id={id}
@@ -307,7 +307,7 @@ export function WidgetContainer({
                   onClick={handleSettings}
                   aria-label="Widget settings"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Settings className="size-5" />
                 </Button>
               )}
               {onRefresh && (
@@ -320,7 +320,7 @@ export function WidgetContainer({
                   aria-label="Refresh widget"
                 >
                   <RefreshCw
-                    className={cn("h-5 w-5", isLoading && "animate-spin")}
+                    className={cn("size-5", isLoading && "animate-spin")}
                   />
                 </Button>
               )}
@@ -332,7 +332,7 @@ export function WidgetContainer({
                   onClick={handleRemove}
                   aria-label="Remove widget"
                 >
-                  <Trash2 className="h-5 w-5" />
+                  <Trash2 className="size-5" />
                 </Button>
               )}
             </div>
@@ -345,7 +345,7 @@ export function WidgetContainer({
   return (
     <Card
       className={cn(
-        "group relative h-full transition-all duration-200",
+        "group relative h-full transition-colors duration-200",
         isDragging && "opacity-50 ring-2 ring-primary shadow-lg scale-[1.02]",
         isEditMode && !isDragging && "ring-1 ring-dashed ring-muted-foreground/30",
         isCollapsed && "h-auto",
@@ -370,7 +370,7 @@ export function WidgetContainer({
                 )}
                 aria-label="Drag to reorder widget"
               >
-                <GripVertical className="h-5 w-5 text-muted-foreground" />
+                <GripVertical className="size-5 text-muted-foreground" />
               </button>
             )}
             <CardTitle className="text-sm font-medium truncate">
@@ -388,15 +388,15 @@ export function WidgetContainer({
                 className={cn(
                   "p-0",
                   // Touch-friendly on tablet
-                  isTabletView ? "h-11 w-11" : "h-7 w-7"
+                  isTabletView ? "h-11 w-11" : "size-7"
                 )}
                 onClick={handleToggleCollapse}
                 aria-label={isCollapsed ? "Expand widget" : "Collapse widget"}
               >
                 {isCollapsed ? (
-                  <Maximize className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
+                  <Maximize className={cn(isTabletView ? "size-5" : "size-4")} />
                 ) : (
-                  <Minimize className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
+                  <Minimize className={cn(isTabletView ? "size-5" : "size-4")} />
                 )}
               </Button>
             )}
@@ -408,7 +408,7 @@ export function WidgetContainer({
                
                 className={cn(
                   "p-0",
-                  isTabletView ? "h-11 w-11" : "h-7 w-7"
+                  isTabletView ? "h-11 w-11" : "size-7"
                 )}
                 onClick={handleRefresh}
                 disabled={isLoading}
@@ -416,7 +416,7 @@ export function WidgetContainer({
               >
                 <RefreshCw
                   className={cn(
-                    isTabletView ? "h-5 w-5" : "h-4 w-4",
+                    isTabletView ? "size-5" : "size-4",
                     isLoading && "animate-spin"
                   )}
                 />
@@ -431,11 +431,11 @@ export function WidgetContainer({
                  
                   className={cn(
                     "p-0",
-                    isTabletView ? "h-11 w-11" : "h-7 w-7"
+                    isTabletView ? "h-11 w-11" : "size-7"
                   )}
                   aria-label="Widget options"
                 >
-                  <MoreHorizontal className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
+                  <MoreHorizontal className={cn(isTabletView ? "size-5" : "size-4")} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -444,7 +444,7 @@ export function WidgetContainer({
                     onClick={handleSettings}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <Settings className="h-4 w-4 mr-2" />
+                    <Settings className="size-4" />
                     Settings
                   </DropdownMenuItem>
                 )}
@@ -454,7 +454,7 @@ export function WidgetContainer({
                     disabled={isLoading}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="size-4" />
                     Refresh
                   </DropdownMenuItem>
                 )}
@@ -465,28 +465,28 @@ export function WidgetContainer({
                       onClick={() => onResize(id, "small")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Minimize2 className="h-4 w-4 mr-2" />
+                      <Minimize2 className="size-4" />
                       Small
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "medium")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Minimize2 className="h-4 w-4 mr-2" />
+                      <Minimize2 className="size-4" />
                       Medium
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "large")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Maximize className="h-4 w-4 mr-2" />
+                      <Maximize className="size-4" />
                       Large
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "full")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Maximize className="h-4 w-4 mr-2" />
+                      <Maximize className="size-4" />
                       Full Width
                     </DropdownMenuItem>
                   </>
@@ -501,7 +501,7 @@ export function WidgetContainer({
                         isTabletView && "min-h-[44px]"
                       )}
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="size-4" />
                       Remove
                     </DropdownMenuItem>
                   </>

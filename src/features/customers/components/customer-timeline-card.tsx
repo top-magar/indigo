@@ -97,7 +97,7 @@ export function CustomerTimelineCard({ customer }: CustomerTimelineCardProps) {
                                 <div key={event.id} className="flex gap-3">
                                     <div className="relative">
                                         <div className={cn(
-                                            "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+                                            "size-8 rounded-full flex items-center justify-center shrink-0",
                                             config.bgColor
                                         )}>
                                             <Icon className={cn("size-4", config.color)} />

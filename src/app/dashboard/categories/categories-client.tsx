@@ -313,7 +313,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">Total</p>
                                 <p className="text-xl font-semibold tabular-nums">{stats.total}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Grid3x3 className="size-4 text-primary" />
                             </div>
                         </div>
@@ -326,7 +326,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">With Products</p>
                                 <p className="text-xl font-semibold tabular-nums text-success">{stats.withProducts}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                 <Package className="size-4 text-success" />
                             </div>
                         </div>
@@ -339,7 +339,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">Empty</p>
                                 <p className="text-xl font-semibold tabular-nums text-muted-foreground">{stats.empty}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
                                 <FolderOpen className="size-4 text-ds-teal-700" />
                             </div>
                         </div>
@@ -352,7 +352,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">Nested</p>
                                 <p className="text-xl font-semibold tabular-nums text-warning">{stats.nested}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                 <Layers className="size-4 text-warning" />
                             </div>
                         </div>
@@ -365,7 +365,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">Products</p>
                                 <p className="text-xl font-semibold tabular-nums text-primary">{stats.totalProducts}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Package className="size-4 text-primary" />
                             </div>
                         </div>
@@ -499,7 +499,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                         )}
                                         
                                         {/* Image */}
-                                        <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
+                                        <div className="size-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                             {category.image_url ? (
                                                 <Image
                                                     src={category.image_url}

@@ -158,11 +158,11 @@ export function NotificationItem({
   const NotificationAvatar = (
     <div
       className={cn(
-        "flex items-center justify-center rounded-lg h-8 w-8",
+        "flex items-center justify-center rounded-lg size-8",
         config.bgColor
       )}
     >
-      <Icon className={cn("h-4 w-4", config.color)} />
+      <Icon className={cn("size-4", config.color)} />
     </div>
   );
 

@@ -43,7 +43,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 </Button>
                 <div className="flex items-center gap-4 flex-1">
                     {hasImage ? (
-                        <div className="relative h-16 w-16 overflow-hidden rounded-lg border bg-muted shrink-0">
+                        <div className="relative size-16 overflow-hidden rounded-lg border bg-muted shrink-0">
                             <Image
                                 src={(product.images as { url: string }[])[0].url}
                                 alt={product.name}
@@ -52,7 +52,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                             />
                         </div>
                     ) : (
-                        <div className="flex h-16 w-16 items-center justify-center rounded-lg border bg-muted shrink-0">
+                        <div className="flex size-16 items-center justify-center rounded-lg border bg-muted shrink-0">
                             <ImageIcon className="size-5 text-muted-foreground" />
                         </div>
                     )}
@@ -113,8 +113,8 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <CardContent>
                     {movements.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="h-16 w-16 rounded-lg bg-muted/50 flex items-center justify-center">
-                                <Package className="w-8 h-8 text-muted-foreground" />
+                            <div className="size-16 rounded-lg bg-muted/50 flex items-center justify-center">
+                                <Package className="size-8 text-muted-foreground" />
                             </div>
                             <p className="mt-4 font-medium">No stock movements yet</p>
                             <p className="text-sm text-muted-foreground mt-1">

@@ -65,7 +65,7 @@ export function OfflineFallback({
       <div className="relative mb-6">
         <div className="absolute inset-0 bg-destructive/10 rounded-full blur-xl" />
         <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10">
-          <WifiOff className="h-8 w-8 text-destructive" />
+          <WifiOff className="size-8 text-destructive" />
         </div>
       </div>
 
@@ -76,7 +76,7 @@ export function OfflineFallback({
 
       {showCachedDataInfo && cachedAt && (
         <div className="flex items-center gap-2 mb-6 px-4 py-2 rounded-lg bg-warning/10 text-warning">
-          <Clock className="h-4 w-4 shrink-0" />
+          <Clock className="size-4 shrink-0" />
           <span className="text-sm">
             Showing cached data from {formatCachedTime(cachedAt)}
           </span>
@@ -92,7 +92,7 @@ export function OfflineFallback({
           disabled={!isOnline}
           className="gap-2"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="size-4" />
           {retryLabel}
         </Button>
       </div>
@@ -142,7 +142,7 @@ export function StaleDataWarning({
       )}
     >
       <div className="flex items-center gap-3">
-        <AlertCircle className="h-4 w-4 text-warning shrink-0" />
+        <AlertCircle className="size-4 text-warning shrink-0" />
         <div className="text-sm">
           <span className="font-medium text-warning">Data may be outdated</span>
           {cachedAt && (
@@ -155,7 +155,7 @@ export function StaleDataWarning({
       </div>
       {onRefresh && isOnline && (
         <Button variant="ghost" size="xs" onClick={onRefresh} className="gap-1.5">
-          <RefreshCw className="h-3 w-3" />
+          <RefreshCw className="size-3" />
           Refresh
         </Button>
       )}
@@ -181,7 +181,7 @@ export function CachedDataBadge({
         className
       )}
     >
-      <Database className="h-3 w-3" />
+      <Database className="size-3" />
       <span>Cached{cachedAt && ` · ${formatRelativeTime(cachedAt)}`}</span>
     </div>
   );

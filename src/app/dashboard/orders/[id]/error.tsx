@@ -23,7 +23,7 @@ export default function OrderDetailError({
                 <CardContent className="pt-4 text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
                         <AlertCircle
-                            className="h-7 w-7 text-destructive"
+                            className="size-7 text-destructive"
                         />
                     </div>
                     <h2 className="mb-2 text-xl font-semibold tracking-tight text-foreground">
@@ -35,12 +35,12 @@ export default function OrderDetailError({
                     <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                             <Link href="/dashboard/orders">
-                                <ArrowLeft className="size-4 mr-2" />
+                                <ArrowLeft className="size-4" />
                                 All Orders
                             </Link>
                         </Button>
                         <Button onClick={reset}>
-                            <RefreshCw className="size-4 mr-2" />
+                            <RefreshCw className="size-4" />
                             Try again
                         </Button>
                     </div>

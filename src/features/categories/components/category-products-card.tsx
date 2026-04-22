@@ -99,7 +99,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                 {/* Products List */}
                 {filteredProducts.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <Package className="h-12 w-12 text-muted-foreground mb-4" />
+                        <Package className="size-12 text-muted-foreground mb-4" />
                         <p className="text-muted-foreground">
                             {searchQuery ? "No products match your search" : "No products in this category"}
                         </p>
@@ -110,14 +110,14 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                         )}
                     </div>
                 ) : (
-                    <div className="border rounded-xl divide-y">
+                    <div className="border rounded-lg divide-y">
                         {filteredProducts.map((product) => (
                             <div
                                 key={product.id}
                                 className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
                             >
                                 {/* Product Image */}
-                                <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
+                                <div className="size-10 rounded-lg bg-muted overflow-hidden shrink-0">
                                     {product.image ? (
                                         <Image
                                             src={product.image}
@@ -169,7 +169,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem asChild>
                                             <Link href={`/dashboard/products/${product.id}`}>
-                                                <ChevronRight className="size-4 mr-2" />
+                                                <ChevronRight className="size-4" />
                                                 View Product
                                             </Link>
                                         </DropdownMenuItem>
@@ -177,7 +177,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                             className="text-destructive focus:text-destructive"
                                             onClick={() => handleRemoveProduct(product.id)}
                                         >
-                                            <Trash2 className="size-4 mr-2" />
+                                            <Trash2 className="size-4" />
                                             Remove from Category
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

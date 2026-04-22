@@ -62,7 +62,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
             <CardContent>
                 {recentOrders.length === 0 ? (
                     <div className="text-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto">
+                        <div className="size-12 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto">
                             <ShoppingCart className="size-5 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders found</p>

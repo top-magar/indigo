@@ -319,12 +319,12 @@ export function MediaPicker({
               {isLoading && assets.length === 0 ? (
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <div key={i} className="aspect-square rounded-xl bg-muted animate-pulse" />
+                    <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
                   ))}
                 </div>
               ) : assets.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
-                  <Image className="h-12 w-12 text-muted-foreground/50" />
+                  <Image className="size-12 text-muted-foreground/50" />
                   <p className="mt-3 text-sm text-muted-foreground">
                     {search ? "No files match your search" : "No files in library"}
                   </p>
@@ -377,20 +377,20 @@ export function MediaPicker({
           >
             <div
               className={cn(
-                "h-full border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-colors",
+                "h-full border-2 border-dashed rounded-lg flex flex-col items-center justify-center transition-colors",
                 isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
               )}
             >
               {isUploading ? (
                 <div className="text-center w-full max-w-xs">
-                  <UploadCloud className="h-10 w-10 mx-auto text-primary animate-pulse" />
+                  <UploadCloud className="size-10 mx-auto text-primary animate-pulse" />
                   <p className="mt-3 text-sm font-medium">Uploading...</p>
                   <Progress value={uploadProgress} className="mt-3 h-2" />
                   <p className="mt-2 text-xs text-muted-foreground">{uploadProgress}%</p>
                 </div>
               ) : (
                 <>
-                  <UploadCloud className="h-10 w-10 text-muted-foreground" />
+                  <UploadCloud className="size-10 text-muted-foreground" />
                   <p className="mt-3 text-sm font-medium">
                     Drag and drop files here
                   </p>
@@ -456,7 +456,7 @@ function PickerAssetCard({
       type="button"
       onClick={onSelect}
       className={cn(
-        "group relative aspect-square rounded-xl border bg-muted overflow-hidden transition-all",
+        "group relative aspect-square rounded-lg border bg-muted overflow-hidden transition-colors",
         isSelected
           ? "ring-2 ring-primary ring-offset-2"
           : "hover:ring-2 hover:ring-primary/50"

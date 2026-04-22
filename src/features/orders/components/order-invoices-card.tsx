@@ -81,7 +81,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
             <CardContent>
                 {order.invoices.length === 0 ? (
                     <div className="text-center py-6 text-muted-foreground">
-                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <FileText className="size-8 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">No invoices yet</p>
                     </div>
                 ) : (
@@ -113,9 +113,9 @@ function InvoiceItem({
     const status = statusConfig[invoice.status] || statusConfig.pending;
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-xl border">
+        <div className="flex items-center justify-between p-3 rounded-lg border">
             <div className="flex items-center gap-3">
-                <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
+                <div className={cn("size-8 rounded-full flex items-center justify-center", status.bgColor)}>
                     {invoice.status === "sent" || invoice.status === "paid" ? (
                         <CheckCircle2 className={cn("size-4", status.color)} />
                     ) : (
@@ -145,7 +145,7 @@ function InvoiceItem({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="size-8"
                         onClick={onSend}
                         disabled={isPending}
                     >

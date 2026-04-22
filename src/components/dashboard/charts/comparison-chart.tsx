@@ -116,11 +116,11 @@ function TrendIndicator({ change, formatValue }: TrendIndicatorProps) {
       className="gap-1"
     >
       {trend === "up" ? (
-        <ChevronUp className="w-3 h-3" />
+        <ChevronUp className="size-3" />
       ) : trend === "down" ? (
-        <ChevronDown className="w-3 h-3" />
+        <ChevronDown className="size-3" />
       ) : (
-        <Minus className="w-3 h-3" />
+        <Minus className="size-3" />
       )}
       {absChange.toFixed(1)}%
     </Badge>

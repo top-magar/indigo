@@ -51,11 +51,11 @@ export function QuickActionsCard({ storeSlug }: QuickActionsCardProps) {
             <Link key={action.href} href={action.href}>
               <Button
                 variant="outline"
-                className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-all"
+                className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-colors"
               >
                 <div className="flex items-center gap-3 w-full">
-                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-brand/80" />
+                  <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <Icon className="size-4 text-brand/80" />
                   </div>
                   <div className="text-left flex-1">
                     <p className="text-sm font-medium text-foreground">
@@ -75,11 +75,11 @@ export function QuickActionsCard({ storeSlug }: QuickActionsCardProps) {
           <Link href={`/store/${storeSlug}`} target="_blank">
             <Button
               variant="outline"
-              className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-all mt-3 border-dashed"
+              className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-colors mt-3 border-dashed"
             >
               <div className="flex items-center gap-3 w-full">
-                <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
-                  <Plus className="w-4 h-4 text-success" />
+                <div className="size-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                  <Plus className="size-4 text-success" />
                 </div>
                 <div className="text-left flex-1">
                   <p className="text-sm font-medium text-foreground">

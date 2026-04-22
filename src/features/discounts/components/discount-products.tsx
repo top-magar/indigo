@@ -73,7 +73,7 @@ export function DiscountProducts({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Products</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Assign Products
                     </Button>
                 </div>
@@ -109,7 +109,7 @@ export function DiscountProducts({
                         <p>No products assigned. Assign products to apply this discount.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-xl">
+                    <div className="border rounded-lg">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -136,7 +136,7 @@ export function DiscountProducts({
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded bg-muted flex items-center justify-center overflow-hidden relative">
+                                                <div className="size-10 rounded bg-muted flex items-center justify-center overflow-hidden relative">
                                                     {product.thumbnail ? (
                                                         <Image
                                                             src={product.thumbnail}

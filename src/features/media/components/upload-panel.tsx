@@ -230,7 +230,7 @@ export const UploadPanel = memo(function UploadPanel() {
                     >
                       {/* File Type Icon */}
                       <div className={cn(
-                        "size-8 rounded-xl flex items-center justify-center shrink-0",
+                        "size-8 rounded-lg flex items-center justify-center shrink-0",
                         upload.status === "error" ? "bg-red-100" :
                         upload.status === "complete" ? "bg-emerald-100" : "bg-muted"
                       )}>

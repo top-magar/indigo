@@ -124,7 +124,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
             {items.map((p) => (
               <Link key={p.id} href={href(`/products/${p.slug}`)}
                 className={`group block ${isCarousel ? "min-w-[260px] snap-start" : ""}`}>
-                <div className="aspect-square rounded-xl overflow-hidden bg-muted mb-3">
+                <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-3">
                   {p.images[0] ? (
                     <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
@@ -152,7 +152,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.slice(0, 6).map((cat) => (
                 <Link key={cat.id} href={href(`/category/${cat.slug}`)}
-                  className="relative h-48 rounded-xl overflow-hidden bg-muted group">
+                  className="relative h-48 rounded-lg overflow-hidden bg-muted group">
                   {cat.imageUrl && <img src={cat.imageUrl} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
@@ -173,7 +173,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {categories.slice(0, 8).map((cat) => (
               <Link key={cat.id} href={href(`/category/${cat.slug}`)}
-                className="rounded-xl border p-4 text-center hover:border-primary/30 hover:shadow-sm transition-all">
+                className="rounded-lg border p-4 text-center hover:border-primary/30 hover:shadow-sm transition-colors">
                 <div className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: `${primaryColor}15` }}>
                   <ShoppingBag className="size-5" style={{ color: primaryColor }} />
                 </div>
@@ -241,7 +241,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mb-10">{title}</h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {reviews.map((r, i) => (
-              <div key={i} className="rounded-xl border p-6">
+              <div key={i} className="rounded-lg border p-6">
                 <Quote className="size-5 text-muted-foreground/30 mb-3" />
                 <p className="text-sm text-muted-foreground">{r.text}</p>
                 <div className="mt-4 flex items-center gap-2">

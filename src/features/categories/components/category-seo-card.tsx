@@ -61,7 +61,7 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <PenLine className="size-4 mr-2" />
+                        <PenLine className="size-4" />
                         Edit
                     </Button>
                 ) : (
@@ -81,7 +81,7 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Search Preview */}
-                <div className="p-4 bg-muted/50 rounded-xl space-y-1">
+                <div className="p-4 bg-muted/50 rounded-lg space-y-1">
                     <p className="text-sm font-medium text-info truncate">
                         {metaTitle || category.name}
                     </p>

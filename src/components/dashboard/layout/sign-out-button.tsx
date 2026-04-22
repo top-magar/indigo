@@ -71,9 +71,9 @@ export function SignOutButton() {
                         transition={{ duration: 0.6, repeat: isLoading ? Infinity : 0, ease: "linear" }}
                     >
                         {isLoading ? (
-                            <Loader2 className="h-4 w-4" />
+                            <Loader2 className="size-4" />
                         ) : (
-                            <LogOut className="h-4 w-4" />
+                            <LogOut className="size-4" />
                         )}
                     </motion.span>
                     <AnimatePresence mode="wait">
@@ -130,7 +130,7 @@ export function SignOutButton() {
                                             exit={{ opacity: 0 }}
                                             className="flex items-center"
                                         >
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            <Loader2 className="mr-2 size-4 animate-spin" />
                                             Signing out...
                                         </motion.span>
                                     ) : (

@@ -174,7 +174,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 <div key={s.id} className="flex items-center">
                                     <div
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-primary text-primary-foreground"
                                                 : step === s.id
@@ -255,8 +255,8 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                             <div className="space-y-6">
                                 {/* Selected Type Preview */}
                                 {selectedType && (
-                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                                    <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                                        <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
                                             <selectedType.icon className="size-4 text-primary" />
                                         </div>
                                         <div>
@@ -345,7 +345,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                         {step === 3 && (
                             <div className="space-y-6">
                                 {/* Summary */}
-                                <div className="rounded-xl border p-4 space-y-3">
+                                <div className="rounded-lg border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
                                         <Info className="size-4 text-muted-foreground" />
                                         Summary
@@ -400,7 +400,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
 
                                 {/* Info about values */}
                                 {["dropdown", "multiselect", "swatch"].includes(inputType) && (
-                                    <div className="rounded-xl bg-muted/50 p-4 text-sm">
+                                    <div className="rounded-lg bg-muted/50 p-4 text-sm">
                                         <p className="font-medium mb-1">Next Steps</p>
                                         <p className="text-muted-foreground">
                                             After creating this attribute, you&apos;ll be able to add values 
@@ -419,7 +419,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ArrowLeft className="size-4 mr-2" />
+                                <ArrowLeft className="size-4" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -438,12 +438,12 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader className="size-4 mr-2 animate-spin" />
+                                            <Loader className="size-4 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="size-4 mr-2" />
+                                            <CheckCircle className="size-4" />
                                             Create Attribute
                                         </>
                                     )}
@@ -473,7 +473,7 @@ function TypeCard({
             type="button"
             onClick={onClick}
             className={cn(
-                "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                "flex items-center gap-3 p-3 rounded-lg border text-left transition-colors",
                 "hover:border-primary/50 hover:bg-accent/50",
                 selected
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -482,7 +482,7 @@ function TypeCard({
         >
             <div
                 className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
+                    "flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors",
                     selected ? "bg-primary text-primary-foreground" : "bg-muted"
                 )}
             >
@@ -512,7 +512,7 @@ function SettingRow({
     onCheckedChange: (checked: boolean) => void;
 }) {
     return (
-        <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
+        <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
             <div className="space-y-0.5">
                 <Label className="text-sm font-medium">{label}</Label>
                 <p className="text-xs text-muted-foreground">{description}</p>

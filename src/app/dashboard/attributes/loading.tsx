@@ -11,7 +11,7 @@ export default function AttributesLoading() {
                     <Skeleton className="h-4 w-64 mt-2" />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Skeleton className="h-10 w-10" />
+                    <Skeleton className="size-10" />
                     <Skeleton className="h-10 w-36" />
                 </div>
             </div>
@@ -26,7 +26,7 @@ export default function AttributesLoading() {
                                     <Skeleton className="h-4 w-16" />
                                     <Skeleton className="h-8 w-12 mt-1" />
                                 </div>
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>

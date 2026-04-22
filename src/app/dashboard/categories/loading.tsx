@@ -23,7 +23,7 @@ export default function CategoriesLoading() {
                                     <Skeleton className="h-3 w-16" />
                                     <Skeleton className="h-7 w-10" />
                                 </div>
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -55,7 +55,7 @@ export default function CategoriesLoading() {
                             <div key={i} className="flex items-center gap-3 px-4 py-3">
                                 <Skeleton className="size-4" />
                                 <Skeleton className="size-4" />
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="flex-1 space-y-2">
                                     <Skeleton className="h-4 w-32" />
                                     <Skeleton className="h-3 w-24" />

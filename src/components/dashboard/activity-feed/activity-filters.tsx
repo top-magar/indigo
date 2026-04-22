@@ -162,7 +162,7 @@ export function ActivityFilters({
       {/* Filter header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
+          <Filter className="size-4 text-muted-foreground" />
           <span className="text-sm font-medium">Filters</span>
           {isFiltered && (
             <Badge variant="secondary" className="text-[10px]">
@@ -172,7 +172,7 @@ export function ActivityFilters({
         </div>
         {isFiltered && (
           <Button variant="ghost" size="xs" onClick={onReset} className="gap-1 text-xs">
-            <X className="h-3 w-3" />
+            <X className="size-3" />
             Clear all
           </Button>
         )}
@@ -221,7 +221,7 @@ export function ActivityFilters({
                 {teamMembers.map((member) => (
                   <SelectItem key={member.id} value={member.id}>
                     <div className="flex items-center gap-2">
-                      <Avatar className="h-5 w-5">
+                      <Avatar className="size-5">
                         {member.avatarUrl ? (
                           <AvatarImage src={member.avatarUrl} alt={member.name} />
                         ) : null}
@@ -241,7 +241,7 @@ export function ActivityFilters({
         {/* Mentions only toggle */}
         <div className="flex items-center justify-between py-1">
           <div className="flex items-center gap-2">
-            <MentionIcon className="h-4 w-4 text-muted-foreground" />
+            <MentionIcon className="size-4 text-muted-foreground" />
             <Label htmlFor="mentions-only" className="text-sm cursor-pointer">
               Only show @mentions
             </Label>

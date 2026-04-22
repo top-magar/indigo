@@ -81,7 +81,7 @@ export function Cursor({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute z-50 transition-all",
+        "pointer-events-none absolute z-50 transition-colors",
         isStale && "opacity-40"
       )}
       style={{

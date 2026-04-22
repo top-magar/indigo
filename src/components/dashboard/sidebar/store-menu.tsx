@@ -25,7 +25,7 @@ interface StoreMenuProps {
 
 function StoreAvatar({ name, logo }: { name: string; logo?: string | null }) {
     return (
-        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs h-8 w-8 overflow-hidden">
+        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs size-8 overflow-hidden">
             {logo ? <img src={logo} alt={name} className="h-full w-full object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );
@@ -43,8 +43,8 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
     const trigger = (
         <button
             className={cn(
-                "group flex items-center rounded-lg text-left transition-all",
-                isCollapsed ? "h-10 w-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted"
+                "group flex items-center rounded-lg text-left transition-colors",
+                isCollapsed ? "size-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted"
             )}
             aria-label="Store menu"
         >

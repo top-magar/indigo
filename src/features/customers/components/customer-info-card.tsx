@@ -193,7 +193,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         </div>
                     ) : (
                         <div
-                            className="text-sm text-muted-foreground p-3 rounded-xl border border-dashed cursor-pointer hover:bg-muted/50 transition-colors min-h-[60px]"
+                            className="text-sm text-muted-foreground p-3 rounded-lg border border-dashed cursor-pointer hover:bg-muted/50 transition-colors min-h-[60px]"
                             onClick={() => setIsEditingNote(true)}
                             onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && setIsEditingNote(true)}
                             role="button"

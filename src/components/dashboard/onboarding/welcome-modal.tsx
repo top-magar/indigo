@@ -134,7 +134,7 @@ export function WelcomeModal({
         <div className="relative min-h-[400px]">
           <div
             className={cn(
-              "absolute inset-0 transition-all duration-300 ease-in-out p-[26px]",
+              "absolute inset-0 transition-colors duration-300 ease-in-out p-[26px]",
               currentSlide === 0
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-full pointer-events-none"
@@ -148,7 +148,7 @@ export function WelcomeModal({
 
           <div
             className={cn(
-              "absolute inset-0 transition-all duration-300 ease-in-out p-[26px]",
+              "absolute inset-0 transition-colors duration-300 ease-in-out p-[26px]",
               currentSlide === 1
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-full pointer-events-none"
@@ -165,7 +165,7 @@ export function WelcomeModal({
                 key={i}
                 onClick={() => setCurrentSlide(i)}
                 className={cn(
-                  "h-2 rounded-full transition-all",
+                  "h-2 rounded-full transition-colors",
                   currentSlide === i
                     ? "w-6 bg-primary"
                     : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
@@ -194,12 +194,12 @@ export function WelcomeModal({
               {currentSlide === totalSlides - 1 ? (
                 <>
                   Get Started
-                  <Rocket className="w-4 h-4 ml-2" />
+                  <Rocket className="size-4 ml-2" />
                 </>
               ) : (
                 <>
                   Next
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="size-4 ml-2" />
                 </>
               )}
             </Button>
@@ -220,15 +220,15 @@ function WelcomeSlide({
   return (
     <div className="flex flex-col items-center text-center h-full justify-center">
       <div className="relative mb-6">
-        <div className="h-20 w-20 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Store className="w-10 h-10 text-primary" />
+        <div className="size-20 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Store className="size-10 text-primary" />
         </div>
         <div className="absolute -top-2 -right-2">
-          <Sparkles className="w-6 h-6 text-primary animate-pulse" />
+          <Sparkles className="size-6 text-primary animate-pulse" />
         </div>
         <div className="absolute -bottom-1 -left-2">
           <Sparkles
-            className="w-4 h-4 text-success animate-pulse"
+            className="size-4 text-success animate-pulse"
             style={{ animationDelay: "0.5s" }}
           />
         </div>
@@ -291,19 +291,19 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-lg border bg-card transition-all hover:shadow-sm",
+        "p-4 rounded-lg border bg-card transition-colors hover:shadow-sm",
         "animate-in fade-in slide-in-from-bottom-2"
       )}
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div
-        className="h-9 w-9 rounded-lg flex items-center justify-center mb-3"
+        className="size-9 rounded-lg flex items-center justify-center mb-3"
         style={{
           backgroundColor: `oklch(from var(--${feature.color}) l c h / 0.1)`,
         }}
       >
         <feature.icon
-          className="w-5 h-5"
+          className="size-5"
           style={{ color: `var(--${feature.color})` }}
         />
       </div>
@@ -330,8 +330,8 @@ export function QuickWelcomeModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-80 max-h-[518px] p-[26px]">
         <DialogHeader className="text-center">
-          <div className="mx-auto mb-[26px] h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Store className="w-6 h-6 text-primary" />
+          <div className="mx-auto mb-[26px] size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Store className="size-6 text-primary" />
           </div>
           <DialogTitle>{storeName}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>
@@ -339,7 +339,7 @@ export function QuickWelcomeModal({
         <DialogFooter className="sm:justify-center">
           <Button onClick={() => onOpenChange(false)}>
             Let&apos;s go
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <ArrowRight className="size-4 ml-2" />
           </Button>
         </DialogFooter>
       </DialogContent>

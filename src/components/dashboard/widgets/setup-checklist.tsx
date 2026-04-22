@@ -46,8 +46,8 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
             <Card className="border-success/30 bg-success/5">
                 <CardContent className="py-4">
                     <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                            <Sparkles className="w-4 h-4 text-success" />
+                        <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
+                            <Sparkles className="size-4 text-success" />
                         </div>
                         <div className="flex-1">
                             <h3 className="text-sm font-semibold tracking-[-0.28px]">You&apos;re all set!</h3>
@@ -71,8 +71,8 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <Rocket className="w-4 h-4 text-primary" />
+                        <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Rocket className="size-4 text-primary" />
                         </div>
                         <div>
                             <CardTitle className="text-sm font-semibold tracking-[-0.28px]">Setup guide</CardTitle>
@@ -88,7 +88,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                             className="text-muted-foreground"
                             onClick={onDismiss}
                         >
-                            <X className="w-4 h-4" />
+                            <X className="size-4" />
                         </Button>
                     )}
                 </div>
@@ -123,13 +123,13 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                 >
                                     {/* Step number or checkmark */}
                                     <div className={cn(
-                                        "h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 transition-colors",
+                                        "size-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 transition-colors",
                                         step.completed 
                                             ? "bg-success/10 text-success" 
                                             : "bg-muted text-muted-foreground"
                                     )}>
                                         {step.completed ? (
-                                            <CheckCircle className="w-4 h-4" />
+                                            <CheckCircle className="size-4" />
                                         ) : (
                                             index + 1
                                         )}
@@ -147,7 +147,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                     {!step.completed && (
                                         <ChevronRight 
                                             className={cn(
-                                                "w-4 h-4 text-muted-foreground transition-transform",
+                                                "size-4 text-muted-foreground transition-transform",
                                                 expandedStep === step.id && "rotate-90"
                                             )} 
                                         />
@@ -164,7 +164,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                         <Button asChild>
                                             <Link href={step.href}>
                                                 {step.ctaText}
-                                                <ChevronRight className="w-4 h-4 ml-1.5" />
+                                                <ChevronRight className="size-4 ml-1.5" />
                                             </Link>
                                         </Button>
                                     </div>

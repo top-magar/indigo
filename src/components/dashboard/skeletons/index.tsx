@@ -34,7 +34,7 @@ export function StatCardSkeleton({
               </div>
             )}
           </div>
-          {showIcon && <Skeleton className="h-10 w-10 rounded-lg" />}
+          {showIcon && <Skeleton className="size-10 rounded-lg" />}
         </div>
       </CardContent>
     </Card>
@@ -80,8 +80,8 @@ export function TableRowSkeleton({
 
   return (
     <div className={cn("flex items-center gap-4 p-4 border-b last:border-0", className)}>
-      {showCheckbox && <Skeleton className="h-4 w-4 rounded shrink-0" />}
-      {showImage && <Skeleton className="h-10 w-10 rounded-lg shrink-0" />}
+      {showCheckbox && <Skeleton className="size-4 rounded shrink-0" />}
+      {showImage && <Skeleton className="size-10 rounded-lg shrink-0" />}
       {Array.from({ length: effectiveColumns }).map((_, i) => (
         <Skeleton
           key={i}
@@ -134,7 +134,7 @@ export function DataTableSkeleton({
             </div>
           )}
           <div className="flex items-center gap-2 ml-auto">
-            <Skeleton className="h-9 w-9" />
+            <Skeleton className="size-9" />
             <Skeleton className="h-9 w-24" />
           </div>
         </div>
@@ -143,7 +143,7 @@ export function DataTableSkeleton({
       <Card>
         <div className="border-b bg-muted/30 p-4">
           <div className="flex items-center gap-4">
-            {showCheckbox && <Skeleton className="h-4 w-4 rounded shrink-0" />}
+            {showCheckbox && <Skeleton className="size-4 rounded shrink-0" />}
             {showImage && <div className="w-10 shrink-0" />}
             {Array.from({ length: effectiveColumns }).map((_, i) => (
               <Skeleton
@@ -170,10 +170,10 @@ export function DataTableSkeleton({
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-32" />
           <div className="flex items-center gap-2">
-            <Skeleton className="h-9 w-9" />
-            <Skeleton className="h-9 w-9" />
-            <Skeleton className="h-9 w-9" />
-            <Skeleton className="h-9 w-9" />
+            <Skeleton className="size-9" />
+            <Skeleton className="size-9" />
+            <Skeleton className="size-9" />
+            <Skeleton className="size-9" />
           </div>
         </div>
       )}
@@ -234,7 +234,7 @@ export function TimelineItemSkeleton({
       {!isLast && (
         <div className="absolute left-[15px] top-8 bottom-0 w-px bg-border" />
       )}
-      <Skeleton className="relative z-10 h-8 w-8 rounded-full shrink-0" />
+      <Skeleton className="relative z-10 size-8 rounded-full shrink-0" />
       <div className="flex-1 min-w-0 pt-0.5">
         {isNote ? (
           <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
@@ -251,7 +251,7 @@ export function TimelineItemSkeleton({
         ) : (
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0 space-y-1">
-              <Skeleton className="h-4 w-40" />
+              <Skeleton className="size-40" />
               <Skeleton className="h-3 w-24" />
             </div>
             <Skeleton className="h-3 w-16 shrink-0" />
@@ -292,7 +292,7 @@ export function OrderDetailSkeleton({
         </div>
         <div className="flex items-center gap-2">
           <Skeleton className="h-9 w-24" />
-          <Skeleton className="h-9 w-9" />
+          <Skeleton className="size-9" />
         </div>
       </div>
 
@@ -305,7 +305,7 @@ export function OrderDetailSkeleton({
             <CardContent className="space-y-4">
               {Array.from({ length: lineItems }).map((_, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <Skeleton className="h-16 w-16 rounded-md shrink-0" />
+                  <Skeleton className="size-16 rounded-md shrink-0" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
@@ -364,10 +364,10 @@ export function OrderDetailSkeleton({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="size-10 rounded-full" />
                   <div className="space-y-1">
                     <Skeleton className="h-4 w-28" />
-                    <Skeleton className="h-3 w-36" />
+                    <Skeleton className="size-36" />
                   </div>
                 </div>
                 <div className="space-y-2 pt-2 border-t">
@@ -549,7 +549,7 @@ export function ChartSkeleton({
           <div className="flex items-center justify-center gap-4 mt-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="flex items-center gap-2">
-                <Skeleton className="h-3 w-3 rounded-full" />
+                <Skeleton className="size-3 rounded-full" />
                 <Skeleton className="h-3 w-16" />
               </div>
             ))}
@@ -587,7 +587,7 @@ export function FilterBarSkeleton({ className }: { className?: string }) {
       <Skeleton className="h-9 w-32" />
       <Skeleton className="h-9 w-32" />
       <div className="ml-auto flex items-center gap-2">
-        <Skeleton className="h-9 w-9" />
+        <Skeleton className="size-9" />
         <Skeleton className="h-9 w-24" />
       </div>
     </div>
@@ -600,14 +600,14 @@ export function SidebarSkeleton({ className }: { className?: string }) {
       <Skeleton className="h-8 w-32 mb-6" />
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="flex items-center gap-3">
-          <Skeleton className="h-5 w-5" />
+          <Skeleton className="size-5" />
           <Skeleton className="h-4 w-24" />
         </div>
       ))}
       <div className="h-px bg-border my-4" />
       {Array.from({ length: 3 }).map((_, i) => (
         <div key={i} className="flex items-center gap-3">
-          <Skeleton className="h-5 w-5" />
+          <Skeleton className="size-5" />
           <Skeleton className="h-4 w-20" />
         </div>
       ))}

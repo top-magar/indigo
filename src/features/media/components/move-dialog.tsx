@@ -43,7 +43,7 @@ export const MoveDialog = memo(function MoveDialog({
           <button
             onClick={() => onTargetChange(null)}
             className={cn(
-              "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all",
+              "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 transition-colors",
               targetFolderId === null
                 ? "bg-primary text-primary-foreground"
                 : "hover:bg-muted"
@@ -58,7 +58,7 @@ export const MoveDialog = memo(function MoveDialog({
               key={folder.id}
               onClick={() => onTargetChange(folder.id)}
               className={cn(
-                "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all",
+                "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 transition-colors",
                 targetFolderId === folder.id
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-muted"

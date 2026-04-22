@@ -78,7 +78,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <ShoppingCart className="size-4 text-primary" />
                                 </div>
                                 <div>
@@ -91,7 +91,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                     <DollarSign className="size-4 text-success" />
                                 </div>
                                 <div>
@@ -104,7 +104,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center">
                                     <TrendingUp className="size-4 text-info" />
                                 </div>
                                 <div>
@@ -117,7 +117,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                     <Calendar className="size-4 text-warning" />
                                 </div>
                                 <div>

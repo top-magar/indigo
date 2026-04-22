@@ -21,7 +21,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
             <CardContent className="space-y-4">
                 {/* Last Login */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                    <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
                         <Clock className="size-4 text-muted-foreground" />
                     </div>
                     <div>
@@ -39,7 +39,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
 
                 {/* Last Order */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                    <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
                         <ShoppingCart className="size-4 text-muted-foreground" />
                     </div>
                     <div>
@@ -57,7 +57,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
 
                 {/* First Order */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                    <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
                         <Calendar className="size-4 text-muted-foreground" />
                     </div>
                     <div>

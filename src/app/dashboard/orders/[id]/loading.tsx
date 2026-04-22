@@ -27,7 +27,7 @@ export default function OrderDetailLoading() {
                         <CardContent className="space-y-4">
                             {[1, 2, 3].map((i) => (
                                 <div key={i} className="flex items-center gap-4 py-3 border-b last:border-0">
-                                    <Skeleton className="h-16 w-16 rounded-lg" />
+                                    <Skeleton className="size-16 rounded-lg" />
                                     <div className="flex-1 space-y-2">
                                         <Skeleton className="size-48" />
                                         <Skeleton className="h-3 w-24" />
@@ -46,7 +46,7 @@ export default function OrderDetailLoading() {
                         <CardContent className="space-y-4">
                             {[1, 2, 3].map((i) => (
                                 <div key={i} className="flex gap-4">
-                                    <Skeleton className="h-8 w-8 rounded-full" />
+                                    <Skeleton className="size-8 rounded-full" />
                                     <div className="flex-1 space-y-1">
                                         <Skeleton className="h-4 w-32" />
                                         <Skeleton className="h-3 w-48" />

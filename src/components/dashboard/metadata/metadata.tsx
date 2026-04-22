@@ -88,7 +88,7 @@ export function MetadataCard({
         <AccordionTrigger className="px-4 hover:no-underline">
           <div className="flex items-center gap-2">
             {isPrivate && (
-              <Lock className="w-4 h-4 text-muted-foreground" />
+              <Lock className="size-4 text-muted-foreground" />
             )}
             <span className="font-medium">{title || defaultTitle}</span>
             {data.length > 0 && (
@@ -141,10 +141,10 @@ export function MetadataCard({
                       type="button"
                       variant="ghost"
                       size="icon-sm" aria-label="Delete"
-                      className="h-9 w-9"
+                      className="size-9"
                       onClick={() => handleRemove(index)}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="size-4" />
                     </Button>
                   )}
                 </div>
@@ -160,7 +160,7 @@ export function MetadataCard({
               className="mt-4"
               onClick={handleAdd}
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="size-4" />
               Add Entry
             </Button>
           )}
@@ -255,7 +255,7 @@ function MetadataLoadingCard({ isPrivate = false }: { isPrivate?: boolean }) {
     <div className="border rounded-lg p-4">
       <div className="flex items-center gap-2 mb-4">
         {isPrivate && (
-          <div className="w-4 h-4 bg-muted rounded animate-pulse" />
+          <div className="size-4 bg-muted rounded animate-pulse" />
         )}
         <div className="h-5 w-32 bg-muted rounded animate-pulse" />
       </div>
@@ -264,7 +264,7 @@ function MetadataLoadingCard({ isPrivate = false }: { isPrivate?: boolean }) {
           <div key={i} className="grid grid-cols-[1fr_1fr_40px] gap-2">
             <div className="h-9 bg-muted rounded animate-pulse" />
             <div className="h-9 bg-muted rounded animate-pulse" />
-            <div className="h-9 w-9 bg-muted rounded animate-pulse" />
+            <div className="size-9 bg-muted rounded animate-pulse" />
           </div>
         ))}
       </div>

@@ -6,9 +6,9 @@ export default function StockHistoryLoading() {
         <div className="space-y-4">
             {/* Header */}
             <div className="flex items-start gap-4">
-                <Skeleton className="h-10 w-10" />
+                <Skeleton className="size-10" />
                 <div className="flex items-center gap-4 flex-1">
-                    <Skeleton className="h-16 w-16 rounded-lg" />
+                    <Skeleton className="size-16 rounded-lg" />
                     <div className="space-y-2">
                         <Skeleton className="h-8 w-48" />
                         <Skeleton className="h-4 w-32" />
@@ -37,7 +37,7 @@ export default function StockHistoryLoading() {
                     <div className="space-y-4">
                         {Array.from({ length: 8 }).map((_, i) => (
                             <div key={i} className="flex items-start gap-4 p-4 rounded-lg border">
-                                <Skeleton className="h-10 w-10 rounded-full" />
+                                <Skeleton className="size-10 rounded-full" />
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center gap-2">
                                         <Skeleton className="h-6 w-12" />

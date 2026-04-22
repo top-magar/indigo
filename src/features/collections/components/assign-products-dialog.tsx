@@ -153,14 +153,14 @@ export function AssignProductsDialog({
                 </div>
 
                 {/* Products List */}
-                <div className="flex-1 overflow-y-auto min-h-[300px] border rounded-xl">
+                <div className="flex-1 overflow-y-auto min-h-[300px] border rounded-lg">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
-                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                            <Loader className="size-8 animate-spin text-muted-foreground" />
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                            <Package className="h-12 w-12 text-muted-foreground mb-4" />
+                            <Package className="size-12 text-muted-foreground mb-4" />
                             <p className="text-muted-foreground">
                                 {searchQuery ? "No products match your search" : "All products are already in this collection"}
                             </p>
@@ -181,7 +181,7 @@ export function AssignProductsDialog({
                                         onCheckedChange={() => toggleSelect(product.id)}
                                     />
                                     
-                                    <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
+                                    <div className="size-10 rounded-lg bg-muted overflow-hidden shrink-0">
                                         {product.image ? (
                                             <Image
                                                 src={product.image}
@@ -225,12 +225,12 @@ export function AssignProductsDialog({
                     <Button onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
                         {isPending ? (
                             <>
-                                <Loader className="size-4 mr-2 animate-spin" />
+                                <Loader className="size-4 animate-spin" />
                                 Adding...
                             </>
                         ) : (
                             <>
-                                <Plus className="size-4 mr-2" />
+                                <Plus className="size-4" />
                                 Add {selectedIds.size > 0 ? `(${selectedIds.size})` : ""}
                             </>
                         )}

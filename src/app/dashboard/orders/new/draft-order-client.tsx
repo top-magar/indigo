@@ -168,9 +168,9 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                     onClick={() => addProduct(p)}
                                                 >
                                                     {p.images?.[0] ? (
-                                                        <img src={p.images[0]} alt="" className="h-8 w-8 rounded object-cover" />
+                                                        <img src={p.images[0]} alt="" className="size-8 rounded object-cover" />
                                                     ) : (
-                                                        <div className="h-8 w-8 rounded bg-muted" />
+                                                        <div className="size-8 rounded bg-muted" />
                                                     )}
                                                     <div className="flex-1 min-w-0">
                                                         <p className="truncate font-medium">{p.name}</p>
@@ -197,9 +197,9 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                     {lines.map((line) => (
                                         <div key={line.key} className="flex items-center gap-3 rounded-md border p-3">
                                             {line.productImage ? (
-                                                <img src={line.productImage} alt="" className="h-10 w-10 rounded object-cover" />
+                                                <img src={line.productImage} alt="" className="size-10 rounded object-cover" />
                                             ) : (
-                                                <div className="h-9 w-9 rounded-md bg-muted" />
+                                                <div className="size-9 rounded-md bg-muted" />
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm font-medium truncate">{line.productName}</p>

@@ -62,7 +62,7 @@ export function CollectionSeoCard({ collection, onUpdate }: CollectionSeoCardPro
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <Pencil className="size-4 mr-2" />
+                        <Pencil className="size-4" />
                         Edit
                     </Button>
                 ) : (
@@ -82,7 +82,7 @@ export function CollectionSeoCard({ collection, onUpdate }: CollectionSeoCardPro
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Search Preview */}
-                <div className="p-4 bg-muted/50 rounded-xl space-y-1">
+                <div className="p-4 bg-muted/50 rounded-lg space-y-1">
                     <p className="text-sm font-medium text-info truncate">
                         {metaTitle || collection.name}
                     </p>

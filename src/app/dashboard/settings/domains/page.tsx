@@ -151,7 +151,7 @@ export default function DomainsSettingsPage() {
             <div key={i} className="p-4 flex items-center gap-3">
               <Skeleton className="size-9 rounded-full" />
               <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-40" />
+                <Skeleton className="size-40" />
                 <Skeleton className="h-3 w-24" />
               </div>
               <Skeleton className="h-5 w-16 rounded-full" />

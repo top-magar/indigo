@@ -16,7 +16,7 @@ export default function AnalyticsLoading() {
                 <div className="flex gap-2">
                     <Skeleton className="h-10 w-40" />
                     <Skeleton className="h-10 w-24" />
-                    <Skeleton className="h-10 w-10" />
+                    <Skeleton className="size-10" />
                 </div>
             </div>
 
@@ -31,7 +31,7 @@ export default function AnalyticsLoading() {
                                     <Skeleton className="h-7 w-20" />
                                     <Skeleton className="h-5 w-14 rounded-full" />
                                 </div>
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -95,7 +95,7 @@ export default function AnalyticsLoading() {
                         {Array.from({ length: 5 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-4">
                                 <Skeleton className="size-4" />
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="flex-1 space-y-1">
                                     <Skeleton className="h-4 w-32" />
                                     <Skeleton className="h-3 w-24" />
@@ -140,7 +140,7 @@ export default function AnalyticsLoading() {
                     <CardContent className="space-y-4">
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                                 <div className="flex-1 space-y-2">
                                     <div className="flex justify-between">
                                         <Skeleton className="h-4 w-20" />

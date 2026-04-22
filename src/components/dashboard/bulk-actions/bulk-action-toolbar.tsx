@@ -171,9 +171,9 @@ export function BulkActionToolbar({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" disabled={isLoading}>
                 {isLoading && loadingAction && dropdownActions.some(a => a.type === loadingAction) ? (
-                  <Spinner className="w-4 h-4" />
+                  <Spinner className="size-4" />
                 ) : (
-                  <MoreHorizontal className="w-4 h-4" />
+                  <MoreHorizontal className="size-4" />
                 )}
                 <span className="sr-only">More actions</span>
               </Button>
@@ -190,9 +190,9 @@ export function BulkActionToolbar({
                       variant={action.destructive ? "destructive" : "default"}
                     >
                       {isLoading && loadingAction === action.type ? (
-                        <Spinner className="w-4 h-4 mr-2" />
+                        <Spinner className="size-4" />
                       ) : (
-                        <ActionIcon className="w-4 h-4 mr-2" />
+                        <ActionIcon className="size-4" />
                       )}
                       {action.label}
                       {showShortcuts && action.shortcut && (
@@ -268,9 +268,9 @@ function ActionButton({
       disabled={action.disabled || disabled}
     >
       {isLoading ? (
-        <Spinner className="w-4 h-4 mr-1.5" />
+        <Spinner className="size-4 mr-1.5" />
       ) : (
-        <Icon className="w-4 h-4 mr-1.5" />
+        <Icon className="size-4 mr-1.5" />
       )}
       {action.label}
     </Button>

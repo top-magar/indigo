@@ -127,7 +127,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
+              <div className="flex size-8 items-center justify-center rounded-lg border bg-muted">
                 <Brain className="size-4 text-muted-foreground" />
               </div>
               <div>
@@ -159,7 +159,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
+          <div className="flex size-8 items-center justify-center rounded-lg border bg-muted">
             <Brain className="size-4 text-muted-foreground" />
           </div>
           <div>

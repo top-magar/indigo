@@ -41,7 +41,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
       <div className="rounded-md bg-background overflow-hidden">
         <div className="flex items-center justify-between p-4 pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-purple-50">
               <Zap className="size-4 text-purple-400" />
             </div>
             <div>

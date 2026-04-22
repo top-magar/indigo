@@ -144,18 +144,18 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
             <Label>Logo</Label>
             <div className="flex items-center gap-4">
               {logoUrl ? (
-                <div className="relative h-20 w-20 overflow-hidden rounded-lg border bg-muted">
+                <div className="relative size-20 overflow-hidden rounded-lg border bg-muted">
                   <Image src={logoUrl} alt="Store logo" fill className="object-cover" />
                   <button
                     type="button"
                     onClick={() => setLogoUrl("")}
                     className="absolute right-1 top-1 rounded-full bg-background/80 p-1"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="size-3" />
                   </button>
                 </div>
               ) : (
-                <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed bg-muted/50 transition-colors hover:bg-muted">
+                <label className="flex size-20 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed bg-muted/50 transition-colors hover:bg-muted">
                   <input
                     type="file"
                     accept="image/*"
@@ -164,9 +164,9 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
                     disabled={isUploading}
                   />
                   {isUploading ? (
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <div className="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                   ) : (
-                    <Upload className="h-5 w-5 text-muted-foreground" />
+                    <Upload className="size-5 text-muted-foreground" />
                   )}
                 </label>
               )}

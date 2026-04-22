@@ -111,16 +111,16 @@ export function StatCard({
                     </div>
                     <div className="flex items-center gap-2">
                         {icon && (
-                            <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", iconColorClasses[iconColor])}>
+                            <div className={cn("size-9 rounded-lg flex items-center justify-center", iconColorClasses[iconColor])}>
                                 {(() => {
                                     const Icon = icon;
-                                    return <Icon className="w-5 h-5" />;
+                                    return <Icon className="size-5" />;
                                 })()}
                             </div>
                         )}
                         {showOptions && (
                             <Button variant="ghost" onClick={onOptionsClick}>
-                                <MoreHorizontal className="w-4 h-4" />
+                                <MoreHorizontal className="size-4" />
                             </Button>
                         )}
                     </div>

@@ -109,7 +109,7 @@ export function TimelineAddNote({
          
           className="gap-2"
         >
-          <Send className="w-4 h-4" />
+          <Send className="size-4" />
           {buttonLabel}
         </Button>
       </div>
@@ -152,11 +152,11 @@ export function TimelineEvent({
       {/* Icon */}
       <div
         className={cn(
-          "relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background border",
+          "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-background border",
           iconColor
         )}
       >
-        <Icon className="w-4 h-4" />
+        <Icon className="size-4" />
       </div>
 
       {/* Content */}
@@ -242,7 +242,7 @@ export function TimelineNote({
       )}
 
       {/* Avatar */}
-      <Avatar className="relative z-10 h-8 w-8 shrink-0">
+      <Avatar className="relative z-10 size-8 shrink-0">
         {actor?.avatar && <AvatarImage src={actor.avatar} alt={actor.name} />}
         <AvatarFallback className="text-xs">
           {actor?.name?.[0]?.toUpperCase() || "U"}
@@ -270,7 +270,7 @@ export function TimelineNote({
                 <Button
                   variant="ghost"
                   size="icon-sm" aria-label="Edit note"
-                  className="h-6 w-6"
+                  className="size-6"
                   onClick={() => setIsEditMode(true)}
                 >
                   <MessageSquare className="w-3.5 h-3.5" />

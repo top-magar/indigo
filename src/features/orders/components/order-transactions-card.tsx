@@ -81,7 +81,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Summary */}
-                    <div className="grid grid-cols-3 gap-4 p-3 rounded-xl bg-muted/30">
+                    <div className="grid grid-cols-3 gap-4 p-3 rounded-lg bg-muted/30">
                         <div className="text-center">
                             <p className="text-xs text-muted-foreground">Charged</p>
                             <p className="font-semibold text-success">
@@ -105,7 +105,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                     {/* Transactions List */}
                     {order.transactions.length === 0 ? (
                         <div className="text-center py-6 text-muted-foreground">
-                            <CreditCard className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <CreditCard className="size-8 mx-auto mb-2 opacity-50" />
                             <p className="text-sm">No transactions yet</p>
                         </div>
                     ) : (
@@ -142,9 +142,9 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
     const TypeIcon = type.icon;
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-xl border">
+        <div className="flex items-center justify-between p-3 rounded-lg border">
             <div className="flex items-center gap-3">
-                <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
+                <div className={cn("size-8 rounded-full flex items-center justify-center", status.bgColor)}>
                     <TypeIcon className={cn("size-4", type.color)} />
                 </div>
                 <div>

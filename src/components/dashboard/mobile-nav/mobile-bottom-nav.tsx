@@ -112,7 +112,7 @@ export function MobileBottomNav({
                                 key={item.id}
                                 href={item.href}
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-all",
+                                    "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-colors",
                                     "active:scale-95",
                                     active
                                         ? "text-primary"
@@ -124,7 +124,7 @@ export function MobileBottomNav({
                                     <item.icon
                                         strokeWidth={active ? 2 : 1.5}
                                         className={cn(
-                                            "w-6 h-6 transition-all",
+                                            "w-6 h-6 transition-colors",
                                             active && "text-primary"
                                         )}
                                     />
@@ -141,7 +141,7 @@ export function MobileBottomNav({
                                 </div>
                                 <span
                                     className={cn(
-                                        "text-[10px] font-medium transition-all",
+                                        "text-[10px] font-medium transition-colors",
                                         active && "text-primary font-semibold"
                                     )}
                                 >
@@ -159,7 +159,7 @@ export function MobileBottomNav({
                     <button
                         onClick={() => setIsSheetOpen(true)}
                         className={cn(
-                            "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-all",
+                            "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-colors",
                             "active:scale-95",
                             isMoreActive
                                 ? "text-primary"
@@ -172,7 +172,7 @@ export function MobileBottomNav({
                             <Menu
                                 strokeWidth={isMoreActive ? 2 : 1.5}
                                 className={cn(
-                                    "w-6 h-6 transition-all",
+                                    "w-6 h-6 transition-colors",
                                     isMoreActive && "text-primary"
                                 )}
                             />
@@ -190,7 +190,7 @@ export function MobileBottomNav({
                         </div>
                         <span
                             className={cn(
-                                "text-[10px] font-medium transition-all",
+                                "text-[10px] font-medium transition-colors",
                                 isMoreActive && "text-primary font-semibold"
                             )}
                         >

@@ -201,7 +201,7 @@ export function BulkExportDialog({
                 {FORMAT_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     <div className="flex items-center gap-2">
-                      <option.icon className="h-4 w-4" />
+                      <option.icon className="size-4" />
                       <span>{option.label}</span>
                     </div>
                   </SelectItem>
@@ -341,7 +341,7 @@ export function BulkExportDialog({
             Cancel
           </Button>
           <Button onClick={handleExport} disabled={isExporting}>
-            <Download className="h-4 w-4 mr-1.5" />
+            <Download className="size-4 mr-1.5" />
             {isExporting ? "Exporting..." : "Export"}
           </Button>
         </DialogFooter>

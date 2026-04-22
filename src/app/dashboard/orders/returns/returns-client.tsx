@@ -245,7 +245,7 @@ export function ReturnsClient({
         <Button
           variant="outline"
           size="icon" aria-label="Refresh"
-          className="h-9 w-9 ml-auto"
+          className="size-9 ml-auto"
           onClick={() => router.refresh()}
           disabled={isPending}
         >
@@ -308,7 +308,7 @@ export function ReturnsClient({
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold">
+                        <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold">
                           {customerName[0].toUpperCase()}
                         </div>
                         <span className="text-sm truncate max-w-[120px]">{customerName}</span>

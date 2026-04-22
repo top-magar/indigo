@@ -94,7 +94,7 @@ export function LastUpdated({
                             <AlertCircle
                                     className={cn(
                                         "shrink-0",
-                                        isSmall ? "w-3 h-3" : "w-3.5 h-3.5"
+                                        isSmall ? "size-3" : "w-3.5 h-3.5"
                                     )}
                                 />
                                 <span className="text-muted-foreground">
@@ -111,7 +111,7 @@ export function LastUpdated({
                         <Clock
                             className={cn(
                                 "shrink-0",
-                                isSmall ? "w-3 h-3" : "w-3.5 h-3.5"
+                                isSmall ? "size-3" : "w-3.5 h-3.5"
                             )}
                         />
                         <span>Updated {relativeTime}</span>
@@ -127,7 +127,7 @@ export function LastUpdated({
                                 size="icon" aria-label="Refresh"
                                 className={cn(
                                     "shrink-0",
-                                    isSmall ? "h-5 w-5" : "h-6 w-6",
+                                    isSmall ? "size-5" : "size-6",
                                     isStale && "text-warning hover:text-warning"
                                 )}
                                 onClick={handleRefresh}
@@ -135,7 +135,7 @@ export function LastUpdated({
                             >
                                 <RefreshCw
                                     className={cn(
-                                        isSmall ? "w-3 h-3" : "w-3.5 h-3.5",
+                                        isSmall ? "size-3" : "w-3.5 h-3.5",
                                         isRefreshing && "animate-spin"
                                     )}
                                 />

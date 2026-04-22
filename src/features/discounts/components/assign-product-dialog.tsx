@@ -108,7 +108,7 @@ export function AssignProductDialog({
                         />
                     </div>
 
-                    <ScrollArea className="h-[300px] border rounded-xl">
+                    <ScrollArea className="h-[300px] border rounded-lg">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-full">
                                 <Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -128,7 +128,7 @@ export function AssignProductDialog({
                                             checked={selectedIds.includes(product.id)}
                                             onCheckedChange={() => toggleSelect(product.id)}
                                         />
-                                        <div className="h-10 w-10 rounded bg-muted flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                                        <div className="size-10 rounded bg-muted flex items-center justify-center overflow-hidden flex-shrink-0 relative">
                                             {product.image_url ? (
                                                 <Image
                                                     src={product.image_url}

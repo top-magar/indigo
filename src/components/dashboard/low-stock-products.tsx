@@ -24,8 +24,8 @@ interface LowStockProductsProps {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-8 text-center">
-      <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center mb-3">
-        <Package className="w-6 h-6 text-success" />
+      <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center mb-3">
+        <Package className="size-6 text-success" />
       </div>
       <p className="text-sm text-foreground font-medium">All stocked up!</p>
       <p className="text-xs text-muted-foreground mt-1">
@@ -44,7 +44,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
     <Card className="border-warning/30 bg-warning/5">
       <CardHeader className="py-3">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-warning" />
+          <AlertTriangle className="size-4 text-warning" />
           <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-warning">
             Low Stock Alert
           </CardTitle>
@@ -65,7 +65,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
               className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/50 transition-colors group"
             >
               {/* Product Image */}
-              <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0 border">
+              <div className="size-9 rounded-lg bg-muted overflow-hidden shrink-0 border">
                 {product.images && product.images.length > 0 ? (
                   <Image
                     src={product.images[0]}
@@ -76,7 +76,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Package className="w-5 h-5 text-muted-foreground" />
+                    <Package className="size-5 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -101,7 +101,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
               </div>
 
               {/* Arrow Icon */}
-              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-brand/80 transition-colors shrink-0" />
+              <ArrowRight className="size-4 text-muted-foreground group-hover:text-brand/80 transition-colors shrink-0" />
             </Link>
           ))}
         </div>
@@ -115,7 +115,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
           >
             <Link href="/dashboard/products?filter=low-stock">
               View all {products.length} low stock items
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="size-4 ml-2" />
             </Link>
           </Button>
         )}
@@ -129,7 +129,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
           >
             <Link href="/dashboard/products?filter=low-stock">
               Manage Inventory
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="size-4 ml-2" />
             </Link>
           </Button>
         )}

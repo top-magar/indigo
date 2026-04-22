@@ -55,7 +55,7 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
                 </DialogHeader>
 
                 <div className="py-4">
-                    <div className="p-4 rounded-xl bg-muted/50 space-y-2">
+                    <div className="p-4 rounded-lg bg-muted/50 space-y-2">
                         <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Order Total</span>
                             <span className="font-semibold">

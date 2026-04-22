@@ -30,7 +30,7 @@ export default function DashboardLoading() {
                     <Skeleton className="h-3 w-16" />
                   </div>
                 </div>
-                <Skeleton className="h-10 w-10 rounded-lg" />
+                <Skeleton className="size-10 rounded-lg" />
               </div>
             </CardContent>
           </Card>

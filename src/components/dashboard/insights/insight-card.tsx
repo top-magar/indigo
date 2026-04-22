@@ -254,7 +254,7 @@ export function InsightCard({
         ease: [0.25, 0.1, 0.25, 1],
       }}
       className={cn(
-        "group relative rounded-lg border bg-card p-[13px] transition-all",
+        "group relative rounded-lg border bg-card p-[13px] transition-colors",
         "hover:shadow-sm hover:border-border/80",
         insight.priority === "high" && config.borderColor,
         className
@@ -413,7 +413,7 @@ export function InsightCardCompact({
           className={cn(
             "p-1 rounded-md text-muted-foreground",
             "hover:text-muted-foreground hover:bg-muted/50",
-            "opacity-0 group-hover:opacity-100 transition-all"
+            "opacity-0 group-hover:opacity-100 transition-colors"
           )}
           aria-label="Dismiss"
         >

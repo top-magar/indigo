@@ -101,8 +101,8 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                 <div className="p-6 pb-4 border-b">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2.5">
-                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Store className="w-4 h-4 text-primary" />
+                            <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Store className="size-4 text-primary" />
                             </div>
                             <span className="font-semibold text-sm">{storeName}</span>
                         </div>
@@ -156,7 +156,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                         role="radio"
                                         aria-checked={businessType === type.id}
                                         className={cn(
-                                            "flex items-center gap-4 p-4 rounded-lg border text-left transition-all",
+                                            "flex items-center gap-4 p-4 rounded-lg border text-left transition-colors",
                                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                                             businessType === type.id
                                                 ? "border-primary bg-primary/5 shadow-sm"
@@ -164,12 +164,12 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                         )}
                                     >
                                         <div className={cn(
-                                            "h-10 w-10 rounded-lg flex items-center justify-center transition-colors",
+                                            "size-10 rounded-lg flex items-center justify-center transition-colors",
                                             businessType === type.id ? "bg-primary/10" : "bg-muted"
                                         )}>
                                             <type.icon 
                                                 className={cn(
-                                                    "w-5 h-5 transition-colors",
+                                                    "size-5 transition-colors",
                                                     businessType === type.id ? "text-primary" : "text-muted-foreground"
                                                 )} 
                                                 aria-hidden="true"
@@ -180,7 +180,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             <p className="text-xs text-muted-foreground mt-0.5">{type.description}</p>
                                         </div>
                                         {businessType === type.id && (
-                                            <CheckCircle className="w-5 h-5 text-primary shrink-0" aria-hidden="true" />
+                                            <CheckCircle className="size-5 text-primary shrink-0" aria-hidden="true" />
                                         )}
                                     </button>
                                 ))}
@@ -201,8 +201,8 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             <div className="pt-2 space-y-4">
                                 {hasProducts ? (
                                     <div className="flex items-center gap-3 p-4 rounded-lg bg-success/5 border border-success/20">
-                                        <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                            <CheckCircle className="w-5 h-5 text-success" />
+                                        <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                            <CheckCircle className="size-5 text-success" />
                                         </div>
                                         <div>
                                             <p className="font-medium text-success">You already have products!</p>
@@ -238,7 +238,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             }}
                                         >
                                             Add your first product
-                                            <ChevronRight className="w-4 h-4 ml-2" />
+                                            <ChevronRight className="size-4 ml-2" />
                                         </Button>
                                     </>
                                 )}
@@ -259,8 +259,8 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             <div className="pt-2 space-y-4">
                                 {hasPayments ? (
                                     <div className="flex items-center gap-3 p-4 rounded-lg bg-success/5 border border-success/20">
-                                        <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                            <CheckCircle className="w-5 h-5 text-success" />
+                                        <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                            <CheckCircle className="size-5 text-success" />
                                         </div>
                                         <div>
                                             <p className="font-medium text-success">Payments connected!</p>
@@ -274,10 +274,10 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                                 handleComplete();
                                                 router.push("/dashboard/settings/payments");
                                             }}
-                                            className="flex items-center gap-4 p-4 rounded-lg border hover:border-border hover:bg-muted/30 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            className="flex items-center gap-4 p-4 rounded-lg border hover:border-border hover:bg-muted/30 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                         >
                                             <div 
-                                                className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                className="size-10 rounded-lg flex items-center justify-center"
                                                 style={{ backgroundColor: `${BRAND_COLORS.stripe}10` }}
                                             >
                                                 <span style={{ color: BRAND_COLORS.stripe }} className="font-semibold text-sm">S</span>
@@ -286,7 +286,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                                 <p className="text-sm font-medium">Stripe</p>
                                                 <p className="text-xs text-muted-foreground mt-0.5">Cards, Apple Pay, Google Pay</p>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                                            <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
                                         </button>
 
                                         <button
@@ -294,10 +294,10 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                                 handleComplete();
                                                 router.push("/dashboard/settings/payments");
                                             }}
-                                            className="flex items-center gap-4 p-4 rounded-lg border hover:border-border hover:bg-muted/30 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            className="flex items-center gap-4 p-4 rounded-lg border hover:border-border hover:bg-muted/30 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                         >
                                             <div 
-                                                className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                className="size-10 rounded-lg flex items-center justify-center"
                                                 style={{ backgroundColor: `${BRAND_COLORS.esewa}10` }}
                                             >
                                                 <span style={{ color: BRAND_COLORS.esewa }} className="font-semibold text-sm">e</span>
@@ -306,7 +306,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                                 <p className="text-sm font-medium">eSewa</p>
                                                 <p className="text-xs text-muted-foreground mt-0.5">Popular in Nepal</p>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                                            <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
                                         </button>
                                     </div>
                                 )}
@@ -323,7 +323,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                         disabled={currentStep === 1}
                         className="text-muted-foreground"
                     >
-                        <ChevronLeft className="w-4 h-4 mr-1.5" />
+                        <ChevronLeft className="size-4 mr-1.5" />
                         Back
                     </Button>
 
@@ -334,11 +334,11 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             disabled={currentStep === 1 && !businessType}
                         >
                             Continue
-                            <ChevronRight className="w-4 h-4 ml-1.5" />
+                            <ChevronRight className="size-4 ml-1.5" />
                         </Button>
                     ) : (
                         <Button onClick={handleComplete}>
-                            <Sparkles className="w-4 h-4 mr-1.5" />
+                            <Sparkles className="size-4 mr-1.5" />
                             Finish setup
                         </Button>
                     )}

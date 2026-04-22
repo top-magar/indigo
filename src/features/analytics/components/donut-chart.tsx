@@ -75,7 +75,7 @@ export function DonutChart({ data, currency }: DonutChartProps) {
                                 r={radius}
                                 fill="none"
                                 strokeWidth={strokeWidth}
-                                className={cn(segment.color, "transition-all duration-300")}
+                                className={cn(segment.color, "transition-colors duration-300")}
                                 strokeDasharray={`${dashArray} ${circumference}`}
                                 strokeDashoffset={-dashOffset}
                                 strokeLinecap="round"

@@ -239,7 +239,7 @@ function AddressBlock({
     const lines = formatAddress(address);
 
     return (
-        <div className={compact ? "p-3 rounded-xl border" : ""}>
+        <div className={compact ? "p-3 rounded-lg border" : ""}>
             <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1">
                     {label && (
@@ -267,28 +267,28 @@ function AddressBlock({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={onEdit}>
-                            <Pencil className="size-4 mr-2" />
+                            <Pencil className="size-4" />
                             Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("billing")}
                             disabled={isPending}
                         >
-                            <CheckCircle2 className="size-4 mr-2" />
+                            <CheckCircle2 className="size-4" />
                             Set as billing
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("shipping")}
                             disabled={isPending}
                         >
-                            <CheckCircle2 className="size-4 mr-2" />
+                            <CheckCircle2 className="size-4" />
                             Set as shipping
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={onDelete}
                             className="text-destructive focus:text-destructive"
                         >
-                            <Trash2 className="size-4 mr-2" />
+                            <Trash2 className="size-4" />
                             Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>

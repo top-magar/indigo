@@ -103,7 +103,7 @@ export function AddDomainDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
+            <Globe className="size-5" />
             Add Custom Domain
           </DialogTitle>
           <DialogDescription>
@@ -130,14 +130,14 @@ export function AddDomainDialog({
 
               {error && (
                 <Alert variant="destructive">
-                  <Info className="h-4 w-4" />
+                  <Info className="size-4" />
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <Alert>
-                <Info className="h-4 w-4" />
+                <Info className="size-4" />
                 <AlertTitle>DNS Configuration Required</AlertTitle>
                 <AlertDescription>
                   After adding your domain, you&apos;ll need to configure DNS records. We support both CNAME and A record configurations.
@@ -152,7 +152,7 @@ export function AddDomainDialog({
               <Button type="submit" disabled={loading || !domain.trim()}>
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="size-4 animate-spin" />
                     Adding...
                   </>
                 ) : (
@@ -164,7 +164,7 @@ export function AddDomainDialog({
         ) : (
           <div className="space-y-4 py-4">
             <Alert className="border-success/20 bg-success/10">
-              <CheckCircle className="h-4 w-4 text-success" />
+              <CheckCircle className="size-4 text-success" />
               <AlertTitle className="text-success">Domain Added Successfully</AlertTitle>
               <AlertDescription>
                 Your domain has been added. Now configure your DNS records to complete the setup.
@@ -243,7 +243,7 @@ function DnsInstructionsDisplay({ instructions, domain }: DnsInstructionsDisplay
       </div>
 
       <Alert>
-        <Info className="h-4 w-4" />
+        <Info className="size-4" />
         <AlertDescription className="text-xs">
           DNS changes can take up to 48 hours to propagate. After configuring your DNS, click &quot;Verify&quot; on the domain card to check the status.
         </AlertDescription>

@@ -6,16 +6,16 @@ export default function CustomerDetailLoading() {
         <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center gap-4">
-                <Skeleton className="h-10 w-10" />
+                <Skeleton className="size-10" />
                 <div className="flex items-center gap-3 flex-1">
-                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <Skeleton className="size-10 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-7 w-40" />
-                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="size-48" />
                     </div>
                 </div>
                 <Skeleton className="h-10 w-20" />
-                <Skeleton className="h-10 w-10" />
+                <Skeleton className="size-10" />
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
@@ -27,7 +27,7 @@ export default function CustomerDetailLoading() {
                             <Card key={i}>
                                 <CardContent className="p-4">
                                     <div className="flex items-center gap-3">
-                                        <Skeleton className="h-9 w-9 rounded-lg" />
+                                        <Skeleton className="size-9 rounded-lg" />
                                         <div className="space-y-1">
                                             <Skeleton className="h-6 w-12" />
                                             <Skeleton className="h-3 w-16" />
@@ -42,7 +42,7 @@ export default function CustomerDetailLoading() {
                     <Card>
                         <CardHeader>
                             <Skeleton className="h-5 w-32" />
-                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="size-48" />
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {Array.from({ length: 4 }).map((_, i) => (

@@ -93,7 +93,7 @@ export function AttributeValuesCard({
                             {attribute.values.map((value, index) => (
                                 <div
                                     key={value.id}
-                                    className="flex items-center gap-3 p-3 rounded-xl border group hover:bg-muted/50 transition-colors"
+                                    className="flex items-center gap-3 p-3 rounded-lg border group hover:bg-muted/50 transition-colors"
                                 >
                                     <div className="text-muted-foreground cursor-grab">
                                         <GripVertical className="size-4" />
@@ -104,17 +104,17 @@ export function AttributeValuesCard({
                                         <div className="shrink-0">
                                             {value.swatchColor ? (
                                                 <div
-                                                    className="w-8 h-8 rounded-sm border"
+                                                    className="size-8 rounded-sm border"
                                                     style={{ backgroundColor: value.swatchColor }}
                                                 />
                                             ) : value.swatchImage ? (
                                                 <img
                                                     src={value.swatchImage}
                                                     alt={value.name}
-                                                    className="w-8 h-8 rounded-sm object-cover"
+                                                    className="size-8 rounded-sm object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-8 h-8 rounded-sm border bg-muted" />
+                                                <div className="size-8 rounded-sm border bg-muted" />
                                             )}
                                         </div>
                                     )}
@@ -134,7 +134,7 @@ export function AttributeValuesCard({
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8"
+                                            className="size-8"
                                             onClick={() => onEditValue(value)}
                                         >
                                             <Pencil className="size-4" />
@@ -142,7 +142,7 @@ export function AttributeValuesCard({
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="h-8 w-8 text-destructive hover:text-destructive"
+                                            className="size-8 text-destructive hover:text-destructive"
                                             onClick={() => {
                                                 setValueToDelete(value);
                                                 setDeleteDialogOpen(true);

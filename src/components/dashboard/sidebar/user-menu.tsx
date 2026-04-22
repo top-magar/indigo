@@ -50,7 +50,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
     const trigger = (
         <button
             className={cn(
-                "group flex items-center rounded-lg text-left transition-all",
+                "group flex items-center rounded-lg text-left transition-colors",
                 isCollapsed ? "size-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted"
             )}
             aria-label="User menu"
@@ -113,7 +113,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
                                 key={value}
                                 onClick={() => setTheme(value)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center h-6 rounded transition-all text-xs gap-1",
+                                    "flex-1 flex items-center justify-center h-6 rounded transition-colors text-xs gap-1",
                                     theme === value ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                                 role="radio"

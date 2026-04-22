@@ -154,11 +154,11 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
         </Button>
       }
       stats={[
-        { label: "Total Reviews", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="size-4 text-warning" /></div> },
+        { label: "Total Reviews", value: stats.total, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="size-4 text-warning" /></div> },
         { label: "Avg Rating", value: stats.averageRating.toFixed(1), icon: <div className="flex">{[...Array(5)].map((_, i) => (<Star key={i} className={`size-4 ${i < Math.round(stats.averageRating) ? 'fill-warning text-warning' : 'text-border'}`} />))}</div> },
-        { label: "Positive", value: stats.positive, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="size-4 text-success" /></div> },
-        { label: "Negative", value: stats.negative, icon: <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="size-4 text-destructive" /></div> },
-        { label: "Pending", value: pendingCount, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="size-4 text-warning" /></div> },
+        { label: "Positive", value: stats.positive, icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="size-4 text-success" /></div> },
+        { label: "Negative", value: stats.negative, icon: <div className="size-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="size-4 text-destructive" /></div> },
+        { label: "Pending", value: pendingCount, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="size-4 text-warning" /></div> },
       ]}
     >
       {/* Main Content */}

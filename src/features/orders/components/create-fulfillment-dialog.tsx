@@ -125,7 +125,7 @@ export function CreateFulfillmentDialog({
                             {unfulfilledLines.map((line) => (
                                 <div
                                     key={line.id}
-                                    className="flex items-center justify-between p-3 rounded-xl border bg-muted/30"
+                                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
                                 >
                                     <div className="min-w-0 flex-1">
                                         <p className="font-medium truncate">{line.productName}</p>
@@ -137,7 +137,7 @@ export function CreateFulfillmentDialog({
                                         <Button
                                             variant="outline"
                                             size="icon"
-                                            className="h-8 w-8"
+                                            className="size-8"
                                             onClick={() => updateQuantity(line.id, -1)}
                                             disabled={quantities[line.id] === 0}
                                         >
@@ -154,7 +154,7 @@ export function CreateFulfillmentDialog({
                                         <Button
                                             variant="outline"
                                             size="icon"
-                                            className="h-8 w-8"
+                                            className="size-8"
                                             onClick={() => updateQuantity(line.id, 1)}
                                             disabled={quantities[line.id] >= line.quantityToFulfill}
                                         >

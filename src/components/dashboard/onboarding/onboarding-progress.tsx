@@ -96,14 +96,14 @@ export function OnboardingProgress({
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
+                "size-9 rounded-lg flex items-center justify-center transition-colors",
                 isComplete ? "bg-success/10" : "bg-primary/10"
               )}
             >
               {isComplete ? (
-                <PartyPopper className={cn("w-5 h-5", "text-success")} />
+                <PartyPopper className={cn("size-5", "text-success")} />
               ) : (
-                <Sparkles className={cn("w-5 h-5", "text-primary")} />
+                <Sparkles className={cn("size-5", "text-primary")} />
               )}
             </div>
             <div>
@@ -167,14 +167,14 @@ function StepItem({ step }: { step: OnboardingStep }) {
     >
       <div
         className={cn(
-          "h-6 w-6 rounded-full flex items-center justify-center shrink-0",
+          "size-6 rounded-full flex items-center justify-center shrink-0",
           step.completed ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"
         )}
       >
         {step.completed ? (
-          <CheckCircle className="w-4 h-4" />
+          <CheckCircle className="size-4" />
         ) : (
-          <Circle className="w-4 h-4" />
+          <Circle className="size-4" />
         )}
       </div>
       <div className="flex-1 min-w-0">
@@ -284,7 +284,7 @@ export function InlineOnboardingProgress({
       <div className="relative h-2 w-24 bg-muted rounded-full overflow-hidden">
         <div
           className={cn(
-            "absolute inset-y-0 left-0 rounded-full transition-all duration-500",
+            "absolute inset-y-0 left-0 rounded-full transition-colors duration-500",
             isComplete ? "bg-success" : "bg-primary"
           )}
           style={{ width: `${percentage}%` }}

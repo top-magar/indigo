@@ -49,8 +49,8 @@ export function StatCardWidget({ widget }: StatCardWidgetProps) {
           <span className="text-xs text-muted-foreground">vs last month</span>
         </div>
       </div>
-      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-        <Icon className="w-6 h-6 text-primary" />
+      <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+        <Icon className="size-6 text-primary" />
       </div>
     </div>
   );

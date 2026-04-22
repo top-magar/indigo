@@ -34,8 +34,8 @@ export function OrdersByStatus({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+                        <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ShoppingCart className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                     </div>
@@ -62,7 +62,7 @@ export function OrdersByStatus({
                                     <div className="flex items-center gap-2">
                                         {config.icon && (
                                             <config.icon
-                                                className={cn("w-4 h-4", config.color)}
+                                                className={cn("size-4", config.color)}
                                             />
                                         )}
                                         <span className="capitalize">{item.status}</span>
@@ -118,7 +118,7 @@ export function OrdersByStatusSkeleton() {
                         <div key={i} className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <Skeleton className="h-4 w-4" />
+                                    <Skeleton className="size-4" />
                                     <Skeleton className="h-4 w-20" />
                                 </div>
                                 <Skeleton className="h-4 w-12" />

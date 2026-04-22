@@ -110,12 +110,12 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => window.print()}>
-                            <Printer className="size-4 mr-2" />
+                            <Printer className="size-4" />
                             Print Order
                         </DropdownMenuItem>
                         {order.customer.email && (
                             <DropdownMenuItem>
-                                <Mail className="size-4 mr-2" />
+                                <Mail className="size-4" />
                                 Email Customer
                             </DropdownMenuItem>
                         )}
@@ -125,7 +125,7 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={onCancel}
                             >
-                                <X className="size-4 mr-2" />
+                                <X className="size-4" />
                                 Cancel Order
                             </DropdownMenuItem>
                         )}

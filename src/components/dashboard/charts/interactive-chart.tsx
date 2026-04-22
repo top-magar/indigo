@@ -448,7 +448,7 @@ export function InteractiveChart({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon-sm" onClick={zoomIn} aria-label="Zoom in">
-                      <ZoomIn className="w-4 h-4" />
+                      <ZoomIn className="size-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Zoom In</TooltipContent>
@@ -456,7 +456,7 @@ export function InteractiveChart({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon-sm" onClick={zoomOut} aria-label="Zoom out">
-                      <ZoomOut className="w-4 h-4" />
+                      <ZoomOut className="size-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Zoom Out</TooltipContent>
@@ -465,7 +465,7 @@ export function InteractiveChart({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="icon-sm" onClick={resetZoom} aria-label="Reset zoom">
-                        <RefreshCw className="w-4 h-4" />
+                        <RefreshCw className="size-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Reset Zoom</TooltipContent>
@@ -484,9 +484,9 @@ export function InteractiveChart({
                       onClick={() => toggleSeries("value")}
                     >
                       {state.visibleSeries.has("value") ? (
-                        <Eye className="w-4 h-4" />
+                        <Eye className="size-4" />
                       ) : (
-                        <EyeOff className="w-4 h-4" />
+                        <EyeOff className="size-4" />
                       )}
                     </Button>
                   </TooltipTrigger>
@@ -506,7 +506,7 @@ export function InteractiveChart({
                       size="icon-sm" aria-label="View fullscreen"
                       onClick={() => setIsFullscreenOpen(true)}
                     >
-                      <Maximize className="w-4 h-4" />
+                      <Maximize className="size-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Fullscreen</TooltipContent>

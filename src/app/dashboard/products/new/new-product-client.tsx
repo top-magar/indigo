@@ -214,7 +214,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-xs font-medium text-muted-foreground">Option {optIndex + 1}</span>
                                                         {formData.options.length > 1 && (
-                                                            <Button type="button" variant="ghost" onClick={() => removeOption(option.id)} className="h-7 w-7 p-0 text-destructive hover:text-destructive" aria-label={`Remove option ${optIndex + 1}`}>
+                                                            <Button type="button" variant="ghost" onClick={() => removeOption(option.id)} className="size-7 p-0 text-destructive hover:text-destructive" aria-label={`Remove option ${optIndex + 1}`}>
                                                                 <Trash2 className="size-3.5" aria-hidden="true" />
                                                             </Button>
                                                         )}

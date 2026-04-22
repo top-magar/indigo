@@ -127,10 +127,10 @@ export function StickyBulkActionsBar({
       <Button
         variant="ghost"
         size="icon-sm" aria-label="Clear selection"
-        className="h-8 w-8 rounded-full"
+        className="size-8 rounded-full"
         onClick={onClear}
       >
-        <X className="w-4 h-4" />
+        <X className="size-4" />
       </Button>
     </div>
   );

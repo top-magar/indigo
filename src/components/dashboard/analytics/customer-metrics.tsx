@@ -84,8 +84,8 @@ export function CustomerMetrics({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <Users className="w-6 h-6 text-muted-foreground" />
+                        <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <Users className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No customer data yet</p>
                     </div>
@@ -125,9 +125,9 @@ export function CustomerMetrics({
                                     )}
                                 >
                                     {data.comparison.newCustomersChange >= 0 ? (
-                                        <ChevronUp className="w-3 h-3" />
+                                        <ChevronUp className="size-3" />
                                     ) : (
-                                        <ChevronDown className="w-3 h-3" />
+                                        <ChevronDown className="size-3" />
                                     )}
                                     {Math.abs(data.comparison.newCustomersChange).toFixed(1)}%
                                 </Badge>
@@ -163,12 +163,12 @@ export function CustomerMetrics({
                                 >
                                     <div
                                         className={cn(
-                                            "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
+                                            "size-9 rounded-lg flex items-center justify-center shrink-0",
                                             config.bgColor
                                         )}
                                     >
                                         <config.icon
-                                            className={cn("w-5 h-5", config.color)}
+                                            className={cn("size-5", config.color)}
                                         />
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -215,7 +215,7 @@ export function CustomerMetricsSkeleton() {
         <Card>
             <CardHeader>
                 <Skeleton className="h-5 w-36" />
-                <Skeleton className="h-4 w-48" />
+                <Skeleton className="size-48" />
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Key Metrics Grid */}
@@ -233,7 +233,7 @@ export function CustomerMetricsSkeleton() {
                     <Skeleton className="h-4 w-32" />
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
-                            <Skeleton className="h-9 w-9 rounded-lg" />
+                            <Skeleton className="size-9 rounded-lg" />
                             <div className="flex-1">
                                 <Skeleton className="h-4 w-24 mb-2" />
                                 <Skeleton className="h-1.5 w-full" />

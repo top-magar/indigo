@@ -12,7 +12,7 @@ export default function CustomersLoading() {
                 </div>
                 <div className="flex gap-2">
                     <Skeleton className="h-9 w-24" />
-                    <Skeleton className="h-9 w-9" />
+                    <Skeleton className="size-9" />
                 </div>
             </div>
 
@@ -26,7 +26,7 @@ export default function CustomersLoading() {
                                     <Skeleton className="h-3 w-16" />
                                     <Skeleton className="h-7 w-12" />
                                 </div>
-                                <Skeleton className="h-9 w-9 rounded-lg" />
+                                <Skeleton className="size-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -61,7 +61,7 @@ export default function CustomersLoading() {
                             <div key={i} className="flex items-center gap-4 py-3">
                                 <Skeleton className="size-4" />
                                 <div className="flex items-center gap-3 flex-1">
-                                    <Skeleton className="h-9 w-9 rounded-full" />
+                                    <Skeleton className="size-9 rounded-full" />
                                     <div className="space-y-1">
                                         <Skeleton className="h-4 w-32" />
                                         <Skeleton className="h-3 w-40" />

@@ -201,8 +201,8 @@ export function OrdersWidget({
     if (!data || data.statuses.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
-                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
-                    <Package className="w-6 h-6 text-muted-foreground" />
+                <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <Package className="size-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No orders yet</p>
             </div>
@@ -281,12 +281,12 @@ export function OrdersWidget({
                             <div className="flex items-center gap-2">
                                 <div
                                     className={cn(
-                                        "h-6 w-6 rounded-md flex items-center justify-center",
+                                        "size-6 rounded-md flex items-center justify-center",
                                         config?.bgColor || "bg-muted"
                                     )}
                                 >
                                     <IconComponent
-                                        className={cn("w-3 h-3", config?.color || "text-muted-foreground")}
+                                        className={cn("size-3", config?.color || "text-muted-foreground")}
                                     />
                                 </div>
                                 <span className="text-sm capitalize">{item.status}</span>
@@ -327,7 +327,7 @@ function OrdersWidgetSkeleton() {
                 {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="flex items-center justify-between p-2">
                         <div className="flex items-center gap-2">
-                            <Skeleton className="h-6 w-6 rounded-md" />
+                            <Skeleton className="size-6 rounded-md" />
                             <Skeleton className="h-4 w-20" />
                         </div>
                         <Skeleton className="h-4 w-12" />

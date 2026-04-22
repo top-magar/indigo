@@ -39,8 +39,8 @@ export function TopProductsTable({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                        <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ImageIcon className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No product sales yet</p>
                     </div>
@@ -62,7 +62,7 @@ export function TopProductsTable({
                     <Button variant="ghost" asChild>
                         <Link href="/dashboard/products">
                             View All
-                            <ArrowRight className="w-4 h-4 ml-1" />
+                            <ArrowRight className="size-4 ml-1" />
                         </Link>
                     </Button>
                 )}
@@ -77,7 +77,7 @@ export function TopProductsTable({
                             </span>
 
                             {/* Product Image */}
-                            <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
+                            <div className="size-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                 {product.imageUrl ? (
                                     <Image
                                         src={product.imageUrl}
@@ -88,7 +88,7 @@ export function TopProductsTable({
                                     />
                                 ) : (
                                     <div className="h-full w-full flex items-center justify-center">
-                                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                                        <ImageIcon className="size-4 text-muted-foreground" />
                                     </div>
                                 )}
                             </div>
@@ -154,14 +154,14 @@ export function TopProductsTableSkeleton({ limit = 5 }: { limit?: number }) {
         <Card>
             <CardHeader>
                 <Skeleton className="h-5 w-32" />
-                <Skeleton className="h-4 w-48" />
+                <Skeleton className="size-48" />
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     {Array.from({ length: limit }).map((_, i) => (
                         <div key={i} className="flex items-center gap-4">
-                            <Skeleton className="h-4 w-4" />
-                            <Skeleton className="h-9 w-9 rounded-lg" />
+                            <Skeleton className="size-4" />
+                            <Skeleton className="size-9 rounded-lg" />
                             <div className="flex-1">
                                 <Skeleton className="h-4 w-32 mb-1" />
                                 <Skeleton className="h-3 w-24" />

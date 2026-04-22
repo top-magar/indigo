@@ -70,8 +70,8 @@ export function InsightsWidget({ widget }: InsightsWidgetProps) {
         {insights.map((insight) => (
           <div key={insight.id} className="p-3 border rounded-lg hover:border-primary/30 transition-colors">
             <div className="flex items-start gap-3">
-              <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0", insight.iconBg)}>
-                <insight.icon className={cn("h-4 w-4", insight.iconColor)} />
+              <div className={cn("size-8 rounded-lg flex items-center justify-center shrink-0", insight.iconBg)}>
+                <insight.icon className={cn("size-4", insight.iconColor)} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -84,7 +84,7 @@ export function InsightsWidget({ widget }: InsightsWidgetProps) {
                 {insight.action && (
                   <Button variant="link" className="h-auto p-0 mt-2 text-xs">
                     {insight.action.label}
-                    <ArrowRight className="h-3 w-3 ml-1" />
+                    <ArrowRight className="size-3 ml-1" />
                   </Button>
                 )}
               </div>

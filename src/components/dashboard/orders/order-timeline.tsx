@@ -99,13 +99,13 @@ export function OrderTimeline({ events }: OrderTimelineProps) {
                             {/* Icon */}
                             <div
                                 className={cn(
-                                    "relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
+                                    "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full",
                                     config.bgColor,
                                     isFirst && "ring-2 ring-background"
                                 )}
                             >
                                 <config.icon
-                                    className={cn("h-4 w-4", config.color)}
+                                    className={cn("size-4", config.color)}
                                 />
                             </div>
 

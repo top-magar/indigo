@@ -96,7 +96,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-            <CheckCircle className="h-8 w-8 text-success mb-2" />
+            <CheckCircle className="size-8 text-success mb-2" />
             <p className="text-sm font-medium">All synced</p>
             <p className="text-xs text-muted-foreground">
               No pending changes to sync
@@ -114,7 +114,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
             onClick={retryAllFailed}
             className="text-xs"
           >
-            <RefreshCw className="h-3 w-3 mr-1" />
+            <RefreshCw className="size-3 mr-1" />
             Retry failed ({failedCount})
           </Button>
         )}
@@ -128,12 +128,12 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
         >
           {isSyncing ? (
             <>
-              <RotateCw className="h-3 w-3 mr-1 animate-spin" />
+              <RotateCw className="size-3 mr-1 animate-spin" />
               Syncing...
             </>
           ) : (
             <>
-              <RotateCw className="h-3 w-3 mr-1" />
+              <RotateCw className="size-3 mr-1" />
               Sync now
             </>
           )}
@@ -219,11 +219,11 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
       </div>
       {item.status === "failed" && (
         <Button variant="ghost" size="icon-xs" onClick={onRetry} title="Retry">
-          <RefreshCw className="h-3 w-3" />
+          <RefreshCw className="size-3" />
         </Button>
       )}
       <Button variant="ghost" size="icon-xs" onClick={onRemove} title="Remove">
-        <Trash2 className="h-3 w-3" />
+        <Trash2 className="size-3" />
       </Button>
     </div>
   );

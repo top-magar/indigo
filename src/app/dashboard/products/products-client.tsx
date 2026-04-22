@@ -351,10 +351,10 @@ export function ProductsListView({
             title="Products"
             description="Manage your product catalog"
             stats={[
-                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="size-4 text-info" /></div> },
-                { label: "Active", value: stats.active, change: "Published", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
-                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="size-4 text-warning" /></div> },
-                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="size-4 text-success" /></div> },
+                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="size-4 text-info" /></div> },
+                { label: "Active", value: stats.active, change: "Published", icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
+                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="size-4 text-warning" /></div> },
+                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="size-4 text-success" /></div> },
             ]}
         >
 
@@ -609,7 +609,7 @@ export function ProductsListView({
                                         </TableCell>
                                         <TableCell>
                                             {hasImage ? (
-                                                <div className="relative h-10 w-10 overflow-hidden rounded-lg border bg-muted">
+                                                <div className="relative size-10 overflow-hidden rounded-lg border bg-muted">
                                                     <Image
                                                         src={product.images[0].url}
                                                         alt={product.images[0].alt || product.name}
@@ -618,7 +618,7 @@ export function ProductsListView({
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
+                                                <div className="flex size-10 items-center justify-center rounded-lg border bg-muted">
                                                     <ImageIcon className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}

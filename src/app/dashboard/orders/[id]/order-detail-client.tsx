@@ -301,7 +301,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
                     <Button
                       variant="ghost"
                      
-                      className="h-7 w-7 p-0"
+                      className="size-7 p-0"
                       onClick={handleCopyOrderNumber}
                     >
                       <Copy className="size-3.5" />
@@ -489,7 +489,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
+                <Avatar className="size-10">
                   {order.customer.avatarUrl && (
                     <AvatarImage src={order.customer.avatarUrl} alt={order.customer.firstName || "Customer"} />
                   )}

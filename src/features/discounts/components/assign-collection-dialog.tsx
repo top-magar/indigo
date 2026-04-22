@@ -105,7 +105,7 @@ export function AssignCollectionDialog({
                         />
                     </div>
 
-                    <ScrollArea className="h-[300px] border rounded-xl">
+                    <ScrollArea className="h-[300px] border rounded-lg">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-full">
                                 <Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -125,7 +125,7 @@ export function AssignCollectionDialog({
                                             checked={selectedIds.includes(collection.id)}
                                             onCheckedChange={() => toggleSelect(collection.id)}
                                         />
-                                        <div className="h-10 w-10 rounded bg-muted flex items-center justify-center flex-shrink-0">
+                                        <div className="size-10 rounded bg-muted flex items-center justify-center flex-shrink-0">
                                             <Folder
                                                 className="size-4 text-muted-foreground"
                                             />

@@ -333,7 +333,7 @@ export function DataTable<TData>({
           {enableSearch && (
             <div className="relative flex-1 w-full sm:max-w-sm">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
               />
               <Input
                 placeholder={searchPlaceholder}
@@ -387,7 +387,7 @@ export function DataTable<TData>({
                       !dateRange?.from && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <CalendarIcon className="mr-2 size-4" />
                     {dateRange?.from ? (
                       dateRange.to ? (
                         <>
@@ -432,7 +432,7 @@ export function DataTable<TData>({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
-                    <Settings className="w-4 h-4" />
+                    <Settings className="size-4" />
                     <span className="hidden sm:inline">Columns</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -462,7 +462,7 @@ export function DataTable<TData>({
               disabled={isPending}
             >
               <RefreshCw
-                className={cn("w-4 h-4", isPending && "animate-spin")}
+                className={cn("size-4", isPending && "animate-spin")}
               />
             </Button>
 
@@ -528,10 +528,10 @@ export function DataTable<TData>({
                 <Button
                   variant="ghost"
                   size="icon-sm" aria-label="Remove filter"
-                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  className="size-4 p-0 hover:bg-transparent"
                   onClick={() => removeFilterChip(chip.key)}
                 >
-                  <X className="h-3 w-3" />
+                  <X className="size-3" />
                 </Button>
               </Badge>
             ))}
@@ -582,9 +582,9 @@ export function DataTable<TData>({
                       {col.header}
                       {col.enableSorting && enableSorting && urlState.sort === col.id && (
                         urlState.sortDir === "asc" ? (
-                          <ArrowUp className="w-3 h-3" />
+                          <ArrowUp className="size-3" />
                         ) : (
-                          <ArrowDown className="w-3 h-3" />
+                          <ArrowDown className="size-3" />
                         )
                       )}
                     </div>

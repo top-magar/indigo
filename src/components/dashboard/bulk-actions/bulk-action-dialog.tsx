@@ -263,7 +263,7 @@ function ConfirmationContent({
       {/* Warning for destructive actions */}
       {destructive && warningMessage && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertTitle>Warning</AlertTitle>
           <AlertDescription>{warningMessage}</AlertDescription>
         </Alert>
@@ -304,7 +304,7 @@ function ProcessingContent({ progress }: { progress: BulkActionProgress }) {
   return (
     <div className="space-y-[26px] py-[26px]">
       <div className="flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full size-8 border-b-2 border-primary" />
       </div>
       <div className="space-y-2">
         <Progress value={progress.percentage} className="h-2" />
@@ -329,13 +329,13 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
         {isFullSuccess ? (
           <div className="rounded-full bg-success/10 p-3">
             <CheckCircle2
-              className="h-8 w-8 text-success"
+              className="size-8 text-success"
             />
           </div>
         ) : (
           <div className="rounded-full bg-destructive/10 p-3">
             <X
-              className="h-8 w-8 text-destructive"
+              className="size-8 text-destructive"
             />
           </div>
         )}
@@ -359,14 +359,14 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       <div className="flex items-center justify-center gap-4 text-sm">
         <div className="flex items-center gap-1.5">
           <CheckCircle2
-            className="h-4 w-4 text-success"
+            className="size-4 text-success"
           />
           <span>{result.successCount} succeeded</span>
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5">
             <X
-              className="h-4 w-4 text-destructive"
+              className="size-4 text-destructive"
             />
             <span>{result.failedCount} failed</span>
           </div>
@@ -376,7 +376,7 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       {/* Error details */}
       {result.errors && result.errors.length > 0 && (
         <Alert>
-          <Info className="h-4 w-4" />
+          <Info className="size-4" />
           <AlertTitle>Error Details</AlertTitle>
           <AlertDescription>
             <ScrollArea className="h-[100px] mt-2">

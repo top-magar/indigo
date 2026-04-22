@@ -103,7 +103,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                         onClick={() => document.getElementById("media-upload")?.click()}
                         disabled={isUploading}
                     >
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         {isUploading ? "Uploading..." : "Add Media"}
                     </Button>
                 </div>
@@ -111,10 +111,10 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
             <CardContent>
                 {product.media.length === 0 ? (
                     <div
-                        className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                        className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
                         onClick={() => document.getElementById("media-upload")?.click()}
                     >
-                        <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                        <ImageIcon className="size-12 mx-auto text-muted-foreground mb-4" />
                         <p className="text-sm text-muted-foreground">
                             Click to upload or drag and drop images
                         </p>
@@ -129,7 +129,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                 onDragOver={(e) => handleDragOver(e, index)}
                                 onDragEnd={handleDragEnd}
                                 className={cn(
-                                    "relative aspect-square rounded-xl overflow-hidden border group cursor-move",
+                                    "relative aspect-square rounded-lg overflow-hidden border group cursor-move",
                                     draggedIndex === index && "opacity-50"
                                 )}
                             >

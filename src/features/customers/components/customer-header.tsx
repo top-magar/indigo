@@ -93,7 +93,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                 </Button>
                 <div className="flex-1">
                     <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12">
+                        <Avatar className="size-12">
                             <AvatarFallback className="bg-primary/10 text-primary text-lg font-medium">
                                 {getInitials(customer.firstName, customer.lastName, customer.email)}
                             </AvatarFallback>
@@ -127,12 +127,12 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                 <div className="flex items-center gap-2">
                     <Button variant="outline" asChild>
                         <a href={`mailto:${customer.email}`}>
-                            <Mail className="size-4 mr-2" />
+                            <Mail className="size-4" />
                             Email
                         </a>
                     </Button>
                     <Button variant="outline" onClick={onEdit}>
-                        <Pencil className="size-4 mr-2" />
+                        <Pencil className="size-4" />
                         Edit
                     </Button>
                     <DropdownMenu>
@@ -144,9 +144,9 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                         <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={handleToggleStatus} disabled={isPending}>
                                 {customer.isActive ? (
-                                    <XCircle className="size-4 mr-2" />
+                                    <XCircle className="size-4" />
                                 ) : (
-                                    <CheckCircle2 className="size-4 mr-2" />
+                                    <CheckCircle2 className="size-4" />
                                 )}
                                 {customer.isActive ? "Deactivate" : "Activate"}
                             </DropdownMenuItem>
@@ -155,7 +155,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={() => setDeleteDialogOpen(true)}
                             >
-                                <Trash2 className="size-4 mr-2" />
+                                <Trash2 className="size-4" />
                                 Delete Customer
                             </DropdownMenuItem>
                         </DropdownMenuContent>

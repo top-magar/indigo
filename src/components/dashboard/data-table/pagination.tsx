@@ -77,7 +77,7 @@ export function DataTablePagination({
                         onClick={() => onPageChange(0)}
                         disabled={pageIndex === 0}
                     >
-                        <ChevronsLeft className="h-4 w-4" />
+                        <ChevronsLeft className="size-4" />
                         <span className="sr-only">First page</span>
                     </Button>
                     <Button
@@ -86,7 +86,7 @@ export function DataTablePagination({
                         onClick={() => onPageChange(pageIndex - 1)}
                         disabled={pageIndex === 0}
                     >
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowLeft className="size-4" />
                         <span className="sr-only">Previous page</span>
                     </Button>
                     <Button
@@ -95,7 +95,7 @@ export function DataTablePagination({
                         onClick={() => onPageChange(pageIndex + 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >
-                        <ArrowRight className="h-4 w-4" />
+                        <ArrowRight className="size-4" />
                         <span className="sr-only">Next page</span>
                     </Button>
                     <Button
@@ -104,7 +104,7 @@ export function DataTablePagination({
                         onClick={() => onPageChange(pageCount - 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >
-                        <ChevronsRight className="h-4 w-4" />
+                        <ChevronsRight className="size-4" />
                         <span className="sr-only">Last page</span>
                     </Button>
                 </div>

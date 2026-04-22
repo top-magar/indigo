@@ -69,7 +69,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
               <div className="flex flex-col items-center gap-2">
                 <div
                   className={cn(
-                    "size-10 rounded-lg flex items-center justify-center transition-all",
+                    "size-10 rounded-lg flex items-center justify-center transition-colors",
                     isCompleted && "bg-success text-white",
                     isActive && "bg-primary text-primary-foreground ring-4 ring-primary/20",
                     !isCompleted && !isActive && "bg-muted text-muted-foreground"

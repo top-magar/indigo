@@ -202,7 +202,7 @@ export function AnalyticsDashboardView({
                 {isFreeTier && (
                     <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
                         <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                 <TrendingUp className="size-4 text-warning" />
                             </div>
                             <div>
@@ -246,7 +246,7 @@ export function AnalyticsDashboardView({
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
                                     <DollarSign className="size-4 text-success" />
                                 </div>
                             </div>
@@ -279,7 +279,7 @@ export function AnalyticsDashboardView({
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <ShoppingCart className="size-4 text-primary" />
                                 </div>
                             </div>
@@ -312,7 +312,7 @@ export function AnalyticsDashboardView({
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
                                     <TrendingUp className="size-4 text-ds-teal-700" />
                                 </div>
                             </div>
@@ -345,7 +345,7 @@ export function AnalyticsDashboardView({
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center">
                                     <Users className="size-4 text-info" />
                                 </div>
                             </div>
@@ -420,7 +420,7 @@ export function AnalyticsDashboardView({
                                             <span className="text-sm font-medium text-muted-foreground w-4">
                                                 {index + 1}
                                             </span>
-                                            <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
+                                            <div className="size-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {product.image ? (
                                                     <Image
                                                         src={product.image}
@@ -508,7 +508,7 @@ export function AnalyticsDashboardView({
                                         const SegmentIcon = config.icon;
                                         return (
                                             <div key={segment.segment} className="flex items-center gap-4 p-3 rounded-lg border">
-                                                <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", config.color + "/10")}>
+                                                <div className={cn("size-9 rounded-lg flex items-center justify-center", config.color + "/10")}>
                                                     <SegmentIcon className={cn("size-4", config.color.replace("bg-", "text-"))} />
                                                 </div>
                                                 <div className="flex-1">

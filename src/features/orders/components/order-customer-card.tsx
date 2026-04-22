@@ -49,7 +49,7 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
             <CardContent className="space-y-4">
                 {/* Customer Info */}
                 <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                         <span className="text-sm font-semibold text-primary">
                             {customerName[0].toUpperCase()}
                         </span>

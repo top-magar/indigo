@@ -141,7 +141,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                         Products ({products.length})
                     </CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Add Products
                     </Button>
                 </CardHeader>
@@ -167,9 +167,9 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                 disabled={isPending}
                             >
                                 {isPending ? (
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 animate-spin" />
                                 ) : (
-                                    <Trash className="size-4 mr-2" />
+                                    <Trash className="size-4" />
                                 )}
                                 Remove ({selectedIds.size})
                             </Button>
@@ -179,7 +179,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                     {/* Products List */}
                     {filteredProducts.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <Package className="h-12 w-12 text-muted-foreground mb-4" />
+                            <Package className="size-12 text-muted-foreground mb-4" />
                             <p className="text-muted-foreground">
                                 {searchQuery ? "No products match your search" : "No products in this collection"}
                             </p>
@@ -194,7 +194,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                             )}
                         </div>
                     ) : (
-                        <div className="border rounded-xl divide-y">
+                        <div className="border rounded-lg divide-y">
                             {/* Header */}
                             <div className="flex items-center gap-3 px-4 py-2 bg-muted/30">
                                 <Checkbox
@@ -223,7 +223,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                     
                                     {/* Product Info */}
                                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
+                                        <div className="size-10 rounded-lg bg-muted overflow-hidden shrink-0">
                                             {product.productImage ? (
                                                 <Image
                                                     src={product.productImage}
@@ -281,7 +281,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 className="text-destructive focus:text-destructive"
                                                 onClick={() => handleRemoveProduct(product.productId)}
                                             >
-                                                <Trash className="size-4 mr-2" />
+                                                <Trash className="size-4" />
                                                 Remove from Collection
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
