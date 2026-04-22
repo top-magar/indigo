@@ -26,7 +26,8 @@ import type {
 
 async function getAuthenticatedTenant() {
     const { user, supabase } = await getAuthenticatedClient();
-    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName, currency: "NPR" };
+    const { data: tenant } = await supabase.from("tenants").select("currency").eq("id", user.tenantId).single();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName, currency: tenant?.currency || "USD" };
 }
 
 // ============================================================================

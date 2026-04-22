@@ -95,6 +95,7 @@ export async function deleteCustomerGroup(groupId: string) {
     .from("customer_groups")
     .delete()
     .eq("id", validId)
+    .eq("tenant_id", tenantId)
 
   if (error) {
     return { error: error.message }

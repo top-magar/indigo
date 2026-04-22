@@ -11,7 +11,7 @@ export default function CustomerDetailLoading() {
                     <Skeleton className="h-10 w-10 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-7 w-40" />
-                        <Skeleton className="size-48" />
+                        <Skeleton className="h-4 w-48" />
                     </div>
                 </div>
                 <Skeleton className="h-10 w-20" />
@@ -42,7 +42,7 @@ export default function CustomerDetailLoading() {
                     <Card>
                         <CardHeader>
                             <Skeleton className="h-5 w-32" />
-                            <Skeleton className="size-48" />
+                            <Skeleton className="h-4 w-48" />
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {Array.from({ length: 4 }).map((_, i) => (

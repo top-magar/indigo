@@ -37,33 +37,25 @@ export async function getCustomersWithStats(
 
     const offset = (page - 1) * pageSize;
 
-    // Use repository methods based on filters
-    let customersData;
-    
+    // Single Supabase query with all filters + sort + exact count
+    let query = supabase
+        .from("customers")
+        .select("*", { count: "exact" })
+        .eq("tenant_id", tenantId)
+        .order(filters.sortBy || "created_at", { ascending: filters.sortOrder === "asc" })
+        .range(offset, offset + pageSize - 1);
+
     if (filters.search) {
-        // Use search method when search filter is provided
-        customersData = await customerRepository.search(tenantId, filters.search, {
-            limit: pageSize,
-            offset,
-        });
-    } else {
-        // Use findAll for regular listing
-        customersData = await customerRepository.findAll(tenantId, {
-            limit: pageSize,
-            offset,
-        });
+        query = query.or(`email.ilike.%${filters.search}%,first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`);
     }
+    if (filters.marketing === "subscribed") query = query.eq("accepts_marketing", true);
+    else if (filters.marketing === "unsubscribed") query = query.eq("accepts_marketing", false);
+    if (filters.status && filters.status !== "all") query = query.eq("status", filters.status);
 
-    // Apply marketing filter (repository doesn't have this built-in, so filter in memory)
-    if (filters.marketing === "subscribed") {
-        customersData = customersData.filter(c => c.acceptsMarketing === true);
-    } else if (filters.marketing === "unsubscribed") {
-        customersData = customersData.filter(c => c.acceptsMarketing === false);
-    }
+    const { data: customersData, count } = await query;
 
-    // Get order stats for each customer using Supabase (repository doesn't have bulk order stats)
-    const customerIds = customersData.map(c => c.id);
-    
+    // Get order stats for fetched customers
+    const customerIds = (customersData || []).map((c: Record<string, unknown>) => c.id as string);
     const { data: orderStats } = await supabase
         .from("orders")
         .select("customer_id, total, created_at")
@@ -71,43 +63,37 @@ export async function getCustomersWithStats(
         .in("customer_id", customerIds.length > 0 ? customerIds : ["none"])
         .eq("payment_status", "paid");
 
-    // Calculate stats per customer
-    const customerStatsMap = new Map<string, { count: number; total: number; lastDate: string | null }>();
-    
-    orderStats?.forEach(order => {
-        if (!order.customer_id) return;
-        const existing = customerStatsMap.get(order.customer_id) || { count: 0, total: 0, lastDate: null };
-        existing.count += 1;
-        existing.total += order.total;
-        if (!existing.lastDate || order.created_at > existing.lastDate) {
-            existing.lastDate = order.created_at;
-        }
-        customerStatsMap.set(order.customer_id, existing);
+    const statsMap = new Map<string, { count: number; total: number; lastDate: string | null }>();
+    orderStats?.forEach(o => {
+        if (!o.customer_id) return;
+        const e = statsMap.get(o.customer_id) || { count: 0, total: 0, lastDate: null };
+        e.count += 1;
+        e.total += parseFloat(o.total || "0");
+        if (!e.lastDate || o.created_at > e.lastDate) e.lastDate = o.created_at;
+        statsMap.set(o.customer_id, e);
     });
 
-    // Merge customer data with stats
-    const customersWithStats: CustomerWithStats[] = customersData.map(customer => {
-        const stats = customerStatsMap.get(customer.id) || { count: 0, total: 0, lastDate: null };
+    const customersWithStats: CustomerWithStats[] = (customersData || []).map((c: Record<string, unknown>) => {
+        const s = statsMap.get(c.id as string) || { count: 0, total: 0, lastDate: null };
         return {
-            id: customer.id,
-            email: customer.email,
-            first_name: customer.firstName,
-            last_name: customer.lastName,
-            phone: customer.phone,
-            accepts_marketing: customer.acceptsMarketing ?? false,
-            metadata: (customer.metadata as Record<string, unknown>) || {},
-            created_at: customer.createdAt.toISOString(),
-            updated_at: customer.updatedAt.toISOString(),
-            orders_count: stats.count,
-            total_spent: stats.total,
-            last_order_date: stats.lastDate,
-            avg_order_value: stats.count > 0 ? stats.total / stats.count : 0,
+            id: c.id as string,
+            email: c.email as string,
+            first_name: c.first_name as string | null,
+            last_name: c.last_name as string | null,
+            phone: c.phone as string | null,
+            accepts_marketing: (c.accepts_marketing as boolean) ?? false,
+            metadata: (c.metadata as Record<string, unknown>) || {},
+            created_at: c.created_at as string,
+            updated_at: c.updated_at as string,
+            orders_count: s.count,
+            total_spent: s.total,
+            last_order_date: s.lastDate,
+            avg_order_value: s.count > 0 ? s.total / s.count : 0,
         };
     });
 
-    // Get overall stats using repository
+    // Get overall stats
     const repoStats = await customerRepository.getStats(tenantId);
-    
     const stats: CustomerStats = {
         totalCustomers: repoStats.total,
         newThisMonth: repoStats.newThisMonth,
@@ -117,11 +103,7 @@ export async function getCustomersWithStats(
         avgCustomerValue: repoStats.avgValue,
     };
 
-    return {
-        customers: customersWithStats,
-        stats,
-        totalCount: repoStats.total,
-    };
+    return { customers: customersWithStats, stats, totalCount: count ?? 0 };
 }
 
 
