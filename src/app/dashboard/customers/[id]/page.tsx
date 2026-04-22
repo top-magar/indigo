@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { redirect, notFound } from "next/navigation";
-import { createClient } from "@/infrastructure/supabase/server";
+import { notFound } from "next/navigation";
+import { auth, getCustomerCurrency } from "../_lib/queries";
 import { CustomerDetailClient } from "./customer-detail-client";
 import { getCustomerDetail } from "../customer-actions";
 
@@ -9,38 +9,13 @@ export const metadata: Metadata = {
     description: "View and manage customer information.",
 };
 
-interface CustomerDetailPageProps {
-    params: Promise<{ id: string }>;
-}
-
-export default async function CustomerDetailPage({ params }: CustomerDetailPageProps) {
+export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const supabase = await createClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
-
-    // Get tenant currency
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenants(currency)")
-        .eq("id", user.id)
-        .single();
-
-    const currency = (userData?.tenants as { currency?: string } | null)?.currency || "USD";
+    const { supabase, userId } = await auth();
+    const currency = await getCustomerCurrency(supabase, userId);
 
     const result = await getCustomerDetail(id);
+    if (!result.success || !result.data) notFound();
 
-    if (!result.success || !result.data) {
-        notFound();
-    }
-
-    const customer = result.data;
-
-    return (
-        <CustomerDetailClient
-            customer={customer}
-            currency={currency}
-        />
-    );
+    return <CustomerDetailClient customer={result.data} currency={currency} />;
 }
