@@ -161,7 +161,7 @@ const createDiscountSchema = z.object({
     code: z.string().min(3).max(20),
     name: z.string().max(100).optional(),
     description: z.string().max(500).optional(),
-    type: z.enum(["percentage", "fixed_amount", "free_shipping"]),
+    type: z.enum(["percentage", "fixed", "free_shipping"]),
     value: z.number().min(0),
     scope: z.string().optional(),
     min_order_amount: z.number().min(0).optional(),
@@ -377,12 +377,12 @@ export async function getMarketingData(): Promise<MarketingData> {
         .order("used_at", { ascending: false })
         .limit(5);
 
-    const recentActivity: MarketingActivity[] = (recentUsages || []).map((usage: any) => ({
-        id: usage.id,
+    const recentActivity: MarketingActivity[] = (recentUsages || []).map((usage: Record<string, unknown>) => ({
+        id: usage.id as string,
         type: "discount_used" as const,
-        title: `${usage.discounts?.code || "Discount"} used`,
-        description: `Saved ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(usage.discount_amount)}`,
-        timestamp: usage.used_at,
+        title: `${(usage.discounts as Record<string, string> | null)?.code || "Discount"} used`,
+        description: `Saved ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(usage.discount_amount as number || 0)}`,
+        timestamp: usage.used_at as string,
     }));
 
     // Add recent campaign sends to activity
@@ -455,11 +455,11 @@ export async function getCampaign(id: string) {
     const m = await import("./campaign-actions")
     return m.getCampaign(id)
 }
-export async function createCampaign(input: any) {
+export async function createCampaign(input: CreateCampaignInput) {
     const m = await import("./campaign-actions")
     return m.createCampaign(input)
 }
-export async function updateCampaign(id: string, input: any) {
+export async function updateCampaign(id: string, input: Partial<CreateCampaignInput> & { status?: CampaignStatus }) {
     const m = await import("./campaign-actions")
     return m.updateCampaign(id, input)
 }

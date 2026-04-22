@@ -294,9 +294,10 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
 
     const handleBulkDelete = async () => {
         startTransition(async () => {
-            const promises = Array.from(selectedIds).map(id => deleteCampaign(id));
-            await Promise.all(promises);
-            toast.success(`${selectedIds.size} campaigns deleted`);
+            const results = await Promise.allSettled(Array.from(selectedIds).map(id => deleteCampaign(id)));
+            const failed = results.filter(r => r.status === "rejected").length;
+            if (failed > 0) toast.error(`${failed} campaigns failed to delete`);
+            else toast.success(`${selectedIds.size} campaigns deleted`);
             setSelectedIds(new Set());
             setBulkDeleteDialogOpen(false);
             router.refresh();

@@ -572,7 +572,7 @@ You can use HTML for formatting. For example:
                                     <div className="rounded-lg border bg-card p-4 max-h-[200px] overflow-y-auto">
                                         <div 
                                             className="prose prose-sm max-w-none"
-                                            dangerouslySetInnerHTML={{ __html: formData.content }}
+                                            dangerouslySetInnerHTML={{ __html: formData.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '').replace(/on\w+='[^']*'/gi, '') }}
                                         />
                                     </div>
                                 </div>
