@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs"
 import { StatCard } from "../_components"
 import { formatDistanceToNow } from "date-fns"
 import {
@@ -197,7 +196,6 @@ export function ReturnsClient({
 
   return (
     <div className="space-y-3">
-      <SectionTabs tabs={ORDER_TABS} />
       {/* Header */}
       <div className="flex items-center gap-4">
         <div>
