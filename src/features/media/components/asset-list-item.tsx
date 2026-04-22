@@ -117,7 +117,7 @@ export const AssetListItem = memo(function AssetListItem({
       onDragStart={onDragStart}
       onKeyDown={handleKeyDown}
       className={cn(
-        "group flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 cursor-pointer",
+        "group flex items-center gap-3 p-2.5 transition-colors cursor-pointer",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none",
         isSelected
           ? "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
@@ -170,13 +170,13 @@ export const AssetListItem = memo(function AssetListItem({
 
       {/* Thumbnail */}
       <div
-        className="h-12 w-12 rounded-xl bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden relative"
+        className="h-12 w-12 rounded-lg bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden relative"
         onClick={onClick}
       >
         {fileType === "image" ? (
           <>
             {thumbnailState === "loading" && (
-              <ShimmerEffect className="absolute inset-0 rounded-xl" />
+              <ShimmerEffect className="absolute inset-0 rounded-lg" />
             )}
             {thumbnailState === "loaded" && (
               <img
