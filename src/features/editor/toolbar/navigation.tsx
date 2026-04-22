@@ -68,13 +68,13 @@ export default function EditorNavigation({
 
         {/* ── Left ── */}
         <div className="flex items-center gap-2 flex-1 min-w-0 h-full">
-          <Tip label="Back to dashboard">
-            <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
-              <MIcon name="arrow_back" size={15} />
-            </Link>
-          </Tip>
-
-          <div className="h-full w-px bg-sidebar-border" />
+          <div className="flex w-12 shrink-0 items-center justify-center h-full border-r border-sidebar-border">
+            <Tip label="Back to dashboard">
+              <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
+                <MIcon name="arrow_back" size={15} />
+              </Link>
+            </Tip>
+          </div>
 
           <input
             className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-[12px] font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
