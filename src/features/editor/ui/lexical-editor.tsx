@@ -6,7 +6,6 @@ import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
 import { LinkNode } from '@lexical/link';
@@ -15,36 +14,56 @@ import { FORMAT_TEXT_COMMAND, $getSelection, $isRangeSelection, $getRoot, $creat
 import { MIcon } from '../ui/m-icon';
 import { cn } from '@/lib/utils';
 
-// ─── Toolbar ────────────────────────────────────────────
+// ─── Toolbar with active states ─────────────────────────
+
+const FMT_BUTTONS = [
+  { cmd: 'bold' as const, icon: 'format_bold', key: 'isBold' as const },
+  { cmd: 'italic' as const, icon: 'format_italic', key: 'isItalic' as const },
+  { cmd: 'underline' as const, icon: 'format_underlined', key: 'isUnderline' as const },
+  { cmd: 'strikethrough' as const, icon: 'format_strikethrough', key: 'isStrikethrough' as const },
+];
+
+type FmtState = { isBold: boolean; isItalic: boolean; isUnderline: boolean; isStrikethrough: boolean };
 
 function Toolbar({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElement | null> }) {
   const [editor] = useLexicalComposerContext();
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const [fmt, setFmt] = useState<FmtState>({ isBold: false, isItalic: false, isUnderline: false, isStrikethrough: false });
 
+  // Track position
   useEffect(() => {
     const el = anchorRef.current;
     if (!el) return;
     let raf: number;
     const update = () => {
       const r = el.getBoundingClientRect();
-      setPos({ top: r.top - 36, left: r.left });
+      setPos({ top: r.top - 34, left: r.left });
       raf = requestAnimationFrame(update);
     };
     update();
     return () => cancelAnimationFrame(raf);
   }, [anchorRef]);
 
-  const fmt = (type: 'bold' | 'italic' | 'underline' | 'strikethrough') => {
-    editor.dispatchCommand(FORMAT_TEXT_COMMAND, type);
-  };
+  // Track active formats
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const sel = $getSelection();
+        if ($isRangeSelection(sel)) {
+          setFmt({ isBold: sel.hasFormat('bold'), isItalic: sel.hasFormat('italic'), isUnderline: sel.hasFormat('underline'), isStrikethrough: sel.hasFormat('strikethrough') });
+        }
+      });
+    });
+  }, [editor]);
 
   if (!pos) return null;
 
   return createPortal(
     <div className="flex items-center gap-0 p-0.5 bg-background border border-sidebar-border rounded-lg shadow-md fixed z-[9999]" style={{ top: pos.top, left: pos.left }} onClick={(e) => e.stopPropagation()}>
-      {([['bold', 'format_bold'], ['italic', 'format_italic'], ['underline', 'format_underlined'], ['strikethrough', 'format_strikethrough']] as const).map(([cmd, icon]) => (
-        <button key={cmd} onMouseDown={(e) => { e.preventDefault(); fmt(cmd); }}
-          className="flex size-6 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
+      {FMT_BUTTONS.map(({ cmd, icon, key }) => (
+        <button key={cmd} onMouseDown={(e) => { e.preventDefault(); editor.dispatchCommand(FORMAT_TEXT_COMMAND, cmd); }}
+          className={cn("flex size-6 items-center justify-center rounded-md transition-colors",
+            fmt[key] ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground hover:bg-muted")}>
           <MIcon name={icon} size={13} />
         </button>
       ))}
@@ -53,17 +72,15 @@ function Toolbar({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElement | nu
   );
 }
 
-// ─── Init plugin: load HTML content into editor ─────────
+// ─── Init plugin ────────────────────────────────────────
 
 function InitPlugin({ html }: { html: string }) {
   const [editor] = useLexicalComposerContext();
-
   useEffect(() => {
     if (!html) return;
     editor.update(() => {
       const root = $getRoot();
       root.clear();
-      // If it looks like HTML, parse it; otherwise treat as plain text
       if (html.includes('<')) {
         const dom = new DOMParser().parseFromString(html, 'text/html');
         const nodes = $generateNodesFromDOM(editor, dom);
@@ -75,7 +92,42 @@ function InitPlugin({ html }: { html: string }) {
       }
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
 
+// ─── Debounced save plugin ──────────────────────────────
+
+function SavePlugin({ onSave }: { onSave: (html: string, text: string) => void }) {
+  const [editor] = useLexicalComposerContext();
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        editorState.read(() => {
+          const html = $generateHtmlFromNodes(editor);
+          const text = $getRoot().getTextContent();
+          onSave(html, text);
+        });
+      }, 300);
+    });
+  }, [editor, onSave]);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+  return null;
+}
+
+// ─── Blur plugin ────────────────────────────────────────
+
+function BlurPlugin({ onBlur }: { onBlur: () => void }) {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    const root = editor.getRootElement();
+    if (!root) return;
+    root.addEventListener('blur', onBlur);
+    return () => root.removeEventListener('blur', onBlur);
+  }, [editor, onBlur]);
   return null;
 }
 
@@ -89,13 +141,6 @@ interface Props {
 
 export default function LexicalTextEditor({ initialHtml, onSave, onBlur }: Props) {
   const anchorRef = useRef<HTMLDivElement>(null);
-  const onChange = useCallback((state: EditorState, editor: LexicalEditor) => {
-    state.read(() => {
-      const html = $generateHtmlFromNodes(editor);
-      const text = $getRoot().getTextContent();
-      onSave(html, text);
-    });
-  }, [onSave]);
 
   const config = {
     namespace: 'IndigoEditor',
@@ -117,23 +162,10 @@ export default function LexicalTextEditor({ initialHtml, onSave, onBlur }: Props
         />
         <HistoryPlugin />
         <LinkPlugin />
-        <OnChangePlugin onChange={onChange} />
+        <SavePlugin onSave={onSave} />
         <InitPlugin html={initialHtml} />
         <BlurPlugin onBlur={onBlur} />
       </div>
     </LexicalComposer>
   );
-}
-
-function BlurPlugin({ onBlur }: { onBlur: () => void }) {
-  const [editor] = useLexicalComposerContext();
-  useEffect(() => {
-    return editor.registerRootListener((root) => {
-      if (root) {
-        root.addEventListener('blur', onBlur);
-        return () => root.removeEventListener('blur', onBlur);
-      }
-    });
-  }, [editor, onBlur]);
-  return null;
 }
