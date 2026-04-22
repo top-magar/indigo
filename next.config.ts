@@ -67,6 +67,14 @@ const nextConfig: NextConfig = {
   // ==========================================================================
   // Route slug.domain.com → /store/slug (no middleware needed)
   // Falls back to path-based /store/[slug] for local dev
+  async redirects() {
+    return [
+      { source: '/dashboard/marketing', destination: '/dashboard/marketing/discounts', permanent: true },
+      { source: '/dashboard/settings/currency', destination: '/dashboard/settings', permanent: true },
+      { source: '/dashboard/storefront/theme', destination: '/dashboard/settings/storefront', permanent: true },
+    ];
+  },
+
   async rewrites() {
     const domain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost:3000"
     return [
