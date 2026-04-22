@@ -492,4 +492,92 @@ export async function getTopProducts(limit: number = 5): Promise<TopProductsResp
     };
 }
 
-// Layout preferences removed — repository deleted
+// ============================================================================
+// Save Layout Preferences
+// ============================================================================
+
+import { dashboardLayoutsRepository } from "@/features/dashboard/repositories/dashboard-layouts";
+
+interface LayoutPreferences {
+    widgets: Array<{
+        id: string;
+        type: string;
+        position: { x: number; y: number; width: number; height: number };
+        visible: boolean;
+    }>;
+    columns: number;
+    rowHeight: number;
+    gap: number;
+}
+
+const layoutSchema = z.object({
+    widgets: z.array(z.object({
+        id: z.string().min(1),
+        type: z.string().min(1),
+        position: z.object({ x: z.number(), y: z.number(), width: z.number().min(1), height: z.number().min(1) }),
+        visible: z.boolean(),
+    })),
+    columns: z.number().int().min(1).max(12),
+    rowHeight: z.number().int().min(1),
+    gap: z.number().int().min(0),
+});
+
+export async function saveLayoutPreferences(preferences: LayoutPreferences): Promise<{ success: boolean; error?: string }> {
+    const parsed = layoutSchema.parse(preferences);
+    const { tenantId, user } = await getAuthenticatedUser();
+    
+    try {
+        // Transform preferences to match repository input format
+        const layoutPreferences = {
+            widgets: parsed.widgets.map(widget => ({
+                id: widget.id,
+                type: widget.type,
+                position: widget.position,
+                visible: widget.visible,
+            })),
+            columns: parsed.columns,
+            rowHeight: parsed.rowHeight,
+            gap: parsed.gap,
+        };
+
+        // Persist to database using the repository
+        await dashboardLayoutsRepository.saveLayoutPreferences(
+            tenantId,
+            user.id,
+            layoutPreferences
+        );
+
+        return { success: true };
+    } catch (err) {
+        log.error("Error saving layout preferences:", err);
+        return { success: false, error: "Failed to save preferences" };
+    }
+}
+
+export async function getLayoutPreferences(): Promise<LayoutPreferences | null> {
+    const { tenantId, user } = await getAuthenticatedUser();
+    
+    try {
+        // Get the default layout from the repository
+        const layout = await dashboardLayoutsRepository.getDefaultForUser(tenantId, user.id);
+
+        if (!layout || !layout.widgets) {
+            return null;
+        }
+
+        return {
+            widgets: (layout.widgets as Array<{
+                id: string;
+                type: string;
+                position: { x: number; y: number; width: number; height: number };
+                visible: boolean;
+            }>),
+            columns: layout.columns,
+            rowHeight: layout.rowHeight,
+            gap: layout.gap,
+        };
+    } catch (e) {
+        log.error("[getDashboardLayout]", e);
+        return null;
+    }
+}
