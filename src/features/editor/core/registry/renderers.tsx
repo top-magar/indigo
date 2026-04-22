@@ -7,9 +7,6 @@ import { useEditorStore } from '../editor-store';
 import ElementWrapper from '../../canvas/element-wrapper';
 import { MIcon } from '../../ui/m-icon';
 import { registry } from './types';
-import dynamic from 'next/dynamic';
-
-const LexicalTextEditor = dynamic(() => import('../../ui/lexical-editor'), { ssr: false });
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -18,42 +15,27 @@ function W({ element, children }: { element: El; children: ReactNode }) {
 }
 function c(el: El) { return el.content as Record<string, string>; }
 
-// ─── Text (Lexical on double-click) ─────────────────────────
+// ─── Text (contentEditable) ─────────────────────────────────
 
 function TextRenderer({ element }: { element: El }) {
   const selected = useEditorStore(s => s.selected);
   const isSel = selected?.id === element.id;
   const content = c(element);
-  const [editing, setEditing] = useState(false);
-
-  // Exit editing when deselected
-  useEffect(() => { if (!isSel) setEditing(false); }, [isSel]);
-
-  const handleSave = useCallback((html: string, plainText: string) => {
-    useDocumentStore.getState().updateElement({
-      ...element,
-      content: { ...content, innerText: plainText, richText: html },
-    });
-  }, [element, content]);
-
   return (
     <W element={element}>
-      {editing && isSel ? (
-        <LexicalTextEditor
-          initialHtml={content.richText || content.innerText || ''}
-          onSave={handleSave}
-          onBlur={() => setEditing(false)}
-        />
-      ) : (
-        <div
-          onDoubleClick={(e) => { if (isSel) { e.stopPropagation(); setEditing(true); } }}
-          className="outline-none min-h-[1em]"
-          style={{ whiteSpace: 'pre-wrap', cursor: isSel ? 'text' : 'default' }}
-          dangerouslySetInnerHTML={content.richText ? { __html: content.richText } : undefined}
-        >
-          {!content.richText ? content.innerText : undefined}
-        </div>
-      )}
+      <p
+        contentEditable={isSel}
+        suppressContentEditableWarning
+        spellCheck={false}
+        className="outline-none min-h-[1em]"
+        style={{ whiteSpace: 'pre-wrap', cursor: isSel ? 'text' : 'default' }}
+        onBlur={(e) => {
+          const text = e.currentTarget.innerText;
+          if (text !== content.innerText) {
+            useDocumentStore.getState().updateElement({ ...element, content: { ...content, innerText: text } });
+          }
+        }}
+      >{content.innerText}</p>
     </W>
   );
 }
