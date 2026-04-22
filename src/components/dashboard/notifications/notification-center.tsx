@@ -171,10 +171,9 @@ export function NotificationCenter({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
           className={cn(
-            "relative",
+            "relative h-8 w-8 p-0",
             hasNewNotification && "animate-pulse",
             className
           )}
@@ -182,7 +181,7 @@ export function NotificationCenter({
         >
           <Bell 
             className={cn(
-              "size-4 transition-transform",
+              "size-3.5 transition-transform",
               hasNewNotification && "animate-bounce"
             )} 
           />

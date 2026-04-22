@@ -202,18 +202,20 @@ export function DashboardHeader({ storeSlug }: { storeSlug?: string }) {
         <div className="hidden md:block"><Crumbs pathname={pathname} /></div>
         <div className="flex-1" />
 
-        <div className="flex items-center gap-2">
-          {/* Search trigger */}
+        <div className="flex items-center gap-1.5">
+          {/* Search */}
           <Button variant="outline" className="h-8 w-56 lg:w-64 justify-start gap-2 text-muted-foreground text-xs" onClick={() => setCmdOpen(true)}>
             <Search className="size-3.5 shrink-0" />
             <span className="flex-1 text-left">Search…</span>
             <Kbd>⌘K</Kbd>
           </Button>
 
+          {/* Notifications */}
           <NotificationCenter tenantId="" userId="" enableRealtime={false} />
 
+          {/* View Store */}
           {storeSlug && (
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs hidden sm:flex" asChild>
+            <Button variant="outline" className="h-8 gap-1.5 text-xs hidden sm:flex" asChild>
               <Link href={`/store/${storeSlug}`} target="_blank">
                 <Store className="size-3.5" />
                 View Store
