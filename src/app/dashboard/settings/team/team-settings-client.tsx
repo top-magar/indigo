@@ -2,426 +2,202 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {
-    Users,
-    Plus,
-    MoreHorizontal,
-    Trash2,
-    User,
-    Mail,
-    Loader2,
-    Crown,
-    ShieldCheck,
-} from "lucide-react";
+import { Plus, MoreHorizontal, Trash2, User, Mail, Loader2, ShieldCheck, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { inviteTeamMember, updateTeamMemberRole, removeTeamMember } from "./actions";
 
 interface TeamMember {
-    id: string;
-    email: string;
-    full_name: string | null;
-    avatar_url: string | null;
-    role: "owner" | "admin" | "staff";
-    created_at: string;
+  id: string; email: string; full_name: string | null;
+  avatar_url: string | null; role: "owner" | "admin" | "staff"; created_at: string;
 }
 
-interface TeamSettingsClientProps {
-    currentUserId: string;
-    currentUserRole: "owner" | "admin" | "staff";
-    teamMembers: TeamMember[];
-}
-
-const roleConfig = {
-    owner: { 
-        label: "Owner", 
-        color: "bg-primary/10 text-primary border-primary/20",
-        icon: Crown,
-        description: "Full access to all settings and billing"
-    },
-    admin: { 
-        label: "Admin", 
-        color: "bg-success/10 text-success border-success/20",
-        icon: ShieldCheck,
-        description: "Can manage products, orders, and team"
-    },
-    staff: { 
-        label: "Staff", 
-        color: "bg-muted text-muted-foreground",
-        icon: User,
-        description: "Can view and manage orders"
-    },
+const ROLE_STYLE: Record<string, string> = {
+  owner: "bg-foreground/10 text-foreground",
+  admin: "bg-success/10 text-success",
+  staff: "bg-muted text-muted-foreground",
 };
 
-export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers }: TeamSettingsClientProps) {
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
-    const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-    const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null);
+const ROLE_ICON: Record<string, typeof Crown> = { owner: Crown, admin: ShieldCheck, staff: User };
 
-    // Invite form state
-    const [inviteEmail, setInviteEmail] = useState("");
-    const [inviteRole, setInviteRole] = useState<"admin" | "staff">("staff");
+function getInitials(name: string | null, email: string) {
+  if (name) return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  return email.slice(0, 2).toUpperCase();
+}
 
-    const isOwner = currentUserRole === "owner";
-    const canManageTeam = isOwner;
+export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers }: {
+  currentUserId: string; currentUserRole: "owner" | "admin" | "staff"; teamMembers: TeamMember[];
+}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(null);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<"admin" | "staff">("staff");
 
-    const handleInvite = async () => {
-        if (!inviteEmail.trim()) {
-            toast.error("Please enter an email address");
-            return;
-        }
+  const isOwner = currentUserRole === "owner";
 
-        const formData = new FormData();
-        formData.set("email", inviteEmail);
-        formData.set("role", inviteRole);
+  const handleInvite = () => startTransition(async () => {
+    if (!inviteEmail.trim()) { toast.error("Enter an email"); return; }
+    const fd = new FormData();
+    fd.set("email", inviteEmail);
+    fd.set("role", inviteRole);
+    const result = await inviteTeamMember(fd);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Invitation sent");
+    setInviteOpen(false);
+    setInviteEmail("");
+    setInviteRole("staff");
+  });
 
-        startTransition(async () => {
-            const result = await inviteTeamMember(formData);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Invitation sent successfully");
-                setInviteDialogOpen(false);
-                setInviteEmail("");
-                setInviteRole("staff");
-            }
-        });
-    };
+  const handleRoleChange = (memberId: string, newRole: "admin" | "staff") => startTransition(async () => {
+    const result = await updateTeamMemberRole(memberId, newRole);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Role updated");
+    router.refresh();
+  });
 
-    const handleRoleChange = async (memberId: string, newRole: "admin" | "staff") => {
-        startTransition(async () => {
-            const result = await updateTeamMemberRole(memberId, newRole);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Role updated");
-                router.refresh();
-            }
-        });
-    };
+  const handleRemove = () => startTransition(async () => {
+    if (!memberToRemove) return;
+    const result = await removeTeamMember(memberToRemove.id);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Member removed");
+    setRemoveOpen(false);
+    setMemberToRemove(null);
+    router.refresh();
+  });
 
-    const handleRemove = async () => {
-        if (!memberToRemove) return;
-
-        startTransition(async () => {
-            const result = await removeTeamMember(memberToRemove.id);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Team member removed");
-                setRemoveDialogOpen(false);
-                setMemberToRemove(null);
-                router.refresh();
-            }
-        });
-    };
-
-    const getInitials = (name: string | null, email: string) => {
-        if (name) {
-            return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-        }
-        return email.slice(0, 2).toUpperCase();
-    };
-
-    return (
-        <div className="max-w-3xl space-y-3">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Team</h1>
-                    <p className="text-muted-foreground">
-                        Manage your team members and their permissions
-                    </p>
-                </div>
-                {canManageTeam && (
-                    <Button onClick={() => setInviteDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
-                        Invite Member
-                    </Button>
-                )}
-            </div>
-
-            {/* Team Stats */}
-            <div className="grid grid-cols-3 gap-4">
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Users className="size-4 text-primary" />
-                            </div>
-                            <div>
-                                <p className="stat-value">{teamMembers.length}</p>
-                                <p className="text-xs text-muted-foreground">Total Members</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <ShieldCheck className="size-4 text-success" />
-                            </div>
-                            <div>
-                                <p className="stat-value">{teamMembers.filter(m => m.role === "admin").length}</p>
-                                <p className="text-xs text-muted-foreground">Admins</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <User className="size-4 text-warning" />
-                            </div>
-                            <div>
-                                <p className="stat-value">{teamMembers.filter(m => m.role === "staff").length}</p>
-                                <p className="text-xs text-muted-foreground">Staff</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Team Members List */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Team Members</CardTitle>
-                    <CardDescription>People who have access to your store</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="divide-y">
-                        {teamMembers.map((member) => {
-                            const role = roleConfig[member.role];
-                            const isCurrentUser = member.id === currentUserId;
-                            const canModify = canManageTeam && !isCurrentUser && member.role !== "owner";
-
-                            return (
-                                <div key={member.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
-                                    <div className="flex items-center gap-4">
-                                        <Avatar className="h-12 w-12">
-                                            <AvatarImage src={member.avatar_url || undefined} alt={member.full_name || "Team member"} />
-                                            <AvatarFallback className="bg-muted">
-                                                {getInitials(member.full_name, member.email)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <p className="font-medium">
-                                                    {member.full_name || member.email.split("@")[0]}
-                                                </p>
-                                                {isCurrentUser && (
-                                                    <Badge variant="outline" className="text-xs">You</Badge>
-                                                )}
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">{member.email}</p>
-                                            <p className="text-xs text-muted-foreground mt-0.5">
-                                                Joined {format(new Date(member.created_at), "MMM d, yyyy")}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Badge className={cn("border gap-1", role.color)}>
-                                            <role.icon className="size-3.5" />
-                                            {role.label}
-                                        </Badge>
-                                        {canModify && (
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                        <MoreHorizontal className="size-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, "admin")}>
-                                                        <ShieldCheck className="size-4 mr-2" />
-                                                        Make Admin
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, "staff")}>
-                                                        <User className="size-4 mr-2" />
-                                                        Make Staff
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        className="text-destructive focus:text-destructive"
-                                                        onClick={() => {
-                                                            setMemberToRemove(member);
-                                                            setRemoveDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 className="size-4 mr-2" />
-                                                        Remove
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Role Permissions */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Role Permissions</CardTitle>
-                    <CardDescription>What each role can do in your store</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 md:grid-cols-3">
-                        {Object.entries(roleConfig).map(([key, config]) => (
-                            <div key={key} className="p-4 rounded-lg border">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <config.icon className="size-4" />
-                                    <span className="font-medium">{config.label}</span>
-                                </div>
-                                <p className="text-sm text-muted-foreground">{config.description}</p>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Invite Dialog */}
-            <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Invite Team Member</DialogTitle>
-                        <DialogDescription>
-                            Send an invitation to join your store team
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="inviteEmail">Email Address</Label>
-                            <Input
-                                id="inviteEmail"
-                                type="email"
-                                value={inviteEmail}
-                                onChange={(e) => setInviteEmail(e.target.value)}
-                                placeholder="colleague@example.com"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Role</Label>
-                            <Select value={inviteRole} onValueChange={(v: "admin" | "staff") => setInviteRole(v)}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="admin">
-                                        <div className="flex items-center gap-2">
-                                            <ShieldCheck className="size-4" />
-                                            Admin
-                                        </div>
-                                    </SelectItem>
-                                    <SelectItem value="staff">
-                                        <div className="flex items-center gap-2">
-                                            <User className="size-4" />
-                                            Staff
-                                        </div>
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <p className="text-xs text-muted-foreground">
-                                {inviteRole === "admin" 
-                                    ? "Admins can manage products, orders, and team members"
-                                    : "Staff can view and manage orders only"
-                                }
-                            </p>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button onClick={handleInvite} disabled={isPending}>
-                            {isPending ? (
-                                <>
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
-                                    Sending...
-                                </>
-                            ) : (
-                                <>
-                                    <Mail className="size-4 mr-2" />
-                                    Send Invitation
-                                </>
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            {/* Remove Confirmation */}
-            <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Remove team member?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {memberToRemove && (
-                                <>
-                                    This will remove <span className="font-medium">{memberToRemove.full_name || memberToRemove.email}</span> from your team. 
-                                    They will no longer have access to your store.
-                                </>
-                            )}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleRemove}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                            Remove
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Team</h1>
+          <p className="text-xs text-muted-foreground">
+            {teamMembers.length} member{teamMembers.length !== 1 ? "s" : ""} · {teamMembers.filter(m => m.role === "admin").length} admin{teamMembers.filter(m => m.role === "admin").length !== 1 ? "s" : ""}
+          </p>
         </div>
-    );
+        {isOwner && (
+          <Button onClick={() => setInviteOpen(true)} size="sm">
+            <Plus className="size-3.5" />
+            Invite
+          </Button>
+        )}
+      </div>
+
+      {/* Members */}
+      <div className="rounded-lg border divide-y">
+        {teamMembers.map(member => {
+          const isMe = member.id === currentUserId;
+          const canModify = isOwner && !isMe && member.role !== "owner";
+          const Icon = ROLE_ICON[member.role];
+
+          return (
+            <div key={member.id} className="p-4 flex items-center gap-3">
+              <Avatar className="size-8">
+                <AvatarImage src={member.avatar_url || undefined} />
+                <AvatarFallback className="text-xs bg-muted">{getInitials(member.full_name, member.email)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium truncate">{member.full_name || member.email.split("@")[0]}</p>
+                  {isMe && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">You</Badge>}
+                </div>
+                <p className="text-[11px] text-muted-foreground truncate">{member.email} · Joined {format(new Date(member.created_at), "MMM yyyy")}</p>
+              </div>
+              <Badge className={cn("text-[10px] px-1.5 py-0 gap-1 capitalize", ROLE_STYLE[member.role])}>
+                <Icon className="size-3" />
+                {member.role}
+              </Badge>
+              {canModify && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="size-8"><MoreHorizontal className="size-3.5" /></Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, "admin")} className="text-xs gap-2">
+                      <ShieldCheck className="size-3.5" /> Make Admin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleRoleChange(member.id, "staff")} className="text-xs gap-2">
+                      <User className="size-3.5" /> Make Staff
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => { setMemberToRemove(member); setRemoveOpen(true); }} className="text-xs gap-2 text-destructive focus:text-destructive">
+                      <Trash2 className="size-3.5" /> Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Roles reference */}
+      <div className="flex gap-4 text-[10px] text-muted-foreground">
+        <span><Crown className="size-3 inline mr-0.5" /> Owner — full access</span>
+        <span><ShieldCheck className="size-3 inline mr-0.5" /> Admin — manage store</span>
+        <span><User className="size-3 inline mr-0.5" /> Staff — manage orders</span>
+      </div>
+
+      {/* Invite Dialog */}
+      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>They&apos;ll receive an email to join your store.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Email</Label>
+              <Input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@example.com" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Role</Label>
+              <Select value={inviteRole} onValueChange={(v: "admin" | "staff") => setInviteRole(v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin — manage products, orders, team</SelectItem>
+                  <SelectItem value="staff">Staff — manage orders only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setInviteOpen(false)} size="sm">Cancel</Button>
+            <Button onClick={handleInvite} disabled={isPending} size="sm">
+              {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Mail className="size-3.5" />}
+              {isPending ? "Sending…" : "Send Invite"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Dialog */}
+      <AlertDialog open={removeOpen} onOpenChange={setRemoveOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove team member?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {memberToRemove && <>Remove <strong>{memberToRemove.full_name || memberToRemove.email}</strong>? They&apos;ll lose access to your store.</>}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Remove</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 }
