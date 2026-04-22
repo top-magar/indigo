@@ -58,7 +58,7 @@ export default async function ShippingSettingsPage() {
     return (
         <ShippingSettingsClient 
             data={shippingData} 
-            currency={tenant?.currency || "NPR"} 
+            currency={tenant?.currency || "USD"} 
         />
     );
 }

@@ -56,9 +56,9 @@ export function CurrencySettingsClient({
   const [isPending, startTransition] = useTransition();
 
   // Currency settings state
-  const [currency, setCurrency] = useState(tenant.currency || "NPR");
+  const [currency, setCurrency] = useState(tenant.currency || "USD");
   const [displayCurrency, setDisplayCurrency] = useState(
-    tenant.display_currency || tenant.currency || "NPR"
+    tenant.display_currency || tenant.currency || "USD"
   );
   const [priceIncludesTax, setPriceIncludesTax] = useState(
     tenant.price_includes_tax ?? false
@@ -291,9 +291,9 @@ export function CurrencySettingsClient({
           <Button
             variant="outline"
             onClick={() => {
-              setCurrency(tenant.currency || "NPR");
+              setCurrency(tenant.currency || "USD");
               setDisplayCurrency(
-                tenant.display_currency || tenant.currency || "NPR"
+                tenant.display_currency || tenant.currency || "USD"
               );
               setPriceIncludesTax(tenant.price_includes_tax ?? false);
             }}

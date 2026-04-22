@@ -31,7 +31,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   const [name, setName] = useState(tenant.name);
   const [description, setDescription] = useState(tenant.description || "");
   const [logoUrl, setLogoUrl] = useState(tenant.logo_url || "");
-  const [currency, setCurrency] = useState(tenant.currency || "NPR");
+  const [currency, setCurrency] = useState(tenant.currency || "USD");
 
   const settings = (tenant.settings as Record<string, Record<string, string>>) || {};
   const seoSettings = settings.seo || {};

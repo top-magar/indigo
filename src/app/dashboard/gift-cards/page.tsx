@@ -10,10 +10,16 @@ export const metadata: Metadata = {
 };
 
 export default async function GiftCardsPage() {
-    const { user } = await getAuthenticatedClient();
+    const { user, supabase } = await getAuthenticatedClient();
     if (!user) redirect("/login");
 
-    const { cards, stats } = await getGiftCards();
+    const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+    if (!userData?.tenant_id) redirect("/login");
 
-    return <GiftCardsClient initialCards={cards} initialStats={stats} currency="NPR" />;
+    const [{ cards, stats }, { data: tenant }] = await Promise.all([
+        getGiftCards(),
+        supabase.from("tenants").select("currency").eq("id", userData.tenant_id).single(),
+    ]);
+
+    return <GiftCardsClient initialCards={cards} initialStats={stats} currency={tenant?.currency || "USD"} />;
 }
