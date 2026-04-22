@@ -41,7 +41,7 @@ export default function ElementWrapper({ element, children, className, style, co
   const { wrapperStyles, contentStyles, hasContentStyles } = splitContentStyles(resolved);
 
   if (element.hidden && preview) return null;
-  if (element.hidden && !preview) return <div className="relative opacity-20 pointer-events-none" style={resolved}>{children}</div>;
+  if (element.hidden && !preview) return <div className="relative opacity-40 pointer-events-none" style={resolved}>{children}</div>;
   if (preview) return <div style={resolved} className={className}>{children}</div>;
 
   return (

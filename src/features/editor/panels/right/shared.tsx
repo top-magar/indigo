@@ -59,12 +59,12 @@ export function Section({ title, icon, defaultOpen = true, onAdd, action, childr
     <Collapsible open={open} onOpenChange={setOpen} className="border-b border-sidebar-border">
       <div className="flex items-center h-7 px-3 group">
         <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-[10px] font-semibold text-sidebar-foreground/70 hover:text-sidebar-foreground cursor-pointer uppercase tracking-wider transition-colors">
-          <MIcon name={open ? "expand_more" : "chevron_right"} size={11} className="text-sidebar-foreground/20 group-hover:text-sidebar-foreground/70 transition-colors" />
+          <MIcon name={open ? "expand_more" : "chevron_right"} size={11} className="text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-colors" />
           <span>{title}</span>
         </CollapsibleTrigger>
         {action}
         {onAdd && (
-          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded-md text-sidebar-foreground/20 hover:text-primary hover:bg-primary/10 transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded-md text-sidebar-foreground/40 hover:text-primary hover:bg-primary/10 transition-colors">
             <MIcon name="add" size={13} />
           </button>
         )}

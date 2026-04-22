@@ -57,7 +57,7 @@ export default function RightPanel() {
           ) : (
             <div className="flex-1 flex items-center justify-center p-6">
               <div className="text-center">
-                <MIcon name="ads_click" size={28} className="text-muted-foreground/20 mx-auto mb-2" />
+                <MIcon name="ads_click" size={28} className="text-muted-foreground/40 mx-auto mb-2" />
                 <p className="text-[10px] text-muted-foreground/40">Click an element to edit</p>
               </div>
             </div>

@@ -74,7 +74,7 @@ export default function ComponentsTab() {
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search components..."
             className="h-8 w-full rounded-lg border border-sidebar-border/50 bg-sidebar pl-8 pr-8 text-[11px] outline-none placeholder:text-muted-foreground/40 focus:border-foreground/20 focus:bg-sidebar-accent/30 transition-colors" />
           {query && (
-            <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/20 hover:text-foreground transition-colors">
+            <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-colors">
               <MIcon name="close" size={12} />
             </button>
           )}
@@ -87,10 +87,10 @@ export default function ComponentsTab() {
           <div className="mt-1">
             <button onClick={() => setCollapsed(p => ({ ...p, Saved: !p.Saved }))}
               className="flex w-full items-center gap-2 h-7 px-1.5 rounded-md text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors group">
-              <MIcon name={collapsed.Saved ? "chevron_right" : "expand_more"} size={12} className="text-sidebar-foreground/20" />
+              <MIcon name={collapsed.Saved ? "chevron_right" : "expand_more"} size={12} className="text-sidebar-foreground/40" />
               <MIcon name="bookmark" size={13} className="text-sidebar-foreground/70" />
               <span>Saved</span>
-              <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/20 tabular-nums">{filteredSaved.length}</span>
+              <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/40 tabular-nums">{filteredSaved.length}</span>
             </button>
             {!collapsed.Saved && (
               <div className="grid grid-cols-3 gap-1 px-0.5 pb-1">
@@ -120,10 +120,10 @@ export default function ComponentsTab() {
             <div key={group.label} className="mt-1">
               <button onClick={() => !q && setCollapsed(p => ({ ...p, [group.label]: !p[group.label] }))}
                 className="flex w-full items-center gap-2 h-7 px-1.5 rounded-md text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors group">
-                <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/20 group-hover:text-sidebar-foreground/70 transition-colors" />
+                <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-colors" />
                 <MIcon name={groupIcons[group.label] ?? "widgets"} size={13} className="text-sidebar-foreground/70" />
                 <span>{group.label}</span>
-                <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/20 tabular-nums">{items.length}</span>
+                <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/40 tabular-nums">{items.length}</span>
               </button>
 
               {open && (

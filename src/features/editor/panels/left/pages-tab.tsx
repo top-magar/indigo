@@ -280,7 +280,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
             page.id === activePageId ? "bg-primary/10 text-primary" : "hover:bg-muted"
           )}
         >
-          <GripVertical className="size-3 text-muted-foreground/20 shrink-0" />
+          <GripVertical className="size-3 text-muted-foreground/40 shrink-0" />
           {page.isHomepage ? <Home className="size-3.5 shrink-0" /> : <FileText className="size-3.5 shrink-0" />}
 
           {editingId === page.id ? (
@@ -307,7 +307,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
           {page.published ? (
             <Eye className="size-3 text-emerald-500/50 shrink-0" />
           ) : (
-            <EyeOff className="size-3 text-muted-foreground/20 shrink-0" />
+            <EyeOff className="size-3 text-muted-foreground/40 shrink-0" />
           )}
 
           <Settings

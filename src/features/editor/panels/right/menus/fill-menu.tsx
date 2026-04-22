@@ -239,7 +239,7 @@ export function FillMenu({ get, set }: StyleProps) {
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center h-20 rounded-md border border-dashed border-sidebar-border/60 bg-sidebar hover:border-primary/40 hover:bg-primary/5 transition-colors cursor-pointer">
-                <MIcon name="add_photo_alternate" size={20} className="text-muted-foreground/20" />
+                <MIcon name="add_photo_alternate" size={20} className="text-muted-foreground/40" />
                 <span className="text-[9px] text-muted-foreground/40 mt-1">Paste image URL below</span>
               </label>
             )}

@@ -107,7 +107,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
             dragOver ? "border-primary bg-primary/5" : "border-sidebar-border/50 hover:border-primary/30 hover:bg-muted/30",
             uploading && "opacity-50 pointer-events-none"
           )}>
-          <MIcon name={uploading ? "hourglass_empty" : "cloud_upload"} size={20} className={cn("text-muted-foreground/20", uploading && "animate-spin")} />
+          <MIcon name={uploading ? "hourglass_empty" : "cloud_upload"} size={20} className={cn("text-muted-foreground/40", uploading && "animate-spin")} />
           <p className="text-[10px] text-muted-foreground/40">{uploading ? "Uploading..." : "Drop image or click to upload"}</p>
         </div>
       )}
@@ -141,8 +141,8 @@ function RichTextField({ value, onChange }: { value: string; onChange: (v: strin
       <textarea value={value} onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-md border border-sidebar-border bg-sidebar px-2.5 py-2 text-[11px] leading-relaxed outline-none resize-y focus:border-primary min-h-[72px] transition-colors" rows={3} />
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground/20">{value.split(/\s+/).filter(Boolean).length} words</span>
-        <span className="text-[10px] text-muted-foreground/20 tabular-nums">{value.length}</span>
+        <span className="text-[10px] text-muted-foreground/40">{value.split(/\s+/).filter(Boolean).length} words</span>
+        <span className="text-[10px] text-muted-foreground/40 tabular-nums">{value.length}</span>
       </div>
     </div>
   );
@@ -169,16 +169,16 @@ function ItemsEditor({ value, onChange }: { value: string; onChange: (v: string)
         <div key={i} className="rounded-lg border border-sidebar-border/50 overflow-hidden bg-sidebar/30">
           <div className="flex items-center gap-1 px-2 py-1 bg-sidebar-accent/20 border-b border-sidebar-border/30">
             <div className="flex flex-col">
-              <button onClick={() => move(i, i - 1)} disabled={i === 0} className="text-muted-foreground/20 hover:text-foreground disabled:opacity-20 transition-colors"><MIcon name="expand_less" size={10} /></button>
-              <button onClick={() => move(i, i + 1)} disabled={i === items.length - 1} className="text-muted-foreground/20 hover:text-foreground disabled:opacity-20 transition-colors"><MIcon name="expand_more" size={10} /></button>
+              <button onClick={() => move(i, i - 1)} disabled={i === 0} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"><MIcon name="expand_less" size={10} /></button>
+              <button onClick={() => move(i, i + 1)} disabled={i === items.length - 1} className="text-muted-foreground/40 hover:text-foreground disabled:opacity-20 transition-colors"><MIcon name="expand_more" size={10} /></button>
             </div>
             <Input value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], title: e.target.value }; update(n); }}
               className="h-5 text-[11px] font-medium bg-transparent border-0 shadow-none focus-visible:ring-0 px-0 flex-1" placeholder="Title" />
-            <button onClick={() => update(items.filter((_, j) => j !== i))} className="text-muted-foreground/20 hover:text-destructive transition-colors"><MIcon name="close" size={10} /></button>
+            <button onClick={() => update(items.filter((_, j) => j !== i))} className="text-muted-foreground/40 hover:text-destructive transition-colors"><MIcon name="close" size={10} /></button>
           </div>
           <div className="px-2 py-1.5">
             <textarea value={item.body} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], body: e.target.value }; update(n); }}
-              className="w-full bg-transparent text-[10px] leading-relaxed outline-none resize-none min-h-[36px] text-muted-foreground placeholder:text-muted-foreground/20" placeholder="Content..." />
+              className="w-full bg-transparent text-[10px] leading-relaxed outline-none resize-none min-h-[36px] text-muted-foreground placeholder:text-muted-foreground/40" placeholder="Content..." />
           </div>
         </div>
       ))}
@@ -234,11 +234,11 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <MIcon name={icon} size={11} className="text-muted-foreground/20" />
+        <MIcon name={icon} size={11} className="text-muted-foreground/40" />
         <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
         <div className="flex-1" />
         {value && type !== 'image' && (
-          <button onClick={() => onChange('')} className="text-muted-foreground/20 hover:text-destructive transition-colors"><MIcon name="close" size={9} /></button>
+          <button onClick={() => onChange('')} className="text-muted-foreground/40 hover:text-destructive transition-colors"><MIcon name="close" size={9} /></button>
         )}
       </div>
 
@@ -336,7 +336,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
           return (
             <div key={el.id} className="border-b border-sidebar-border/20">
               <div className="px-3 pt-3 pb-1">
-                <p className="text-[9px] font-semibold text-muted-foreground/20 uppercase tracking-wider">{el.name}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground/40 uppercase tracking-wider">{el.name}</p>
               </div>
               <div className="px-3 pb-3 space-y-2">
                 {fields.map(([key, value]) => (
@@ -359,10 +359,10 @@ function EmptyState({ icon, text, sub }: { icon: string; text: string; sub: stri
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="text-center">
         <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted/30">
-          <MIcon name={icon} size={18} className="text-muted-foreground/20" />
+          <MIcon name={icon} size={18} className="text-muted-foreground/40" />
         </div>
         <p className="text-[11px] font-medium text-muted-foreground/40">{text}</p>
-        <p className="text-[9px] text-muted-foreground/20 mt-1">{sub}</p>
+        <p className="text-[9px] text-muted-foreground/40 mt-1">{sub}</p>
       </div>
     </div>
   );

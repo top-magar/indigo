@@ -102,7 +102,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   const sideActive = sideStyle !== "none";
                   return (
                     <div key={side} className="flex items-center gap-1">
-                      <Tip label={side}><button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/20")}>
+                      <Tip label={side}><button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/40")}>
                         <MIcon name={icon} size={12} />
                       </button></Tip>
                       <div className="flex-1">
