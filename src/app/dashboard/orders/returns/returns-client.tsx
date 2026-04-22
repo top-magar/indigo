@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs"
+import { StatCard } from "../_components"
 import { format, formatDistanceToNow } from "date-fns"
 import {
   ArrowLeft,
@@ -206,61 +207,10 @@ export function ReturnsClient({
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="stat-label">Total Returns</p>
-                <p className="stat-value">{stats.total}</p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                <PackageCheck className="size-4 text-info" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="stat-label">Pending</p>
-                <p className="stat-value text-warning">{stats.requested}</p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                <Clock className="size-4 text-warning" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="stat-label">Completed</p>
-                <p className="stat-value text-success">{stats.completed}</p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                <CheckCircle className="size-4 text-success" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="stat-label">Total Refunded</p>
-                <p className="stat-value text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                <DollarSign className="size-4 text-success" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <StatCard title="Total Returns" value={stats.total} icon={PackageCheck} />
+        <StatCard title="Pending" value={stats.requested} icon={Clock} />
+        <StatCard title="Completed" value={stats.completed} icon={CheckCircle} />
+        <StatCard title="Total Refunded" value={formatCurrency(stats.totalRefunded, currency)} icon={DollarSign} />
       </div>
 
       {/* Toolbar */}
