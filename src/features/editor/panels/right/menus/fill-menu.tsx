@@ -180,12 +180,36 @@ export function FillMenu({ get, set }: StyleProps) {
 
         {/* Solid */}
         {mode === "solid" && (
-          <ColorField label="" value={bgColor} onChange={(v) => set("backgroundColor", v)} />
+          <div className="space-y-1.5">
+            <ColorField label="" value={bgColor} onChange={(v) => set("backgroundColor", v)} />
+            <div className="flex items-center gap-2">
+              <span className="text-[9px] text-muted-foreground/40 shrink-0">Opacity</span>
+              <input type="range" min={0} max={100} value={Math.round((parseFloat(get("opacity") || "1")) * 100)} onChange={(e) => set("opacity", String(+e.target.value / 100))}
+                className="flex-1 h-1 accent-primary cursor-pointer" />
+              <span className="text-[9px] text-muted-foreground/40 tabular-nums w-7 text-right">{Math.round((parseFloat(get("opacity") || "1")) * 100)}%</span>
+            </div>
+          </div>
         )}
 
         {/* Gradient */}
         {gradient && (
           <div className="space-y-1.5">
+            {/* Presets */}
+            <div className="flex gap-1">
+              {[
+                { stops: [{ color: "#667eea", pos: 0 }, { color: "#764ba2", pos: 100 }], angle: 135 },
+                { stops: [{ color: "#f093fb", pos: 0 }, { color: "#f5576c", pos: 100 }], angle: 135 },
+                { stops: [{ color: "#4facfe", pos: 0 }, { color: "#00f2fe", pos: 100 }], angle: 135 },
+                { stops: [{ color: "#43e97b", pos: 0 }, { color: "#38f9d7", pos: 100 }], angle: 135 },
+                { stops: [{ color: "#fa709a", pos: 0 }, { color: "#fee140", pos: 100 }], angle: 135 },
+                { stops: [{ color: "#0f172a", pos: 0 }, { color: "#1e293b", pos: 100 }], angle: 135 },
+              ].map((p, i) => (
+                <button key={i} onClick={() => set("backgroundImage", build(gradient.type, p.angle, p.stops))}
+                  className="flex-1 h-5 rounded-md border border-sidebar-border hover:scale-105 transition-transform"
+                  style={{ background: build('linear', p.angle, p.stops) }} />
+              ))}
+            </div>
+
             {/* Draggable stop bar */}
             <StopBar stops={gradient.stops} gradient={bgImage} activeStop={activeStop}
               onSelect={setActiveStop}
