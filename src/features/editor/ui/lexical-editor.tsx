@@ -24,13 +24,14 @@ function Toolbar({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElement | nu
   useEffect(() => {
     const el = anchorRef.current;
     if (!el) return;
+    let raf: number;
     const update = () => {
       const r = el.getBoundingClientRect();
       setPos({ top: r.top - 36, left: r.left });
+      raf = requestAnimationFrame(update);
     };
     update();
-    window.addEventListener('scroll', update, true);
-    return () => window.removeEventListener('scroll', update, true);
+    return () => cancelAnimationFrame(raf);
   }, [anchorRef]);
 
   const fmt = (type: 'bold' | 'italic' | 'underline' | 'strikethrough') => {
