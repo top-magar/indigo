@@ -71,7 +71,8 @@ const nextConfig: NextConfig = {
     return [
       { source: '/dashboard/marketing', destination: '/dashboard/marketing/discounts', permanent: true },
       { source: '/dashboard/settings/currency', destination: '/dashboard/settings', permanent: true },
-      { source: '/dashboard/storefront/theme', destination: '/dashboard/settings/storefront', permanent: true },
+      { source: '/dashboard/storefront/theme', destination: '/dashboard/settings', permanent: true },
+      { source: '/dashboard/settings/storefront', destination: '/dashboard/settings', permanent: true },
     ];
   },
 

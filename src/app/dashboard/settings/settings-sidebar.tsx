@@ -13,13 +13,12 @@ import {
   User,
   Users,
   Bell,
-  Paintbrush,
+
 } from "lucide-react";
 
 const sections = [
   { label: "Store", items: [
     { title: "Store", href: "/dashboard/settings", icon: Store },
-    { title: "Storefront", href: "/dashboard/settings/storefront", icon: Paintbrush },
     { title: "Domains", href: "/dashboard/settings/domains", icon: Globe },
   ]},
   { label: "Commerce", items: [

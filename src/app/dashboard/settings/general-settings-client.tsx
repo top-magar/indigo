@@ -29,10 +29,9 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   const [description, setDescription] = useState(tenant.description || "");
   const [logoUrl, setLogoUrl] = useState(tenant.logo_url || "");
   const [currency, setCurrency] = useState(tenant.currency || "USD");
-
-  const settings = (tenant.settings as Record<string, Record<string, string>>) || {};
-  const seoSettings = settings.seo || {};
-  const analyticsSettings = settings.analytics || {};
+  const seoSettings = (tenant.settings as Record<string, unknown>)?.seo as Record<string, string> || {};
+  const [seoTitle, setSeoTitle] = useState(seoSettings.metaTitle || "");
+  const [seoDescription, setSeoDescription] = useState(seoSettings.metaDescription || "");
 
 
   const canEdit = userRole === "owner" || userRole === "admin";
@@ -137,6 +136,30 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                   </SelectContent>
                 </Select>
                 <p className="text-[10px] text-muted-foreground">All prices displayed in this currency</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* SEO */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Search Engine Optimization</CardTitle>
+              <CardDescription className="text-xs">How your store appears in Google</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-2">
+                <Label className="text-xs">Page Title <span className="text-muted-foreground">({seoTitle.length}/60)</span></Label>
+                <Input value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} placeholder="Your Store — Shop Online" maxLength={60} disabled={!canEdit} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Meta Description <span className="text-muted-foreground">({seoDescription.length}/160)</span></Label>
+                <Textarea value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} />
+              </div>
+              <div className="rounded-lg border p-3 bg-muted/30">
+                <p className="text-xs text-muted-foreground mb-1">Google Preview</p>
+                <p className="text-sm text-blue-600 font-medium truncate">{seoTitle || tenant.name}</p>
+                <p className="text-xs text-green-700 truncate">yourstore.com</p>
+                <p className="text-xs text-muted-foreground line-clamp-2">{seoDescription || "No description"}</p>
               </div>
             </CardContent>
           </Card>
