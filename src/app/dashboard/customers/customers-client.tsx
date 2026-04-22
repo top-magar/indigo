@@ -213,7 +213,7 @@ export function CustomersClient({
                             onClick={handleExport}
                             disabled={isPending}
                         >
-                            <Download className="size-4 mr-2" />
+                            <Download className="size-3.5" />
                             Export
                         </Button>
                         <Button
@@ -239,7 +239,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">Total</p>
-                                    <p className="stat-value">{stats.totalCustomers.toLocaleString()}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <Users className="size-4 text-primary" />
@@ -252,7 +252,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">New</p>
-                                    <p className="stat-value text-success">{stats.newThisMonth}</p>
+                                    <p className="text-xl font-semibold tabular-nums text-success">{stats.newThisMonth}</p>
                                     <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
@@ -266,7 +266,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">Returning</p>
-                                    <p className="stat-value text-primary">{stats.returningCustomers}</p>
+                                    <p className="text-xl font-semibold tabular-nums text-primary">{stats.returningCustomers}</p>
                                     <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -280,7 +280,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">Subscribed</p>
-                                    <p className="stat-value text-info">{stats.subscribedCount}</p>
+                                    <p className="text-xl font-semibold tabular-nums text-info">{stats.subscribedCount}</p>
                                     <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
@@ -294,7 +294,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">Revenue</p>
-                                    <p className="stat-value">{formatCurrency(stats.totalRevenue, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.totalRevenue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
@@ -308,7 +308,7 @@ export function CustomersClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="stat-label">Avg. Value</p>
-                                    <p className="stat-value">{formatCurrency(stats.avgCustomerValue, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.avgCustomerValue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
@@ -518,7 +518,7 @@ export function CustomersClient({
                                                         <Button
                                                             variant="ghost"
                                                             size="icon-sm" aria-label="More actions"
-                                                            className="h-8 w-8 opacity-0 group-hover:opacity-100"
+                                                            className="size-8 opacity-0 group-hover:opacity-100"
                                                         >
                                                             <MoreHorizontal className="size-4" />
                                                         </Button>
@@ -526,20 +526,20 @@ export function CustomersClient({
                                                     <DropdownMenuContent align="end" className="w-48">
                                                         <DropdownMenuItem asChild>
                                                             <Link href={`/dashboard/customers/${customer.id}`}>
-                                                                <Eye className="size-4 mr-2" />
+                                                                <Eye className="size-3.5" />
                                                                 View Details
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild>
                                                             <a href={`mailto:${customer.email}`}>
-                                                                <Mail className="size-4 mr-2" />
+                                                                <Mail className="size-3.5" />
                                                                 Send Email
                                                             </a>
                                                         </DropdownMenuItem>
                                                         {customer.phone && (
                                                             <DropdownMenuItem asChild>
                                                                 <a href={`tel:${customer.phone}`}>
-                                                                    <Phone className="size-4 mr-2" />
+                                                                    <Phone className="size-3.5" />
                                                                     Call
                                                                 </a>
                                                             </DropdownMenuItem>
@@ -549,7 +549,7 @@ export function CustomersClient({
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(customer)}
                                                         >
-                                                            <Trash2 className="size-4 mr-2" />
+                                                            <Trash2 className="size-3.5" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

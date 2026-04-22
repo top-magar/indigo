@@ -1024,7 +1024,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                         <Button type="submit" disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-3.5 animate-spin" />
                                     {isEditing ? "Saving..." : "Creating..."}
                                 </>
                             ) : (

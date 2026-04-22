@@ -347,7 +347,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                         </Tooltip>
                     </TooltipProvider>
                     <Button onClick={() => { setSelectedCampaignForEdit(null); setDialogOpen(true); }}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-3.5" />
                         Create Campaign
                     </Button>
                 </>
@@ -364,7 +364,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Sent</p>
-                                <p className="stat-value">{totalSent}</p>
+                                <p className="text-xl font-semibold tabular-nums">{totalSent}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -377,7 +377,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Open Rate</p>
-                                <p className="stat-value">{avgOpenRate.toFixed(1)}%</p>
+                                <p className="text-xl font-semibold tabular-nums">{avgOpenRate.toFixed(1)}%</p>
                             </div>
                         </div>
                     </CardContent>
@@ -390,7 +390,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Click Rate</p>
-                                <p className="stat-value">{avgClickRate.toFixed(1)}%</p>
+                                <p className="text-xl font-semibold tabular-nums">{avgClickRate.toFixed(1)}%</p>
                             </div>
                         </div>
                     </CardContent>
@@ -403,7 +403,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
-                                <p className="stat-value">{formatCurrency(totalRevenue, currency)}</p>
+                                <p className="text-xl font-semibold tabular-nums">{formatCurrency(totalRevenue, currency)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -690,18 +690,18 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                         <DropdownMenuContent align="end">
                                                             {campaign.status === "sent" && (
                                                                 <DropdownMenuItem onClick={() => openAnalytics(campaign)}>
-                                                                    <LineChart className="size-4 mr-2" />
+                                                                    <LineChart className="size-3.5" />
                                                                     View Analytics
                                                                 </DropdownMenuItem>
                                                             )}
                                                             {campaign.status === "draft" && (
                                                                 <>
                                                                     <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                        <Edit className="size-4 mr-2" />
+                                                                        <Edit className="size-3.5" />
                                                                         Edit
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem onClick={() => handleSendCampaign(campaign.id)}>
-                                                                        <Send className="size-4 mr-2" />
+                                                                        <Send className="size-3.5" />
                                                                         Send Now
                                                                     </DropdownMenuItem>
                                                                 </>
@@ -709,23 +709,23 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                             {campaign.status === "scheduled" && (
                                                                 <>
                                                                     <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                        <Edit className="size-4 mr-2" />
+                                                                        <Edit className="size-3.5" />
                                                                         Edit
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem onClick={() => handlePauseCampaign(campaign.id)}>
-                                                                        <Pause className="size-4 mr-2" />
+                                                                        <Pause className="size-3.5" />
                                                                         Pause
                                                                     </DropdownMenuItem>
                                                                 </>
                                                             )}
                                                             {campaign.status === "paused" && (
                                                                 <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                    <Edit className="size-4 mr-2" />
+                                                                    <Edit className="size-3.5" />
                                                                     Edit
                                                                 </DropdownMenuItem>
                                                             )}
                                                             <DropdownMenuItem onClick={() => handleDuplicateCampaign(campaign.id)}>
-                                                                <Copy className="size-4 mr-2" />
+                                                                <Copy className="size-3.5" />
                                                                 Duplicate
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
@@ -736,7 +736,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                     setDeleteDialogOpen(true);
                                                                 }}
                                                             >
-                                                                <Trash2 className="size-4 mr-2" />
+                                                                <Trash2 className="size-3.5" />
                                                                 Delete
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
@@ -817,12 +817,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <Send className="size-4 mx-auto mb-2 text-primary" />
-                                    <p className="stat-value">{formatNumber(selectedCampaign.delivered_count)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatNumber(selectedCampaign.delivered_count)}</p>
                                     <p className="text-xs text-muted-foreground">Delivered</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <MailOpen className="size-4 mx-auto mb-2 text-success" />
-                                    <p className="stat-value">
+                                    <p className="text-xl font-semibold tabular-nums">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.opened_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -831,7 +831,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <MousePointerClick className="size-4 mx-auto mb-2 text-warning" />
-                                    <p className="stat-value">
+                                    <p className="text-xl font-semibold tabular-nums">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.clicked_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -840,7 +840,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <TrendingUp className="size-4 mx-auto mb-2 text-ds-teal-700" />
-                                    <p className="stat-value">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
                             </div>

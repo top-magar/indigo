@@ -741,7 +741,7 @@ You can use HTML for formatting. For example:
                         disabled={isPending}
                     >
                         {isPending ? (
-                            <Loader2 className="size-4 mr-2 animate-spin" />
+                            <Loader2 className="size-3.5 animate-spin" />
                         ) : null}
                         Save Draft
                     </Button>
@@ -753,12 +753,12 @@ You can use HTML for formatting. For example:
                         >
                             {isPending ? (
                                 <>
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-3.5 animate-spin" />
                                     {formData.schedule_enabled ? "Scheduling..." : "Sending..."}
                                 </>
                             ) : (
                                 <>
-                                    {formData.schedule_enabled ? <Calendar className="size-4 mr-2" /> : <Mail className="size-4 mr-2" />}
+                                    {formData.schedule_enabled ? <Calendar className="size-3.5" /> : <Mail className="size-3.5" />}
                                     {formData.schedule_enabled ? "Schedule Campaign" : "Send Now"}
                                 </>
                             )}

@@ -57,7 +57,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                         </div>
                     )}
                     <div>
-                        <h1 className="text-xl font-semibold tracking-[-0.4px]">{product.name}</h1>
+                        <h1 className="text-lg font-semibold tracking-tight">{product.name}</h1>
                         <div className="flex items-center gap-3 text-muted-foreground">
                             {product.sku && (
                                 <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">
@@ -75,13 +75,13 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Total Movements</p>
-                        <p className="stat-value mt-1">{movements.length}</p>
+                        <p className="text-xl font-semibold tabular-nums mt-1">{movements.length}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Total Added</p>
-                        <p className="stat-value mt-1 text-success">
+                        <p className="text-xl font-semibold tabular-nums mt-1 text-success">
                             +{movements.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
@@ -89,7 +89,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Total Removed</p>
-                        <p className="stat-value mt-1 text-destructive">
+                        <p className="text-xl font-semibold tabular-nums mt-1 text-destructive">
                             {movements.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
@@ -97,7 +97,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Current Stock</p>
-                        <p className="stat-value mt-1">{product.quantity}</p>
+                        <p className="text-xl font-semibold tabular-nums mt-1">{product.quantity}</p>
                     </CardContent>
                 </Card>
             </div>
@@ -132,7 +132,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                     )}
                                 >
                                     <div className={cn(
-                                        "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+                                        "size-8 rounded-full flex items-center justify-center shrink-0",
                                         movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
                                     )}>
                                         {movement.quantity_change > 0 ? (
@@ -144,7 +144,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <span className={cn(
-                                                "stat-value",
+                                                "text-xl font-semibold tabular-nums",
                                                 movement.quantity_change > 0 ? "text-success" : "text-destructive"
                                             )}>
                                                 {movement.quantity_change > 0 ? "+" : ""}{movement.quantity_change}

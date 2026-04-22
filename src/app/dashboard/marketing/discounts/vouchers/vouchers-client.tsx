@@ -155,7 +155,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     Create your first voucher to offer discount codes to your customers.
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Voucher
                 </Button>
                 <CreateVoucherDialog
@@ -173,7 +173,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
             description="Vouchers require customers to enter a code at checkout"
             actions={
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Voucher
                 </Button>
             }
@@ -227,7 +227,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                             onClick={handleBulkDelete}
                             disabled={isPending}
                         >
-                            {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
+                            {isPending && <Loader2 className="size-3.5 animate-spin" />}
                             Delete
                         </Button>
                     </div>
@@ -308,12 +308,12 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/marketing/discounts/vouchers/${voucher.id}`}>
-                                                            <Edit className="size-3.5 mr-2" />
+                                                            <Edit className="size-3.5" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDuplicate(voucher.id)}>
-                                                        <Copy className="size-3.5 mr-2" />
+                                                        <Copy className="size-3.5" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleToggleStatus(voucher.id, !voucher.isActive)}>
@@ -324,7 +324,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                                         className="text-destructive"
                                                         onClick={() => handleDelete(voucher.id)}
                                                     >
-                                                        <Trash2 className="size-3.5 mr-2" />
+                                                        <Trash2 className="size-3.5" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

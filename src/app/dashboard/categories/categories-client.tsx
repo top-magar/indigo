@@ -298,7 +298,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             description="Organize products with hierarchical categories"
             actions={
                 <Button onClick={() => handleCreate()}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Category
                 </Button>
             }
@@ -311,7 +311,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="stat-label">Total</p>
-                                <p className="stat-value">{stats.total}</p>
+                                <p className="text-xl font-semibold tabular-nums">{stats.total}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Grid3x3 className="size-4 text-primary" />
@@ -324,7 +324,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="stat-label">With Products</p>
-                                <p className="stat-value text-success">{stats.withProducts}</p>
+                                <p className="text-xl font-semibold tabular-nums text-success">{stats.withProducts}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
                                 <Package className="size-4 text-success" />
@@ -337,7 +337,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="stat-label">Empty</p>
-                                <p className="stat-value text-muted-foreground">{stats.empty}</p>
+                                <p className="text-xl font-semibold tabular-nums text-muted-foreground">{stats.empty}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
                                 <FolderOpen className="size-4 text-ds-teal-700" />
@@ -350,7 +350,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="stat-label">Nested</p>
-                                <p className="stat-value text-warning">{stats.nested}</p>
+                                <p className="text-xl font-semibold tabular-nums text-warning">{stats.nested}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                 <Layers className="size-4 text-warning" />
@@ -363,7 +363,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="stat-label">Products</p>
-                                <p className="stat-value text-primary">{stats.totalProducts}</p>
+                                <p className="text-xl font-semibold tabular-nums text-primary">{stats.totalProducts}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Package className="size-4 text-primary" />
@@ -394,7 +394,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                            
                             onClick={() => setBulkDeleteDialogOpen(true)}
                         >
-                            <Trash2 className="size-4 mr-2" />
+                            <Trash2 className="size-3.5" />
                             Delete ({selectedIds.size})
                         </Button>
                     )}
@@ -576,15 +576,15 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/categories/${category.id}`)}>
-                                                    <Pencil className="size-4 mr-2" />
+                                                    <Pencil className="size-3.5" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleCreate(category.id)}>
-                                                    <Plus className="size-4 mr-2" />
+                                                    <Plus className="size-3.5" />
                                                     Add Subcategory
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <Copy className="size-4 mr-2" />
+                                                    <Copy className="size-3.5" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -596,7 +596,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                     }}
                                                     disabled={hasChildren}
                                                 >
-                                                    <Trash2 className="size-4 mr-2" />
+                                                    <Trash2 className="size-3.5" />
                                                     Delete
                                                     {hasChildren && (
                                                         <span className="ml-auto text-xs">(has children)</span>

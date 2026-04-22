@@ -7,7 +7,7 @@ export function CampaignsLoading() {
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="size-8 rounded" />
                     <div className="space-y-1">
                         <Skeleton className="h-8 w-32" />
                         <Skeleton className="h-4 w-48" />
@@ -60,7 +60,7 @@ export function CampaignsLoading() {
                             <div className="flex items-center gap-4">
                                 <Skeleton className="h-4 w-16" />
                                 <Skeleton className="h-5 w-20" />
-                                <Skeleton className="h-8 w-8 rounded" />
+                                <Skeleton className="size-8 rounded" />
                             </div>
                         </div>
                     ))}

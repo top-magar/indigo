@@ -44,7 +44,7 @@ export default function CollectionsLoading() {
                                 <Skeleton className="size-3.52" />
                             </div>
                             <Skeleton className="h-6 w-16 rounded-full" />
-                            <Skeleton className="h-8 w-8" />
+                            <Skeleton className="size-8" />
                         </div>
                     ))}
                 </div>

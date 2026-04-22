@@ -171,7 +171,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             description="Organize products into collections for better discoverability"
             actions={
                 <Button onClick={handleCreate}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Collection
                 </Button>
             }
@@ -308,24 +308,24 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/collections/${collection.id}`)}>
-                                                    <Pencil className="size-4 mr-2" />
+                                                    <Pencil className="size-3.5" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleToggleStatus(collection)}>
                                                     {collection.is_active ? (
                                                         <>
-                                                            <X className="size-4 mr-2" />
+                                                            <X className="size-3.5" />
                                                             Deactivate
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <CheckCircle className="size-4 mr-2" />
+                                                            <CheckCircle className="size-3.5" />
                                                             Activate
                                                         </>
                                                     )}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <Copy className="size-4 mr-2" />
+                                                    <Copy className="size-3.5" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -336,7 +336,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                         setDeleteDialogOpen(true);
                                                     }}
                                                 >
-                                                    <Trash2 className="size-4 mr-2" />
+                                                    <Trash2 className="size-3.5" />
                                                     Delete
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>

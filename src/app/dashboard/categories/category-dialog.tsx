@@ -279,7 +279,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         onClick={() => s.id < step && setStep(s.id)}
                                         disabled={s.id > step}
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90"
                                                 : step === s.id
@@ -441,7 +441,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                                 )}
                                                                 style={{ paddingLeft: `${12 + level * 16}px` }}
                                                             >
-                                                                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted overflow-hidden shrink-0">
+                                                                <div className="flex size-8 items-center justify-center rounded-md bg-muted overflow-hidden shrink-0">
                                                                     {cat.image_url ? (
                                                                         <Image
                                                                             src={cat.image_url}
@@ -580,7 +580,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         </h3>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                             <div className="flex items-center gap-2">
-                                                <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
+                                                <div className="size-8 rounded-lg bg-success/10 flex items-center justify-center">
                                                     <Package className="size-4 text-success" />
                                                 </div>
                                                 <div>
@@ -589,7 +589,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <div className="h-8 w-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                                                <div className="size-8 rounded-lg bg-warning/10 flex items-center justify-center">
                                                     <Layers className="size-4 text-warning" />
                                                 </div>
                                                 <div>
@@ -611,7 +611,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ChevronLeft className="size-4 mr-2" />
+                                <ChevronLeft className="size-3.5" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -630,12 +630,12 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="size-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-3.5 animate-spin" />
                                             {category ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="size-4 mr-2" />
+                                            <CheckCircle className="size-3.5" />
                                             {category ? "Update Category" : "Create Category"}
                                         </>
                                     )}

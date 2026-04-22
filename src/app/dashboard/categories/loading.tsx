@@ -65,7 +65,7 @@ export default function CategoriesLoading() {
                                     <Skeleton className="size-5" />
                                     <Skeleton className="size-5" />
                                 </div>
-                                <Skeleton className="h-8 w-8" />
+                                <Skeleton className="size-8" />
                             </div>
                         ))}
                     </div>

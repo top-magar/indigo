@@ -59,7 +59,7 @@ export default function InventoryLoading() {
                         <div className="space-y-3">
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <div key={i} className="flex items-center gap-3">
-                                    <Skeleton className="h-8 w-8 rounded-full" />
+                                    <Skeleton className="size-8 rounded-full" />
                                     <div className="flex-1 space-y-1">
                                         <Skeleton className="h-4 w-32" />
                                         <Skeleton className="h-3 w-24" />
@@ -112,7 +112,7 @@ export default function InventoryLoading() {
                             </div>
                             <Skeleton className="size-24 hidden md:block" />
                             <Skeleton className="h-4 w-16 hidden lg:block" />
-                            <Skeleton className="h-8 w-8" />
+                            <Skeleton className="size-8" />
                         </div>
                     ))}
                 </div>

@@ -159,7 +159,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                     Create your first sale to automatically apply discounts to products.
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Sale
                 </Button>
                 <CreateSaleDialog
@@ -177,7 +177,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
             description="Sales are automatically applied to products without requiring a code"
             actions={
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-4 mr-2" />
+                    <Plus className="size-3.5" />
                     Create Sale
                 </Button>
             }
@@ -222,7 +222,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         onClick={handleBulkDelete}
                         disabled={isPending}
                     >
-                        {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="size-3.5 animate-spin" />}
                         Delete
                     </Button>
                 </div>
@@ -317,12 +317,12 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/marketing/discounts/sales/${sale.id}`}>
-                                                            <Edit className="size-3.5 mr-2" />
+                                                            <Edit className="size-3.5" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDuplicate(sale.id)}>
-                                                        <Copy className="size-3.5 mr-2" />
+                                                        <Copy className="size-3.5" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleToggleStatus(sale.id, !sale.isActive)}>
@@ -333,7 +333,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                                         className="text-destructive"
                                                         onClick={() => handleDelete(sale.id)}
                                                     >
-                                                        <Trash2 className="size-3.5 mr-2" />
+                                                        <Trash2 className="size-3.5" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

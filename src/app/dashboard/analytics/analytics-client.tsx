@@ -169,7 +169,7 @@ export function AnalyticsDashboardView({
                         ) : (
                             <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
                                 <SelectTrigger className="w-[160px]">
-                                    <Calendar className="size-4 mr-2" />
+                                    <Calendar className="size-3.5" />
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -183,7 +183,7 @@ export function AnalyticsDashboardView({
                             </Select>
                         )}
                         <Button variant="outline" onClick={onExport}>
-                            <Download className="size-4 mr-2" />
+                            <Download className="size-3.5" />
                             Export
                         </Button>
                         <Button
@@ -226,7 +226,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="stat-label">Revenue</p>
-                                    <p className="stat-value">{formatCurrency(data.overview.revenue, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.revenue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -259,7 +259,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="stat-label">Orders</p>
-                                    <p className="stat-value">{data.overview.orders}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{data.overview.orders}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -292,7 +292,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="stat-label">AOV</p>
-                                    <p className="stat-value">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -325,7 +325,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="stat-label">Customers</p>
-                                    <p className="stat-value">{data.overview.customers}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{data.overview.customers}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"

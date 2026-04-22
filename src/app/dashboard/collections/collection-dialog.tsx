@@ -243,7 +243,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                         onClick={() => s.id < step && setStep(s.id)}
                                         disabled={s.id > step}
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90"
                                                 : step === s.id
@@ -480,7 +480,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ChevronLeft className="size-4 mr-2" />
+                                <ChevronLeft className="size-3.5" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -499,12 +499,12 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="size-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-3.5 animate-spin" />
                                             {collection ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="size-4 mr-2" />
+                                            <CheckCircle className="size-3.5" />
                                             {collection ? "Update Collection" : "Create Collection"}
                                         </>
                                     )}

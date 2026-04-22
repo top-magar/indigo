@@ -32,7 +32,7 @@ export default function CustomerGroupsLoading() {
                     <Skeleton className="h-3 w-16" />
                   </div>
                 </div>
-                <Skeleton className="h-8 w-8" />
+                <Skeleton className="size-8" />
               </div>
             </CardHeader>
             <CardContent className="space-y-3">

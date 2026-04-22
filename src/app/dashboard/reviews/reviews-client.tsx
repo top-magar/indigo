@@ -149,7 +149,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
           onClick={handleRefresh}
           disabled={isPending}
         >
-          <RefreshCw className={`mr-2 size-4 ${isPending ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`size-3.5 ${isPending ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       }
@@ -314,7 +314,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 onClick={handleBulkApprove}
                 disabled={isPending || pendingCount === 0}
               >
-                <CheckCircle className="mr-2 size-4 text-success" />
+                <CheckCircle className="size-3.5 text-success" />
                 Approve All Pending ({pendingCount})
               </Button>
               <Button
@@ -324,7 +324,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 onClick={handleRefresh}
                 disabled={isPending}
               >
-                <RefreshCw className="mr-2 size-4" />
+                <RefreshCw className="size-3.5" />
                 Re-analyze Sentiment
               </Button>
             </CardContent>

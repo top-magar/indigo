@@ -82,7 +82,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <ShoppingCart className="size-4 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="stat-value">{customer.stats.totalOrders}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{customer.stats.totalOrders}</p>
                                     <p className="stat-label">Total Orders</p>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <DollarSign className="size-4 text-success" />
                                 </div>
                                 <div>
-                                    <p className="stat-value">{formatCurrency(customer.stats.totalSpent, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.totalSpent, currency)}</p>
                                     <p className="stat-label">Lifetime Value</p>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <TrendingUp className="size-4 text-info" />
                                 </div>
                                 <div>
-                                    <p className="stat-value">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
+                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
                                     <p className="stat-label">Avg. Order</p>
                                 </div>
                             </div>

@@ -125,7 +125,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
-                                <Trash2 className="size-4 mr-2" />
+                                <Trash2 className="size-3.5" />
                                 Delete
                             </Button>
                         </AlertDialogTrigger>
@@ -145,7 +145,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                         </AlertDialogContent>
                     </AlertDialog>
                     <Button onClick={handleSave} disabled={isPending}>
-                        {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="size-3.5 animate-spin" />}
                         Save Changes
                     </Button>
                 </>

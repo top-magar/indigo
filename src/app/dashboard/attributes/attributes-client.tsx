@@ -144,7 +144,7 @@ export function AttributesClient({
                             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                         <Button onClick={() => setCreateDialogOpen(true)}>
-                            <Plus className="size-4 mr-2" />
+                            <Plus className="size-3.5" />
                             Create Attribute
                         </Button>
                     </>
@@ -311,7 +311,7 @@ export function AttributesClient({
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon-sm" aria-label="More actions"
-                                                                className="h-8 w-8 opacity-0 group-hover:opacity-100"
+                                                                className="size-8 opacity-0 group-hover:opacity-100"
                                                             >
                                                                 <MoreHorizontal className="size-4" />
                                                             </Button>
@@ -319,7 +319,7 @@ export function AttributesClient({
                                                         <DropdownMenuContent align="end" className="w-48">
                                                             <DropdownMenuItem asChild>
                                                                 <Link href={`/dashboard/attributes/${attribute.id}`}>
-                                                                    <Eye className="size-4 mr-2" />
+                                                                    <Eye className="size-3.5" />
                                                                     View Details
                                                                 </Link>
                                                             </DropdownMenuItem>

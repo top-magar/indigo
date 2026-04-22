@@ -145,7 +145,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
             </Link>
           </Button>
           <div>
-            <h1 className="text-xl font-semibold tracking-[-0.4px]">Customer Groups</h1>
+            <h1 className="text-lg font-semibold tracking-tight">Customer Groups</h1>
             <p className="text-sm text-muted-foreground">
               Segment customers and offer group discounts
             </p>
@@ -161,7 +161,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
           </Button>
           <Button onClick={openCreateDialog}>
-            <Plus className="size-4 mr-2" />
+            <Plus className="size-3.5" />
             Create Group
           </Button>
         </div>
@@ -207,7 +207,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditDialog(group)}>
-                        <Edit className="size-4 mr-2" />
+                        <Edit className="size-3.5" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -215,7 +215,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDelete(group.id)}
                       >
-                        <Trash2 className="size-4 mr-2" />
+                        <Trash2 className="size-3.5" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
