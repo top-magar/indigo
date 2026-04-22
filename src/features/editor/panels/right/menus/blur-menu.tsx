@@ -31,22 +31,16 @@ export function BlurMenu({ get, set }: StyleProps) {
         <SelectField label="" value={get("mixBlendMode") || "normal"} options={blendModes} onChange={(v) => set("mixBlendMode", v === "normal" ? "" : v)} />
 
         {/* Blur + Backdrop blur */}
-        <div className="grid grid-cols-2 gap-1">
-          <N icon="B" value={parseFilter(get("filter"), "blur")} onChange={(v) => setFilter(get, set, "blur", v, "px")} placeholder="0" tip="Blur" slider={{ min: 0, max: 20, gradient: "linear-gradient(to right, #3b82f6, #93c5fd)" }} />
-          <N icon="⬚" value={get("backdropFilter")?.replace("blur(", "").replace("px)", "").replace(")", "") || ""} onChange={(v) => set("backdropFilter", v && v !== "0" ? `blur(${v}px)` : "")} placeholder="0" tip="Backdrop blur" slider={{ min: 0, max: 20, gradient: "linear-gradient(to right, #8b5cf6, #c4b5fd)" }} />
-        </div>
+        <N icon="B" value={parseFilter(get("filter"), "blur")} onChange={(v) => setFilter(get, set, "blur", v, "px")} placeholder="0" tip="Blur" slider={{ min: 0, max: 20, gradient: "linear-gradient(to right, #3b82f6, #93c5fd)" }} />
+        <N icon="⬚" value={get("backdropFilter")?.replace("blur(", "").replace("px)", "").replace(")", "") || ""} onChange={(v) => set("backdropFilter", v && v !== "0" ? `blur(${v}px)` : "")} placeholder="0" tip="Backdrop blur" slider={{ min: 0, max: 20, gradient: "linear-gradient(to right, #8b5cf6, #c4b5fd)" }} />
 
         {/* Brightness + Contrast */}
-        <div className="grid grid-cols-2 gap-1">
-          <N icon="☀" value={parseFilter(get("filter"), "brightness") || ""} onChange={(v) => setFilter(get, set, "brightness", v, "%")} placeholder="100" tip="Brightness %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #1a1a1a, #fbbf24, #fff)" }} />
-          <N icon="◐" value={parseFilter(get("filter"), "contrast") || ""} onChange={(v) => setFilter(get, set, "contrast", v, "%")} placeholder="100" tip="Contrast %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #9ca3af, #111)" }} />
-        </div>
+        <N icon="☀" value={parseFilter(get("filter"), "brightness") || ""} onChange={(v) => setFilter(get, set, "brightness", v, "%")} placeholder="100" tip="Brightness %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #1a1a1a, #fbbf24, #fff)" }} />
+        <N icon="◐" value={parseFilter(get("filter"), "contrast") || ""} onChange={(v) => setFilter(get, set, "contrast", v, "%")} placeholder="100" tip="Contrast %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #9ca3af, #111)" }} />
 
         {/* Saturate + Grayscale */}
-        <div className="grid grid-cols-2 gap-1">
-          <N icon="Sa" value={parseFilter(get("filter"), "saturate") || ""} onChange={(v) => setFilter(get, set, "saturate", v, "%")} placeholder="100" tip="Saturate %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #9ca3af, #ef4444, #f97316)" }} />
-          <N icon="◑" value={parseFilter(get("filter"), "grayscale") || ""} onChange={(v) => setFilter(get, set, "grayscale", v, "%")} placeholder="0" tip="Grayscale %" slider={{ min: 0, max: 100, gradient: "linear-gradient(to right, #ef4444, #9ca3af)" }} />
-        </div>
+        <N icon="Sa" value={parseFilter(get("filter"), "saturate") || ""} onChange={(v) => setFilter(get, set, "saturate", v, "%")} placeholder="100" tip="Saturate %" slider={{ min: 0, max: 200, gradient: "linear-gradient(to right, #9ca3af, #ef4444, #f97316)" }} />
+        <N icon="◑" value={parseFilter(get("filter"), "grayscale") || ""} onChange={(v) => setFilter(get, set, "grayscale", v, "%")} placeholder="0" tip="Grayscale %" slider={{ min: 0, max: 100, gradient: "linear-gradient(to right, #ef4444, #9ca3af)" }} />
 
         {/* Hue rotate */}
         <N icon="Hu" value={parseFilter(get("filter"), "hue-rotate") || ""} onChange={(v) => setFilter(get, set, "hue-rotate", v, "deg")} placeholder="0" tip="Hue rotate deg" slider={{ min: 0, max: 360, gradient: "linear-gradient(to right, #ef4444, #eab308, #22c55e, #3b82f6, #a855f7, #ef4444)" }} />
