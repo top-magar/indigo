@@ -60,9 +60,9 @@ export default function ElementWrapper({ element, children, className, style, co
       }}
       className={cn(
         'relative group/el min-w-0',
-        isSel && !isBody && 'ring-2 ring-inset ring-blue-500 cursor-move',
-        isHov && !isBody && 'ring-1 ring-inset ring-blue-400/40 cursor-pointer',
-        isDrop && 'ring-2 ring-inset ring-emerald-500/60 bg-emerald-500/[0.04] cursor-copy',
+        isSel && !isBody && 'outline outline-2 outline-blue-500 -outline-offset-1 cursor-move',
+        isHov && !isBody && 'outline outline-1 outline-blue-400/40 -outline-offset-1 cursor-pointer',
+        isDrop && 'outline outline-2 outline-emerald-500/60 -outline-offset-1 bg-emerald-500/[0.04] cursor-copy',
         isBody && 'min-h-full',
         !isBody && element.locked && 'cursor-not-allowed opacity-90',
         className,
