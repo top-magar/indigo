@@ -60,7 +60,9 @@ export function generateHTML(elements: El[], options: { title: string; descripti
   const body = elements[0];
   if (!body) return '';
   const fonts = new Set<string>();
-  const bodyHTML = renderEl(body, fonts);
+  // Inject max-width on body so it doesn't stretch to full viewport
+  const bodyWithConstraint = { ...body, styles: { ...body.styles, maxWidth: '1440px', margin: '0 auto' } };
+  const bodyHTML = renderEl(bodyWithConstraint, fonts);
 
   // Responsive styles
   const responsiveCSS: string[] = [];
