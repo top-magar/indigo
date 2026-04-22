@@ -1,578 +1,209 @@
 "use client";
 
 import { useState } from "react";
-import {
-    Truck,
-    Plus,
-    Edit,
-    Trash2,
-    MoreHorizontal,
-    MapPin,
-    Clock,
-    CheckCircle,
-    Package,
-    Globe,
-    Settings,
-    Loader2,
-    ArrowRight,
-} from "lucide-react";
+import { Plus, Trash2, MoreHorizontal, MapPin, Clock, Package, Edit, Loader2, CheckCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn, formatCurrency } from "@/shared/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { formatCurrency } from "@/shared/utils";
 import { toast } from "sonner";
-import { getCurrencySymbol, ZoneDialog, RateDialog, mockCarriers } from "./_components/helpers";
-
-// ============================================================================
-// TYPES
-// ============================================================================
+import { ZoneDialog, RateDialog } from "./_components/helpers";
 
 interface ShippingRate {
-    id: string;
-    name: string;
-    price: number;
-    min_days: number;
-    max_days: number;
-    condition_type?: "weight" | "price" | "none";
-    condition_min?: number;
-    condition_max?: number;
+  id: string; name: string; price: number; min_days: number; max_days: number;
+  condition_type?: "weight" | "price" | "none"; condition_min?: number; condition_max?: number;
 }
 
 interface ShippingZone {
-    id: string;
-    name: string;
-    regions: string[];
-    rates: ShippingRate[];
-}
-
-interface CarrierIntegration {
-    id: string;
-    name: string;
-    logo: string;
-    connected: boolean;
-    services: string[];
-}
-
-interface PackageDimension {
-    id: string;
-    name: string;
-    length: number;
-    width: number;
-    height: number;
-    weight: number;
-    is_default: boolean;
+  id: string; name: string; regions: string[]; rates: ShippingRate[];
 }
 
 interface ShippingData {
-    zones: ShippingZone[];
-    freeShippingThreshold: number | null;
-    defaultHandlingTime: number;
-    carriers: CarrierIntegration[];
-    packages: PackageDimension[];
+  zones: ShippingZone[];
+  freeShippingThreshold: number | null;
+  defaultHandlingTime: number;
+  carriers: unknown[];
+  packages: unknown[];
 }
 
-interface ShippingSettingsClientProps {
-    data: ShippingData;
-    currency: string;
-}
+export function ShippingSettingsClient({ data, currency }: { data: ShippingData; currency: string }) {
+  const [zones, setZones] = useState(data.zones);
+  const [freeShipping, setFreeShipping] = useState(!!data.freeShippingThreshold);
+  const [threshold, setThreshold] = useState(data.freeShippingThreshold?.toString() || "2500");
+  const [handlingTime, setHandlingTime] = useState(data.defaultHandlingTime.toString());
 
-// ============================================================================
-// HELPERS
-// ============================================================================
+  const [zoneDialogOpen, setZoneDialogOpen] = useState(false);
+  const [selectedZone, setSelectedZone] = useState<ShippingZone | null>(null);
+  const [rateDialogOpen, setRateDialogOpen] = useState(false);
+  const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
+  const [selectedZoneForRate, setSelectedZoneForRate] = useState<string | null>(null);
 
-export function ShippingSettingsClient({ data, currency }: ShippingSettingsClientProps) {
-    const [freeShippingEnabled, setFreeShippingEnabled] = useState(!!data.freeShippingThreshold);
-    const [freeShippingThreshold, setFreeShippingThreshold] = useState(
-        data.freeShippingThreshold?.toString() || "2500"
-    );
-    const [handlingTime, setHandlingTime] = useState(data.defaultHandlingTime.toString());
-    
-    // Dialog states
-    const [zoneDialogOpen, setZoneDialogOpen] = useState(false);
-    const [selectedZone, setSelectedZone] = useState<ShippingZone | null>(null);
-    const [rateDialogOpen, setRateDialogOpen] = useState(false);
-    const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
-    const [selectedZoneForRate, setSelectedZoneForRate] = useState<string | null>(null);
+  const handleSaveZone = (zoneData: Partial<ShippingZone>) => {
+    if (selectedZone) {
+      setZones(zones.map(z => z.id === selectedZone.id ? { ...z, ...zoneData } : z));
+    } else {
+      setZones([...zones, { id: `zone-${Date.now()}`, name: zoneData.name || "", regions: zoneData.regions || [], rates: [] }]);
+    }
+    setSelectedZone(null);
+  };
 
-    // Local state for zones (in production, this would be server state)
-    const [zones, setZones] = useState<ShippingZone[]>(data.zones);
-    const [carriers] = useState<CarrierIntegration[]>(mockCarriers);
+  const handleSaveRate = (rateData: Partial<ShippingRate>) => {
+    if (!selectedZoneForRate) return;
+    setZones(zones.map(zone => {
+      if (zone.id !== selectedZoneForRate) return zone;
+      if (selectedRate) return { ...zone, rates: zone.rates.map(r => r.id === selectedRate.id ? { ...r, ...rateData } : r) };
+      return { ...zone, rates: [...zone.rates, { id: `rate-${Date.now()}`, name: rateData.name || "", price: rateData.price || 0, min_days: rateData.min_days || 1, max_days: rateData.max_days || 3, ...rateData }] };
+    }));
+    setSelectedRate(null);
+    setSelectedZoneForRate(null);
+  };
 
-    const handleSaveGeneralSettings = () => {
-        toast.success("Shipping settings saved");
-    };
+  const totalRates = zones.reduce((sum, z) => sum + z.rates.length, 0);
 
-    const handleSaveZone = (zoneData: Partial<ShippingZone>) => {
-        if (selectedZone) {
-            setZones(zones.map(z => z.id === selectedZone.id ? { ...z, ...zoneData } : z));
-        } else {
-            const newZone: ShippingZone = {
-                id: `zone-${Date.now()}`,
-                name: zoneData.name || "",
-                regions: zoneData.regions || [],
-                rates: [],
-            };
-            setZones([...zones, newZone]);
-        }
-        setSelectedZone(null);
-    };
-
-    const handleSaveRate = (rateData: Partial<ShippingRate>) => {
-        if (!selectedZoneForRate) return;
-        
-        setZones(zones.map(zone => {
-            if (zone.id !== selectedZoneForRate) return zone;
-            
-            if (selectedRate) {
-                return {
-                    ...zone,
-                    rates: zone.rates.map(r => r.id === selectedRate.id ? { ...r, ...rateData } : r),
-                };
-            } else {
-                const newRate: ShippingRate = {
-                    id: `rate-${Date.now()}`,
-                    name: rateData.name || "",
-                    price: rateData.price || 0,
-                    min_days: rateData.min_days || 1,
-                    max_days: rateData.max_days || 3,
-                    condition_type: rateData.condition_type,
-                    condition_min: rateData.condition_min,
-                    condition_max: rateData.condition_max,
-                };
-                return { ...zone, rates: [...zone.rates, newRate] };
-            }
-        }));
-        setSelectedRate(null);
-        setSelectedZoneForRate(null);
-    };
-
-    const handleDeleteZone = (zoneId: string) => {
-        setZones(zones.filter(z => z.id !== zoneId));
-        toast.success("Zone deleted");
-    };
-
-    const handleDeleteRate = (zoneId: string, rateId: string) => {
-        setZones(zones.map(zone => {
-            if (zone.id !== zoneId) return zone;
-            return { ...zone, rates: zone.rates.filter(r => r.id !== rateId) };
-        }));
-        toast.success("Rate deleted");
-    };
-
-    const handleConnectCarrier = (carrierId: string) => {
-        toast.info("Carrier integration coming soon");
-    };
-
-    return (
-        <div className="max-w-3xl space-y-3">
-            {/* Header */}
-            <div>
-                <h2 className="text-sm font-semibold">Shipping</h2>
-                <p className="text-sm text-muted-foreground">
-                    Configure shipping zones, rates, and delivery options
-                </p>
-            </div>
-
-            <Tabs defaultValue="zones" className="space-y-4">
-                <TabsList>
-                    <TabsTrigger value="zones" className="gap-2">
-                        <Globe className="size-4" />
-                        Zones & Rates
-                    </TabsTrigger>
-                    <TabsTrigger value="carriers" className="gap-2">
-                        <Truck className="size-4" />
-                        Carriers
-                    </TabsTrigger>
-                    <TabsTrigger value="settings" className="gap-2">
-                        <Settings className="size-4" />
-                        Settings
-                    </TabsTrigger>
-                </TabsList>
-
-                {/* Zones & Rates Tab */}
-                <TabsContent value="zones" className="space-y-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle className="text-sm">Shipping Zones</CardTitle>
-                                <CardDescription>
-                                    Define regions and set shipping rates for each zone
-                                </CardDescription>
-                            </div>
-                            <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                <Plus className="size-4 mr-2" />
-                                Add Zone
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {zones.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
-                                        <Truck className="size-5 text-muted-foreground" />
-                                    </div>
-                                    <h3 className="text-sm font-medium mb-1">No shipping zones</h3>
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                        Create shipping zones to define delivery areas and rates
-                                    </p>
-                                    <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                        <Plus className="size-4 mr-2" />
-                                        Add Zone
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {zones.map((zone) => (
-                                        <div
-                                            key={zone.id}
-                                            className="rounded-lg border bg-card p-4 space-y-4"
-                                        >
-                                            {/* Zone Header */}
-                                            <div className="flex items-start justify-between">
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <MapPin className="size-4 text-muted-foreground" />
-                                                        <h4 className="font-medium">{zone.name}</h4>
-                                                    </div>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {zone.regions.join(", ")}
-                                                    </p>
-                                                </div>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                            <MoreHorizontal className="size-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem onClick={() => { setSelectedZone(zone); setZoneDialogOpen(true); }}>
-                                                            <Edit className="size-4 mr-2" />
-                                                            Edit Zone
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}>
-                                                            <Plus className="size-4 mr-2" />
-                                                            Add Rate
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem 
-                                                            className="text-destructive focus:text-destructive"
-                                                            onClick={() => handleDeleteZone(zone.id)}
-                                                        >
-                                                            <Trash2 className="size-4 mr-2" />
-                                                            Delete Zone
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-
-                                            {/* Rates */}
-                                            <div className="space-y-2">
-                                                <div className="flex items-center justify-between">
-                                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                                        Shipping Rates
-                                                    </p>
-                                                    <Button
-                                                        variant="ghost" 
-                                                        className="h-7 text-xs"
-                                                        onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}
-                                                    >
-                                                        <Plus className="size-3.5 mr-1" />
-                                                        Add Rate
-                                                    </Button>
-                                                </div>
-                                                {zone.rates.length === 0 ? (
-                                                    <p className="text-sm text-muted-foreground py-4 text-center">
-                                                        No rates configured for this zone
-                                                    </p>
-                                                ) : (
-                                                    <div className="grid gap-2">
-                                                        {zone.rates.map((rate) => (
-                                                            <div
-                                                                key={rate.id}
-                                                                className="flex items-center justify-between p-3 rounded-md bg-muted/50"
-                                                            >
-                                                                <div className="flex items-center gap-3">
-                                                                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background border">
-                                                                        <Package className="size-4 text-muted-foreground" />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="text-sm font-medium">{rate.name}</p>
-                                                                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                            <Clock className="size-3.5" />
-                                                                            {rate.min_days === rate.max_days 
-                                                                                ? `${rate.min_days} day${rate.min_days !== 1 ? "s" : ""}`
-                                                                                : `${rate.min_days}-${rate.max_days} days`
-                                                                            }
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-3">
-                                                                    <Badge className="font-mono">
-                                                                        {rate.price === 0 ? "Free" : formatCurrency(rate.price, currency)}
-                                                                    </Badge>
-                                                                    <DropdownMenu>
-                                                                        <DropdownMenuTrigger asChild>
-                                                                            <Button variant="ghost" size="icon-xs">
-                                                                                <MoreHorizontal className="size-3.5" />
-                                                                            </Button>
-                                                                        </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end">
-                                                                            <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }}>
-                                                                                <Edit className="size-4 mr-2" />
-                                                                                Edit
-                                                                            </DropdownMenuItem>
-                                                                            <DropdownMenuItem 
-                                                                                className="text-destructive focus:text-destructive"
-                                                                                onClick={() => handleDeleteRate(zone.id, rate.id)}
-                                                                            >
-                                                                                <Trash2 className="size-4 mr-2" />
-                                                                                Delete
-                                                                            </DropdownMenuItem>
-                                                                        </DropdownMenuContent>
-                                                                    </DropdownMenu>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Carriers Tab */}
-                <TabsContent value="carriers" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-sm">Carrier Integrations</CardTitle>
-                            <CardDescription>
-                                Connect shipping carriers to get real-time rates and tracking
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {carriers.map((carrier) => (
-                                <div
-                                    key={carrier.id}
-                                    className="flex items-center justify-between p-4 rounded-lg border bg-card"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-sm">
-                                            {carrier.logo}
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-medium">{carrier.name}</p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {carrier.services.join(", ")}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        {carrier.connected ? (
-                                            <>
-                                                <Badge className="bg-success/10 text-success">
-                                                    Connected
-                                                </Badge>
-                                                <Button variant="outline">
-                                                    Configure
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <Button onClick={() => handleConnectCarrier(carrier.id)}>
-                                                Connect
-                                                <ArrowRight className="size-4 ml-1" />
-                                            </Button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                    {/* Info Card */}
-                    <Card className="bg-primary/5 border-primary/20">
-                        <CardContent className="p-4">
-                            <div className="flex gap-3">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                    <Truck className="size-4 text-primary" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-medium">Real-time shipping rates</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Connect a carrier to automatically calculate shipping costs based on package dimensions and destination.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* Settings Tab */}
-                <TabsContent value="settings" className="space-y-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-sm">General Settings</CardTitle>
-                            <CardDescription>
-                                Configure default shipping behavior for your store
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {/* Free Shipping */}
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="space-y-1">
-                                    <Label className="text-xs font-medium">Free Shipping Threshold</Label>
-                                    <p className="text-sm text-muted-foreground">
-                                        Offer free shipping on orders above a certain amount
-                                    </p>
-                                </div>
-                                <Switch
-                                    checked={freeShippingEnabled}
-                                    onCheckedChange={setFreeShippingEnabled}
-                                />
-                            </div>
-                            {freeShippingEnabled && (
-                                <div className="pl-0 space-y-2">
-                                    <Label htmlFor="threshold">Minimum Order Amount</Label>
-                                    <div className="relative max-w-xs">
-                                        <Input
-                                            id="threshold"
-                                            type="number"
-                                            min="0"
-                                            value={freeShippingThreshold}
-                                            onChange={(e) => setFreeShippingThreshold(e.target.value)}
-                                            className="pl-12"
-                                        />
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                                            {getCurrencySymbol(currency)}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Handling Time */}
-                            <div className="space-y-2 pt-4 border-t">
-                                <Label htmlFor="handling">Default Handling Time (days)</Label>
-                                <p className="text-sm text-muted-foreground mb-2">
-                                    Time needed to prepare an order before shipping
-                                </p>
-                                <Input
-                                    id="handling"
-                                    type="number"
-                                    min="0"
-                                    max="14"
-                                    value={handlingTime}
-                                    onChange={(e) => setHandlingTime(e.target.value)}
-                                    className="max-w-[100px]"
-                                />
-                            </div>
-
-                            <Button onClick={handleSaveGeneralSettings} className="mt-4">
-                                Save Changes
-                            </Button>
-                        </CardContent>
-                    </Card>
-
-                    {/* Package Dimensions */}
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle className="text-sm">Package Presets</CardTitle>
-                                <CardDescription>
-                                    Define common package sizes for quick selection
-                                </CardDescription>
-                            </div>
-                            <Button variant="outline">
-                                <Plus className="size-4 mr-2" />
-                                Add Package
-                            </Button>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {[
-                                    { name: "Small Box", dimensions: "20 × 15 × 10 cm", weight: "0.5 kg", isDefault: true },
-                                    { name: "Medium Box", dimensions: "30 × 25 × 15 cm", weight: "1 kg", isDefault: false },
-                                    { name: "Large Box", dimensions: "40 × 35 × 25 cm", weight: "2 kg", isDefault: false },
-                                ].map((pkg, i) => (
-                                    <div key={i} className="p-3 rounded-lg border bg-card">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <Package className="size-4 text-muted-foreground" />
-                                                <p className="text-sm font-medium">{pkg.name}</p>
-                                            </div>
-                                            {pkg.isDefault && (
-                                                <Badge className="text-[10px]">Default</Badge>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-muted-foreground">{pkg.dimensions}</p>
-                                        <p className="text-xs text-muted-foreground">Max weight: {pkg.weight}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Info Card */}
-                    <Card className="bg-success/5 border-success/20">
-                        <CardContent className="p-4">
-                            <div className="flex gap-3">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success/10">
-                                    <CheckCircle className="size-4 text-success" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-medium">Shipping rates are calculated at checkout</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Customers will see available shipping options based on their delivery address and the zones you've configured.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-
-            {/* Dialogs */}
-            <ZoneDialog
-                open={zoneDialogOpen}
-                onOpenChange={setZoneDialogOpen}
-                zone={selectedZone}
-                onSave={handleSaveZone}
-            />
-            <RateDialog
-                open={rateDialogOpen}
-                onOpenChange={setRateDialogOpen}
-                rate={selectedRate}
-                currency={currency}
-                onSave={handleSaveRate}
-            />
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Shipping</h1>
+          <p className="text-xs text-muted-foreground">{zones.length} zone{zones.length !== 1 ? "s" : ""} · {totalRates} rate{totalRates !== 1 ? "s" : ""}</p>
         </div>
-    );
+        <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }} size="sm">
+          <Plus className="size-3.5" />
+          Add Zone
+        </Button>
+      </div>
+
+      {/* General Settings */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">General</h2>
+        <div className="rounded-lg border divide-y">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium">Free Shipping Threshold</p>
+              <p className="text-[11px] text-muted-foreground">Offer free shipping on orders above this amount</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {freeShipping && (
+                <Input type="number" min={0} value={threshold} onChange={e => setThreshold(e.target.value)} className="w-28 text-right tabular-nums" />
+              )}
+              <Switch checked={freeShipping} onCheckedChange={setFreeShipping} />
+            </div>
+          </div>
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium">Handling Time</p>
+              <p className="text-[11px] text-muted-foreground">Days to prepare an order before shipping</p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Input type="number" min={0} max={14} value={handlingTime} onChange={e => setHandlingTime(e.target.value)} className="w-16 text-right tabular-nums" />
+              <span className="text-xs text-muted-foreground">days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Shipping Zones */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">Zones & Rates</h2>
+        {zones.length === 0 ? (
+          <div className="rounded-lg border p-10 text-center">
+            <div className="mx-auto size-10 rounded-full bg-muted flex items-center justify-center mb-3">
+              <Truck className="size-4 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-medium mb-1">No shipping zones</p>
+            <p className="text-xs text-muted-foreground mb-4 max-w-xs mx-auto">Create zones to define delivery areas and set rates for each</p>
+            <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }} size="sm">
+              <Plus className="size-3.5" /> Add Zone
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {zones.map(zone => (
+              <div key={zone.id} className="rounded-lg border">
+                {/* Zone header */}
+                <div className="p-4 flex items-center gap-3">
+                  <div className="size-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <MapPin className="size-4 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{zone.name}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{zone.regions.join(", ")}</p>
+                  </div>
+                  <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{zone.rates.length} rate{zone.rates.length !== 1 ? "s" : ""}</Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="size-8"><MoreHorizontal className="size-3.5" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem onClick={() => { setSelectedZone(zone); setZoneDialogOpen(true); }} className="text-xs gap-2">
+                        <Edit className="size-3.5" /> Edit Zone
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }} className="text-xs gap-2">
+                        <Plus className="size-3.5" /> Add Rate
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => { setZones(zones.filter(z => z.id !== zone.id)); toast.success("Zone deleted"); }} className="text-xs gap-2 text-destructive focus:text-destructive">
+                        <Trash2 className="size-3.5" /> Delete Zone
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Rates */}
+                {zone.rates.length > 0 && (
+                  <div className="border-t divide-y">
+                    {zone.rates.map(rate => (
+                      <div key={rate.id} className="px-4 py-2.5 flex items-center gap-3 ml-[52px]">
+                        <Package className="size-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-sm flex-1">{rate.name}</span>
+                        <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                          <Clock className="size-3" />
+                          {rate.min_days === rate.max_days ? `${rate.min_days}d` : `${rate.min_days}-${rate.max_days}d`}
+                        </span>
+                        <span className="text-sm font-medium tabular-nums w-20 text-right">
+                          {rate.price === 0 ? "Free" : formatCurrency(rate.price, currency)}
+                        </span>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="size-7"><MoreHorizontal className="size-3" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-32">
+                            <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }} className="text-xs gap-2">
+                              <Edit className="size-3.5" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { setZones(zones.map(z => z.id === zone.id ? { ...z, rates: z.rates.filter(r => r.id !== rate.id) } : z)); toast.success("Rate deleted"); }} className="text-xs gap-2 text-destructive focus:text-destructive">
+                              <Trash2 className="size-3.5" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add rate shortcut */}
+                {zone.rates.length === 0 && (
+                  <div className="border-t px-4 py-3 ml-[52px]">
+                    <button onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                      + Add a shipping rate
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <p className="text-[10px] text-muted-foreground text-center">
+        Customers see available shipping options based on their delivery address and your zone configuration.
+      </p>
+
+      <ZoneDialog open={zoneDialogOpen} onOpenChange={setZoneDialogOpen} zone={selectedZone} onSave={handleSaveZone} />
+      <RateDialog open={rateDialogOpen} onOpenChange={setRateDialogOpen} rate={selectedRate} currency={currency} onSave={handleSaveRate} />
+    </div>
+  );
 }
