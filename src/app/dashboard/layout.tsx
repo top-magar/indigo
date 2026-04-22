@@ -92,9 +92,6 @@ export default async function DashboardLayout({
                 {/* Header - Client component for dynamic breadcrumbs */}
                 <DashboardHeader 
                     storeSlug={tenant?.slug}
-                    pendingOrdersCount={pendingCount || 0}
-                    lowStockCount={lowStockCount || 0}
-                    newCustomersCount={newCustomersToday || 0}
                 />
 
                 {/* Main Content */}

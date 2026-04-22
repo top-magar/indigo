@@ -30,12 +30,9 @@ import {
     DollarSign,
     Percent,
     Mail,
-    Zap,
     CreditCard,
     Globe,
     Bell,
-    UserCog,
-    Bot,
 } from "lucide-react";
 import { NotificationCenter } from "@/components/dashboard/notifications";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -60,9 +57,6 @@ import {
 
 interface DashboardHeaderProps {
     storeSlug?: string;
-    pendingOrdersCount?: number;
-    lowStockCount?: number;
-    newCustomersCount?: number;
 }
 
 const routeConfig: Record<string, { title: string }> = {
@@ -85,7 +79,6 @@ const routeConfig: Record<string, { title: string }> = {
     "/dashboard/marketing": { title: "Marketing" },
     "/dashboard/marketing/discounts": { title: "Discounts" },
     "/dashboard/marketing/campaigns": { title: "Campaigns" },
-    "/dashboard/marketing/automations": { title: "Automations" },
     "/dashboard/analytics": { title: "Analytics" },
     "/dashboard/finances": { title: "Finances" },
     "/dashboard/settings": { title: "Settings" },
@@ -96,9 +89,7 @@ const routeConfig: Record<string, { title: string }> = {
     "/dashboard/settings/payments": { title: "Payments" },
     "/dashboard/settings/domains": { title: "Domains" },
     "/dashboard/settings/shipping": { title: "Shipping" },
-    "/dashboard/settings/taxes": { title: "Taxes" },
     "/dashboard/settings/tax": { title: "Tax" },
-    "/dashboard/settings/currency": { title: "Currency" },
     "/dashboard/settings/storefront": { title: "Storefront" },
     "/dashboard/orders/new": { title: "New Order" },
 };
@@ -110,7 +101,6 @@ const parentRoutes: Record<string, string> = {
     "/dashboard/customers/groups": "/dashboard/customers",
     "/dashboard/marketing/discounts": "/dashboard/marketing",
     "/dashboard/marketing/campaigns": "/dashboard/marketing",
-    "/dashboard/marketing/automations": "/dashboard/marketing",
 };
 
 function DynamicBreadcrumb({ pathname }: { pathname: string }) {
@@ -199,7 +189,6 @@ const commandNavItems = [
     { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, shortcut: "G M" },
     { label: "Discounts", href: "/dashboard/marketing/discounts", icon: Percent },
     { label: "Campaigns", href: "/dashboard/marketing/campaigns", icon: Mail },
-    { label: "Automations", href: "/dashboard/marketing/automations", icon: Zap },
     { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, shortcut: "G A" },
     { label: "Finances", href: "/dashboard/finances", icon: DollarSign },
     { label: "Settings", href: "/dashboard/settings", icon: Settings, shortcut: "G S" },
