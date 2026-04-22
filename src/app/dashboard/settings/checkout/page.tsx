@@ -28,19 +28,19 @@ export default async function CheckoutSettingsPage() {
         .eq("id", userData.tenant_id)
         .single();
 
-    const settings = (tenant?.settings as Record<string, any>) || {};
-    const checkoutSettings = settings.checkout || {};
+    const settings = (tenant?.settings as Record<string, unknown>) || {};
+    const checkoutSettings = (settings.checkout as Record<string, unknown>) || {};
 
     return (
         <CheckoutSettingsClient 
             settings={{
-                guestCheckout: checkoutSettings.guestCheckout ?? true,
-                requirePhone: checkoutSettings.requirePhone ?? false,
-                requireCompany: checkoutSettings.requireCompany ?? false,
-                orderNotes: checkoutSettings.orderNotes ?? true,
-                termsUrl: checkoutSettings.termsUrl || "",
-                privacyUrl: checkoutSettings.privacyUrl || "",
-                refundPolicy: checkoutSettings.refundPolicy || "",
+                guestCheckout: (checkoutSettings.guestCheckout as boolean) ?? true,
+                requirePhone: (checkoutSettings.requirePhone as boolean) ?? false,
+                requireCompany: (checkoutSettings.requireCompany as boolean) ?? false,
+                orderNotes: (checkoutSettings.orderNotes as boolean) ?? true,
+                termsUrl: (checkoutSettings.termsUrl as string) || "",
+                privacyUrl: (checkoutSettings.privacyUrl as string) || "",
+                refundPolicy: (checkoutSettings.refundPolicy as string) || "",
             }}
             userRole={userData.role}
         />

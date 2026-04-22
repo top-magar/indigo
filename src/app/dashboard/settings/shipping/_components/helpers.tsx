@@ -3,10 +3,9 @@
 import { useState } from "react"
 import { toast } from "sonner"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ShippingZone = any
-type CarrierIntegration = any
-type ShippingRate = any
+type ShippingRate = { id: string; name: string; price: number; min_days: number; max_days: number; condition_type?: "none" | "price" | "weight"; condition_min?: number; condition_max?: number }
+type ShippingZone = { id: string; name: string; regions: string[]; rates: ShippingRate[] }
+type CarrierIntegration = { id: string; name: string; logo: string; connected: boolean; services: string[] }
 
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Loader2, Edit } from "lucide-react"

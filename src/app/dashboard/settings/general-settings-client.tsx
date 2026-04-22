@@ -13,8 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
-import { updateStoreSettings, updateStoreSeoSettings } from "./actions";
-import { updateCurrencySettings } from "./currency/actions";
+import { updateStoreSettings, updateStoreSeoSettings, updateCurrencySettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
 interface GeneralSettingsClientProps {

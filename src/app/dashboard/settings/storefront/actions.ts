@@ -120,7 +120,7 @@ export async function updateStorefrontSettings(formData: FormData): Promise<{ er
 // ── Section Builder ──
 
 import type { SectionConfig } from "@/features/store/section-registry"
-import { revalidateTag as revalidateCacheTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 
 export async function saveSections(sections: SectionConfig[]): Promise<{ error?: string }> {
   const { user, supabase } = await getAuthenticatedClient()
@@ -149,9 +149,9 @@ export async function saveSections(sections: SectionConfig[]): Promise<{ error?:
 
   // Revalidate all store caches so changes appear immediately
   revalidatePath("/dashboard/settings/storefront")
-  revalidateCacheTag("store-tenant", "hours")
-  revalidateCacheTag("store-categories", "hours")
-  revalidateCacheTag("store-layout", "hours")
+  revalidateTag("store-tenant", "hours")
+  revalidateTag("store-categories", "hours")
+  revalidateTag("store-layout", "hours")
   if (tenant?.slug) revalidatePath(`/store/${tenant.slug}`)
   return {}
 }
