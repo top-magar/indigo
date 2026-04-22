@@ -3,7 +3,9 @@
 import { db } from '@/infrastructure/db';
 import { editorProjects } from '@/db/schema/editor-projects';
 import { editorPages } from '@/db/schema/editor-pages';
-import { eq, and, asc, desc } from 'drizzle-orm';
+import { products } from '@/db/schema/products';
+import { collections } from '@/db/schema/collections';
+import { eq, and, asc, desc, sql } from 'drizzle-orm';
 import { requireUser } from '@/lib/auth';
 
 function safeJsonParse(str: string, fallback: unknown = []): unknown {
@@ -58,6 +60,48 @@ function renderElToHtml(el: import('../core/types').El, generateHTML: (els: impo
   return match?.[1] || '';
 }
 
+/** Resolve data bindings — replace bound content with real product data */
+async function resolveBindings(elements: import('../core/types').El[], tenantId: string): Promise<import('../core/types').El[]> {
+  // Collect all product IDs needed
+  const productIds = new Set<string>();
+  const walk = (els: import('../core/types').El[]) => {
+    for (const el of els) {
+      if (el.binding?.productId) productIds.add(el.binding.productId);
+      if (Array.isArray(el.content)) walk(el.content);
+    }
+  };
+  walk(elements);
+  if (productIds.size === 0) return elements;
+
+  // Fetch products
+  const rows = await db.select().from(products).where(and(eq(products.tenantId, tenantId), sql`${products.id} = ANY(${Array.from(productIds)})`));
+  const productMap = new Map(rows.map(p => [p.id, p]));
+
+  // Replace bound content
+  const resolve = (els: import('../core/types').El[]): import('../core/types').El[] =>
+    els.map(el => {
+      let resolved = el;
+      if (el.binding?.productId) {
+        const p = productMap.get(el.binding.productId);
+        if (p) {
+          const c = { ...(el.content as Record<string, string>) };
+          const field = el.binding.field;
+          if (field === 'name') c.innerText = p.name;
+          else if (field === 'price') c.innerText = `$${p.price}`;
+          else if (field === 'compareAtPrice' && p.compareAtPrice) c.innerText = `$${p.compareAtPrice}`;
+          else if (field === 'description' && p.description) c.innerText = p.description;
+          else if (field === 'images[0]' && p.images && (p.images as { url: string }[])[0]) c.src = (p.images as { url: string }[])[0].url;
+          else if (field === 'slug') c.innerText = p.slug;
+          resolved = { ...el, content: c };
+        }
+      }
+      if (Array.isArray(resolved.content)) resolved = { ...resolved, content: resolve(resolved.content) };
+      return resolved;
+    });
+
+  return resolve(elements);
+}
+
 export async function publishPage(page: {
   id: string;
   name: string;
@@ -91,7 +135,8 @@ export async function publishPage(page: {
 
   // Publish each page with SEO + theme + header/footer
   for (const p of pages) {
-    const elements = p.data as import('../core/types').El[];
+    const rawElements = p.data as import('../core/types').El[];
+    const elements = await resolveBindings(rawElements, tenantId);
     const html = generateHTML(elements, {
       title: p.seoTitle || p.name,
       description: p.seoDescription || undefined,
@@ -323,4 +368,24 @@ export async function getSavedComponents() {
 export async function deleteSavedComponent(id: string) {
   const tenantId = await getTenant();
   await db.delete(editorProjects).where(and(eq(editorProjects.id, id), eq(editorProjects.tenantId, tenantId)));
+}
+
+// ─── Product Data for Editor Binding ─────────────────────
+
+export async function getEditorProducts(opts?: { collectionId?: string; limit?: number; search?: string }) {
+  const tenantId = await getTenant();
+  const conditions = [eq(products.tenantId, tenantId)];
+  if (opts?.search) conditions.push(sql`${products.name} ILIKE ${'%' + opts.search + '%'}`);
+
+  return db.select({
+    id: products.id, name: products.name, slug: products.slug,
+    price: products.price, compareAtPrice: products.compareAtPrice,
+    description: products.description, images: products.images,
+  }).from(products).where(and(...conditions)).limit(opts?.limit ?? 50);
+}
+
+export async function getEditorCollections() {
+  const tenantId = await getTenant();
+  return db.select({ id: collections.id, name: collections.name, slug: collections.slug })
+    .from(collections).where(eq(collections.tenantId, tenantId)).limit(50);
 }

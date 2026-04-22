@@ -10,6 +10,10 @@ export type El = {
   /** Per-device style overrides. Merged on top of `styles` when viewing that device. */
   responsiveStyles?: Partial<Record<Device, CSSProperties>>;
   content: El[] | Record<string, string>;
+  /** Data binding — connects content to a product field */
+  binding?: { source: 'product'; field: string; productId?: string };
+  /** Repeat children for each product in a collection */
+  repeat?: { source: 'products'; collectionId?: string; limit?: number };
   /** Prevent editing/moving */
   locked?: boolean;
   /** Hide from canvas (still in tree) */

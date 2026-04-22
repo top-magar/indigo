@@ -8,8 +8,74 @@ import type { El } from "../../core/types";
 import { cn } from "@/lib/utils";
 import { uploadEditorAsset } from "../../lib/upload";
 import { MediaPicker } from "@/features/media/components/media-picker";
-import { getProjectPages } from "../../lib/queries";
+import { getProjectPages, getEditorProducts } from "../../lib/queries";
 import { useEditor } from "../../core/provider";
+
+const PRODUCT_FIELDS = [
+  { value: "name", label: "Product Name" },
+  { value: "price", label: "Price" },
+  { value: "compareAtPrice", label: "Compare Price" },
+  { value: "description", label: "Description" },
+  { value: "images[0]", label: "Main Image" },
+  { value: "slug", label: "Slug" },
+];
+
+function BindingSection({ selected, onUpdate }: { selected: El; onUpdate: (el: El) => void }) {
+  const [products, setProducts] = useState<{ id: string; name: string; price: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const binding = selected.binding;
+
+  const loadProducts = async () => {
+    if (products.length > 0) return;
+    setLoading(true);
+    const data = await getEditorProducts({ limit: 20 });
+    setProducts(data.map(p => ({ id: p.id, name: p.name, price: p.price })));
+    setLoading(false);
+  };
+
+  const setBinding = (field: string) => {
+    onUpdate({ ...selected, binding: { source: 'product', field, productId: binding?.productId } });
+  };
+
+  const setProductId = (id: string) => {
+    onUpdate({ ...selected, binding: { source: 'product', field: binding?.field || 'name', productId: id } });
+  };
+
+  const clearBinding = () => {
+    const el = { ...selected };
+    delete el.binding;
+    onUpdate(el);
+  };
+
+  return (
+    <div className="px-3 py-2 border-b border-sidebar-border">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[9px] font-semibold text-muted-foreground/40 uppercase tracking-wider">Data Binding</span>
+        {binding && <button onClick={clearBinding} className="text-[9px] text-destructive hover:underline">Remove</button>}
+      </div>
+      {binding ? (
+        <div className="space-y-1">
+          <div className="flex items-center gap-1 h-6 px-2 rounded-md bg-primary/10 text-primary text-[10px] font-medium">
+            <MIcon name="link" size={11} />
+            <span>product.{binding.field}</span>
+          </div>
+          <select value={binding.field} onChange={(e) => setBinding(e.target.value)} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
+            {PRODUCT_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+          </select>
+          <select value={binding.productId || ''} onChange={(e) => setProductId(e.target.value)} onFocus={loadProducts} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
+            <option value="">All products (dynamic)</option>
+            {loading && <option disabled>Loading...</option>}
+            {products.map(p => <option key={p.id} value={p.id}>{p.name} — ${p.price}</option>)}
+          </select>
+        </div>
+      ) : (
+        <button onClick={() => setBinding('name')} className="flex w-full items-center justify-center gap-1 h-6 rounded-md border border-dashed border-sidebar-border text-[10px] text-muted-foreground/40 hover:text-foreground hover:border-primary/40 transition-colors">
+          <MIcon name="link" size={11} /> Bind to Product
+        </button>
+      )}
+    </div>
+  );
+}
 import { toast } from "sonner";
 
 // ─── Link Picker (Popover-based) ────────────────────────
@@ -301,6 +367,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
     const filtered = search ? entries.filter(([k]) => (fieldMeta[k]?.label || k).toLowerCase().includes(search.toLowerCase())) : entries;
     return (
       <div className="flex-1 overflow-y-auto">
+        <BindingSection selected={selected} onUpdate={onUpdate} />
         {entries.length > 3 && (
           <div className="px-3 pt-2">
             <Input value={search} onChange={(e) => setSearch(e.target.value)} className="h-7 text-[10px] bg-sidebar" placeholder="Search fields..." />
