@@ -7,15 +7,22 @@ import { Section, IconToggle, type StyleProps } from "../shared";
 import { cn } from "@/lib/utils";
 
 function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider }: { icon: string; value: string; onChange: (v: string) => void; placeholder?: string; tip: string; disabled?: boolean; slider?: { min: number; max: number; gradient?: string } }) {
+  const pct = slider ? ((+value || 0) - slider.min) / (slider.max - slider.min) * 100 : 0;
   return (
     <Tooltip><TooltipTrigger asChild>
       <div className={cn("flex items-center gap-2 group", disabled && "opacity-30 pointer-events-none")}>
         {slider && (
-          <div className="flex-1 min-w-0 relative h-4 flex items-center">
-            {slider.gradient && <div className="absolute inset-x-0 h-1.5 rounded-full" style={{ background: slider.gradient }} />}
+          <div className="flex-1 min-w-0 relative h-5 flex items-center cursor-pointer"
+            onPointerDown={(e) => {
+              const el = e.currentTarget.querySelector("input") as HTMLInputElement;
+              if (el) { const r = e.currentTarget.getBoundingClientRect(); const x = Math.round(((e.clientX - r.left) / r.width) * (slider.max - slider.min) + slider.min); onChange(String(Math.max(slider.min, Math.min(slider.max, x)))); }
+            }}>
+            <div className="absolute inset-x-0 h-1.5 rounded-full bg-sidebar-border overflow-hidden">
+              <div className="h-full rounded-full transition-[width]" style={{ width: `${pct}%`, background: slider.gradient || "hsl(var(--primary))" }} />
+            </div>
+            <div className="absolute size-3 rounded-full bg-white border-2 border-primary shadow-sm transition-[left] pointer-events-none" style={{ left: `calc(${pct}% - 6px)` }} />
             <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
-              className={cn("relative flex-1 h-1.5 cursor-pointer min-w-0 opacity-80 group-hover:opacity-100 transition-opacity", slider.gradient ? "accent-white [&::-webkit-slider-runnable-track]:bg-transparent" : "accent-primary")}
-              style={slider.gradient ? { WebkitAppearance: "none", background: "transparent" } as React.CSSProperties : undefined} />
+              className="absolute inset-0 w-full opacity-0 cursor-pointer" />
           </div>
         )}
         <div className={cn("relative", slider ? "w-14 shrink-0" : "w-full")}>
