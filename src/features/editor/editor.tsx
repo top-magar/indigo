@@ -124,7 +124,7 @@ function EditorInner() {
   }, [baseKeyDown]);
 
   const body = elements[0];
-  const deviceWidth = device === "Desktop" ? "100%" : device === "Tablet" ? 768 : 420;
+  const deviceWidth = device === "Desktop" ? "100vw" : device === "Tablet" ? 768 : 420;
 
   const seoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveSeo = useCallback((field: string, value: string) => {
