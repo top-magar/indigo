@@ -43,3 +43,20 @@ export function PaymentStatusBadge({ status }: { status: string }) {
     </Badge>
   )
 }
+
+const FULFILLMENT_CONFIG: Record<string, { label: string; className: string }> = {
+  unfulfilled: { label: "Unfulfilled", className: "bg-warning/10 text-warning" },
+  partially_fulfilled: { label: "Partial", className: "bg-info/10 text-info" },
+  fulfilled: { label: "Fulfilled", className: "bg-success/10 text-success" },
+  shipped: { label: "Shipped", className: "bg-ds-teal-700/10 text-ds-teal-700" },
+  delivered: { label: "Delivered", className: "bg-success/10 text-success" },
+}
+
+export function FulfillmentStatusBadge({ status }: { status: string }) {
+  const config = FULFILLMENT_CONFIG[status] || FULFILLMENT_CONFIG.unfulfilled
+  return (
+    <Badge className={cn("text-xs font-medium", config.className)}>
+      {config.label}
+    </Badge>
+  )
+}

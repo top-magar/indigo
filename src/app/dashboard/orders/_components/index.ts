@@ -1,4 +1,4 @@
-export { OrderStatusBadge, PaymentStatusBadge, STATUS_CONFIG, PAYMENT_CONFIG } from "./order-badges"
+export { OrderStatusBadge, PaymentStatusBadge, FulfillmentStatusBadge, STATUS_CONFIG, PAYMENT_CONFIG } from "./order-badges"
 export { StatCard } from "./stat-card"
 export { ActiveFilters } from "./active-filters"
 export { OrdersTableSkeleton } from "./table-skeleton"

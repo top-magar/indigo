@@ -73,6 +73,7 @@ import { ORDER_STATUSES, PAYMENT_STATUSES } from "./types";
 import {
   OrderStatusBadge,
   PaymentStatusBadge,
+  FulfillmentStatusBadge,
   STATUS_CONFIG,
   PAYMENT_CONFIG,
   StatCard,
@@ -180,6 +181,10 @@ function OrderTableRow({
 
       <TableCell>
         <PaymentStatusBadge status={order.payment_status} />
+      </TableCell>
+
+      <TableCell>
+        <FulfillmentStatusBadge status={order.fulfillment_status} />
       </TableCell>
 
       <TableCell className="text-right">
@@ -722,6 +727,9 @@ export function OrdersListView({
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Payment
                 </TableHead>
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Fulfillment
+                </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
                   Total
                 </TableHead>
@@ -733,7 +741,7 @@ export function OrdersListView({
             <TableBody>
               {orders.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-64">
+                  <TableCell colSpan={9} className="h-64">
                     <EmptyState
                       icon={ShoppingCart}
                       title="No orders found"
