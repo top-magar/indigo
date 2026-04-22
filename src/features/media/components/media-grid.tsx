@@ -75,7 +75,7 @@ export const MediaGrid = memo(
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border divide-y">
+          <div className="rounded-lg border divide-y overflow-hidden">
             {assets.map((asset, index) => (
               <AssetListItem key={asset.id} asset={asset} index={index} isSelected={selectedIds.has(asset.id)} onSelect={e => onSelect(asset.id, index, e)} onDelete={() => onDelete(asset.id)} onClick={() => onClick(asset)} onDragStart={e => onDragStart(e, asset.id)} />
             ))}
