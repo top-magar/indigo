@@ -15,7 +15,6 @@ import { QuickActions } from "@/components/dashboard/quick-actions"
 import { RecentOrdersTable, type OrderData } from "@/components/dashboard/recent-orders-table"
 import { SetupWizard, SetupChecklist, createSetupSteps } from "@/components/dashboard"
 import { StatCardGridSkeleton } from "@/components/dashboard/skeletons"
-import { StaggerGroup, StaggerItem } from "@/components/ui/stagger"
 
 import {
   fetchDashboardData,
@@ -96,17 +95,17 @@ export default async function DashboardPage() {
       {d.totalProducts === 0 && <QuickActions />}
 
       <Suspense fallback={<StatCardGridSkeleton count={4} />}>
-        <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {metrics.map((m, i) => <StaggerItem key={i}><EnhancedMetricCard metric={m} currency={currency} /></StaggerItem>)}
-        </StaggerGroup>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {metrics.map((m, i) => <EnhancedMetricCard metric={m} currency={currency} />)}
+        </div>
       </Suspense>
 
-      <StaggerGroup className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <StaggerItem className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        
           <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
-        </StaggerItem>
-        <StaggerItem><ActivityFeed activities={activities} maxItems={6} /></StaggerItem>
-      </StaggerGroup>
+        
+        <ActivityFeed activities={activities} maxItems={6} />
+      </div>
 
       <RecentOrdersTable orders={ordersData} currency={currency} />
     </div>
