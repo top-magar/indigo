@@ -13,11 +13,7 @@ export interface ActivityItem {
   description: string;
   timestamp: string;
   href?: string;
-  metadata?: {
-    customerName?: string;
-    orderNumber?: string;
-    amount?: string;
-  };
+  metadata?: { customerName?: string; orderNumber?: string; amount?: string };
 }
 
 export interface ActivityFeedProps {
@@ -26,11 +22,7 @@ export interface ActivityFeedProps {
 }
 
 const typeIcon: Record<string, LucideIcon> = {
-  order: ShoppingCart,
-  customer: User,
-  product: Package,
-  alert: AlertCircle,
-  success: CheckCircle2,
+  order: ShoppingCart, customer: User, product: Package, alert: AlertCircle, success: CheckCircle2,
 };
 
 function ActivityItemRow({ activity }: { activity: ActivityItem }) {
@@ -68,12 +60,10 @@ export function ActivityFeed({ activities, maxItems = 10 }: ActivityFeedProps) {
     <Card className="h-full flex flex-col">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-semibold tracking-[-0.32px]">Activity</CardTitle>
+          <CardTitle className="text-sm font-medium">Activity</CardTitle>
           {activities.length > maxItems && (
-            <Button variant="ghost" asChild className="text-xs">
-              <Link href="/dashboard/activity">
-                View all <ArrowRight className="size-3 ml-1" />
-              </Link>
+            <Button variant="ghost" asChild className="text-xs gap-1">
+              <Link href="/dashboard/orders">View all <ArrowRight className="size-3" /></Link>
             </Button>
           )}
         </div>
@@ -81,22 +71,15 @@ export function ActivityFeed({ activities, maxItems = 10 }: ActivityFeedProps) {
       <CardContent className="pt-0 flex-1">
         {displayed.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="size-10 rounded-xl bg-muted/50 flex items-center justify-center mb-3">
-              <Clock className="size-5 text-muted-foreground/50" />
+            <div className="size-10 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+              <Clock className="size-5 text-muted-foreground" />
             </div>
             <p className="text-sm font-medium text-muted-foreground">No recent activity</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">Activity will show up as your store grows</p>
-            <Button variant="outline" asChild className="mt-4">
-              <Link href="/dashboard/products/new">
-                Add your first product <ArrowRight className="size-3 ml-1" />
-              </Link>
-            </Button>
+            <p className="text-xs text-muted-foreground mt-1">Activity will show up as your store grows</p>
           </div>
         ) : (
-          <div className="divide-y max-h-[400px] overflow-y-auto">
-            {displayed.map((a) => (
-              <ActivityItemRow key={a.id} activity={a} />
-            ))}
+          <div className="divide-y">
+            {displayed.map((a) => <ActivityItemRow key={a.id} activity={a} />)}
           </div>
         )}
       </CardContent>
