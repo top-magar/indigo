@@ -30,18 +30,31 @@ interface ProductFilters {
   category?: string;
   page?: string;
   per_page?: string;
+  pageSize?: string;
+  sort?: string;
+  order?: string;
 }
 
-export async function getProducts(tenantId: string, params: ProductFilters) {
+export async function getProducts(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>, params: ProductFilters) {
   const page = parseInt(params.page || "1") - 1;
-  const perPage = parseInt(params.per_page || "20");
-  const opts = { limit: perPage, offset: page * perPage };
+  const perPage = parseInt(params.pageSize || params.per_page || "20");
 
-  if (params.search) return productRepository.search(tenantId, params.search, opts);
-  if (params.status && params.status !== "all") return productRepository.findByStatus(tenantId, params.status.split(","), opts);
-  if (params.stock && params.stock !== "all") return productRepository.findByStockLevel(tenantId, params.stock as "low" | "out" | "in", opts);
-  if (params.category && params.category !== "all") return productRepository.findByCategory(tenantId, params.category, opts);
-  return productRepository.findAll(tenantId, opts);
+  let query = supabase
+    .from("products")
+    .select("*, categories(name)", { count: "exact" })
+    .eq("tenant_id", tenantId)
+    .order(params.sort || "created_at", { ascending: params.order === "asc" })
+    .range(page * perPage, (page + 1) * perPage - 1);
+
+  if (params.search) query = query.or(`name.ilike.%${params.search}%,sku.ilike.%${params.search}%`);
+  if (params.status && params.status !== "all") query = query.eq("status", params.status);
+  if (params.category && params.category !== "all") query = query.eq("category_id", params.category);
+  if (params.stock === "out") query = query.eq("quantity", 0);
+  else if (params.stock === "low") query = query.gt("quantity", 0).lte("quantity", 10);
+  else if (params.stock === "in") query = query.gt("quantity", 10);
+
+  const { data, count } = await query;
+  return { data: data || [], count: count ?? 0 };
 }
 
 export async function getProductStats(tenantId: string) {

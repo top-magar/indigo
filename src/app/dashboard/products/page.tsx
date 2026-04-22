@@ -47,8 +47,8 @@ export default async function ProductsPage({
     const { supabase, tenantId } = await auth();
     const currency = await getTenantCurrency(supabase, tenantId);
 
-    const [productsData, stats, categories] = await Promise.all([
-        getProducts(tenantId, params),
+    const [{ data: productsData, count: totalCount }, stats, categories] = await Promise.all([
+        getProducts(tenantId, supabase, params),
         getProductStats(tenantId),
         getCategories(tenantId),
     ]);
@@ -56,24 +56,24 @@ export default async function ProductsPage({
     const page = parseInt(params.page || "1") - 1;
     const perPage = parseInt(params.per_page || "20");
 
-    const products: ProductRow[] = (productsData || []).map(p => ({
-        id: p.id,
-        name: p.name,
-        slug: p.slug,
-        description: p.description,
-        price: parseFloat(p.price || "0"),
-        compare_at_price: p.compareAtPrice ? parseFloat(p.compareAtPrice) : null,
-        cost_price: p.costPrice ? parseFloat(p.costPrice) : null,
-        sku: p.sku,
-        barcode: p.barcode,
-        quantity: p.quantity || 0,
-        track_quantity: p.trackQuantity ?? true,
+    const products: ProductRow[] = (productsData || []).map((p: Record<string, unknown>) => ({
+        id: p.id as string,
+        name: p.name as string,
+        slug: p.slug as string,
+        description: p.description as string | null,
+        price: parseFloat(String(p.price || "0")),
+        compare_at_price: p.compare_at_price ? parseFloat(String(p.compare_at_price)) : null,
+        cost_price: p.cost_price ? parseFloat(String(p.cost_price)) : null,
+        sku: p.sku as string | null,
+        barcode: p.barcode as string | null,
+        quantity: (p.quantity as number) || 0,
+        track_quantity: (p.track_quantity as boolean) ?? true,
         status: p.status as "draft" | "active" | "archived",
         images: (p.images as { url: string; alt: string }[]) || [],
-        category_id: p.categoryId,
-        category_name: p.categoryName || null,
-        created_at: p.createdAt.toISOString(),
-        updated_at: p.updatedAt.toISOString(),
+        category_id: p.category_id as string | null,
+        category_name: (p.categories as { name: string } | null)?.name || null,
+        created_at: p.created_at as string,
+        updated_at: p.updated_at as string,
     }));
 
     return (
@@ -81,7 +81,7 @@ export default async function ProductsPage({
             products={products}
             categories={categories}
             stats={stats}
-            totalCount={stats.total}
+            totalCount={totalCount}
             currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
