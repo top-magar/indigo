@@ -4,37 +4,35 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Store, Loader2, CheckCircle, X, Upload } from "lucide-react";
+import { Loader2, CheckCircle, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/shared/utils";
-import { updateStoreSettings, updateCurrencySettings } from "./actions";
+import { updateStoreSettings, updateCurrencySettings, updateStoreSeoSettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
-interface GeneralSettingsClientProps {
+interface Props {
   tenant: Tenant;
   userRole: "owner" | "admin" | "staff";
 }
 
-export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClientProps) {
+export function GeneralSettingsClient({ tenant, userRole }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
+  const canEdit = userRole === "owner" || userRole === "admin";
 
   const [name, setName] = useState(tenant.name);
   const [description, setDescription] = useState(tenant.description || "");
   const [logoUrl, setLogoUrl] = useState(tenant.logo_url || "");
   const [currency, setCurrency] = useState(tenant.currency || "USD");
-  const seoSettings = (tenant.settings as Record<string, unknown>)?.seo as Record<string, string> || {};
-  const [seoTitle, setSeoTitle] = useState(seoSettings.metaTitle || "");
-  const [seoDescription, setSeoDescription] = useState(seoSettings.metaDescription || "");
 
-
-  const canEdit = userRole === "owner" || userRole === "admin";
+  const seo = (tenant.settings as Record<string, Record<string, string>> | null)?.seo || {};
+  const [seoTitle, setSeoTitle] = useState(seo.metaTitle || "");
+  const [seoDescription, setSeoDescription] = useState(seo.metaDescription || "");
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,123 +52,134 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
     }
   };
 
-  const handleSaveGeneral = () => {
-    const fd = new FormData();
-    fd.set("name", name);
-    fd.set("description", description);
-    fd.set("logoUrl", logoUrl);
-    startTransition(async () => {
-      const [storeResult, currencyResult] = await Promise.all([
-        updateStoreSettings(fd),
-        updateCurrencySettings({ currency, displayCurrency: currency, priceIncludesTax: false }),
-      ]);
-      const err = storeResult.error || currencyResult.error;
-      err ? toast.error(err) : (toast.success("Settings saved"), router.refresh());
-    });
-  };
+  const handleSave = () => startTransition(async () => {
+    const storeFd = new FormData();
+    storeFd.set("name", name);
+    storeFd.set("description", description);
+    storeFd.set("logoUrl", logoUrl);
+
+    const seoFd = new FormData();
+    seoFd.set("metaTitle", seoTitle);
+    seoFd.set("metaDescription", seoDescription);
+
+    const [storeRes, currencyRes, seoRes] = await Promise.all([
+      updateStoreSettings(storeFd),
+      updateCurrencySettings({ currency, displayCurrency: currency, priceIncludesTax: false }),
+      updateStoreSeoSettings(seoFd),
+    ]);
+
+    const err = storeRes.error || currencyRes.error || seoRes.error;
+    if (err) { toast.error(err); return; }
+    toast.success("Settings saved");
+    router.refresh();
+  });
 
   return (
     <div className="max-w-3xl space-y-3">
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Store</h1>
-        <p className="text-xs text-muted-foreground">Store information and currency</p>
+        <p className="text-xs text-muted-foreground">Name, branding, currency, and SEO</p>
       </div>
 
       <div className="space-y-3">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Store Information</CardTitle>
-              <CardDescription className="text-xs">Name, description, and logo</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-xs">Store Name</Label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} disabled={!canEdit} />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs">Store URL</Label>
-                  <div className="flex items-center gap-1 rounded-md border bg-muted/50 px-3 py-2 text-xs">
-                    <span className="text-muted-foreground">yoursite.com/store/</span>
-                    <span className="font-medium">{tenant.slug}</span>
-                  </div>
-                </div>
+        {/* Store Info */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Store Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label className="text-xs">Store Name</Label>
+                <Input value={name} onChange={e => setName(e.target.value)} disabled={!canEdit} />
               </div>
               <div className="space-y-2">
-                <Label className="text-xs">Description</Label>
-                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} disabled={!canEdit} />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs">Logo</Label>
-                <div className="flex items-start gap-4">
-                  {logoUrl ? (
-                    <div className="relative size-20 overflow-hidden rounded-lg border group">
-                      <Image src={logoUrl} alt="Logo" fill className="object-cover" />
-                      {canEdit && (
-                        <button onClick={() => setLogoUrl("")} className="absolute top-1 right-1 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                          <X className="size-3" />
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <label className={cn("flex size-20 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 hover:bg-muted", !canEdit && "cursor-not-allowed opacity-50")}>
-                      <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={isUploading || !canEdit} />
-                      {isUploading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : <Upload className="size-5 text-muted-foreground" />}
-                    </label>
-                  )}
-                  <p className="text-xs text-muted-foreground">400×400px, PNG or JPG, max 5MB</p>
+                <Label className="text-xs">Store URL</Label>
+                <div className="flex items-center gap-1 rounded-md border bg-muted/50 px-3 py-2 text-xs">
+                  <span className="text-muted-foreground">yoursite.com/store/</span>
+                  <span className="font-medium">{tenant.slug}</span>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs">Currency</Label>
-                <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NPR">NPR — Nepalese Rupee</SelectItem>
-                    <SelectItem value="USD">USD — US Dollar</SelectItem>
-                    <SelectItem value="INR">INR — Indian Rupee</SelectItem>
-                    <SelectItem value="EUR">EUR — Euro</SelectItem>
-                    <SelectItem value="GBP">GBP — British Pound</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-[10px] text-muted-foreground">All prices displayed in this currency</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* SEO */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Search Engine Optimization</CardTitle>
-              <CardDescription className="text-xs">How your store appears in Google</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2">
-                <Label className="text-xs">Page Title <span className="text-muted-foreground">({seoTitle.length}/60)</span></Label>
-                <Input value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} placeholder="Your Store — Shop Online" maxLength={60} disabled={!canEdit} />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs">Meta Description <span className="text-muted-foreground">({seoDescription.length}/160)</span></Label>
-                <Textarea value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} />
-              </div>
-              <div className="rounded-lg border p-3 bg-muted/30">
-                <p className="text-xs text-muted-foreground mb-1">Google Preview</p>
-                <p className="text-sm text-blue-600 font-medium truncate">{seoTitle || tenant.name}</p>
-                <p className="text-xs text-green-700 truncate">yourstore.com</p>
-                <p className="text-xs text-muted-foreground line-clamp-2">{seoDescription || "No description"}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {canEdit && (
-            <div className="flex justify-end">
-              <Button onClick={handleSaveGeneral} disabled={isPending} size="sm">
-                {isPending ? <><Loader2 className="size-3.5 animate-spin mr-1.5" /> Saving...</> : <><CheckCircle className="size-3.5 mr-1.5" /> Save</>}
-              </Button>
             </div>
-          )}
+            <div className="space-y-2">
+              <Label className="text-xs">Description</Label>
+              <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} disabled={!canEdit} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">Logo</Label>
+              <div className="flex items-start gap-4">
+                {logoUrl ? (
+                  <div className="relative size-16 overflow-hidden rounded-lg border group">
+                    <Image src={logoUrl} alt="Logo" fill className="object-cover" />
+                    {canEdit && (
+                      <button onClick={() => setLogoUrl("")} className="absolute top-1 right-1 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="size-3" />
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <label className="flex size-16 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50">
+                    <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={isUploading || !canEdit} />
+                    {isUploading ? <Loader2 className="size-4 animate-spin text-muted-foreground" /> : <Upload className="size-4 text-muted-foreground" />}
+                  </label>
+                )}
+                <p className="text-[10px] text-muted-foreground mt-1">400×400px, PNG or JPG</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Currency */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Currency</CardTitle>
+            <CardDescription className="text-xs">All prices displayed in this currency</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
+              <SelectTrigger className="w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[["NPR", "Nepalese Rupee"], ["USD", "US Dollar"], ["INR", "Indian Rupee"], ["EUR", "Euro"], ["GBP", "British Pound"]].map(([code, label]) => (
+                  <SelectItem key={code} value={code}>{code} — {label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+
+        {/* SEO */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">SEO</CardTitle>
+            <CardDescription className="text-xs">How your store appears in search results</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-2">
+              <Label className="text-xs">Page Title <span className="text-muted-foreground">({seoTitle.length}/60)</span></Label>
+              <Input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} placeholder="Your Store — Shop Online" maxLength={60} disabled={!canEdit} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">Meta Description <span className="text-muted-foreground">({seoDescription.length}/160)</span></Label>
+              <Textarea value={seoDescription} onChange={e => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} />
+            </div>
+            <div className="rounded-lg border p-3 bg-muted/30 space-y-0.5">
+              <p className="text-[10px] text-muted-foreground">Google Preview</p>
+              <p className="text-sm text-blue-600 font-medium truncate">{seoTitle || tenant.name}</p>
+              <p className="text-xs text-green-700 truncate">{tenant.slug}.indigo.com</p>
+              <p className="text-xs text-muted-foreground line-clamp-2">{seoDescription || "No description set"}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {canEdit && (
+          <div className="flex justify-end">
+            <Button onClick={handleSave} disabled={isPending} size="sm">
+              {isPending ? <><Loader2 className="size-3.5 animate-spin mr-1.5" /> Saving...</> : <><CheckCircle className="size-3.5 mr-1.5" /> Save</>}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

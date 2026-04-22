@@ -62,11 +62,6 @@ export async function updateStoreSeoSettings(formData: FormData): Promise<{ erro
     settings.seo = {
       metaTitle: (formData.get("metaTitle") as string) || null,
       metaDescription: (formData.get("metaDescription") as string) || null,
-      ogImage: (formData.get("ogImage") as string) || null,
-    };
-    settings.analytics = {
-      googleAnalyticsId: (formData.get("googleAnalyticsId") as string) || null,
-      facebookPixelId: (formData.get("facebookPixelId") as string) || null,
     };
 
     const { error } = await supabase
