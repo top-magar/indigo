@@ -67,7 +67,7 @@ import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 
-import type { OrderRow, OrderStats, AIInsight, OrdersClientProps } from "./types";
+import type { OrderRow, OrderStats, OrdersClientProps } from "./types";
 import { ORDER_STATUSES, PAYMENT_STATUSES } from "./types";
 import { needsAction } from "./_lib/types";
 import {
@@ -79,7 +79,6 @@ import {
   StatCard,
   ActiveFilters,
   OrdersTableSkeleton,
-  AIInsightsPanel,
 } from "./_components";
 
 // Order Row Component
@@ -161,7 +160,7 @@ function OrderTableRow({
 
       <TableCell>
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
+          <Avatar className="size-8">
             <AvatarFallback className="text-xs bg-muted text-muted-foreground">
               {customerInitials}
             </AvatarFallback>
@@ -215,7 +214,7 @@ function OrderTableRow({
                 <Button
                   variant="ghost"
                  
-                  className="h-8 w-8 p-0"
+                  className="size-8"
                   asChild
                 >
                   <Link href={`/dashboard/orders/${order.id}`}>
@@ -240,7 +239,7 @@ function OrderTableRow({
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href={`/dashboard/orders/${order.id}`}>
-                  <Eye className="size-4 mr-2" />
+                  <Eye className="size-3.5" />
                   View details
                 </Link>
               </DropdownMenuItem>
@@ -278,7 +277,6 @@ export interface OrdersListViewProps {
   currentPage: number;
   pageSize: number;
   currency: string;
-  aiInsights?: AIInsight[];
   // Filter state
   searchValue: string;
   onSearchChange: (value: string) => void;
@@ -319,7 +317,6 @@ export function OrdersClient({
   currentPage,
   pageSize,
   currency,
-  aiInsights = [],
   filters: initialFilters,
 }: OrdersClientProps) {
   const router = useRouter();
@@ -422,7 +419,6 @@ export function OrdersClient({
       currentPage={currentPage}
       pageSize={pageSize}
       currency={currency}
-      aiInsights={aiInsights}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
       filters={filters}
@@ -461,7 +457,6 @@ export function OrdersListView({
   currentPage,
   pageSize,
   currency,
-  aiInsights = [],
   searchValue,
   onSearchChange,
   filters,
@@ -593,7 +588,6 @@ export function OrdersListView({
       </div>
 
       {/* AI Insights Panel */}
-      <AIInsightsPanel insights={aiInsights} />
 
       {/* Filters & Search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -663,7 +657,7 @@ export function OrdersListView({
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-          <Card className="shadow-sm">
+          <div className="rounded-lg border">
             <CardContent className="flex items-center gap-4 p-3">
               <span className="text-sm font-medium text-foreground">
                 {selectedIds.length} selected
@@ -707,7 +701,7 @@ export function OrdersListView({
                 <X className="size-4" />
               </Button>
             </CardContent>
-          </Card>
+          </div>
         </div>
       )}
 
