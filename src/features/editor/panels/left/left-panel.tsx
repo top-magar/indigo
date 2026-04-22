@@ -30,7 +30,7 @@ export default function LeftPanel({ onPageChange }: LeftPanelProps) {
   return (
     <div className="flex h-full border-r border-sidebar-border">
       {/* Icon rail */}
-        <div className="flex w-12 flex-col items-center gap-1 bg-sidebar py-2">
+        <div className="flex w-12 flex-col items-center gap-1 bg-sidebar py-2 border-r border-sidebar-border">
           {tabs.map(({ id, label, icon }) => (
             <Tooltip key={id}>
               <TooltipTrigger asChild>
