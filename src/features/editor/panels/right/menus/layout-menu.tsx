@@ -99,8 +99,8 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
         {isFlex && (<>
           <div className="flex gap-1">
             <div className="flex-1"><IconToggle value={get("flexDirection") || "row"} options={dirOpts} onChange={(v) => set("flexDirection", v)} /></div>
-            <Tip label="Wrap"><button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>
-              <MIcon name="wrap_text" size={12} />
+            <Tip label="Wrap"><button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-7 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>
+              <MIcon name="wrap_text" size={14} />
             </button></Tip>
           </div>
 
