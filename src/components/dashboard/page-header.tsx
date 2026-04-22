@@ -27,7 +27,7 @@ export function PageHeader({
   filters,
 }: PageHeaderProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Title row */}
       <div className="flex items-center justify-between">
         <div>

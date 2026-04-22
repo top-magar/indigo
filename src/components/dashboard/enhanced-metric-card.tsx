@@ -60,7 +60,7 @@ export function EnhancedMetricCard({ metric, currency, index }: EnhancedMetricCa
     <CardContent className="p-4 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3 mb-1">
         <p className="text-[13px] leading-4 font-medium text-muted-foreground">{metric.label}</p>
-        <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
+        <div className="h-9 w-9 rounded-md bg-muted flex items-center justify-center shrink-0">
           <Icon className="size-4 text-muted-foreground" />
         </div>
       </div>

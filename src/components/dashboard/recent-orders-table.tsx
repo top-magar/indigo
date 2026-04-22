@@ -44,7 +44,7 @@ export function RecentOrdersTable({ orders, currency }: RecentOrdersTableProps) 
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }} className="motion-reduce:!opacity-100 motion-reduce:!transform-none">
     <Card>
       <CardHeader className="flex flex-row items-center justify-between py-4 space-y-0">
-        <CardTitle className="text-base font-semibold tracking-[-0.32px]">Recent Orders</CardTitle>
+        <CardTitle className="text-sm font-medium">Recent Orders</CardTitle>
         <Button variant="ghost" asChild className="text-xs">
           <Link href="/dashboard/orders">
             View all <ArrowRight className="size-3 ml-1" />

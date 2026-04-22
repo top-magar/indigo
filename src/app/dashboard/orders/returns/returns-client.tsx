@@ -205,7 +205,7 @@ export function ReturnsClient({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard title="Total Returns" value={stats.total} icon={PackageCheck} />
         <StatCard title="Pending" value={stats.requested} icon={Clock} />
         <StatCard title="Completed" value={stats.completed} icon={CheckCircle} />

@@ -161,7 +161,7 @@ function OrderTableRow({
 
       <TableCell>
         <div className="flex items-center gap-2">
-          <Avatar className="h-7 w-7">
+          <Avatar className="h-8 w-8">
             <AvatarFallback className="text-xs bg-muted text-muted-foreground">
               {customerInitials}
             </AvatarFallback>

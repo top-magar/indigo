@@ -77,7 +77,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
         <p className="text-xs text-muted-foreground">Store information and currency</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Store Information</CardTitle>

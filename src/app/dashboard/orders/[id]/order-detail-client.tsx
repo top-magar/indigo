@@ -292,7 +292,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
           <Separator orientation="vertical" className="h-6" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">
+              <h1 className="text-lg font-semibold tracking-tight text-foreground">
                 Order #{order.orderNumber}
               </h1>
               <TooltipProvider delayDuration={150}>

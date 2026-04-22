@@ -219,7 +219,7 @@ export function AnalyticsDashboardView({
                 )}
 
                 {/* Overview Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Revenue */}
                     <Card>
                         <CardContent className="p-4">
