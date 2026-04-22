@@ -141,6 +141,8 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         onDragOver={onDragOver}
         onDrop={onDrop}
         onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}
+        onMouseEnter={() => dispatch({ type: "SET_HOVERED", payload: { id: el.id } })}
+        onMouseLeave={() => dispatch({ type: "SET_HOVERED", payload: { id: null } })}
         onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } }); setMenuPos({ x: e.clientX, y: e.clientY }); if (!isBody) setMenuOpen(true); }}
         className={cn(
           "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
