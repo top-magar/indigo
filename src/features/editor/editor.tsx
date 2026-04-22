@@ -71,13 +71,13 @@ function EditorInner() {
     try {
       const freshElements = useDocumentStore.getState().elements;
       await savePage({ id: pageId, name: pageTitleRef.current, content: JSON.stringify(freshElements), activePageId: currentPageRef.current });
-      if (mountedRef.current) { setDirty(false); setSaving(false); }
+      if (mountedRef.current) setDirty(false);
       retryCount.current = 0;
     } catch {
-      if (mountedRef.current) setSaving(false);
       retryCount.current++;
     } finally {
       savingRef.current = false;
+      if (mountedRef.current) setSaving(false);
     }
   }, [pageId, setDirty]);
 
