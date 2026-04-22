@@ -103,7 +103,7 @@ interface OrderEvent {
   user?: string;
 }
 
-interface AIAnalysis {
+export interface AIAnalysis {
   sentiment?: {
     score: number;
     label: "positive" | "neutral" | "negative";
@@ -156,47 +156,7 @@ interface OrderDetailClientProps {
 // Status Configuration
 // ============================================================================
 
-const STATUS_CONFIG: Record<string, { 
-  label: string; 
-  className: string; 
-  icon: React.ComponentType<{ className?: string }>;
-}> = {
-  pending: { 
-    label: "Pending", 
-    className: "bg-warning/10 text-warning border-warning/20",
-    icon: Clock,
-  },
-  confirmed: { 
-    label: "Confirmed", 
-    className: "bg-info/10 text-info border-info/20",
-    icon: CheckCircle2,
-  },
-  processing: { 
-    label: "Processing", 
-    className: "bg-ds-blue-700/10 text-ds-blue-700 border-ds-blue-700/20",
-    icon: Package,
-  },
-  shipped: { 
-    label: "Shipped", 
-    className: "bg-ds-teal-700/10 text-ds-teal-700 border-ds-teal-700/20",
-    icon: Truck,
-  },
-  delivered: { 
-    label: "Delivered", 
-    className: "bg-success/10 text-success border-success/20",
-    icon: CheckCircle2,
-  },
-  completed: { 
-    label: "Completed", 
-    className: "bg-success/10 text-success border-success/20",
-    icon: CheckCircle2,
-  },
-  cancelled: { 
-    label: "Cancelled", 
-    className: "bg-destructive/10 text-destructive border-destructive/20",
-    icon: XCircle,
-  },
-};
+
 
 // ============================================================================
 // Helper Components

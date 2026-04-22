@@ -5,10 +5,15 @@ import { formatDistanceToNow } from "date-fns"
 import { useState } from "react"
 import { ChevronRight } from "lucide-react"
 // Types are defined in the parent order-detail-client.tsx
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AIAnalysis = any
-type OrderAddress = any
-type OrderEvent = any
+import type { AIAnalysis } from "../order-detail-client";
+type OrderAddress = {
+  firstName?: string; lastName?: string; company?: string;
+  addressLine1: string; addressLine2?: string;
+  city: string; state?: string; postalCode?: string; country: string; phone?: string;
+};
+type OrderEvent = {
+  id: string; type: string; message: string; createdAt: string; user?: string | null;
+};
 import { AlertTriangle, Brain, Loader2, Phone, Activity, History } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -195,7 +200,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               Recommendations
             </p>
             <ul className="space-y-1.5">
-              {analysis.recommendations.map((rec: any, i: number) => (
+              {analysis.recommendations.map((rec: string, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                   <ChevronRight className="size-4 text-info shrink-0 mt-0.5" />
                   {rec}
@@ -212,7 +217,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               Suggested Actions
             </p>
             <div className="flex flex-wrap gap-2">
-              {analysis.suggestedActions.map((action: any, i: number) => (
+              {analysis.suggestedActions.map((action, i) => (
                 <Button
                   key={i}
                  
