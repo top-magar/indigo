@@ -51,8 +51,8 @@ export function FontSizeHandle({ element, dispatch }: {
 
   return (
     <div
-      className={cn('absolute z-[18] left-1/2 -translate-x-1/2 cursor-ns-resize flex flex-col items-center', show ? 'opacity-100' : 'opacity-0 hover:opacity-100', 'transition-opacity')}
-      style={{ bottom: -12 }}
+      className={cn('absolute z-[18] cursor-ns-resize flex flex-col items-center', show ? 'opacity-100' : 'opacity-0 hover:opacity-100', 'transition-opacity')}
+      style={{ bottom: -12, left: 0 }}
       onPointerDown={onDown}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}

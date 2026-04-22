@@ -45,7 +45,7 @@ export function BoxHandlesOverlay({ element, isSel, isHov, dispatch }: {
           {mb > 0 && <><BoxZone id="m-B" val={mb} color="orange" style={{ bottom: -mb, left: 0, right: 0, height: mb }} h={h} /><BoxHandle element={element} id="m-B" prop="marginBottom" val={mb} dir="y" sign={1} color="orange" style={{ bottom: -mb, left: 0, right: 0, height: mb }} cls="cursor-ns-resize" h={h} /></>}
           {ml > 0 && <><BoxZone id="m-L" val={ml} color="orange" style={{ top: 0, left: -ml, bottom: 0, width: ml }} h={h} /><BoxHandle element={element} id="m-L" prop="marginLeft" val={ml} dir="x" sign={-1} color="orange" style={{ top: 0, left: -ml, bottom: 0, width: ml }} cls="cursor-ew-resize" h={h} /></>}
         </>)}
-        <RadiusCorners element={element} h={h} />
+        {(Array.isArray(element.content) || element.styles.borderRadius || element.styles.borderTopLeftRadius) && <RadiusCorners element={element} h={h} />}
       </>)}
     </>
   );
