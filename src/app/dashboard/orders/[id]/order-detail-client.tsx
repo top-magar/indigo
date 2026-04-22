@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { updateOrderNotes, cancelOrder, updateOrderTags, generateInvoice } from "../actions";
+import { updateOrderNotes, cancelOrder, updateOrderTags } from "../actions";
+import { generateInvoice } from "../order-actions";
 
 function TagsInput({ orderId, initialTags }: { orderId: string; initialTags: string[] }) {
   const [tags, setTags] = useState(initialTags);

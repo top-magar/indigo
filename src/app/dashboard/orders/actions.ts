@@ -167,5 +167,3 @@ export async function updateOrderTags(orderId: string, tags: string[]) {
     revalidatePath(`/dashboard/orders/${orderId}`);
 }
 
-// Re-export from order-actions for single import path
-export { generateInvoice, addOrderNote, getOrderStats, createFulfillment, createRefund, capturePayment, markAsPaid } from "./order-actions";
