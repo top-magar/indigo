@@ -36,7 +36,7 @@ const sizeClasses = {
   sm: "text-sm",
   default: "text-base",
   lg: "text-lg",
-  xl: "text-2xl font-bold",
+  xl: "text-2xl font-semibold",
 };
 
 /**

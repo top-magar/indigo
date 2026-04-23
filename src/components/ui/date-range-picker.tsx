@@ -306,7 +306,7 @@ export function DateRangePicker({
             className
           )}
         >
-          <CalendarIcon className="h-4 w-4 shrink-0" />
+          <CalendarIcon className="size-4 shrink-0" />
           <span className="truncate">{displayText}</span>
           {showClear && hasValue && (
             <X

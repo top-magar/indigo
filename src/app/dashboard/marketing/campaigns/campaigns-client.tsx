@@ -760,12 +760,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <Send className="size-4 mx-auto mb-2 text-primary" />
-                                    <p className="text-xl font-semibold tabular-nums">{formatNumber(selectedCampaign.delivered_count)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatNumber(selectedCampaign.delivered_count)}</p>
                                     <p className="text-xs text-muted-foreground">Delivered</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <MailOpen className="size-4 mx-auto mb-2 text-success" />
-                                    <p className="text-xl font-semibold tabular-nums">
+                                    <p className="text-lg font-semibold tabular-nums">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.opened_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -774,7 +774,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <MousePointerClick className="size-4 mx-auto mb-2 text-warning" />
-                                    <p className="text-xl font-semibold tabular-nums">
+                                    <p className="text-lg font-semibold tabular-nums">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.clicked_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -783,7 +783,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <TrendingUp className="size-4 mx-auto mb-2 text-ds-teal-700" />
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
                             </div>

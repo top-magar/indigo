@@ -75,13 +75,13 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Total Movements</p>
-                        <p className="text-xl font-semibold tabular-nums mt-1">{movements.length}</p>
+                        <p className="text-lg font-semibold tabular-nums mt-1">{movements.length}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Total Added</p>
-                        <p className="text-xl font-semibold tabular-nums mt-1 text-success">
+                        <p className="text-lg font-semibold tabular-nums mt-1 text-success">
                             +{movements.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
@@ -89,7 +89,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Total Removed</p>
-                        <p className="text-xl font-semibold tabular-nums mt-1 text-destructive">
+                        <p className="text-lg font-semibold tabular-nums mt-1 text-destructive">
                             {movements.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
@@ -97,7 +97,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 <Card>
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Current Stock</p>
-                        <p className="text-xl font-semibold tabular-nums mt-1">{product.quantity}</p>
+                        <p className="text-lg font-semibold tabular-nums mt-1">{product.quantity}</p>
                     </CardContent>
                 </Card>
             </div>
@@ -144,7 +144,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <span className={cn(
-                                                "text-xl font-semibold tabular-nums",
+                                                "text-lg font-semibold tabular-nums",
                                                 movement.quantity_change > 0 ? "text-success" : "text-destructive"
                                             )}>
                                                 {movement.quantity_change > 0 ? "+" : ""}{movement.quantity_change}

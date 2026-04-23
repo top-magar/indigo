@@ -20,7 +20,7 @@ export function StatBar({ stats }: StatBarProps) {
             <p className="text-xs text-muted-foreground">{s.label}</p>
             {s.icon}
           </div>
-          <p className="text-xl font-semibold tabular-nums">{s.value}</p>
+          <p className="text-lg font-semibold tabular-nums">{s.value}</p>
           {s.change && <p className="text-xs text-muted-foreground">{s.change}</p>}
         </div>
       ))}

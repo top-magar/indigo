@@ -26,7 +26,7 @@ export default function OrderDetailError({
                             className="size-7 text-destructive"
                         />
                     </div>
-                    <h2 className="mb-2 text-xl font-semibold tracking-tight text-foreground">
+                    <h2 className="mb-2 text-lg font-semibold tracking-tight text-foreground">
                         Order not found
                     </h2>
                     <p className="mb-6 text-sm text-muted-foreground">

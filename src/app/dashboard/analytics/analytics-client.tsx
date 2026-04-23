@@ -217,7 +217,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-medium text-muted-foreground">Revenue</p>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.revenue, currency)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatCurrency(data.overview.revenue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -250,7 +250,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-medium text-muted-foreground">Orders</p>
-                                    <p className="text-xl font-semibold tabular-nums">{data.overview.orders}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{data.overview.orders}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -283,7 +283,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-medium text-muted-foreground">AOV</p>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
@@ -316,7 +316,7 @@ export function AnalyticsDashboardView({
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <p className="text-xs font-medium text-muted-foreground">Customers</p>
-                                    <p className="text-xl font-semibold tabular-nums">{data.overview.customers}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{data.overview.customers}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"

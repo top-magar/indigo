@@ -29,7 +29,7 @@ export function StatCard({
           <Icon className="size-4 text-muted-foreground/50" />
         </div>
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-xl font-semibold tracking-tight tabular-nums">{value}</span>
+          <span className="text-lg font-semibold tracking-tight tabular-nums">{value}</span>
           {change && (
             <span className={cn(
               "flex items-center gap-0.5 text-xs",

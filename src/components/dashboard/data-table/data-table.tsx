@@ -387,7 +387,7 @@ export function DataTable<TData>({
                       !dateRange?.from && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 size-4" />
+                    <CalendarIcon className="size-4" />
                     {dateRange?.from ? (
                       dateRange.to ? (
                         <>

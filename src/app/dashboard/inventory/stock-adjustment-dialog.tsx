@@ -177,7 +177,7 @@ export function StockAdjustmentDialog({
                         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                             <div>
                                 <p className="text-sm text-muted-foreground">Current Stock</p>
-                                <p className="text-xl font-semibold tabular-nums">{product.quantity}</p>
+                                <p className="text-lg font-semibold tabular-nums">{product.quantity}</p>
                             </div>
                             {quantity && (
                                 <div className="flex items-center gap-3">
@@ -193,7 +193,7 @@ export function StockAdjustmentDialog({
                                     <div className="text-right">
                                         <p className="text-sm text-muted-foreground">New Stock</p>
                                         <p className={cn(
-                                            "text-xl font-semibold tabular-nums",
+                                            "text-lg font-semibold tabular-nums",
                                             quantityDiff > 0 && "text-success",
                                             quantityDiff < 0 && "text-destructive"
                                         )}>

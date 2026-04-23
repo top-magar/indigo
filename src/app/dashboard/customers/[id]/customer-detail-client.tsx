@@ -82,7 +82,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <ShoppingCart className="size-4 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-xl font-semibold tabular-nums">{customer.stats.totalOrders}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{customer.stats.totalOrders}</p>
                                     <p className="text-xs font-medium text-muted-foreground">Total Orders</p>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <DollarSign className="size-4 text-success" />
                                 </div>
                                 <div>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.totalSpent, currency)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatCurrency(customer.stats.totalSpent, currency)}</p>
                                     <p className="text-xs font-medium text-muted-foreground">Lifetime Value</p>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                     <TrendingUp className="size-4 text-info" />
                                 </div>
                                 <div>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
+                                    <p className="text-lg font-semibold tabular-nums">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
                                     <p className="text-xs font-medium text-muted-foreground">Avg. Order</p>
                                 </div>
                             </div>

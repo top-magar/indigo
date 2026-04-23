@@ -44,16 +44,16 @@ export function EmptyState({
       <div
         className={cn(
           "rounded-full bg-muted flex items-center justify-center mb-4",
-          size === "sm" && "h-10 w-10",
-          size === "md" && "h-12 w-12",
-          size === "lg" && "h-16 w-16"
+          size === "sm" && "size-10",
+          size === "md" && "size-12",
+          size === "lg" && "size-16"
         )}
       >
         <Icon
           className={cn(
             "text-muted-foreground",
-            size === "sm" && "w-5 h-5",
-            size === "md" && "w-6 h-6",
+            size === "sm" && "size-5",
+            size === "md" && "size-6",
             size === "lg" && "w-8 h-8"
           )}
         />

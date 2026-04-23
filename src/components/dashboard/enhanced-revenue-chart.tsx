@@ -56,7 +56,7 @@ export function EnhancedRevenueChart({ data, currency, totalCurrent, totalPrevio
             <CardTitle className="text-sm font-medium">Revenue Overview</CardTitle>
             {hasGrowth && (
               <div className="flex items-baseline gap-3 mt-2">
-                <span className="text-xl font-semibold tabular-nums">{formatCurrency(totalCurrent!, currency)}</span>
+                <span className="text-lg font-semibold tabular-nums">{formatCurrency(totalCurrent!, currency)}</span>
                 <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isPositive ? "text-success" : "text-destructive"}`}>
                   {isPositive ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
                   {Math.abs(growth)}%

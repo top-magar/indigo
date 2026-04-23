@@ -60,9 +60,9 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
                 exit={{ scale: 0, opacity: 0 }}
               >
                 {error ? (
-                  <AlertCircle className="h-4 w-4 text-destructive" />
+                  <AlertCircle className="size-4 text-destructive" />
                 ) : (
-                  <Check className="h-4 w-4 text-success" />
+                  <Check className="size-4 text-success" />
                 )}
               </motion.div>
             )}
