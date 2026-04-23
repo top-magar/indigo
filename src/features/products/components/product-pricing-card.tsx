@@ -25,10 +25,10 @@ export function ProductPricingCard({ product, onUpdate }: ProductPricingCardProp
 
     const formatCurrency = (value: number | null | undefined) => {
         if (value === null || value === undefined) return "—";
-        return new Intl.NumberFormat("en-US", {
+        const formatted = new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: product.currency || "USD",
-        }).format(value);
+        }).format(value); return (product.currency === "NPR") ? formatted.replace(/NPR|NRs/, "Rs.") : formatted;
     };
 
     const handleSave = async () => {

@@ -31,12 +31,14 @@ export function formatCurrency(
     // Handle simple string currency parameter (e.g., "USD", "INR", "EUR")
     if (typeof currencyOrOptions === "string") {
         const currency = currencyOrOptions;
-        const locale = currency === "INR" ? "en-IN" : currency === "EUR" ? "de-DE" : "en-US";
-        return new Intl.NumberFormat(locale, {
+        const locale = currency === "INR" ? "en-IN" : currency === "NPR" ? "en-NP" : currency === "EUR" ? "de-DE" : "en-US";
+        let formatted = new Intl.NumberFormat(locale, {
             style: "currency",
             currency,
             maximumFractionDigits: 0,
         }).format(numAmount);
+        if (currency === "NPR") formatted = formatted.replace(/NPR|NRs/, "Rs.");
+        return formatted;
     }
 
     // Handle options object
