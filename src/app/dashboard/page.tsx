@@ -52,6 +52,8 @@ export default async function DashboardPage() {
   const todayPaid = d.todayOrders.filter((o) => o.paymentStatus === "paid")
 
   const isNewStore = d.totalProducts === 0
+  const hasProducts = d.totalProducts > 0
+  const setupComplete = hasProducts // expand later: && hasPayments && hasDomain
   const userName = d.userName?.split(" ")[0] || user.email?.split("@")[0] || "there"
 
   const metrics: EnhancedMetricData[] = [
@@ -89,31 +91,29 @@ export default async function DashboardPage() {
         greeting={getGreeting()}
       />
 
-      {isNewStore ? (
+      {!setupComplete && (
         <SetupChecklist
           storeName={d.tenant.name}
-          hasProducts={false}
+          hasProducts={hasProducts}
           hasPayments={false}
           hasDomain={false}
         />
-      ) : (
-        <>
-          <Suspense fallback={<StatCardGridSkeleton count={4} />}>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {metrics.map((m, i) => <EnhancedMetricCard key={i} metric={m} currency={currency} />)}
-            </div>
-          </Suspense>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            <div className="lg:col-span-2">
-              <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
-            </div>
-            <ActivityFeed activities={activities} maxItems={6} />
-          </div>
-
-          <RecentOrdersTable orders={ordersData} currency={currency} />
-        </>
       )}
+
+      <Suspense fallback={<StatCardGridSkeleton count={4} />}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {metrics.map((m, i) => <EnhancedMetricCard key={i} metric={m} currency={currency} />)}
+        </div>
+      </Suspense>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="lg:col-span-2">
+          <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
+        </div>
+        <ActivityFeed activities={activities} maxItems={6} />
+      </div>
+
+      <RecentOrdersTable orders={ordersData} currency={currency} />
     </div>
   )
 }
