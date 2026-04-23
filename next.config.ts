@@ -60,6 +60,10 @@ const nextConfig: NextConfig = {
         hostname: "picsum.photos",
       },
       {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
         hostname: "cdn.esewa.com.np",
       },
       {
