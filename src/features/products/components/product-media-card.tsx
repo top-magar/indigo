@@ -88,25 +88,14 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Media</CardTitle>
-                <div>
-                    <input
-                        type="file"
-                        id="media-upload"
-                        className="hidden"
-                        accept="image/*"
-                        multiple
-                        onChange={(e) => handleFileUpload(e.target.files)}
-                    />
-                    <Button
-                        variant="outline"
-                       
-                        onClick={() => document.getElementById("media-upload")?.click()}
-                        disabled={isUploading}
-                    >
-                        <Plus className="size-4" />
-                        {isUploading ? "Uploading..." : "Add Media"}
-                    </Button>
-                </div>
+                <input
+                    type="file"
+                    id="media-upload"
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                />
             </CardHeader>
             <CardContent>
                 {product.media.length === 0 ? (
