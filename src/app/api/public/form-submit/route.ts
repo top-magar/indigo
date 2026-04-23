@@ -1,56 +1,54 @@
-import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/infrastructure/supabase/server"
+import { NextResponse } from "next/server"
+import { db } from "@/infrastructure/db"
+import { tenants } from "@/db/schema/tenants"
+import { eq } from "drizzle-orm"
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
-const rateMap = new Map<string, number>()
+const MAX_FIELDS = 20
+const MAX_FIELD_LENGTH = 2000
 
-export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for") ?? "unknown"
-  const now = Date.now()
-  if ((rateMap.get(ip) ?? 0) > now - 2000) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+function sanitizeFields(fields: unknown): Record<string, string> | null {
+  if (typeof fields !== "object" || fields === null || Array.isArray(fields)) return null
+  const entries = Object.entries(fields as Record<string, unknown>)
+  if (entries.length === 0 || entries.length > MAX_FIELDS) return null
+  const clean: Record<string, string> = {}
+  for (const [key, val] of entries) {
+    if (typeof key !== "string" || key.length > 100) return null
+    clean[key] = String(val ?? "").slice(0, MAX_FIELD_LENGTH)
   }
-  rateMap.set(ip, now)
+  return clean
+}
 
-  const { tenantId, sectionId, fields, recipientEmail } = await req.json() as {
-    tenantId?: string; sectionId?: string; fields?: Record<string, string>; recipientEmail?: string
+export const POST = withRateLimit("storefront", async function POST(request: Request) {
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
-  if (!fields || typeof fields !== "object") {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 })
+
+  const { tenantId, sectionId, fields } = body as {
+    tenantId?: string; sectionId?: string; fields?: unknown
   }
 
-  // Log submission
-  console.log("[form-submit]", { tenantId, sectionId, fields })
-
-  // Store in DB if tenantId provided
-  if (tenantId) {
-    const supabase = await createClient()
-    await supabase.from("form_submissions").insert({
-      tenant_id: tenantId,
-      section_id: sectionId ?? null,
-      data: fields,
-      recipient_email: recipientEmail ?? null,
-    })
-
-    // Check for webhook
-    const { data: layout } = await supabase
-      .from("store_layouts")
-      .select("theme_overrides")
-      .eq("tenant_id", tenantId)
-      .eq("is_homepage", true)
-      .maybeSingle()
-    const theme = layout?.theme_overrides as Record<string, unknown> | undefined
-    const webhookUrl = theme?.formWebhookUrl as string | undefined
-    if (webhookUrl) {
-      fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tenantId, sectionId, fields }),
-      }).catch(() => {})
-    }
-    if (recipientEmail) {
-      console.log("[form-submit] Would email:", recipientEmail, fields)
-    }
+  if (!tenantId || typeof tenantId !== "string") {
+    return NextResponse.json({ error: "Missing tenantId" }, { status: 400 })
   }
+
+  const cleanFields = sanitizeFields(fields)
+  if (!cleanFields) {
+    return NextResponse.json({ error: "Invalid fields" }, { status: 400 })
+  }
+
+  // Verify tenant exists
+  const [tenant] = await db.select({ id: tenants.id })
+    .from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+  if (!tenant) {
+    return NextResponse.json({ error: "Invalid tenant" }, { status: 404 })
+  }
+
+  // Log submission (form_submissions table doesn't exist yet)
+  console.log("[form-submit]", { tenantId, sectionId, fields: cleanFields })
 
   return NextResponse.json({ success: true })
-}
+})

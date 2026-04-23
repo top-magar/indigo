@@ -44,10 +44,10 @@ export async function savePage(page: {
     return updated;
   }
 
-  // Fallback: save to project directly (legacy)
+  // Fallback: save to project directly (legacy) — never overwrite name
   const [updated] = await db.update(editorProjects)
-    .set({ name: page.name, data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
-    .where(eq(editorProjects.id, page.id))
+    .set({ data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
+    .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
     .returning();
   return updated;
 }

@@ -297,7 +297,8 @@ export class InventoryRepository {
                 .select()
                 .from(products)
                 .where(and(eq(products.tenantId, tenantId), eq(products.id, productId)))
-                .limit(1);
+                .limit(1)
+                .for("update");
 
             if (!product) {
                 throw new Error("Product not found");
@@ -434,7 +435,8 @@ export class InventoryRepository {
                 })
                 .from(productVariants)
                 .innerJoin(products, eq(productVariants.productId, products.id))
-                .where(and(eq(products.tenantId, tenantId), inArray(productVariants.id, variantIds)));
+                .where(and(eq(products.tenantId, tenantId), inArray(productVariants.id, variantIds)))
+                .for("update");
 
             const variantMap = new Map(variants.map(v => [v.variantId, v]));
 
@@ -563,7 +565,8 @@ export class InventoryRepository {
             const productList = await tx
                 .select()
                 .from(products)
-                .where(and(eq(products.tenantId, tenantId), inArray(products.id, productIds)));
+                .where(and(eq(products.tenantId, tenantId), inArray(products.id, productIds)))
+                .for("update");
 
             const productMap = new Map(productList.map(p => [p.id, p]));
 
