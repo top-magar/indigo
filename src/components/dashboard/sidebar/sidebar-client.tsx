@@ -98,27 +98,10 @@ export function SidebarClient({
 
       <SidebarFooter className={cn("p-2", isCollapsed && "p-2 gap-2")}>
         {!isCollapsed && planType !== "pro" && (
-          <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
-            <div className="flex items-center gap-2 mb-1.5">
-              <div className="p-2 rounded-md bg-muted">
-                <Rocket className="size-4 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">
-                  {planType === "trial" ? "Pro Trial" : "Free Plan"}
-                </p>
-                {planType === "trial" && (
-                  <p className="text-[10px] text-muted-foreground font-medium">
-                    {trialDaysLeft} days remaining
-                  </p>
-                )}
-              </div>
-            </div>
-            <Button className="w-full text-xs">
-              <Rocket className="size-4 mr-1.5" />
-              Upgrade to Pro
-            </Button>
-          </div>
+          <Button variant="outline" className="w-full text-xs justify-start gap-2">
+            <Rocket className="size-3.5" />
+            {planType === "trial" ? `Upgrade · ${trialDaysLeft}d left` : "Upgrade to Pro"}
+          </Button>
         )}
 
         <UserMenu

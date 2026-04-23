@@ -33,7 +33,7 @@ function StoreAvatar({ name, logo }: { name: string; logo?: string | null }) {
 
 const planConfig: Record<PlanType, { dot: string; label: string }> = {
     pro: { dot: "bg-emerald-500", label: "Pro" },
-    trial: { dot: "bg-amber-500 animate-pulse", label: "Trial" },
+    trial: { dot: "bg-amber-500", label: "Trial" },
     free: { dot: "bg-muted-foreground/40", label: "Free" },
 };
 
@@ -52,7 +52,7 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
             {!isCollapsed && (
                 <>
                     <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold truncate">{tenantName}</p>
+                        <p className="text-xs font-medium truncate">{tenantName}</p>
                         <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <span className={cn("size-1.5 rounded-full", plan.dot)} />
                             {plan.label}{planType === "trial" && ` · ${trialDaysLeft}d left`}
