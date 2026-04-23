@@ -28,6 +28,11 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       return NextResponse.json({ success: true, message: "Already onboarded" })
     }
 
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     // Generate slug — clean, no random suffix unless collision
     const slugBase = storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
     let slug = slugBase
@@ -37,11 +42,6 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
     if (existing) {
       slug = `${slugBase}-${Math.random().toString(36).substring(2, 6)}`
     }
-
-    const supabaseAdmin = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
 
     // Upload logo if provided
     let logoUrl: string | null = null
