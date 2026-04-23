@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Loader2, ArrowRight } from "lucide-react"
 
 function toSlug(name: string) {
@@ -14,7 +13,6 @@ function toSlug(name: string) {
 
 export default function OnboardingPage() {
   const [storeName, setStoreName] = useState("")
-  const [currency, setCurrency] = useState("NPR")
   const [isLoading, setIsLoading] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -47,7 +45,7 @@ export default function OnboardingPage() {
       const response = await fetch("/api/auth/complete-onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeName, currency }),
+        body: JSON.stringify({ storeName, currency: "NPR" }),
       })
       const result = await response.json()
       if (!response.ok) {
@@ -145,24 +143,6 @@ export default function OnboardingPage() {
                   Your store URL will appear here
                 </p>
               )}
-            </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="currency" className="text-xs font-medium">
-                Currency
-              </label>
-              <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="NPR">Rs. — Nepali Rupee</SelectItem>
-                  <SelectItem value="INR">₹ — Indian Rupee</SelectItem>
-                  <SelectItem value="USD">$ — US Dollar</SelectItem>
-                  <SelectItem value="EUR">€ — Euro</SelectItem>
-                  <SelectItem value="GBP">£ — British Pound</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             {error && (
