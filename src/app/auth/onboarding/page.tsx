@@ -104,7 +104,7 @@ export default function OnboardingPage() {
                 <p className="text-xs text-destructive">{error}</p>
               ) : slug ? (
                 <p className="text-xs text-muted-foreground">
-                  indigo.com/store/<span className="text-foreground font-medium">{slug}</span>
+                  <span className="text-foreground font-medium">{slug}</span><span className="text-muted-foreground/60">.indigo.com</span>
                 </p>
               ) : null}
             </div>
