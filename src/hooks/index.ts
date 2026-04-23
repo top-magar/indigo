@@ -12,10 +12,7 @@ export { ConfirmDialogProvider, useConfirmDialog, useConfirmDelete } from "./use
 export { useCommandPalette, useCommandPaletteStore, useRegisterCommands, useRegisterCommand, type UseCommandPaletteReturn } from "./use-command-palette";
 export { useNotifications, useNotificationStore, useUnreadCount, useAddNotification, type UseNotificationsReturn } from "./use-notifications";
 export { useRealtimeNotifications, useNotificationConnectionStatus, type ConnectionStatus, type UseRealtimeNotificationsOptions, type UseRealtimeNotificationsReturn } from "./use-realtime-notifications";
-export { useInsights, useInsightsStore } from "./use-insights";
-export { useAdvancedSearch, useAdvancedSearchStore, type UseAdvancedSearchReturn } from "./use-advanced-search";
 export { useKeyboardShortcuts, useKeyboardShortcutsHelp, type ShortcutRegistration, type UseKeyboardShortcutsOptions, type UseKeyboardShortcutsReturn } from "./use-keyboard-shortcuts";
-export { useActivityFeed, useActivityFeedStore, type TeamMember } from "./use-activity-feed";
 export { useOnlineStatus, useIsOnline, type UseOnlineStatusReturn } from "./use-online-status";
 export { useSyncQueue, useSyncQueueStore, usePendingSyncCount, useIsSyncing, type UseSyncQueueReturn } from "./use-sync-queue";
 export { useChartInteraction, type UseChartInteractionOptions, type UseChartInteractionReturn } from "./use-chart-interaction";

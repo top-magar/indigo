@@ -13,7 +13,6 @@ import { EnhancedRevenueChart } from "@/components/dashboard/enhanced-revenue-ch
 import { ActivityFeed, type ActivityItem } from "@/components/dashboard/activity-feed"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 import { RecentOrdersTable, type OrderData } from "@/components/dashboard/recent-orders-table"
-import { SetupWizard, SetupChecklist, createSetupSteps } from "@/components/dashboard"
 import { StatCardGridSkeleton } from "@/components/dashboard/skeletons"
 
 import {
@@ -77,21 +76,15 @@ export default async function DashboardPage() {
     })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
-  const setupSteps = createSetupSteps({
-    hasProducts: d.totalProducts > 0, hasPayments: true,
-    hasCustomizedStore: true, hasShipping: true, isLaunched: true,
-  })
-  const setupProgress = Math.round((setupSteps.filter((s) => s.completed).length / setupSteps.length) * 100)
+  const setupProgress = 0
   const userName = d.userName?.split(" ")[0] || user.email?.split("@")[0] || "there"
 
   return (
     <div className="space-y-4">
-      <SetupWizard storeName={d.tenant.name} hasProducts={d.totalProducts > 0} hasPayments storeSlug={d.tenant.slug} />
 
       <HeroSection userName={userName} todayRevenue={todayPaid.reduce((s, o) => s + Number(o.total), 0)}
         todayOrders={d.todayOrders.length} currency={currency} storeSlug={d.tenant.slug} greeting={getGreeting()} setupProgress={setupProgress} />
 
-      {setupSteps.some((s) => !s.completed) && <SetupChecklist steps={setupSteps} storeName={d.tenant.name} />}
       {d.totalProducts === 0 && <QuickActions />}
 
       <Suspense fallback={<StatCardGridSkeleton count={4} />}>
