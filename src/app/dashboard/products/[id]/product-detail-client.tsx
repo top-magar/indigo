@@ -135,7 +135,8 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
                 title=""
                 sidebar={
                     <>
-                                <ProductOrganizationCard product={product} onUpdate={handleRefresh} onStatusChange={handleStatusChange} />
+                        <ProductMediaCard product={product} onUpdate={handleRefresh} />
+                        <ProductOrganizationCard product={product} onUpdate={handleRefresh} onStatusChange={handleStatusChange} />
                     </>
                 }
             >
