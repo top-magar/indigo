@@ -5,14 +5,12 @@ import { Package, CreditCard, Globe, Palette, Check, ArrowRight } from "lucide-r
 import Link from "next/link";
 import { cn } from "@/shared/utils";
 
-interface SetupStep {
-  id: string;
-  label: string;
-  description: string;
-  href: string;
-  icon: React.ElementType;
-  completed: boolean;
-}
+const STEPS = [
+  { id: "product", label: "Add your first product", description: "List something to sell — add photos, pricing, and inventory", href: "/dashboard/products/new", icon: Package, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-950", ring: "stroke-blue-600" },
+  { id: "payments", label: "Set up payments", description: "Connect eSewa, Khalti, or enable cash on delivery", href: "/dashboard/settings/payments", icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-950", ring: "stroke-emerald-600" },
+  { id: "storefront", label: "Customize your store", description: "Add your brand colors, logo, and homepage layout", href: "/dashboard/settings", icon: Palette, color: "text-violet-600", bg: "bg-violet-100 dark:bg-violet-950", ring: "stroke-violet-600" },
+  { id: "domain", label: "Add a custom domain", description: "Connect your own .com or .np domain", href: "/dashboard/settings/domains", icon: Globe, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-950", ring: "stroke-amber-600" },
+] as const;
 
 interface SetupChecklistProps {
   storeName: string;
@@ -22,15 +20,10 @@ interface SetupChecklistProps {
 }
 
 export function SetupChecklist({ storeName, hasProducts, hasPayments, hasDomain }: SetupChecklistProps) {
-  const steps: SetupStep[] = [
-    { id: "product", label: "Add your first product", description: "List something to sell — add photos, pricing, and inventory", href: "/dashboard/products/new", icon: Package, completed: hasProducts },
-    { id: "payments", label: "Set up payments", description: "Connect eSewa, Khalti, or enable cash on delivery", href: "/dashboard/settings/payments", icon: CreditCard, completed: hasPayments },
-    { id: "storefront", label: "Customize your store", description: "Add your brand colors, logo, and homepage layout", href: "/dashboard/settings", icon: Palette, completed: false },
-    { id: "domain", label: "Add a custom domain", description: "Connect your own .com or .np domain", href: "/dashboard/settings/domains", icon: Globe, completed: hasDomain },
-  ];
-
-  const completedCount = steps.filter(s => s.completed).length;
-  const nextStep = steps.find(s => !s.completed);
+  const completed = [hasProducts, hasPayments, false, hasDomain];
+  const completedCount = completed.filter(Boolean).length;
+  const nextIdx = completed.findIndex(c => !c);
+  const nextStep = nextIdx >= 0 ? STEPS[nextIdx] : null;
 
   return (
     <div className="rounded-lg border overflow-hidden">
@@ -40,22 +33,22 @@ export function SetupChecklist({ storeName, hasProducts, hasPayments, hasDomain 
           <div>
             <h2 className="text-sm font-medium">Get {storeName} ready to sell</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {completedCount} of {steps.length} steps complete
+              {completedCount} of {STEPS.length} steps complete
             </p>
           </div>
           {/* Circular progress */}
           <div className="relative size-10">
             <svg className="size-10 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-muted" />
+              <circle cx="18" cy="18" r="15" fill="none" strokeWidth="2.5" className="stroke-muted" />
               <circle
-                cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="2.5"
-                className="text-foreground"
-                strokeDasharray={`${(completedCount / steps.length) * 94.2} 94.2`}
+                cx="18" cy="18" r="15" fill="none" strokeWidth="2.5"
+                className={nextStep?.ring ?? "stroke-foreground"}
+                strokeDasharray={`${(completedCount / STEPS.length) * 94.2} 94.2`}
                 strokeLinecap="round"
               />
             </svg>
             <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium tabular-nums">
-              {completedCount}/{steps.length}
+              {completedCount}/{STEPS.length}
             </span>
           </div>
         </div>
@@ -74,44 +67,48 @@ export function SetupChecklist({ storeName, hasProducts, hasPayments, hasDomain 
 
       {/* Steps */}
       <div className="border-t divide-y">
-        {steps.map((step, i) => (
-          <Link
-            key={step.id}
-            href={step.completed ? "#" : step.href}
-            className={cn(
-              "flex items-center gap-3 px-5 py-3 transition-colors",
-              step.completed ? "bg-muted/30" : "hover:bg-muted/50"
-            )}
-          >
-            {/* Step number / check */}
-            <div className={cn(
-              "flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-medium",
-              step.completed
-                ? "bg-foreground text-background"
-                : "border border-border text-muted-foreground"
-            )}>
-              {step.completed ? <Check className="size-3" /> : i + 1}
-            </div>
-
-            {/* Text */}
-            <div className="flex-1 min-w-0">
-              <p className={cn(
-                "text-sm",
-                step.completed ? "text-muted-foreground line-through" : "font-medium"
-              )}>
-                {step.label}
-              </p>
-              {!step.completed && (
-                <p className="text-xs text-muted-foreground mt-0.5">{step.description}</p>
+        {STEPS.map((step, i) => {
+          const done = completed[i];
+          return (
+            <Link
+              key={step.id}
+              href={done ? "#" : step.href}
+              className={cn(
+                "flex items-center gap-3 px-5 py-3 transition-colors",
+                done ? "bg-muted/30" : "hover:bg-muted/50"
               )}
-            </div>
+            >
+              {/* Icon circle */}
+              <div className={cn(
+                "flex size-7 shrink-0 items-center justify-center rounded-full",
+                done
+                  ? "bg-foreground text-background"
+                  : step.bg
+              )}>
+                {done ? (
+                  <Check className="size-3.5" />
+                ) : (
+                  <step.icon className={cn("size-3.5", step.color)} />
+                )}
+              </div>
 
-            {/* Arrow for incomplete */}
-            {!step.completed && (
-              <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />
-            )}
-          </Link>
-        ))}
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <p className={cn(
+                  "text-sm",
+                  done ? "text-muted-foreground line-through" : "font-medium"
+                )}>
+                  {step.label}
+                </p>
+                {!done && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{step.description}</p>
+                )}
+              </div>
+
+              {!done && <ArrowRight className="size-3.5 text-muted-foreground shrink-0" />}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
