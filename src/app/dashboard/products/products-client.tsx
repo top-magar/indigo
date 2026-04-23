@@ -382,13 +382,13 @@ export function ProductsListView({
                     </div>
 
                     {/* Inline Filters */}
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                         {/* Status Filter */}
                         <Select
                             value={getFilter("status") || "all"}
                             onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                            <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -412,7 +412,7 @@ export function ProductsListView({
                             value={getFilter("stock") || "all"}
                             onValueChange={(value) => onFilterChange("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px]" aria-label="Filter by stock">
+                            <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by stock">
                                 <SelectValue placeholder="Stock" />
                             </SelectTrigger>
                             <SelectContent>
@@ -437,7 +437,7 @@ export function ProductsListView({
                                 value={getFilter("category") || "all"}
                                 onValueChange={(value) => onFilterChange("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[160px]" aria-label="Filter by category">
+                                <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
