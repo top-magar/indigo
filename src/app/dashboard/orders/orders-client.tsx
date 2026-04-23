@@ -9,7 +9,6 @@ import {
   ShoppingCart,
   Search,
   Download,
-  RefreshCw,
   MoreHorizontal,
   Eye,
   X,
@@ -29,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -522,34 +521,20 @@ export function OrdersListView({
   return (
     <EntityListPage
       title="Orders"
-      description="Manage and track your store orders"
       actions={
         <>
           <Button
             variant="outline"
-            className="gap-2"
-            onClick={() => onRefresh()}
-            disabled={isPending}
-          >
-            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-            Refresh
-          </Button>
-          <Button
-            variant="outline"
-            className="gap-2"
+            size="sm"
             onClick={onExport}
             disabled={isPending}
           >
-            {isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Download className="size-4" />
-            )}
+            {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
             Export
           </Button>
-          <Button className="gap-2" asChild>
+          <Button size="sm" asChild>
             <Link href="/dashboard/orders/new">
-              <Plus className="size-4" />
+              <Plus className="size-3.5" />
               New Order
             </Link>
           </Button>
