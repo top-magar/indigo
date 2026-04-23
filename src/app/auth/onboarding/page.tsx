@@ -12,6 +12,7 @@ function toSlug(name: string) {
 
 export default function OnboardingPage() {
   const [storeName, setStoreName] = useState("")
+  const [currency, setCurrency] = useState("NPR")
   const [isLoading, setIsLoading] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +40,7 @@ export default function OnboardingPage() {
       const res = await fetch("/api/auth/complete-onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeName, currency: "NPR" }),
+        body: JSON.stringify({ storeName, currency }),
       })
       const result = await res.json()
       if (!res.ok) { setError(result.error || "Failed to create store"); setIsLoading(false); return }
@@ -106,6 +107,33 @@ export default function OnboardingPage() {
                   indigo.com/store/<span className="text-foreground font-medium">{slug}</span>
                 </p>
               ) : null}
+            </div>
+          </div>
+
+          {/* Currency */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Currency</label>
+            <div className="flex gap-1.5">
+              {[
+                { code: "NPR", label: "Rs." },
+                { code: "USD", label: "$" },
+                { code: "INR", label: "₹" },
+                { code: "EUR", label: "€" },
+                { code: "GBP", label: "£" },
+              ].map((c) => (
+                <button
+                  key={c.code}
+                  type="button"
+                  onClick={() => setCurrency(c.code)}
+                  className={`h-8 px-3 rounded-md text-xs font-medium transition-colors ${
+                    currency === c.code
+                      ? "bg-foreground text-background"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {c.label} {c.code}
+                </button>
+              ))}
             </div>
           </div>
 
