@@ -55,18 +55,20 @@ export function EntityDetailPage({
         {backLabel}
       </Link>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
-            {subtitle && (
-              <p className="text-xs text-muted-foreground">{subtitle}</p>
-            )}
+      {title && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
+              {subtitle && (
+                <p className="text-xs text-muted-foreground">{subtitle}</p>
+              )}
+            </div>
+            {status}
           </div>
-          {status}
+          {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
-        {actions && <div className="flex items-center gap-2">{actions}</div>}
-      </div>
+      )}
 
       {sidebar ? (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">

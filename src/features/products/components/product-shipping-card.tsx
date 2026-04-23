@@ -130,6 +130,7 @@ export function ProductShippingCard({ product, onUpdate }: ProductShippingCardPr
                     <>
                         <div className="space-y-2">
                             <Label>Weight</Label>
+                            <p className="text-xs text-muted-foreground">Used to calculate shipping rates</p>
                             {isEditing ? (
                                 <div className="flex gap-2">
                                     <Input
@@ -163,6 +164,7 @@ export function ProductShippingCard({ product, onUpdate }: ProductShippingCardPr
 
                         <div className="space-y-2">
                             <Label>Dimensions (L × W × H)</Label>
+                            <p className="text-xs text-muted-foreground">In centimeters. Helps calculate shipping box size.</p>
                             {isEditing ? (
                                 <div className="flex gap-2">
                                     <Input

@@ -111,16 +111,16 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
             <CardContent>
                 {product.media.length === 0 ? (
                     <div
-                        className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                        className="border border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors"
                         onClick={() => document.getElementById("media-upload")?.click()}
                     >
-                        <ImageIcon className="size-12 mx-auto text-muted-foreground mb-4" />
-                        <p className="text-sm text-muted-foreground">
-                            Click to upload or drag and drop images
+                        <ImageIcon className="size-5 mx-auto text-muted-foreground mb-1" />
+                        <p className="text-xs text-muted-foreground">
+                            Click to upload images
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <div className="flex gap-2 overflow-x-auto pb-1">
                         {product.media.map((media, index) => (
                             <div
                                 key={media.id}
@@ -129,7 +129,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                 onDragOver={(e) => handleDragOver(e, index)}
                                 onDragEnd={handleDragEnd}
                                 className={cn(
-                                    "relative aspect-square rounded-lg overflow-hidden border group cursor-move",
+                                    "relative size-20 shrink-0 rounded-lg overflow-hidden border group cursor-move",
                                     draggedIndex === index && "opacity-50"
                                 )}
                             >
@@ -140,20 +140,27 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                     className="object-cover"
                                 />
                                 {index === 0 && (
-                                    <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                                    <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded">
                                         Main
                                     </span>
                                 )}
                                 <Button
                                     variant="destructive"
                                     size="icon"
-                                    className="absolute top-2 right-2 size-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute top-1 right-1 size-5 opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={() => handleRemove(media.url)}
                                 >
-                                    <Trash2 className="size-3.5" />
+                                    <Trash2 className="size-3" />
                                 </Button>
                             </div>
                         ))}
+                        {/* Add more button inline */}
+                        <div
+                            className="size-20 shrink-0 border border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
+                            onClick={() => document.getElementById("media-upload")?.click()}
+                        >
+                            <Plus className="size-4 text-muted-foreground" />
+                        </div>
                     </div>
                 )}
             </CardContent>

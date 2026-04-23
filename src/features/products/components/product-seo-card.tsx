@@ -118,6 +118,7 @@ export function ProductSeoCard({ product, onUpdate }: ProductSeoCardProps) {
                             <Label htmlFor="metaDescription">
                                 Meta Description
                                 <span className="text-muted-foreground ml-2">
+                            <p className="text-xs text-muted-foreground">Write a concise summary for search results. 120-160 characters ideal.</p>
                                     ({formData.metaDescription.length}/160)
                                 </span>
                             </Label>

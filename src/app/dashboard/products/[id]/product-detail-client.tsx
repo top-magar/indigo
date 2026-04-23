@@ -124,10 +124,17 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
 
     return (
         <div className="pb-20">
+            {/* Single header — no duplicate from EntityDetailPage */}
+            <ProductHeader
+                product={product}
+                onStatusChange={handleStatusChange}
+                onDelete={() => setDeleteDialogOpen(true)}
+            />
+
             <EntityDetailPage
                 backHref="/dashboard/products"
                 backLabel="Products"
-                title={product.name}
+                title=""
                 sidebar={
                     <>
                         <ProductOrganizationCard product={product} onUpdate={handleRefresh} />
@@ -136,13 +143,6 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
                     </>
                 }
             >
-                {/* Header with status/actions */}
-                <ProductHeader
-                    product={product}
-                    onStatusChange={handleStatusChange}
-                    onDelete={() => setDeleteDialogOpen(true)}
-                />
-
                 <ProductInfoCard product={product} onUpdate={handleRefresh} />
                 <ProductMediaCard product={product} onUpdate={handleRefresh} />
                 <ProductPricingCard product={product} onUpdate={handleRefresh} />
