@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, ImageIcon } from "lucide-react";
@@ -51,7 +50,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
         }
     };
 
-    const currentMedia = product.media[selectedIndex];
+    const currentMedia = product.media[selectedIndex] || product.media[0];
 
     return (
         <Card>
@@ -65,7 +64,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                     onChange={(e) => handleFileUpload(e.target.files)}
                 />
 
-                {product.media.length === 0 ? (
+                {!product.media.length ? (
                     <div
                         className="aspect-square rounded-lg border border-dashed flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
                         onClick={() => document.getElementById("media-upload")?.click()}
@@ -78,44 +77,46 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                 ) : (
                     <div className="space-y-3">
                         {/* Hero image */}
-                        <div className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
-                            <Image
-                                src={currentMedia.url}
-                                alt={currentMedia.alt || product.name}
-                                fill
-                                className="object-cover"
-                            />
-                            <Button
-                                variant="destructive"
-                                size="icon"
-                                className="absolute top-2 right-2 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => handleRemove(currentMedia.url)}
-                            >
-                                <Trash2 className="size-3" />
-                            </Button>
-                        </div>
+                        {currentMedia && (
+                            <div className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={currentMedia.url}
+                                    alt={currentMedia.alt || product.name}
+                                    className="absolute inset-0 size-full object-cover"
+                                />
+                                <Button
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-2 right-2 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => handleRemove(currentMedia.url)}
+                                >
+                                    <Trash2 className="size-3" />
+                                </Button>
+                            </div>
+                        )}
 
                         {/* Thumbnail strip */}
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 overflow-x-auto">
                             {product.media.map((media, index) => (
                                 <button
                                     key={media.id}
                                     onClick={() => setSelectedIndex(index)}
                                     className={cn(
-                                        "relative size-14 shrink-0 rounded-md overflow-hidden border-2 transition-colors",
+                                        "relative size-12 shrink-0 rounded-md overflow-hidden border-2 transition-colors",
                                         index === selectedIndex ? "border-primary" : "border-transparent hover:border-border"
                                     )}
                                 >
-                                    <Image
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
                                         src={media.url}
                                         alt={media.alt || product.name}
-                                        fill
-                                        className="object-cover"
+                                        className="absolute inset-0 size-full object-cover"
                                     />
                                 </button>
                             ))}
                             <button
-                                className="size-14 shrink-0 rounded-md border border-dashed flex items-center justify-center hover:border-primary/50 transition-colors"
+                                className="size-12 shrink-0 rounded-md border border-dashed flex items-center justify-center hover:border-primary/50 transition-colors"
                                 onClick={() => document.getElementById("media-upload")?.click()}
                             >
                                 <Plus className="size-4 text-muted-foreground" />
