@@ -39,10 +39,14 @@ export default function OnboardingPage() {
     setError(null)
 
     try {
+      const formData = new FormData()
+      formData.append("storeName", storeName)
+      formData.append("currency", currency)
+      if (logo) formData.append("logo", logo)
+
       const res = await fetch("/api/auth/complete-onboarding", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeName, currency }),
+        body: formData,
       })
       const result = await res.json()
       if (!res.ok) { setError(result.error || "Failed to create store"); setIsLoading(false); return }

@@ -7,49 +7,55 @@ const log = createLogger("api:auth-complete-onboarding");
 
 export const POST = withRateLimit("auth", async function POST(request: Request) {
   try {
-    const { storeName, currency } = await request.json()
+    const formData = await request.formData()
+    const storeName = formData.get("storeName") as string
+    const currency = (formData.get("currency") as string) || "NPR"
+    const logo = formData.get("logo") as File | null
 
     if (!storeName || storeName.length < 3) {
-      return NextResponse.json(
-        { error: "Store name must be at least 3 characters" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Store name must be at least 3 characters" }, { status: 400 })
     }
 
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-
     if (!user) {
-      return NextResponse.json(
-        { error: "Not authenticated" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
 
-    // Check if user already has a profile
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("tenant_id")
-      .eq("id", user.id)
-      .single()
-
+    // Check if already onboarded
+    const { data: existingUser } = await supabase.from("users").select("tenant_id").eq("id", user.id).single()
     if (existingUser?.tenant_id) {
       return NextResponse.json({ success: true, message: "Already onboarded" })
     }
 
     // Generate slug
-    const slugBase = storeName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-    const randomSuffix = Math.random().toString(36).substring(2, 6)
-    const slug = `${slugBase}-${randomSuffix}`
+    const slugBase = storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+    const slug = `${slugBase}-${Math.random().toString(36).substring(2, 6)}`
 
-    // Use admin client to bypass RLS
     const supabaseAdmin = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
+
+    // Upload logo if provided
+    let logoUrl: string | null = null
+    if (logo && logo.size > 0) {
+      const ext = logo.name.split(".").pop() || "png"
+      const path = `logos/${slug}.${ext}`
+      const buffer = Buffer.from(await logo.arrayBuffer())
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from("public")
+        .upload(path, buffer, { contentType: logo.type, upsert: true })
+
+      if (uploadError) {
+        log.error("Logo upload error:", uploadError)
+        // Non-fatal — continue without logo
+      } else {
+        const { data: urlData } = supabaseAdmin.storage.from("public").getPublicUrl(path)
+        logoUrl = urlData.publicUrl
+      }
+    }
 
     // Create tenant
     const { data: tenant, error: tenantError } = await supabaseAdmin
@@ -57,17 +63,15 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       .insert({
         name: storeName,
         slug,
-        currency: currency || "NPR",
+        currency,
+        ...(logoUrl && { logo_url: logoUrl }),
       })
       .select()
       .single()
 
     if (tenantError) {
       log.error("Tenant creation error:", tenantError)
-      return NextResponse.json(
-        { error: "Failed to create store" },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: "Failed to create store" }, { status: 500 })
     }
 
     // Create or update user profile
@@ -83,20 +87,13 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
 
     if (userError) {
       log.error("User profile creation error:", userError)
-      // Rollback tenant creation
       await supabaseAdmin.from("tenants").delete().eq("id", tenant.id)
-      return NextResponse.json(
-        { error: "Failed to create user profile" },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: "Failed to create user profile" }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
     log.error("Onboarding error:", error)
-    return NextResponse.json(
-      { error: "An unexpected error occurred" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 })
   }
 });
