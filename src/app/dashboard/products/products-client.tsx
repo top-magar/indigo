@@ -345,7 +345,6 @@ export function ProductsListView({
     return (
         <EntityListPage
             title="Products"
-            description="Manage your product catalog"
         >
 
             {/* Toolbar */}
@@ -447,28 +446,18 @@ export function ProductsListView({
                         <Button
                             variant="outline"
                             onClick={onExport}
-                            className="gap-2"
                         >
                             <Download className="size-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
                         <Button
                             variant="outline"
-                            className="gap-2"
                             onClick={() => onImportOpen()}
                         >
                             <Upload className="size-4" />
                             <span className="hidden sm:inline">Import</span>
                         </Button>
-                        <Button
-                            variant="outline"
-                            size="icon" aria-label="Refresh"
-                            onClick={() => onRefresh()}
-                            disabled={isPending}
-                        >
-                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-                        </Button>
-                        <Button asChild className="gap-2">
+                        <Button asChild>
                             <Link href="/dashboard/products/new">
                                 <Plus className="size-4" />
                                 Add Product
