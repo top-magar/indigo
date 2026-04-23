@@ -247,12 +247,22 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
         const collectionIdsJson = formData.get("collectionIds") as string;
         const collectionIds = collectionIdsJson ? JSON.parse(collectionIdsJson) : undefined;
 
-        await productRepository.update(tenantId, productId, {
-            ...(name !== undefined && { name }),
-            ...(price !== undefined && { price: String(price) }),
-            ...(description !== undefined && { description }),
-            ...(status !== undefined && { status }),
-        });
+        const updateData: Record<string, unknown> = {};
+        if (name) updateData.name = name;
+        if (price !== undefined) updateData.price = price;
+        if (description !== undefined) updateData.description = description;
+        if (status) updateData.status = status;
+        updateData.updated_at = new Date().toISOString();
+
+        const { error: updateError } = await supabase
+            .from("products")
+            .update(updateData)
+            .eq("id", productId)
+            .eq("tenant_id", tenantId);
+
+        if (updateError) {
+            return { error: `Failed to update: ${updateError.message}` };
+        }
 
         // Audit log - non-blocking
         try {
