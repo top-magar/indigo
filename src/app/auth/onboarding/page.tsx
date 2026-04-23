@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Store, Loader2 } from "lucide-react"
+import { Loader2, ArrowRight } from "lucide-react"
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
@@ -26,10 +25,8 @@ export default function OnboardingPage() {
     async function checkUser() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push("/login"); return }
-
       const { data } = await supabase.from("users").select("tenant_id").eq("id", user.id).single()
       if (data?.tenant_id) { router.push("/dashboard"); return }
-
       setIsChecking(false)
     }
     checkUser()
@@ -53,7 +50,6 @@ export default function OnboardingPage() {
         body: JSON.stringify({ storeName, currency }),
       })
       const result = await response.json()
-
       if (!response.ok) {
         setError(result.error || "Failed to create store")
         setIsLoading(false)
@@ -69,78 +65,133 @@ export default function OnboardingPage() {
   if (isChecking) {
     return (
       <div className="flex min-h-svh items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        <Loader2 className="size-5 animate-spin text-muted-foreground" />
       </div>
     )
   }
 
   const slug = toSlug(storeName)
+  const isValid = storeName.length >= 3
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-background p-6">
-      <div className="w-full max-w-sm space-y-8">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-foreground">
-            <Store className="size-4 text-background" />
+    <div className="flex min-h-svh bg-background">
+      {/* Left — branding panel */}
+      <div className="hidden lg:flex lg:w-[480px] bg-foreground text-background flex-col justify-between p-12">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-md bg-background/10">
+              <span className="text-sm font-bold">I</span>
+            </div>
+            <span className="text-sm font-semibold tracking-tight">Indigo</span>
           </div>
-          <span className="text-lg font-semibold tracking-tight">Indigo</span>
         </div>
 
-        {/* Form */}
-        <div className="space-y-2 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">Create your store</h1>
-          <p className="text-sm text-muted-foreground">You can change these later in settings</p>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold tracking-tight leading-tight">
+            Start selling in<br />minutes, not days.
+          </h2>
+          <p className="text-sm text-background/60 leading-relaxed max-w-[320px]">
+            Set up your store, add products, and start accepting payments — all from one dashboard.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="store-name">Store name</Label>
-            <Input
-              id="store-name"
-              type="text"
-              placeholder="My Store"
-              required
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-              autoFocus
-            />
-            {slug && (
-              <p className="text-xs text-muted-foreground">
-                yourstore.indigo.com/<span className="font-medium text-foreground">{slug}</span>
-              </p>
-            )}
+        <p className="text-xs text-background/40">
+          Trusted by merchants across Nepal
+        </p>
+      </div>
+
+      {/* Right — form */}
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="w-full max-w-[360px] space-y-8">
+          {/* Mobile logo */}
+          <div className="flex items-center gap-2.5 lg:hidden">
+            <div className="flex size-8 items-center justify-center rounded-md bg-foreground">
+              <span className="text-sm font-bold text-background">I</span>
+            </div>
+            <span className="text-sm font-semibold tracking-tight">Indigo</span>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="currency">Currency</Label>
-            <Select value={currency} onValueChange={setCurrency}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="NPR">NPR — Nepali Rupee (Rs.)</SelectItem>
-                <SelectItem value="USD">USD — US Dollar ($)</SelectItem>
-                <SelectItem value="INR">INR — Indian Rupee (₹)</SelectItem>
-                <SelectItem value="EUR">EUR — Euro (€)</SelectItem>
-                <SelectItem value="GBP">GBP — British Pound (£)</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Header */}
+          <div className="space-y-1">
+            <h1 className="text-xl font-semibold tracking-tight">Create your store</h1>
+            <p className="text-sm text-muted-foreground">
+              Takes less than a minute. You can change everything later.
+            </p>
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label htmlFor="store-name" className="text-xs font-medium">
+                Store name
+              </label>
+              <Input
+                id="store-name"
+                type="text"
+                placeholder="e.g. Kathmandu Crafts"
+                required
+                value={storeName}
+                onChange={(e) => setStoreName(e.target.value)}
+                autoFocus
+                className="h-9"
+              />
+              {slug ? (
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground/60">indigo.com/store/</span>
+                  <span className="font-medium text-foreground">{slug}</span>
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground/60">
+                  Your store URL will appear here
+                </p>
+              )}
+            </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading || storeName.length < 3}>
-            {isLoading ? (
-              <>
-                <Loader2 className="size-3.5 animate-spin" />
-                Creating...
-              </>
-            ) : (
-              "Create store"
+            <div className="space-y-1.5">
+              <label htmlFor="currency" className="text-xs font-medium">
+                Currency
+              </label>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NPR">Rs. — Nepali Rupee</SelectItem>
+                  <SelectItem value="INR">₹ — Indian Rupee</SelectItem>
+                  <SelectItem value="USD">$ — US Dollar</SelectItem>
+                  <SelectItem value="EUR">€ — Euro</SelectItem>
+                  <SelectItem value="GBP">£ — British Pound</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {error && (
+              <p className="text-xs text-destructive">{error}</p>
             )}
-          </Button>
-        </form>
+
+            <Button
+              type="submit"
+              className="w-full h-9"
+              disabled={isLoading || !isValid}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="size-3.5 animate-spin" />
+                  Creating store...
+                </>
+              ) : (
+                <>
+                  Continue
+                  <ArrowRight className="size-3.5" />
+                </>
+              )}
+            </Button>
+          </form>
+
+          <p className="text-[11px] text-muted-foreground/50 text-center leading-relaxed">
+            By continuing, you agree to Indigo&apos;s Terms of Service and Privacy Policy.
+          </p>
+        </div>
       </div>
     </div>
   )
