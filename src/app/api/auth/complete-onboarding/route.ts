@@ -87,7 +87,7 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
         id: user.id,
         tenant_id: tenant.id,
         email: user.email,
-        full_name: user.user_metadata?.full_name || user.user_metadata?.name || storeName,
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User",
         role: "owner",
       }, { onConflict: "id" })
 
