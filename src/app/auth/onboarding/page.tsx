@@ -64,36 +64,46 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-svh bg-background">
       {/* Left — brand panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-16">
-        <div className="flex items-center gap-2.5">
-          <div className="flex size-8 items-center justify-center rounded-md bg-background/10 ring-1 ring-background/20">
+      <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-16 relative overflow-hidden">
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0z\' fill=\'none\' stroke=\'white\' stroke-width=\'.5\'/%3E%3C/svg%3E")' }} />
+
+        <div className="relative z-10 flex items-center gap-2.5">
+          <div className="flex size-8 items-center justify-center rounded-md bg-background/10 ring-1 ring-background/10">
             <Store className="size-4" />
           </div>
           <span className="text-sm font-semibold tracking-tight">Indigo</span>
         </div>
 
-        <div className="space-y-5 max-w-[400px]">
-          <h2 className="text-3xl font-semibold tracking-tight leading-[1.2]">
-            Your store,<br />ready in seconds.
+        <div className="relative z-10 space-y-8">
+          <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
+            Sell online,<br />your way.
           </h2>
-          <div className="space-y-3 text-sm text-background/50">
-            <div className="flex items-center gap-3">
-              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">1</span>
-              Name your store
+
+          {/* Feature pills */}
+          <div className="flex flex-wrap gap-2">
+            {["Products", "Orders", "Payments", "Customers", "Analytics", "Storefront"].map((f) => (
+              <span key={f} className="rounded-full bg-background/8 ring-1 ring-background/10 px-3 py-1 text-xs text-background/70">
+                {f}
+              </span>
+            ))}
+          </div>
+
+          {/* Social proof */}
+          <div className="flex items-center gap-3 pt-4 border-t border-background/10">
+            <div className="flex -space-x-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="size-7 rounded-full bg-background/10 ring-2 ring-foreground" />
+              ))}
             </div>
-            <div className="flex items-center gap-3">
-              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">2</span>
-              Add your first product
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">3</span>
-              Start selling
-            </div>
+            <p className="text-xs text-background/40">
+              Join merchants selling across Nepal
+            </p>
           </div>
         </div>
 
-        <p className="text-xs text-background/30">
-          Built for merchants in Nepal
+        <p className="relative z-10 text-[11px] text-background/20">
+          © {new Date().getFullYear()} Indigo Commerce
         </p>
       </div>
 
