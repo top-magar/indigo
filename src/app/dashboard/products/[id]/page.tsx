@@ -1,13 +1,15 @@
 import { notFound } from "next/navigation";
-import { auth, getProductDetail } from "../_lib/queries";
+import { auth, getProductDetail, getTenantCurrency } from "../_lib/queries";
 import { ProductDetailClient } from "./product-detail-client";
 import type { Product, ProductMedia, ProductVariant } from "@/features/products/types";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { supabase, tenantId } = await auth();
-
-  const result = await getProductDetail(tenantId, supabase, id);
+  const [result, currency] = await Promise.all([
+    getProductDetail(tenantId, supabase, id),
+    getTenantCurrency(supabase, tenantId),
+  ]);
   if (!result) notFound();
 
   const { product, variants, collectionLinks } = result;
@@ -22,7 +24,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     price: parseFloat(product.price || "0"),
     compareAtPrice: product.compare_at_price ? parseFloat(product.compare_at_price) : null,
     costPrice: product.cost_price ? parseFloat(product.cost_price) : null,
-    currency: product.currency || "USD",
+    currency: currency || "NPR",
     sku: product.sku,
     barcode: product.barcode,
     quantity: product.quantity || 0,
