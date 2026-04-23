@@ -28,9 +28,15 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       return NextResponse.json({ success: true, message: "Already onboarded" })
     }
 
-    // Generate slug
+    // Generate slug — clean, no random suffix unless collision
     const slugBase = storeName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-    const slug = `${slugBase}-${Math.random().toString(36).substring(2, 6)}`
+    let slug = slugBase
+
+    // Check for collision
+    const { data: existing } = await supabaseAdmin.from("tenants").select("id").eq("slug", slug).single()
+    if (existing) {
+      slug = `${slugBase}-${Math.random().toString(36).substring(2, 6)}`
+    }
 
     const supabaseAdmin = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
