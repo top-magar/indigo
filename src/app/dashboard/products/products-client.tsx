@@ -345,6 +345,24 @@ export function ProductsListView({
     return (
         <EntityListPage
             title="Products"
+            actions={
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" onClick={onExport}>
+                        <Download className="size-4" />
+                        <span className="hidden sm:inline">Export</span>
+                    </Button>
+                    <Button variant="outline" onClick={() => onImportOpen()}>
+                        <Upload className="size-4" />
+                        <span className="hidden sm:inline">Import</span>
+                    </Button>
+                    <Button asChild>
+                        <Link href="/dashboard/products/new">
+                            <Plus className="size-4" />
+                            Add Product
+                        </Link>
+                    </Button>
+                </div>
+            }
         >
 
             {/* Toolbar */}
@@ -439,30 +457,6 @@ export function ProductsListView({
                                 Clear
                             </Button>
                         )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 ml-auto">
-                        <Button
-                            variant="outline"
-                            onClick={onExport}
-                        >
-                            <Download className="size-4" />
-                            <span className="hidden sm:inline">Export</span>
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={() => onImportOpen()}
-                        >
-                            <Upload className="size-4" />
-                            <span className="hidden sm:inline">Import</span>
-                        </Button>
-                        <Button asChild>
-                            <Link href="/dashboard/products/new">
-                                <Plus className="size-4" />
-                                Add Product
-                            </Link>
-                        </Button>
                     </div>
                 </div>
 
