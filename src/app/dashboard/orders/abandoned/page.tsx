@@ -4,7 +4,7 @@ import { getAbandonedCheckouts } from "./actions";
 import { auth, getTenantCurrency } from "../_lib/queries";
 
 export const metadata: Metadata = {
-    title: "Abandoned Checkouts | Dashboard",
+    title: "Abandoned Carts | Dashboard",
     description: "View and recover abandoned checkouts.",
 };
 

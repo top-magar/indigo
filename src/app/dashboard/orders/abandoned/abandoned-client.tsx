@@ -56,17 +56,15 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
 
     return (
         <EntityListPage
-            title="Abandoned Checkouts"
-            description="Recover lost sales from incomplete checkouts."
+            title="Abandoned Carts"
             actions={
                 recoverable.length > 0 ? (
-                    <Button onClick={handleBulkSend} disabled={isPending} className="gap-2">
+                    <Button onClick={handleBulkSend} disabled={isPending}>
                         <Mail className="size-4" />
                         Send recovery to {recoverable.length} checkout{recoverable.length !== 1 ? "s" : ""}
                     </Button>
                 ) : undefined
             }
-            stats={statItems}
         >
 
             {/* Table */}
