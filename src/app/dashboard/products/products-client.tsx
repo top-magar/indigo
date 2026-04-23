@@ -536,11 +536,11 @@ export function ProductsListView({
                                 />
                             </TableHead>
                             <TableHead className="w-16 hidden sm:table-cell"></TableHead>
-                            <TableHead>Product</TableHead>
-                            <TableHead className="hidden lg:table-cell">Category</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="hidden md:table-cell">Stock</TableHead>
-                            <TableHead className="text-right">Price</TableHead>
+                            <TableHead className="whitespace-nowrap">Product</TableHead>
+                            <TableHead className="hidden lg:table-cell whitespace-nowrap">Category</TableHead>
+                            <TableHead className="whitespace-nowrap">Status</TableHead>
+                            <TableHead className="hidden md:table-cell whitespace-nowrap">Stock</TableHead>
+                            <TableHead className="text-right whitespace-nowrap">Price</TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
@@ -632,7 +632,7 @@ export function ProductsListView({
                                         <TableCell className="hidden md:table-cell">
                                             <StockBadge quantity={product.quantity} />
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-right whitespace-nowrap">
                                             <div>
                                                 <span className="font-semibold tabular-nums">
                                                     {formatCurrency(Number(product.price), currency)}
