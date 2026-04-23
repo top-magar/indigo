@@ -524,6 +524,7 @@ export function ProductsListView({
             </div>
 
             {/* Products Table */}
+            <div className="overflow-x-auto">
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -534,7 +535,7 @@ export function ProductsListView({
                                     aria-label="Select all"
                                 />
                             </TableHead>
-                            <TableHead className="w-16"></TableHead>
+                            <TableHead className="w-16 hidden sm:table-cell"></TableHead>
                             <TableHead>Product</TableHead>
                             <TableHead className="hidden lg:table-cell">Category</TableHead>
                             <TableHead>Status</TableHead>
@@ -586,7 +587,7 @@ export function ProductsListView({
                                                 aria-label={`Select ${product.name}`}
                                             />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="hidden sm:table-cell">
                                             {hasImage ? (
                                                 <div className="relative size-10 overflow-hidden rounded-lg border bg-muted">
                                                     <Image
@@ -694,6 +695,7 @@ export function ProductsListView({
                         )}
                     </TableBody>
                 </Table>
+            </div>
 
             {/* Pagination */}
             {pageCount > 1 && (
