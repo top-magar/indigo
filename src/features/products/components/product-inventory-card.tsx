@@ -30,12 +30,12 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
 
     const getStockStatus = () => {
         if (product.quantity === 0) {
-            return { label: "Out of Stock", color: "text-destructive", bgColor: "bg-destructive/10" };
+            return { label: "Out of Stock", color: "text-destructive", bgColor: "bg-destructive/10", dotColor: "bg-destructive" };
         }
         if (product.quantity <= 10) {
-            return { label: "Low Stock", color: "text-warning", bgColor: "bg-warning/10" };
+            return { label: "Low Stock", color: "text-warning", bgColor: "bg-warning/10", dotColor: "bg-warning" };
         }
-        return { label: "In Stock", color: "text-success", bgColor: "bg-success/10" };
+        return { label: "In Stock", color: "text-success", bgColor: "bg-success/10", dotColor: "bg-success" };
     };
 
     const stockStatus = getStockStatus();
@@ -94,7 +94,8 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
             <CardHeader className="flex flex-row items-center justify-between">
                 <div className="flex items-center gap-3">
                     <CardTitle>Inventory</CardTitle>
-                    <Badge variant="secondary" className={cn("border-0", stockStatus.bgColor, stockStatus.color)}>
+                    <Badge variant="secondary" className={cn("border-0 gap-1.5", stockStatus.bgColor, stockStatus.color)}>
+                        <span className={cn("size-1.5 rounded-full", stockStatus.dotColor)} />
                         {stockStatus.label}
                     </Badge>
                 </div>
@@ -156,7 +157,7 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
                         />
                     ) : (
                         <div className="flex items-center gap-4">
-                            <p className="text-2xl font-semibold tracking-tight">{product.quantity}</p>
+                            <p className="text-2xl font-semibold tracking-tight tabular-nums">{product.quantity}</p>
                             <div className="flex gap-1">
                                 <Button
                                     variant="outline"

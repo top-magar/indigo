@@ -30,10 +30,10 @@ interface ProductHeaderProps {
     onDelete?: () => void;
 }
 
-const statusConfig: Record<ProductStatus, { color: string; bgColor: string; label: string }> = {
-    draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
-    active: { color: "text-success", bgColor: "bg-success/10", label: "Active" },
-    archived: { color: "text-warning", bgColor: "bg-warning/10", label: "Archived" },
+const statusConfig: Record<ProductStatus, { color: string; bgColor: string; dotColor: string; label: string }> = {
+    draft: { color: "text-muted-foreground", bgColor: "bg-muted", dotColor: "bg-muted-foreground", label: "Draft" },
+    active: { color: "text-success", bgColor: "bg-success/10", dotColor: "bg-success", label: "Active" },
+    archived: { color: "text-warning", bgColor: "bg-warning/10", dotColor: "bg-warning", label: "Archived" },
 };
 
 export function ProductHeader({ product, onStatusChange, onDelete }: ProductHeaderProps) {
@@ -60,14 +60,15 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                         <span>Created {format(new Date(product.createdAt), "PPP")}</span>
                         {product.sku && (
                             <>
-                                <span>·</span>
-                                <span>SKU:</span>
-                                <CopyableText 
-                                    text={product.sku} 
-                                    mono 
-                                   
-                                    tooltipText="Copy SKU"
-                                />
+                                <span className="text-border">·</span>
+                                <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                                    SKU
+                                    <CopyableText 
+                                        text={product.sku} 
+                                        mono 
+                                        tooltipText="Copy SKU"
+                                    />
+                                </span>
                             </>
                         )}
                     </div>
@@ -76,7 +77,8 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
 
             <div className="flex items-center gap-2 shrink-0">
                 {/* Status Badge */}
-                <Badge variant="secondary" className={cn("border-0", status.bgColor, status.color)}>
+                <Badge variant="secondary" className={cn("border-0 gap-1.5", status.bgColor, status.color)}>
+                    <span className={cn("size-1.5 rounded-full", status.dotColor)} />
                     {status.label}
                 </Badge>
 
