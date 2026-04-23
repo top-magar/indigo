@@ -45,18 +45,18 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
     };
 
     return (
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" asChild>
+        <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+                <Button variant="ghost" size="icon" className="shrink-0" asChild>
                     <Link href="/dashboard/products">
                         <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">
+                <div className="min-w-0">
+                    <h1 className="text-lg font-semibold tracking-tight truncate sm:text-2xl">
                         {product.name}
                     </h1>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
                         <span>Created {format(new Date(product.createdAt), "PPP")}</span>
                         {product.sku && (
                             <>
@@ -74,7 +74,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 shrink-0">
                 {/* Status Badge */}
                 <Badge variant="secondary" className={cn("border-0", status.bgColor, status.color)}>
                     {status.label}
