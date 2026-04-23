@@ -13,7 +13,7 @@
  */
 
 export { HeroSection } from "../hero-section";
-export type { HeroSectionProps } from "../hero-section";
+
 
 export { EnhancedMetricCard } from "../enhanced-metric-card";
 export type { EnhancedMetricData } from "../enhanced-metric-card";

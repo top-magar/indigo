@@ -1,82 +1,52 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUp, ArrowDown, DollarSign, ShoppingCart, Users, TrendingUp, Package, type LucideIcon } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
-import Link from "next/link";
-
-const iconMap: Record<string, LucideIcon> = { DollarSign, ShoppingCart, Users, TrendingUp, Package };
+import { cn } from "@/shared/utils";
 
 export interface EnhancedMetricData {
   label: string;
   value: string | number;
   change?: number;
   changeLabel?: string;
-  icon: string;
-  iconColor: string;
+  icon?: string;
+  iconColor?: string;
   href?: string;
   sparklineData?: number[];
   period?: string;
   isCurrency?: boolean;
 }
 
-export interface EnhancedMetricCardProps {
+interface Props {
   metric: EnhancedMetricData;
   currency?: string;
 }
 
-function MiniBar({ data }: { data: number[] }) {
-  const max = Math.max(...data, 1);
+export function EnhancedMetricCard({ metric, currency = "NPR" }: Props) {
+  const { label, value, change, changeLabel, isCurrency = true } = metric;
+  const formatted = isCurrency !== false ? formatCurrency(Number(value), currency) : String(value);
+  const isPositive = (change ?? 0) >= 0;
+
   return (
-    <div className="flex items-end gap-[3px] h-8" aria-hidden="true">
-      {data.map((v, i) => (
-        <div key={i} className={`flex-1 rounded-sm ${i === data.length - 1 ? "bg-foreground" : "bg-muted-foreground/20"}`}
-          style={{ height: `${Math.max((v / max) * 100, 6)}%` }} />
-      ))}
-    </div>
-  );
-}
-
-export function EnhancedMetricCard({ metric, currency }: EnhancedMetricCardProps) {
-  const Icon = iconMap[metric.icon] || TrendingUp;
-  const hasChange = typeof metric.change === "number";
-  const isPositive = hasChange && (metric.change ?? 0) >= 0;
-  const isNeutral = hasChange && metric.change === 0;
-
-  const formattedValue = typeof metric.value === "number" && currency && metric.isCurrency !== false
-    ? formatCurrency(metric.value, currency) : metric.value;
-
-  const content = (
-    <CardContent className="p-4 h-full flex flex-col">
-      <div className="flex items-start justify-between gap-3 mb-1">
-        <p className="text-xs font-medium text-muted-foreground">{metric.label}</p>
-        <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
-          <Icon className="size-4 text-muted-foreground" />
-        </div>
-      </div>
-      <p className="text-xl font-semibold tabular-nums mt-1">{formattedValue}</p>
-      <div className="flex items-center gap-1.5 mt-1 min-h-[20px]">
-        {hasChange && !isNeutral && (
-          <span className={`inline-flex items-center gap-0.5 text-xs font-medium tabular-nums ${isPositive ? "text-success" : "text-destructive"}`}>
-            {isPositive ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />}
-            {Math.abs(metric.change ?? 0)}%
-          </span>
+    <Card>
+      <CardContent className="pt-4 pb-4 px-4 space-y-1">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-2xl font-semibold tracking-tight tabular-nums">{formatted}</p>
+        {change !== undefined && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            {isPositive ? (
+              <ArrowUp className="size-3 text-foreground" />
+            ) : (
+              <ArrowDown className="size-3 text-foreground" />
+            )}
+            <span className={cn("font-medium", isPositive ? "text-foreground" : "text-foreground")}>
+              {isPositive ? "+" : ""}{change.toFixed(1)}%
+            </span>
+            {changeLabel && <span>{changeLabel}</span>}
+          </div>
         )}
-        {metric.changeLabel && <span className="text-xs text-muted-foreground">{metric.changeLabel}</span>}
-      </div>
-      {metric.sparklineData && metric.sparklineData.length > 0 && (
-        <div className="mt-auto pt-3"><MiniBar data={metric.sparklineData} /></div>
-      )}
-    </CardContent>
+      </CardContent>
+    </Card>
   );
-
-  if (metric.href) {
-    return (
-      <Link href={metric.href} className="group block">
-        <Card className="h-full transition-colors hover:bg-muted/50">{content}</Card>
-      </Link>
-    );
-  }
-
-  return <Card className="h-full">{content}</Card>;
 }
