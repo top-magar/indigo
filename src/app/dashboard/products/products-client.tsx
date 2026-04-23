@@ -307,7 +307,7 @@ export function ProductsListView({
     ], [stats]);
 
     const categoryOptions: DataTableFilterOption[] = useMemo(() => 
-        categories.map(cat => ({ value: cat.id, label: cat.name })),
+        categories.filter(cat => cat.id).map(cat => ({ value: cat.id, label: cat.name })),
     [categories]);
 
     // Calculate active filter chips
