@@ -46,10 +46,20 @@ export const getUser = cache(async (): Promise<AuthUser | null> => {
 /**
  * Require authenticated user with tenant context.
  * Redirects to /login if not authenticated.
+ * Redirects to /auth/onboarding if authenticated but no tenant.
  */
 export async function requireUser(): Promise<AuthUser> {
   const user = await getUser()
-  if (!user) redirect("/login")
+  if (!user) {
+    // Check if user is authenticated but missing tenant
+    const supabase = await createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (authUser) {
+      // Authenticated but no tenant — send to onboarding
+      redirect("/auth/onboarding")
+    }
+    redirect("/login")
+  }
   return user
 }
 
