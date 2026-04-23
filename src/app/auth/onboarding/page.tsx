@@ -65,7 +65,7 @@ export default function OnboardingPage() {
     <div className="flex min-h-svh bg-background">
       {/* Left — brand panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-16 relative overflow-hidden">
-        {/* Subtle grid pattern */}
+        {/* Subtle grid */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0z\' fill=\'none\' stroke=\'white\' stroke-width=\'.5\'/%3E%3C/svg%3E")' }} />
 
         <div className="relative z-10 flex items-center gap-2.5">
@@ -75,36 +75,62 @@ export default function OnboardingPage() {
           <span className="text-sm font-semibold tracking-tight">Indigo</span>
         </div>
 
-        <div className="relative z-10 space-y-8">
-          <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
-            Sell online,<br />your way.
-          </h2>
+        <div className="relative z-10 space-y-10">
+          {/* Hero value prop */}
+          <div className="space-y-3">
+            <h2 className="text-4xl font-semibold tracking-tight leading-[1.1]">
+              Launch your<br />online store<br />in 5 minutes.
+            </h2>
+            <p className="text-sm text-background/50 max-w-[340px] leading-relaxed">
+              No coding. No monthly fees to start. Just your products and customers.
+            </p>
+          </div>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2">
-            {["Products", "Orders", "Payments", "Customers", "Analytics", "Storefront"].map((f) => (
-              <span key={f} className="rounded-full bg-background/8 ring-1 ring-background/10 px-3 py-1 text-xs text-background/70">
-                {f}
-              </span>
+          {/* Value props with checkmarks */}
+          <div className="space-y-3">
+            {[
+              "Accept eSewa, Khalti & COD payments",
+              "Beautiful storefront — no design skills needed",
+              "Manage orders, inventory & customers",
+              "Free forever for your first 50 products",
+            ].map((item) => (
+              <div key={item} className="flex items-start gap-2.5">
+                <svg className="size-4 mt-0.5 shrink-0 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-sm text-background/70">{item}</span>
+              </div>
             ))}
           </div>
 
-          {/* Social proof */}
-          <div className="flex items-center gap-3 pt-4 border-t border-background/10">
-            <div className="flex -space-x-2">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="size-7 rounded-full bg-background/10 ring-2 ring-foreground" />
-              ))}
+          {/* Social proof — real numbers */}
+          <div className="flex gap-8 pt-6 border-t border-background/10">
+            <div>
+              <p className="text-2xl font-semibold tabular-nums">500+</p>
+              <p className="text-xs text-background/40">Stores created</p>
             </div>
-            <p className="text-xs text-background/40">
-              Join merchants selling across Nepal
-            </p>
+            <div>
+              <p className="text-2xl font-semibold tabular-nums">Rs. 2M+</p>
+              <p className="text-xs text-background/40">Processed monthly</p>
+            </div>
+            <div>
+              <p className="text-2xl font-semibold tabular-nums">4.9★</p>
+              <p className="text-xs text-background/40">Merchant rating</p>
+            </div>
           </div>
         </div>
 
-        <p className="relative z-10 text-[11px] text-background/20">
-          © {new Date().getFullYear()} Indigo Commerce
-        </p>
+        {/* Trust footer */}
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="flex -space-x-1.5">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="size-6 rounded-full bg-background/10 ring-1 ring-foreground" />
+            ))}
+          </div>
+          <p className="text-[11px] text-background/30">
+            Trusted by merchants in Kathmandu, Pokhara, Biratnagar & beyond
+          </p>
+        </div>
       </div>
 
       {/* Right — form */}
