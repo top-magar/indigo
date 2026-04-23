@@ -8,6 +8,8 @@ import { Plus, Globe, RefreshCw, ExternalLink, Copy, Shield } from "lucide-react
 import { toast } from "sonner";
 import { AddDomainDialog, DomainCard } from "@/components/dashboard/domains";
 
+import { createClient } from "@/infrastructure/supabase/client";
+
 interface DomainRecord {
   id: string;
   tenantId: string;
@@ -95,8 +97,21 @@ export default function DomainsSettingsPage() {
   const activeDomains = domains.filter(d => d.status === "active").length;
   const pendingDomains = domains.filter(d => d.status === "pending" || d.status === "failed").length;
 
-  // Placeholder slug — in production, fetch from tenant
-  const storeSlug = domains[0]?.tenantId ? "your-store" : "your-store";
+  const [storeSlug, setStoreSlug] = useState("your-store");
+
+  useEffect(() => {
+    async function fetchSlug() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+      if (!data?.tenant_id) return;
+      const { data: tenant } = await supabase.from("tenants").select("slug").eq("id", data.tenant_id).single();
+      if (tenant?.slug) setStoreSlug(tenant.slug);
+    }
+    fetchSlug();
+  }, []);
+
 
   return (
     <div className="max-w-2xl space-y-6">
