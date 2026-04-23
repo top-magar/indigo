@@ -12,6 +12,7 @@ import { EnhancedMetricCard, type EnhancedMetricData } from "@/components/dashbo
 import { EnhancedRevenueChart } from "@/components/dashboard/enhanced-revenue-chart"
 import { ActivityFeed, type ActivityItem } from "@/components/dashboard/activity-feed"
 import { QuickActions } from "@/components/dashboard/quick-actions"
+import { SetupChecklist } from "@/components/dashboard/setup-checklist"
 import { RecentOrdersTable, type OrderData } from "@/components/dashboard/recent-orders-table"
 import { StatCardGridSkeleton } from "@/components/dashboard/skeletons"
 
@@ -85,7 +86,14 @@ export default async function DashboardPage() {
       <HeroSection userName={userName} todayRevenue={todayPaid.reduce((s, o) => s + Number(o.total), 0)}
         todayOrders={d.todayOrders.length} currency={currency} storeSlug={d.tenant.slug} greeting={getGreeting()} setupProgress={setupProgress} />
 
-      {d.totalProducts === 0 && <QuickActions />}
+      {d.totalProducts === 0 && (
+        <SetupChecklist
+          storeName={d.tenant.name}
+          hasProducts={d.totalProducts > 0}
+          hasPayments={false}
+          hasDomain={false}
+        />
+      )}
 
       <Suspense fallback={<StatCardGridSkeleton count={4} />}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
