@@ -8,9 +8,8 @@ import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/infrastructure/workflows/product";
+import { productRepository } from "@/features/products/repositories/products";
 import { expireProductsCache, expireProductCache } from "@/features/store/data";
-import type { CreateProductInput } from "@/infrastructure/workflows/product/steps";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
@@ -53,9 +52,11 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
         const raw = Object.fromEntries(formData.entries());
         const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
 
-        const result = await createProductWorkflow(tenantId, {
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        const product = await productRepository.create(tenantId, {
             name,
-            price,
+            slug,
+            price: String(price),
             description: description || undefined,
             quantity,
             sku: sku || undefined,
@@ -64,7 +65,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
 
         // Audit log - non-blocking
         try {
-            await auditLogger.logCreate(tenantId, "product", result.product!.id, {
+            await auditLogger.logCreate(tenantId, "product", product.id, {
                 name,
                 price,
                 description: description || undefined,
@@ -159,27 +160,25 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
 
         const validated = productDetailsSchema.parse(raw);
 
-        // Build workflow input from validated data
-        const input: CreateProductInput = {
+        const slug = validated.slug || validated.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        const product = await productRepository.create(tenantId, {
             name: validated.name,
-            slug: validated.slug,
+            slug,
             description: validated.description,
-            price: validated.price,
-            compareAtPrice: validated.compareAtPrice,
-            costPrice: validated.costPrice,
+            price: String(validated.price),
+            compareAtPrice: validated.compareAtPrice ? String(validated.compareAtPrice) : undefined,
+            costPrice: validated.costPrice ? String(validated.costPrice) : undefined,
             sku: validated.sku,
             barcode: validated.barcode,
             quantity: validated.quantity,
             trackQuantity: validated.trackQuantity,
             allowBackorder: validated.allowBackorder,
-            weight: validated.weight,
+            weight: validated.weight ? String(validated.weight) : undefined,
             weightUnit: validated.weightUnit,
             status: validated.status,
             hasVariants: validated.hasVariants,
             categoryId: validated.categoryId || undefined,
-            collectionIds: validated.collectionIds.length > 0 ? validated.collectionIds : undefined,
-            images: validated.images.length > 0 ? validated.images : undefined,
-            variants: validated.hasVariants && validated.variants.length > 0 ? validated.variants : undefined,
+            images: validated.images.length > 0 ? validated.images : [],
             metadata: {
                 brand: validated.brand || null,
                 tags: validated.tags,
@@ -190,22 +189,14 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
                 shipping: {
                     requiresShipping: validated.requiresShipping,
                     weightUnit: validated.weightUnit,
-                    dimensions: {
-                        length: parseFloat(formData.get("length") as string) || null,
-                        width: parseFloat(formData.get("width") as string) || null,
-                        height: parseFloat(formData.get("height") as string) || null,
-                    },
                 },
                 publishAt: validated.publishAt || null,
             },
-        };
-
-        // Execute workflow with automatic rollback on failure
-        const result = await createProductWorkflow(tenantId, input);
+        });
 
         // Audit log - non-blocking
         try {
-            await auditLogger.logCreate(tenantId, "product", result.product!.id, {
+            await auditLogger.logCreate(tenantId, "product", product.id, {
                 name: validated.name,
                 slug: validated.slug,
                 price: validated.price,
@@ -219,7 +210,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         }
 
         await expireProductCaches(tenantId);
-        return { success: true, productId: result.product!.id };
+        return { success: true, productId: product.id };
     } catch (err) {
         if (err instanceof z.ZodError) {
             return { error: err.issues[0].message };
@@ -256,13 +247,11 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
         const collectionIdsJson = formData.get("collectionIds") as string;
         const collectionIds = collectionIdsJson ? JSON.parse(collectionIdsJson) : undefined;
 
-        await updateProductWorkflow(tenantId, {
-            productId,
-            name,
-            price,
-            description,
-            status,
-            collectionIds,
+        await productRepository.update(tenantId, productId, {
+            ...(name !== undefined && { name }),
+            ...(price !== undefined && { price: String(price) }),
+            ...(description !== undefined && { description }),
+            ...(status !== undefined && { status }),
         });
 
         // Audit log - non-blocking
@@ -369,7 +358,7 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
             .eq("tenant_id", tenantId)
             .single();
 
-        await deleteProductWorkflow(tenantId, { productId });
+        await productRepository.delete(tenantId, productId);
 
         // Audit log - non-blocking
         try {
@@ -405,7 +394,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
             .eq("tenant_id", tenantId)
             .single();
 
-        await updateProductWorkflow(tenantId, { productId, status });
+        await productRepository.updateStatus(tenantId, productId, status);
 
         // Audit log - non-blocking
         try {
@@ -447,7 +436,7 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
         
         for (const productId of productIds) {
             try {
-                await deleteProductWorkflow(tenantId, { productId });
+                await productRepository.delete(tenantId, productId);
                 deletedCount++;
 
                 // Audit log each deletion - non-blocking
@@ -504,7 +493,7 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         
         for (const productId of productIds) {
             try {
-                await updateProductWorkflow(tenantId, { productId, status });
+                await productRepository.updateStatus(tenantId, productId, status);
                 updatedCount++;
 
                 // Audit log each update - non-blocking
