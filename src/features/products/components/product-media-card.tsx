@@ -118,7 +118,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                 onDragOver={(e) => handleDragOver(e, index)}
                                 onDragEnd={handleDragEnd}
                                 className={cn(
-                                    "relative size-20 shrink-0 rounded-lg overflow-hidden border group cursor-move",
+                                    "relative size-24 shrink-0 rounded-lg overflow-hidden border group cursor-move",
                                     draggedIndex === index && "opacity-50"
                                 )}
                             >
@@ -145,7 +145,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                         ))}
                         {/* Add more button inline */}
                         <div
-                            className="size-20 shrink-0 border border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
+                            className="size-24 shrink-0 border border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
                             onClick={() => document.getElementById("media-upload")?.click()}
                         >
                             <Plus className="size-4 text-muted-foreground" />

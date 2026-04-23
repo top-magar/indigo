@@ -100,15 +100,15 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
                     </Badge>
                 </div>
                 {!isEditing ? (
-                    <Button variant="outline" onClick={() => setIsEditing(true)}>
+                    <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setIsEditing(true)}>
                         Edit
                     </Button>
                 ) : (
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={handleCancel}>
+                        <Button variant="ghost" size="sm" onClick={handleCancel}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} disabled={isSaving}>
+                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
                             {isSaving ? "Saving..." : "Save"}
                         </Button>
                     </div>
@@ -157,7 +157,7 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
                         />
                     ) : (
                         <div className="flex items-center gap-4">
-                            <p className="text-2xl font-semibold tracking-tight tabular-nums">{product.quantity}</p>
+                            <p className="text-lg font-semibold tracking-tight tabular-nums">{product.quantity}</p>
                             <div className="flex gap-1">
                                 <Button
                                     variant="outline"

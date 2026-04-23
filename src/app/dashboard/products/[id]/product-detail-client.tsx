@@ -124,10 +124,8 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
 
     return (
         <div className="pb-20">
-            {/* Single header — no duplicate from EntityDetailPage */}
             <ProductHeader
                 product={product}
-                onStatusChange={handleStatusChange}
                 onDelete={() => setDeleteDialogOpen(true)}
             />
 
@@ -136,20 +134,18 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
                 backLabel=""
                 title=""
                 sidebar={
-                    <>
-                        <ProductOrganizationCard product={product} onUpdate={handleRefresh} />
-                        <ProductShippingCard product={product} onUpdate={handleRefresh} />
-                        <ProductSeoCard product={product} onUpdate={handleRefresh} />
-                    </>
+                    <ProductOrganizationCard product={product} onUpdate={handleRefresh} onStatusChange={handleStatusChange} />
                 }
             >
                 <ProductInfoCard product={product} onUpdate={handleRefresh} />
                 <ProductMediaCard product={product} onUpdate={handleRefresh} />
                 <ProductPricingCard product={product} onUpdate={handleRefresh} />
                 <ProductInventoryCard product={product} onUpdate={handleRefresh} />
+                <ProductShippingCard product={product} onUpdate={handleRefresh} />
                 {product.hasVariants && (
                     <ProductVariantsCard product={product} onUpdate={handleRefresh} />
                 )}
+                <ProductSeoCard product={product} onUpdate={handleRefresh} />
             </EntityDetailPage>
 
             {/* Savebar - shows when there are unsaved changes */}

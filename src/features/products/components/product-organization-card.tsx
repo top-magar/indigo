@@ -14,13 +14,15 @@ import {
 } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import type { Product } from "@/features/products/types";
+import type { Product, ProductStatus } from "@/features/products/types";
 import { updateProductOrganization } from "@/app/dashboard/products/product-actions";
 import { createClient } from "@/infrastructure/supabase/client";
+import { cn } from "@/shared/utils";
 
 interface ProductOrganizationCardProps {
     product: Product;
     onUpdate?: () => void;
+    onStatusChange?: (status: ProductStatus) => void;
 }
 
 interface Category {
@@ -33,7 +35,7 @@ interface Collection {
     name: string;
 }
 
-export function ProductOrganizationCard({ product, onUpdate }: ProductOrganizationCardProps) {
+export function ProductOrganizationCard({ product, onUpdate, onStatusChange }: ProductOrganizationCardProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -105,21 +107,48 @@ export function ProductOrganizationCard({ product, onUpdate }: ProductOrganizati
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Organization</CardTitle>
                 {!isEditing ? (
-                    <Button variant="outline" onClick={() => setIsEditing(true)}>
+                    <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setIsEditing(true)}>
                         Edit
                     </Button>
                 ) : (
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={handleCancel}>
+                        <Button variant="ghost" size="sm" onClick={handleCancel}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} disabled={isSaving}>
+                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
                             {isSaving ? "Saving..." : "Save"}
                         </Button>
                     </div>
                 )}
             </CardHeader>
             <CardContent className="space-y-4">
+                {/* Status */}
+                <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select
+                        value={product.status}
+                        onValueChange={(value: string) => onStatusChange?.(value as ProductStatus)}
+                    >
+                        <SelectTrigger>
+                            <SelectValue>
+                                <span className="flex items-center gap-2">
+                                    <span className={cn("size-1.5 rounded-full", {
+                                        "bg-success": product.status === "active",
+                                        "bg-muted-foreground": product.status === "draft",
+                                        "bg-warning": product.status === "archived",
+                                    })} />
+                                    <span className="capitalize">{product.status}</span>
+                                </span>
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="archived">Archived</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
                 <div className="space-y-2">
                     <Label>Category</Label>
                     {isEditing ? (

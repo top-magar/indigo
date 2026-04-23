@@ -69,15 +69,15 @@ export function ProductInfoCard({ product, onUpdate }: ProductInfoCardProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>General Information</CardTitle>
                 {!isEditing ? (
-                    <Button variant="outline" onClick={() => setIsEditing(true)}>
+                    <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setIsEditing(true)}>
                         Edit
                     </Button>
                 ) : (
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={handleCancel}>
+                        <Button variant="ghost" size="sm" onClick={handleCancel}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} disabled={isSaving}>
+                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
                             {isSaving ? "Saving..." : "Save"}
                         </Button>
                     </div>
