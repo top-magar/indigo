@@ -112,27 +112,6 @@ export function ProductInfoCard({ product, onUpdate }: ProductInfoCardProps) {
                         </p>
                     )}
                 </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="status">Status</Label>
-                    {isEditing ? (
-                        <Select
-                            value={formData.status}
-                            onValueChange={(value: ProductStatus) => setFormData({ ...formData, status: value })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="draft">Draft</SelectItem>
-                                <SelectItem value="active">Active</SelectItem>
-                                <SelectItem value="archived">Archived</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    ) : (
-                        <p className="text-sm capitalize">{product.status}</p>
-                    )}
-                </div>
             </CardContent>
         </Card>
     );

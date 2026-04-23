@@ -37,10 +37,13 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
 
     const formatCurrency = (value: number | null | undefined) => {
         if (value === null || value === undefined) return "—";
+        const isNPR = product.currency === "NPR";
         const formatted = new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: product.currency || "USD",
-        }).format(value); return (product.currency === "NPR") ? formatted.replace(/NPR|NRs/, "Rs.") : formatted;
+            maximumFractionDigits: isNPR ? 0 : 2,
+        }).format(value);
+        return isNPR ? formatted.replace(/NPR|NRs/, "Rs.") : formatted;
     };
 
     const getStockStatus = (quantity: number) => {

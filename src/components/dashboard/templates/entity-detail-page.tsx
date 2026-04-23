@@ -47,13 +47,15 @@ export function EntityDetailPage({
 }: EntityDetailPageProps) {
   return (
     <div className="space-y-3">
-      <Link
-        href={backHref}
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="size-3.5" />
-        {backLabel}
-      </Link>
+      {backHref && (
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="size-3.5" />
+          {backLabel}
+        </Link>
+      )}
 
       {title && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

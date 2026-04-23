@@ -132,8 +132,8 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
             />
 
             <EntityDetailPage
-                backHref="/dashboard/products"
-                backLabel="Products"
+                backHref=""
+                backLabel=""
                 title=""
                 sidebar={
                     <>
