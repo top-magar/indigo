@@ -3,17 +3,7 @@
 import { create } from 'zustand';
 import type { El } from './types';
 import { addEl, updateEl, deleteEl, moveEl, reorderEl, cloneEl, findEl, defaultBody } from './tree-helpers';
-
-// Lazy ref to editor-store to avoid circular import
-// Lazy reference to editor-store to avoid circular import
-let _editorStore: { selected: El | null; select: (el: El | null) => void } | null = null;
-function getEditorStore() {
-  if (!_editorStore) {
-    // Dynamic import resolved synchronously after first module load
-    _editorStore = (require('./editor-store') as { useEditorStore: { getState: () => { selected: El | null; select: (el: El | null) => void } } }).useEditorStore.getState();
-  }
-  return (require('./editor-store') as { useEditorStore: { getState: () => { selected: El | null; select: (el: El | null) => void } } }).useEditorStore.getState();
-}
+import { useEditorStore } from './editor-store';
 
 const MAX_HISTORY = 50;
 
@@ -57,22 +47,22 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
   updateElement: (element) => {
     set(s => pushHistory(s, updateEl(s.elements, element)));
     // Sync selected if it's the updated element
-    const sel = getEditorStore().selected;
-    if (sel?.id === element.id) getEditorStore().select(element);
+    const sel = useEditorStore.getState().selected;
+    if (sel?.id === element.id) useEditorStore.getState().select(element);
   },
 
   updateElementLive: (element) => {
     set(s => ({ elements: updateEl(s.elements, element), dirty: true }));
-    const sel = getEditorStore().selected;
-    if (sel?.id === element.id) getEditorStore().select(element);
+    const sel = useEditorStore.getState().selected;
+    if (sel?.id === element.id) useEditorStore.getState().select(element);
   },
 
   commitHistory: () => set(s => pushHistory(s, s.elements)),
 
   deleteElement: (id) => {
     set(s => pushHistory(s, deleteEl(s.elements, id)));
-    const sel = getEditorStore().selected;
-    if (sel?.id === id) getEditorStore().select(null);
+    const sel = useEditorStore.getState().selected;
+    if (sel?.id === id) useEditorStore.getState().select(null);
   },
 
   moveElement: (elId, targetContainerId, index) => set(s => pushHistory(s, moveEl(s.elements, elId, targetContainerId, index))),
@@ -95,8 +85,8 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
       const idx = s.currentIndex - 1;
       return { elements: s.snapshots[idx], currentIndex: idx };
     });
-    const sel = getEditorStore().selected;
-    if (sel) { const found = findEl(get().elements, sel.id); getEditorStore().select(found ?? null); }
+    const sel = useEditorStore.getState().selected;
+    if (sel) { const found = findEl(get().elements, sel.id); useEditorStore.getState().select(found ?? null); }
   },
 
   redo: () => {
@@ -105,8 +95,8 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
       const idx = s.currentIndex + 1;
       return { elements: s.snapshots[idx], currentIndex: idx };
     });
-    const sel = getEditorStore().selected;
-    if (sel) { const found = findEl(get().elements, sel.id); getEditorStore().select(found ?? null); }
+    const sel = useEditorStore.getState().selected;
+    if (sel) { const found = findEl(get().elements, sel.id); useEditorStore.getState().select(found ?? null); }
   },
 
   setDirty: (dirty) => set({ dirty }),
