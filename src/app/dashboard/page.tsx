@@ -53,7 +53,9 @@ export default async function DashboardPage() {
 
   const isNewStore = d.totalProducts === 0
   const hasProducts = d.totalProducts > 0
-  const setupComplete = hasProducts // expand later: && hasPayments && hasDomain
+  const hasPayments = false // TODO: check payment provider config
+  const hasDomain = false   // TODO: check custom domain
+  const setupComplete = hasProducts && hasPayments && hasDomain
   const userName = d.userName?.split(" ")[0] || user.email?.split("@")[0] || "there"
 
   const metrics: EnhancedMetricData[] = [
