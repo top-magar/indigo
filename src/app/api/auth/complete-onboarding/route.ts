@@ -69,16 +69,16 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       )
     }
 
-    // Create user profile
+    // Create or update user profile
     const { error: userError } = await supabaseAdmin
       .from("users")
-      .insert({
+      .upsert({
         id: user.id,
         tenant_id: tenant.id,
         email: user.email,
         full_name: user.user_metadata?.full_name || user.user_metadata?.name || storeName,
         role: "owner",
-      })
+      }, { onConflict: "id" })
 
     if (userError) {
       log.error("User profile creation error:", userError)
