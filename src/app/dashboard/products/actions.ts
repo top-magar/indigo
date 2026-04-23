@@ -64,7 +64,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
 
         // Audit log - non-blocking
         try {
-            await auditLogger.logCreate(tenantId, "product", result.product.id, {
+            await auditLogger.logCreate(tenantId, "product", result.product!.id, {
                 name,
                 price,
                 description: description || undefined,
@@ -205,7 +205,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
 
         // Audit log - non-blocking
         try {
-            await auditLogger.logCreate(tenantId, "product", result.product.id, {
+            await auditLogger.logCreate(tenantId, "product", result.product!.id, {
                 name: validated.name,
                 slug: validated.slug,
                 price: validated.price,
@@ -219,7 +219,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         }
 
         await expireProductCaches(tenantId);
-        return { success: true, productId: result.product.id };
+        return { success: true, productId: result.product!.id };
     } catch (err) {
         if (err instanceof z.ZodError) {
             return { error: err.issues[0].message };

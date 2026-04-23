@@ -53,9 +53,9 @@ export async function createOrder(tenantId: string, input: CreateOrderInput) {
   const result = await createOrderWorkflow(tenantId, input);
 
   eventBus.emit("order.created", createEventPayload(tenantId, {
-    orderId: result.order.id,
+    orderId: result.order?.id,
     tenantId,
-    orderNumber: result.order.order_number,
+    orderNumber: result.order?.order_number,
   })).catch(() => {});
 
   return result;

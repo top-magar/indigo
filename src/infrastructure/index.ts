@@ -25,4 +25,3 @@ export * from "./middleware";
 export * from "./cache";
 
 // Services
-export * from "./services";

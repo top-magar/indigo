@@ -19,4 +19,3 @@ export * as analytics from "./analytics";
 export * as attributes from "./attributes";
 export * as discounts from "./discounts";
 
-export * as notifications from "./notifications";

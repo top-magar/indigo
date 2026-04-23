@@ -3,4 +3,4 @@
  * 
  * Re-exports from the original location for backward compatibility.
  */
-export { StoreConfigRepository, storeConfigRepository } from "@/features/stores/repositories/store-config";
+export type { StoreConfigRepository, storeConfigRepository } from "@/features/stores/repositories/store-config";

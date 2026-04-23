@@ -94,7 +94,7 @@ export class EmailService {
           {
             maxRetries: 3,
             backoffMs: 200,
-            onRetry: (attempt, error) => {
+            onRetry: (attempt: number, error: Error) => {
               ServiceObservability.log(
                 'warn',
                 `Email send retry attempt ${attempt}`,
