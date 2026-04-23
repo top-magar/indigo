@@ -1,20 +1,17 @@
 "use client"
 
 import type React from "react"
+import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useEffect, useRef } from "react"
-import { Store, Eye, EyeOff, X } from "lucide-react"
-import { signupAction, signInWithGoogle } from "./actions"
-import { cn } from "@/shared/utils"
+import { useState, Suspense } from "react"
+import { Store, Eye, EyeOff, Loader2 } from "lucide-react"
+import { signInWithGoogle } from "./actions"
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className={className} viewBox="0 0 24 24" fill="none">
       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
       <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -23,276 +20,164 @@ function GoogleIcon({ className }: { className?: string }) {
   )
 }
 
-function getPasswordStrength(password: string): { score: number; label: string; color: string } {
-  let score = 0
-  if (password.length >= 6) score++
-  if (password.length >= 8) score++
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++
-  if (/\d/.test(password)) score++
-  if (/[^a-zA-Z0-9]/.test(password)) score++
-
-  if (score <= 1) return { score, label: "Weak", color: "bg-destructive" }
-  if (score <= 2) return { score, label: "Fair", color: "bg-amber-500" }
-  if (score <= 3) return { score, label: "Good", color: "bg-emerald-500" }
-  return { score, label: "Strong", color: "bg-emerald-600" }
-}
-
-
-export default function SignupPage() {
+function SignupForm() {
+  const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [storeName, setStoreName] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const [emailError, setEmailError] = useState<string | null>(null)
-  const storeNameRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-
-  useEffect(() => {
-    storeNameRef.current?.focus()
-  }, [])
-
-  const passwordStrength = getPasswordStrength(password)
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true)
     setError(null)
     try {
       const result = await signInWithGoogle()
-      if (result?.error) {
-        setError(result.error)
-      }
-    } catch {
-      setError("Failed to sign in with Google")
-    } finally {
-      setIsGoogleLoading(false)
-    }
+      if (result?.error) setError(result.error)
+    } catch { setError("Failed to sign up with Google") }
+    finally { setIsGoogleLoading(false) }
   }
 
-  const validateEmail = () => {
-    if (!email) {
-      setEmailError("Email is required")
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError("Please enter a valid email")
-    } else {
-      setEmailError(null)
-    }
-  }
-
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (password.length < 8) { setError("Password must be at least 8 characters"); return }
     setIsLoading(true)
     setError(null)
 
-    if (storeName.length < 3) {
-      setError("Store name must be at least 3 characters")
-      setIsLoading(false)
-      return
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters")
-      setIsLoading(false)
-      return
-    }
-
     try {
-      const formData = new FormData()
-      formData.append("email", email)
-      formData.append("password", password)
-      formData.append("confirmPassword", password)
-      formData.append("storeName", storeName)
-
-      const result = await signupAction(null, formData)
-
-      if (result.error) {
-        setError(result.error)
-      } else {
-        router.push("/verify")
-      }
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
-    } finally {
-      setIsLoading(false)
-    }
+      const supabase = createClient()
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      })
+      if (error) throw error
+      router.push("/auth/onboarding")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred")
+    } finally { setIsLoading(false) }
   }
 
-
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-background p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
-              <Store className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-semibold tracking-tight text-foreground">Indigo</span>
-          </div>
-          <Card className="border-border">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-semibold tracking-tight text-foreground">Create your store</CardTitle>
-              <CardDescription className="text-muted-foreground">Start selling online in minutes</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSignUp}>
-                <div className="flex flex-col gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-border"
-                    onClick={handleGoogleSignIn}
-                    disabled={isGoogleLoading || isLoading}
-                  >
-                    {isGoogleLoading ? "Connecting..." : (
-                      <>
-                        <GoogleIcon className="w-4 h-4 mr-2" />
-                        Continue with Google
-                      </>
-                    )}
-                  </Button>
+    <div className="w-full max-w-[340px]">
+      {/* Mobile logo */}
+      <div className="flex items-center gap-2.5 mb-12 lg:hidden">
+        <div className="flex size-8 items-center justify-center rounded-md bg-foreground">
+          <Store className="size-4 text-background" />
+        </div>
+        <span className="text-sm font-semibold tracking-tight">Indigo</span>
+      </div>
 
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-border" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-muted-foreground/50">Or continue with email</span>
-                    </div>
-                  </div>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Start selling online in minutes
+        </p>
+      </div>
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="store-name" className="text-muted-foreground">Store name</Label>
-                    <Input
-                      ref={storeNameRef}
-                      id="store-name"
-                      type="text"
-                      placeholder="My Awesome Store"
-                      required
-                      value={storeName}
-                      onChange={(e) => setStoreName(e.target.value)}
-                      autoComplete="organization"
-                      className="border-border"
-                    />
-                  </div>
+      {/* Google */}
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full h-10 mb-6"
+        onClick={handleGoogleSignIn}
+        disabled={isGoogleLoading || isLoading}
+      >
+        {isGoogleLoading ? <Loader2 className="size-4 animate-spin" /> : <GoogleIcon className="size-4" />}
+        Continue with Google
+      </Button>
 
-                  <div className="grid gap-2">
-                    <Label htmlFor="email" className="text-muted-foreground">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                        if (emailError) setEmailError(null)
-                      }}
-                      onBlur={validateEmail}
-                      className={cn(
-                        "border-border",
-                        emailError && "border-destructive"
-                      )}
-                      autoComplete="email"
-                    />
-                    {emailError && (
-                      <p className="text-xs text-destructive flex items-center gap-1">
-                        <X className="w-3 h-3" />
-                        {emailError}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label htmlFor="password" className="text-muted-foreground">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        required
-                        minLength={6}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pr-10 border-border"
-                        autoComplete="new-password"
-                        placeholder="At least 6 characters"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-                        tabIndex={-1}
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    
-                    {password && (
-                      <div className="space-y-1.5">
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4].map((level) => (
-                            <div
-                              key={level}
-                              className={cn(
-                                "h-1 flex-1 rounded-full transition-colors",
-                                passwordStrength.score >= level ? passwordStrength.color : "bg-border"
-                              )}
-                            />
-                          ))}
-                        </div>
-                        <p className={cn(
-                          "text-xs",
-                          passwordStrength.score <= 1 ? "text-destructive" : 
-                          passwordStrength.score <= 2 ? "text-amber-500" : "text-emerald-600"
-                        )}>
-                          {passwordStrength.label} password
-                        </p>
-                      </div>
-                    )}
-
-                    {password && password.length < 6 && (
-                      <div className="text-xs text-muted-foreground flex items-center gap-1.5">
-                        <X className="w-3 h-3 text-muted-foreground/50" />
-                        <span>At least 6 characters</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {error && (
-                    <p className="text-sm text-destructive flex items-center gap-1.5">
-                      <X className="w-4 h-4 shrink-0" />
-                      {error}
-                    </p>
-                  )}
-
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Creating your store..." : "Create your store"}
-                  </Button>
-                </div>
-
-                <p className="mt-4 text-center text-xs text-muted-foreground">
-                  By creating a store, you agree to our{" "}
-                  <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
-                    Privacy Policy
-                  </Link>
-                </p>
-
-                <div className="mt-4 text-center text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                  <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
-                    Sign in
-                  </Link>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+      {/* Divider */}
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+        <div className="relative flex justify-center text-[11px] uppercase">
+          <span className="bg-background px-2 text-muted-foreground/50">or</span>
         </div>
       </div>
+
+      {/* Form */}
+      <form onSubmit={handleSignup} className="space-y-4">
+        <div className="space-y-1.5">
+          <label htmlFor="name" className="text-xs font-medium">Full name</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Your name"
+            required
+            value={fullName}
+            onChange={(e) => { setFullName(e.target.value); setError(null) }}
+            autoFocus
+            autoComplete="name"
+            className="w-full h-10 px-3 rounded-lg border border-input bg-transparent text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring transition-colors"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="text-xs font-medium">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setError(null) }}
+            autoComplete="email"
+            className="w-full h-10 px-3 rounded-lg border border-input bg-transparent text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring transition-colors"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="text-xs font-medium">Password</label>
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="8+ characters"
+              required
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setError(null) }}
+              autoComplete="new-password"
+              className="w-full h-10 px-3 pr-10 rounded-lg border border-input bg-transparent text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
+        </div>
+
+        {error && <p className="text-xs text-destructive">{error}</p>}
+
+        <Button type="submit" className="w-full h-10" disabled={isLoading}>
+          {isLoading ? <><Loader2 className="size-3.5 animate-spin" /> Creating account...</> : "Create account"}
+        </Button>
+      </form>
+
+      <p className="text-center text-xs text-muted-foreground mt-6">
+        Already have an account?{" "}
+        <Link href="/login" className="text-foreground font-medium hover:underline underline-offset-4">
+          Sign in
+        </Link>
+      </p>
+
+      <p className="text-[11px] text-muted-foreground/40 text-center mt-6 leading-relaxed">
+        By creating an account you agree to our Terms and Privacy Policy.
+      </p>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>}>
+      <SignupForm />
+    </Suspense>
   )
 }
