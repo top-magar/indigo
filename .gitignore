@@ -144,3 +144,4 @@ SESSION*.md
 # Duplicate skills (use .kiro/skills/)
 skills/
 skills-lock.json
+.playwright-mcp/
