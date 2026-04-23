@@ -525,14 +525,13 @@ export function OrdersListView({
         <>
           <Button
             variant="outline"
-            size="sm"
             onClick={onExport}
             disabled={isPending}
           >
             {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
             Export
           </Button>
-          <Button size="sm" asChild>
+          <Button asChild>
             <Link href="/dashboard/orders/new">
               <Plus className="size-3.5" />
               New Order
