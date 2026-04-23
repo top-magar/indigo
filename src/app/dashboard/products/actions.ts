@@ -8,7 +8,6 @@ import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { productRepository } from "@/features/products/repositories/products";
 import { expireProductsCache, expireProductCache } from "@/features/store/data";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
@@ -47,21 +46,21 @@ const createProductSchema = z.object({
  */
 export async function createProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { tenantId, userId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
 
         const raw = Object.fromEntries(formData.entries());
         const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
 
         const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        const product = await productRepository.create(tenantId, {
-            name,
-            slug,
-            price: String(price),
-            description: description || undefined,
-            quantity,
-            sku: sku || undefined,
-            status: "active",
-        });
+        const { data: product, error: createErr } = await supabase
+            .from("products")
+            .insert({ tenant_id: tenantId, name, slug, price, description: description || null, quantity, sku: sku || null, status: "active" })
+            .select("id")
+            .single();
+
+        if (createErr || !product) {
+            return { error: createErr?.message || "Failed to create product" };
+        }
 
         // Audit log - non-blocking
         try {
@@ -124,7 +123,7 @@ function safeJsonParse<T>(str: string | null, fallback: T): T {
 
 export async function createProductWithDetails(formData: FormData): Promise<{ success?: boolean; error?: string; productId?: string }> {
     try {
-        const { tenantId, userId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
 
         // Parse and validate all input
         const raw = {
@@ -161,38 +160,41 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         const validated = productDetailsSchema.parse(raw);
 
         const slug = validated.slug || validated.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        const product = await productRepository.create(tenantId, {
-            name: validated.name,
-            slug,
-            description: validated.description,
-            price: String(validated.price),
-            compareAtPrice: validated.compareAtPrice ? String(validated.compareAtPrice) : undefined,
-            costPrice: validated.costPrice ? String(validated.costPrice) : undefined,
-            sku: validated.sku,
-            barcode: validated.barcode,
-            quantity: validated.quantity,
-            trackQuantity: validated.trackQuantity,
-            allowBackorder: validated.allowBackorder,
-            weight: validated.weight ? String(validated.weight) : undefined,
-            weightUnit: validated.weightUnit,
-            status: validated.status,
-            hasVariants: validated.hasVariants,
-            categoryId: validated.categoryId || undefined,
-            images: validated.images.length > 0 ? validated.images : [],
-            metadata: {
-                brand: validated.brand || null,
-                tags: validated.tags,
-                seo: {
-                    metaTitle: validated.metaTitle || null,
-                    metaDescription: validated.metaDescription || null,
+        const { data: product, error: createErr } = await supabase
+            .from("products")
+            .insert({
+                tenant_id: tenantId,
+                name: validated.name,
+                slug,
+                description: validated.description || null,
+                price: validated.price,
+                compare_at_price: validated.compareAtPrice || null,
+                cost_price: validated.costPrice || null,
+                sku: validated.sku || null,
+                barcode: validated.barcode || null,
+                quantity: validated.quantity,
+                track_quantity: validated.trackQuantity,
+                allow_backorder: validated.allowBackorder,
+                weight: validated.weight || null,
+                weight_unit: validated.weightUnit,
+                status: validated.status,
+                has_variants: validated.hasVariants,
+                category_id: validated.categoryId || null,
+                images: validated.images.length > 0 ? validated.images : [],
+                metadata: {
+                    brand: validated.brand || null,
+                    tags: validated.tags,
+                    seo: { metaTitle: validated.metaTitle || null, metaDescription: validated.metaDescription || null },
+                    shipping: { requiresShipping: validated.requiresShipping, weightUnit: validated.weightUnit },
+                    publishAt: validated.publishAt || null,
                 },
-                shipping: {
-                    requiresShipping: validated.requiresShipping,
-                    weightUnit: validated.weightUnit,
-                },
-                publishAt: validated.publishAt || null,
-            },
-        });
+            })
+            .select("id")
+            .single();
+
+        if (createErr || !product) {
+            return { error: createErr?.message || "Failed to create product" };
+        }
 
         // Audit log - non-blocking
         try {
@@ -368,7 +370,7 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
             .eq("tenant_id", tenantId)
             .single();
 
-        await productRepository.delete(tenantId, productId);
+        const { error: delErr } = await supabase.from("products").delete().eq("id", productId).eq("tenant_id", tenantId); if (delErr) throw new Error(delErr.message);
 
         // Audit log - non-blocking
         try {
@@ -404,7 +406,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
             .eq("tenant_id", tenantId)
             .single();
 
-        await productRepository.updateStatus(tenantId, productId, status);
+        const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { error: statusErr.message };
 
         // Audit log - non-blocking
         try {
@@ -446,7 +448,7 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
         
         for (const productId of productIds) {
             try {
-                await productRepository.delete(tenantId, productId);
+                const { error: delErr } = await supabase.from("products").delete().eq("id", productId).eq("tenant_id", tenantId); if (delErr) throw new Error(delErr.message);
                 deletedCount++;
 
                 // Audit log each deletion - non-blocking
@@ -503,7 +505,7 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         
         for (const productId of productIds) {
             try {
-                await productRepository.updateStatus(tenantId, productId, status);
+                const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { error: statusErr.message, updatedCount };
                 updatedCount++;
 
                 // Audit log each update - non-blocking
