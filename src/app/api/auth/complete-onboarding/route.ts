@@ -51,14 +51,14 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       const buffer = Buffer.from(await logo.arrayBuffer())
 
       const { error: uploadError } = await supabaseAdmin.storage
-        .from("public")
+        .from("uploads")
         .upload(path, buffer, { contentType: logo.type, upsert: true })
 
       if (uploadError) {
         log.error("Logo upload error:", uploadError)
         // Non-fatal — continue without logo
       } else {
-        const { data: urlData } = supabaseAdmin.storage.from("public").getPublicUrl(path)
+        const { data: urlData } = supabaseAdmin.storage.from("uploads").getPublicUrl(path)
         logoUrl = urlData.publicUrl
       }
     }
