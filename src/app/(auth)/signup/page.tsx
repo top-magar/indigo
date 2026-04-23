@@ -30,6 +30,8 @@ function SignupForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const router = useRouter()
 
+  const [success, setSuccess] = useState(false)
+
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true)
     setError(null)
@@ -48,13 +50,20 @@ function SignupForm() {
 
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: fullName } },
       })
       if (error) throw error
-      router.push("/auth/onboarding")
+      
+      // If session exists, user is auto-confirmed → go to onboarding
+      if (data.session) {
+        window.location.href = "/auth/onboarding"
+      } else {
+        // Email confirmation required
+        setSuccess(true)
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally { setIsLoading(false) }
@@ -69,6 +78,24 @@ function SignupForm() {
         </div>
         <span className="text-sm font-semibold tracking-tight">Indigo</span>
       </div>
+
+      {success ? (
+        <div className="space-y-4 text-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-muted mx-auto">
+            <svg className="size-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight">Check your email</h1>
+          <p className="text-sm text-muted-foreground">
+            We sent a confirmation link to <span className="font-medium text-foreground">{email}</span>. Click it to activate your account.
+          </p>
+          <Link href="/login" className="text-xs text-muted-foreground hover:text-foreground transition-colors inline-block mt-2">
+            Back to sign in
+          </Link>
+        </div>
+      ) : (
+      <>
 
       {/* Header */}
       <div className="mb-8">
@@ -170,6 +197,8 @@ function SignupForm() {
       <p className="text-[11px] text-muted-foreground/40 text-center mt-6 leading-relaxed">
         By creating an account you agree to our Terms and Privacy Policy.
       </p>
+      </>
+      )}
     </div>
   )
 }
