@@ -76,7 +76,7 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-svh bg-background">
       {/* Left — branding panel */}
-      <div className="hidden lg:flex lg:w-[480px] bg-foreground text-background flex-col justify-between p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-12">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="flex size-8 items-center justify-center rounded-md bg-background/10">
