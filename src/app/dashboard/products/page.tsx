@@ -69,7 +69,7 @@ export default async function ProductsPage({
         quantity: (p.quantity as number) || 0,
         track_quantity: (p.track_quantity as boolean) ?? true,
         status: p.status as "draft" | "active" | "archived",
-        images: (p.images as { url: string; alt: string }[]) || [],
+        images: (typeof p.images === "string" ? JSON.parse(p.images) : p.images as { url: string; alt: string }[]) || [],
         category_id: p.category_id as string | null,
         category_name: (p.categories as { name: string } | null)?.name || null,
         created_at: p.created_at as string,

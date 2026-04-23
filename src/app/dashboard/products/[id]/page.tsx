@@ -39,10 +39,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     }).filter(Boolean) as string[],
     productTypeId: product.product_type_id,
     productTypeName: null,
-    media: (product.images || []).map((url: string, index: number): ProductMedia => ({
+    media: (typeof product.images === "string" ? JSON.parse(product.images) : product.images || []).map((img: { url: string; alt?: string } | string, index: number): ProductMedia => ({
       id: `media-${index}`,
-      url,
-      alt: product.name,
+      url: typeof img === "string" ? img : img.url,
+      alt: typeof img === "string" ? product.name : (img.alt || product.name),
       type: "image",
       position: index,
     })),

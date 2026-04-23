@@ -583,7 +583,7 @@ export function ProductsListView({
                             products.map((product) => {
                                 const status = productStatusConfig[product.status];
                                 const isSelected = bulkActions.isSelected(product.id);
-                                const hasImage = product.images && product.images.length > 0;
+                                const hasImage = product.images?.length > 0 && product.images[0]?.url;
 
                                 return (
                                     <TableRow 
