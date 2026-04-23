@@ -6,7 +6,7 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col md:flex-row md:gap-4">
       <SettingsSidebar />
       <div className="flex-1 min-w-0">{children}</div>
     </div>

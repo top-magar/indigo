@@ -202,7 +202,7 @@ export function NotificationCenter({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent align="end" className="w-[380px] p-0" sideOffset={8}>
+      <PopoverContent align="end" className="w-[calc(100vw-2rem)] sm:w-[380px] p-0" sideOffset={8}>
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold tracking-[-0.28px]">Notifications</h2>

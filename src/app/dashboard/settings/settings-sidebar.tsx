@@ -13,7 +13,6 @@ import {
   User,
   Users,
   Bell,
-
 } from "lucide-react";
 
 const sections = [
@@ -34,38 +33,67 @@ const sections = [
   ]},
 ];
 
+const allItems = sections.flatMap(s => s.items);
+
 export function SettingsSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-48 shrink-0 space-y-4">
-      {sections.map((section) => (
-        <div key={section.label}>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1 px-2">
-            {section.label}
-          </p>
-          <div className="space-y-0.5">
-            {section.items.map((item) => {
-              const active = pathname === item.href || (item.href !== "/dashboard/settings" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
-                    active
-                      ? "bg-accent text-accent-foreground font-medium"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                  )}
-                >
-                  <item.icon className="size-3.5" />
-                  {item.title}
-                </Link>
-              );
-            })}
-          </div>
+    <>
+      {/* Mobile: horizontal scrollable tabs */}
+      <nav className="md:hidden -mx-3 px-3 overflow-x-auto scrollbar-none">
+        <div className="flex gap-1 pb-3 border-b mb-4">
+          {allItems.map((item) => {
+            const active = pathname === item.href || (item.href !== "/dashboard/settings" && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs transition-colors shrink-0",
+                  active
+                    ? "bg-accent text-accent-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                )}
+              >
+                <item.icon className="size-3.5" />
+                {item.title}
+              </Link>
+            );
+          })}
         </div>
-      ))}
-    </nav>
+      </nav>
+
+      {/* Desktop: vertical sidebar */}
+      <nav className="hidden md:block w-48 shrink-0 space-y-4">
+        {sections.map((section) => (
+          <div key={section.label}>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1 px-2">
+              {section.label}
+            </p>
+            <div className="space-y-0.5">
+              {section.items.map((item) => {
+                const active = pathname === item.href || (item.href !== "/dashboard/settings" && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
+                      active
+                        ? "bg-accent text-accent-foreground font-medium"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                    )}
+                  >
+                    <item.icon className="size-3.5" />
+                    {item.title}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+    </>
   );
 }
