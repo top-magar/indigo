@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Loader2, ArrowRight } from "lucide-react"
+import { Loader2, ArrowRight, Store } from "lucide-react"
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
@@ -32,30 +31,21 @@ export default function OnboardingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (storeName.length < 3) { setError("At least 3 characters"); return }
     setIsLoading(true)
     setError(null)
 
-    if (storeName.length < 3) {
-      setError("Store name must be at least 3 characters")
-      setIsLoading(false)
-      return
-    }
-
     try {
-      const response = await fetch("/api/auth/complete-onboarding", {
+      const res = await fetch("/api/auth/complete-onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ storeName, currency: "NPR" }),
       })
-      const result = await response.json()
-      if (!response.ok) {
-        setError(result.error || "Failed to create store")
-        setIsLoading(false)
-        return
-      }
+      const result = await res.json()
+      if (!res.ok) { setError(result.error || "Failed to create store"); setIsLoading(false); return }
       router.push("/dashboard")
     } catch {
-      setError("Something went wrong. Please try again.")
+      setError("Something went wrong. Try again.")
       setIsLoading(false)
     }
   }
@@ -73,103 +63,104 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex min-h-svh bg-background">
-      {/* Left — branding panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-12">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-md bg-background/10">
-              <span className="text-sm font-bold">I</span>
+      {/* Left — brand panel */}
+      <div className="hidden lg:flex lg:w-1/2 bg-foreground text-background flex-col justify-between p-16">
+        <div className="flex items-center gap-2.5">
+          <div className="flex size-8 items-center justify-center rounded-md bg-background/10 ring-1 ring-background/20">
+            <Store className="size-4" />
+          </div>
+          <span className="text-sm font-semibold tracking-tight">Indigo</span>
+        </div>
+
+        <div className="space-y-5 max-w-[400px]">
+          <h2 className="text-3xl font-semibold tracking-tight leading-[1.2]">
+            Your store,<br />ready in seconds.
+          </h2>
+          <div className="space-y-3 text-sm text-background/50">
+            <div className="flex items-center gap-3">
+              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">1</span>
+              Name your store
             </div>
-            <span className="text-sm font-semibold tracking-tight">Indigo</span>
+            <div className="flex items-center gap-3">
+              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">2</span>
+              Add your first product
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex size-5 items-center justify-center rounded-full bg-background/10 text-[10px] font-medium">3</span>
+              Start selling
+            </div>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold tracking-tight leading-tight">
-            Start selling in<br />minutes, not days.
-          </h2>
-          <p className="text-sm text-background/60 leading-relaxed max-w-[320px]">
-            Set up your store, add products, and start accepting payments — all from one dashboard.
-          </p>
-        </div>
-
-        <p className="text-xs text-background/40">
-          Trusted by merchants across Nepal
+        <p className="text-xs text-background/30">
+          Built for merchants in Nepal
         </p>
       </div>
 
       {/* Right — form */}
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-[360px] space-y-8">
+      <div className="flex flex-1 items-center justify-center p-8">
+        <div className="w-full max-w-[340px]">
           {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 lg:hidden">
+          <div className="flex items-center gap-2.5 mb-12 lg:hidden">
             <div className="flex size-8 items-center justify-center rounded-md bg-foreground">
-              <span className="text-sm font-bold text-background">I</span>
+              <Store className="size-4 text-background" />
             </div>
             <span className="text-sm font-semibold tracking-tight">Indigo</span>
           </div>
 
           {/* Header */}
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold tracking-tight">Create your store</h1>
-            <p className="text-sm text-muted-foreground">
-              Takes less than a minute. You can change everything later.
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold tracking-tight">Name your store</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              You can always change this later.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-1.5">
-              <label htmlFor="store-name" className="text-xs font-medium">
-                Store name
-              </label>
-              <Input
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <input
                 id="store-name"
                 type="text"
-                placeholder="e.g. Kathmandu Crafts"
+                placeholder="Kathmandu Crafts"
                 required
                 value={storeName}
-                onChange={(e) => setStoreName(e.target.value)}
+                onChange={(e) => { setStoreName(e.target.value); setError(null) }}
                 autoFocus
-                className="h-9"
+                className="w-full h-11 px-3 rounded-lg border border-input bg-transparent text-base placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring transition-colors"
               />
-              {slug ? (
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-muted-foreground/60">indigo.com/store/</span>
-                  <span className="font-medium text-foreground">{slug}</span>
-                </p>
-              ) : (
-                <p className="text-xs text-muted-foreground/60">
-                  Your store URL will appear here
-                </p>
-              )}
+              <div className="h-4">
+                {error ? (
+                  <p className="text-xs text-destructive">{error}</p>
+                ) : slug ? (
+                  <p className="text-xs text-muted-foreground">
+                    indigo.com/store/<span className="text-foreground font-medium">{slug}</span>
+                  </p>
+                ) : null}
+              </div>
             </div>
-
-            {error && (
-              <p className="text-xs text-destructive">{error}</p>
-            )}
 
             <Button
               type="submit"
-              className="w-full h-9"
+              className="w-full h-10 text-sm"
               disabled={isLoading || !isValid}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="size-3.5 animate-spin" />
-                  Creating store...
+                  Setting up...
                 </>
               ) : (
                 <>
-                  Continue
+                  Create store
                   <ArrowRight className="size-3.5" />
                 </>
               )}
             </Button>
           </form>
 
-          <p className="text-[11px] text-muted-foreground/50 text-center leading-relaxed">
-            By continuing, you agree to Indigo&apos;s Terms of Service and Privacy Policy.
+          <p className="text-[11px] text-muted-foreground/40 text-center mt-8">
+            By continuing you agree to our Terms and Privacy Policy.
           </p>
         </div>
       </div>
