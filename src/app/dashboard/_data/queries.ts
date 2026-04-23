@@ -1,6 +1,7 @@
 import "server-only"
 import { db, withTenant } from "@/infrastructure/db"
-import { tenants } from "@/db/schema/tenants"
+import { tenants, type TenantSettings } from "@/db/schema/tenants"
+import { tenantDomains } from "@/db/schema/domains"
 import { users } from "@/db/schema/users"
 import { orders } from "@/db/schema/orders"
 import { customers } from "@/db/schema/customers"
@@ -29,17 +30,22 @@ export interface DashboardData {
   previousMonthCustomers: number
   lowStockProducts: Array<{ id: string; name: string; quantity: number | null; price: string; images: unknown }>
   totalProducts: number
+  hasPayments: boolean
+  hasDomain: boolean
+  hasStorefront: boolean
 }
 
 export async function fetchDashboardData(userId: string, tenantId: string): Promise<DashboardData> {
   const dates = getDateRanges()
 
-  // Non-tenant-scoped lookups (tenant + user)
-  const [tenantRow, userRow] = await Promise.all([
-    db.select({ name: tenants.name, currency: tenants.currency, slug: tenants.slug })
+  // Non-tenant-scoped lookups (tenant + user + domains)
+  const [tenantRow, userRow, [{ value: domainCount }]] = await Promise.all([
+    db.select({ name: tenants.name, currency: tenants.currency, slug: tenants.slug, settings: tenants.settings, logoUrl: tenants.logoUrl, description: tenants.description })
       .from(tenants).where(eq(tenants.id, tenantId)).limit(1).then(r => r[0] ?? null),
     db.select({ fullName: users.fullName })
       .from(users).where(eq(users.id, userId)).limit(1).then(r => r[0] ?? null),
+    db.select({ value: count() })
+      .from(tenantDomains).where(eq(tenantDomains.tenantId, tenantId)),
   ])
 
   // Tenant-scoped queries via withTenant (RLS enforced)
@@ -103,9 +109,16 @@ export async function fetchDashboardData(userId: string, tenantId: string): Prom
     }
   })
 
+  // Check if any payment method is enabled
+  const ps = (tenantRow?.settings as TenantSettings | null)?.payments
+  const hasPayments = !!(ps?.cashOnDelivery || ps?.bankTransfer || ps?.esewa || ps?.khalti)
+
   return {
     tenant: tenantRow,
     userName: userRow?.fullName ?? null,
+    hasPayments,
+    hasDomain: domainCount > 0,
+    hasStorefront: !!(tenantRow?.logoUrl || tenantRow?.description),
     ...data,
   }
 }

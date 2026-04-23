@@ -16,11 +16,12 @@ interface SetupChecklistProps {
   storeName: string;
   hasProducts: boolean;
   hasPayments: boolean;
+  hasStorefront: boolean;
   hasDomain: boolean;
 }
 
-export function SetupChecklist({ storeName, hasProducts, hasPayments, hasDomain }: SetupChecklistProps) {
-  const completed = [hasProducts, hasPayments, false, hasDomain];
+export function SetupChecklist({ storeName, hasProducts, hasPayments, hasStorefront, hasDomain }: SetupChecklistProps) {
+  const completed = [hasProducts, hasPayments, hasStorefront, hasDomain];
   const completedCount = completed.filter(Boolean).length;
   const nextIdx = completed.findIndex(c => !c);
   const nextStep = nextIdx >= 0 ? STEPS[nextIdx] : null;
@@ -55,7 +56,7 @@ export function SetupChecklist({ storeName, hasProducts, hasPayments, hasDomain 
 
         {/* Next step CTA */}
         {nextStep && (
-          <Button asChild className="w-full">
+          <Button asChild className="w-fit">
             <Link href={nextStep.href}>
               <nextStep.icon className="size-4" />
               {nextStep.label}

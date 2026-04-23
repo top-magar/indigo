@@ -53,9 +53,9 @@ export default async function DashboardPage() {
 
   const isNewStore = d.totalProducts === 0
   const hasProducts = d.totalProducts > 0
-  const hasPayments = false // TODO: check payment provider config
-  const hasDomain = false   // TODO: check custom domain
-  const setupComplete = hasProducts && hasPayments && hasDomain
+  const hasPayments = d.hasPayments
+  const hasDomain = d.hasDomain
+  const setupComplete = hasProducts && hasPayments && d.hasStorefront && hasDomain
   const userName = d.userName?.split(" ")[0] || user.email?.split("@")[0] || "there"
 
   const metrics: EnhancedMetricData[] = [
@@ -91,31 +91,37 @@ export default async function DashboardPage() {
         todayOrders={d.todayOrders.length}
         currency={currency}
         greeting={getGreeting()}
+        isNewStore={isNewStore}
       />
 
       {!setupComplete && (
         <SetupChecklist
           storeName={d.tenant.name}
           hasProducts={hasProducts}
-          hasPayments={false}
-          hasDomain={false}
+          hasPayments={hasPayments}
+          hasStorefront={d.hasStorefront}
+          hasDomain={hasDomain}
         />
       )}
 
-      <Suspense fallback={<StatCardGridSkeleton count={4} />}>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {metrics.map((m, i) => <EnhancedMetricCard key={i} metric={m} currency={currency} />)}
-        </div>
-      </Suspense>
+      {!isNewStore && (
+        <>
+          <Suspense fallback={<StatCardGridSkeleton count={4} />}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {metrics.map((m, i) => <EnhancedMetricCard key={i} metric={m} currency={currency} />)}
+            </div>
+          </Suspense>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        <div className="lg:col-span-2">
-          <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
-        </div>
-        <ActivityFeed activities={activities} maxItems={6} />
-      </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div className="lg:col-span-2">
+              <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
+            </div>
+            <ActivityFeed activities={activities} maxItems={6} />
+          </div>
 
-      <RecentOrdersTable orders={ordersData} currency={currency} />
+          <RecentOrdersTable orders={ordersData} currency={currency} />
+        </>
+      )}
     </div>
   )
 }

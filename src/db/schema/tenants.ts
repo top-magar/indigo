@@ -21,12 +21,17 @@ export interface TenantSettings {
     footerText?: string;
   };
   payments?: {
-    codEnabled?: boolean;
-    bankTransferEnabled?: boolean;
+    cashOnDelivery?: boolean;
+    bankTransfer?: boolean;
     bankName?: string;
-    bankAccountName?: string;
-    bankAccountNumber?: string;
-    bankBranch?: string;
+    accountHolderName?: string;
+    accountNumber?: string;
+    branch?: string;
+    esewa?: boolean;
+    esewamerchantCode?: string;
+    esewaSecret?: string;
+    khalti?: boolean;
+    khaltiSecretKey?: string;
   };
   features?: {
     customDomain?: boolean;
