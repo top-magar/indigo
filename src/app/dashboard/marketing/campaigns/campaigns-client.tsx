@@ -324,7 +324,6 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
     return (
         <EntityListPage
             title="Campaigns"
-            description="Create and manage email campaigns"
             actions={
                 <>
                     <Button variant="ghost" size="icon" aria-label="Go back" asChild>
@@ -386,7 +385,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 setSearchQuery(e.target.value);
                                                 setCurrentPage(1);
                                             }}
-                                            className="pl-8 w-full sm:w-[200px]"
+                                            className="pl-8 w-full sm:max-w-sm"
                                         />
                                     </div>
                                     <Select 

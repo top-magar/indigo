@@ -12,7 +12,6 @@ import {
   MoreHorizontal,
   Users,
   Percent,
-  RefreshCw,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -37,7 +36,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
-import { cn } from "@/shared/utils"
 import { createCustomerGroup, updateCustomerGroup, deleteCustomerGroup } from "./actions"
 
 interface CustomerGroup {
@@ -146,20 +144,9 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
           </Button>
           <div>
             <h1 className="text-lg font-semibold tracking-tight">Customer Groups</h1>
-            <p className="text-sm text-muted-foreground">
-              Segment customers and offer group discounts
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon" aria-label="Refresh"
-            onClick={() => router.refresh()}
-            disabled={isPending}
-          >
-            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-          </Button>
           <Button onClick={openCreateDialog}>
             <Plus className="size-3.5" />
             Create Group

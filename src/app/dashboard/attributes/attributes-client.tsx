@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import {
     Plus,
     Search,
-    RefreshCw,
     MoreHorizontal,
     Eye,
     Trash2,
@@ -131,17 +130,8 @@ export function AttributesClient({
         <>
             <EntityListPage
                 title="Attributes"
-                description="Define custom product attributes like Size, Color, Material"
                 actions={
                     <>
-                        <Button
-                            variant="outline"
-                            size="icon" aria-label="Refresh"
-                            onClick={() => router.refresh()}
-                            disabled={isPending}
-                        >
-                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-                        </Button>
                         <Button onClick={() => setCreateDialogOpen(true)}>
                             <Plus className="size-3.5" />
                             Create Attribute
@@ -157,7 +147,7 @@ export function AttributesClient({
                 filters={
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex flex-1 items-center gap-2">
-                            <div className="relative flex-1 max-w-sm">
+                            <div className="relative flex-1 w-full sm:max-w-sm">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                 <Input
                                     aria-label="Search attributes" placeholder="Search attributes…"
@@ -170,7 +160,7 @@ export function AttributesClient({
                                 value={filters.inputType || "all"}
                                 onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
+                                <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by input type">
                                     <SelectValue placeholder="Input Type" />
                                 </SelectTrigger>
                                 <SelectContent>

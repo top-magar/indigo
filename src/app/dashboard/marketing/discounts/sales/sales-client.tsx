@@ -174,7 +174,6 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     return (
         <EntityListPage
             title="Sales"
-            description="Sales are automatically applied to products without requiring a code"
             actions={
                 <Button onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="size-3.5" />
@@ -185,7 +184,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
 
             {/* Filters */}
             <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-sm">
+                <div className="relative flex-1 w-full sm:max-w-sm">
                     <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4"
                     />
@@ -197,7 +196,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                     />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                    <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>

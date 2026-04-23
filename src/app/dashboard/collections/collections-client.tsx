@@ -168,7 +168,6 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
     return (
         <EntityListPage
             title="Collections"
-            description="Organize products into collections for better discoverability"
             actions={
                 <Button onClick={handleCreate}>
                     <Plus className="size-3.5" />
@@ -183,7 +182,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             ]}
             filters={
                 <div className="flex items-center gap-4">
-                    <div className="relative flex-1 max-w-sm">
+                    <div className="relative flex-1 w-full sm:max-w-sm">
                         <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                         />

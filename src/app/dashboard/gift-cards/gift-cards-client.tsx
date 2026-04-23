@@ -78,7 +78,6 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
     return (
         <EntityListPage
             title="Gift Cards"
-            description="Issue and manage gift cards for your store."
             actions={
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>

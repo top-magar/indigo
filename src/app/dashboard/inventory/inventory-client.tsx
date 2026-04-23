@@ -11,7 +11,6 @@ import {
     Search,
     Download,
     Upload,
-    RefreshCw,
     MoreHorizontal,
     Pencil,
     Plus,
@@ -248,7 +247,6 @@ export function InventoryClient({
     return (
         <EntityListPage
             title="Inventory"
-            description="Track stock levels, manage adjustments, and monitor inventory health"
             actions={
                 <Button variant="outline" onClick={handleExport} disabled={isPending}>
                     <Download className="size-3.5" />
@@ -280,7 +278,7 @@ export function InventoryClient({
                             value={filters.stock || "all"}
                             onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by stock level">
+                            <SelectTrigger className="w-full sm:w-[140px] bg-background" aria-label="Filter by stock level">
                                 <SelectValue placeholder="Stock Level" />
                             </SelectTrigger>
                             <SelectContent>
@@ -311,7 +309,7 @@ export function InventoryClient({
                                 value={filters.category || "all"}
                                 onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[150px] bg-background" aria-label="Filter by category">
+                                <SelectTrigger className="w-full sm:w-[150px] bg-background" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -338,16 +336,6 @@ export function InventoryClient({
                             </Button>
                         )}
                     </div>
-
-                    {/* Refresh */}
-                    <Button
-                        variant="outline"
-                        className="size-9 ml-auto"
-                        onClick={() => router.refresh()}
-                        disabled={isPending}
-                    >
-                        <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-                    </Button>
                 </div>
 
                 {/* Bulk Actions */}

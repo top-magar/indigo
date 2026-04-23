@@ -9,7 +9,6 @@ import {
     UserPlus,
     Search,
     Download,
-    RefreshCw,
     MoreHorizontal,
     Eye,
     Mail,
@@ -203,7 +202,6 @@ export function CustomersClient({
         <TooltipProvider>
             <EntityListPage
                 title="Customers"
-                description="Manage your customer relationships and data"
                 actions={
                     <>
                         <Button
@@ -213,14 +211,6 @@ export function CustomersClient({
                         >
                             <Download className="size-3.5" />
                             Export
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="icon" aria-label="Refresh"
-                            onClick={() => router.refresh()}
-                            disabled={isPending}
-                        >
-                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                         <Button className="gap-2" onClick={() => setCreateOpen(true)}>
                             <UserPlus className="size-4" />
@@ -233,7 +223,7 @@ export function CustomersClient({
                 {/* Filters & Search */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-1 items-center gap-2">
-                                <div className="relative flex-1 max-w-sm">
+                                <div className="relative flex-1 w-full sm:max-w-sm">
                                     <Search
                                         className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                                     />
@@ -248,7 +238,7 @@ export function CustomersClient({
                                     value={filters.marketing || "all"}
                                     onValueChange={(value) => setFilter("marketing", value === "all" ? undefined : value)}
                                 >
-                                    <SelectTrigger className="w-[160px]" aria-label="Filter by marketing status">
+                                    <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by marketing status">
                                         <SelectValue placeholder="Marketing" />
                                     </SelectTrigger>
                                     <SelectContent>

@@ -142,16 +142,8 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   return (
     <EntityListPage
       title="Reviews"
-      description="Manage customer reviews with AI-powered sentiment analysis"
       actions={
-        <Button
-          variant="outline"
-          onClick={handleRefresh}
-          disabled={isPending}
-        >
-          <RefreshCw className={`size-3.5 ${isPending ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <></>
       }
       stats={[
         { label: "Total Reviews", value: stats.total, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="size-4 text-warning" /></div> },
@@ -169,7 +161,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
           <Card>
             <CardContent className="p-4">
               <div className="flex flex-col gap-3 sm:flex-row">
-                <div className="relative flex-1 max-w-sm">
+                <div className="relative flex-1 w-full sm:max-w-sm">
                   <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     aria-label="Search reviews" placeholder="Search reviews..."

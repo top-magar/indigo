@@ -151,7 +151,6 @@ export function AnalyticsDashboardView({
         <TooltipProvider>
             <EntityListPage
                 title="Analytics"
-                description="Track your store performance and insights"
                 actions={
                     <div className="flex items-center gap-2">
                         {isFreeTier ? (
@@ -168,7 +167,7 @@ export function AnalyticsDashboardView({
                             </Tooltip>
                         ) : (
                             <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
-                                <SelectTrigger className="w-[160px]">
+                                <SelectTrigger className="w-full sm:w-[160px]">
                                     <Calendar className="size-3.5" />
                                     <SelectValue />
                                 </SelectTrigger>
@@ -185,14 +184,6 @@ export function AnalyticsDashboardView({
                         <Button variant="outline" onClick={onExport}>
                             <Download className="size-3.5" />
                             Export
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="icon" aria-label="Refresh"
-                            onClick={() => onRefresh?.()}
-                            disabled={isPending}
-                        >
-                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                     </div>
                 }
