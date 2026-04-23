@@ -7,7 +7,7 @@ const log = createLogger("api:auth-complete-onboarding");
 
 export const POST = withRateLimit("auth", async function POST(request: Request) {
   try {
-    const { storeName } = await request.json()
+    const { storeName, currency } = await request.json()
 
     if (!storeName || storeName.length < 3) {
       return NextResponse.json(
@@ -57,6 +57,7 @@ export const POST = withRateLimit("auth", async function POST(request: Request) 
       .insert({
         name: storeName,
         slug,
+        currency: currency || "NPR",
       })
       .select()
       .single()
