@@ -50,7 +50,8 @@ export default function OnboardingPage() {
       })
       const result = await res.json()
       if (!res.ok) { setError(result.error || "Failed to create store"); setIsLoading(false); return }
-      router.push("/dashboard")
+      // Hard navigation to force server component re-render with new tenant
+      window.location.href = "/dashboard"
     } catch {
       setError("Something went wrong. Try again.")
       setIsLoading(false)
