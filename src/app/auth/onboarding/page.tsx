@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Loader2, ArrowRight, Store, LogOut } from "lucide-react"
+import { Loader2, ArrowRight, Store, LogOut, Camera } from "lucide-react"
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
@@ -13,6 +13,8 @@ function toSlug(name: string) {
 export default function OnboardingPage() {
   const [storeName, setStoreName] = useState("")
   const [currency, setCurrency] = useState("NPR")
+  const [logo, setLogo] = useState<File | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -88,6 +90,38 @@ export default function OnboardingPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Logo upload */}
+          <div className="flex items-center gap-4">
+            <label className="relative cursor-pointer group">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setLogo(file)
+                    setLogoPreview(URL.createObjectURL(file))
+                  }
+                }}
+              />
+              {logoPreview ? (
+                <div className="size-14 rounded-xl overflow-hidden ring-1 ring-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={logoPreview} alt="Store logo" className="size-full object-cover" />
+                </div>
+              ) : (
+                <div className="size-14 rounded-xl border-2 border-dashed border-muted-foreground/20 flex items-center justify-center group-hover:border-muted-foreground/40 transition-colors">
+                  <Camera className="size-5 text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors" />
+                </div>
+              )}
+            </label>
+            <div>
+              <p className="text-xs font-medium">Store logo</p>
+              <p className="text-[11px] text-muted-foreground/50">Optional · Square recommended</p>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <input
               id="store-name"
