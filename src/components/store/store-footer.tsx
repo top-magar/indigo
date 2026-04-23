@@ -1,3 +1,4 @@
+import Image from "next/image"
 import type { Tenant } from "@/infrastructure/supabase/types"
 import { Store } from "lucide-react"
 import { NoPrefetchLink } from "@/components/ui/prefetch-link"
@@ -19,7 +20,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
           <div className="md:col-span-2">
             <NoPrefetchLink href={baseUrl} className="flex items-center gap-2">
               {tenant.logo_url ? (
-                <img src={tenant.logo_url} alt={tenant.name} className="h-8 w-auto" />
+                <Image src={tenant.logo_url} alt={tenant.name} width={120} height={32} className="h-8 w-auto" />
               ) : (
                 <div
                   className="flex h-9 w-9 items-center justify-center rounded-lg"

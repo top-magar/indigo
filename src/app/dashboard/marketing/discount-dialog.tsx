@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image";
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -691,10 +692,11 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                             />
                                                             <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted overflow-hidden">
                                                                 {product.image_url ? (
-                                                                    <img 
+                                                                    <NextImage 
                                                                         src={product.image_url} 
                                                                         alt={product.name}
-                                                                        className="h-full w-full object-cover"
+                                                                        fill
+                                                                        className="object-cover"
                                                                     />
                                                                 ) : (
                                                                     <Image className="size-4 text-muted-foreground" />

@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
@@ -113,7 +114,7 @@ export default function OnboardingPage() {
               {logoPreview ? (
                 <div className="size-14 rounded-xl overflow-hidden ring-1 ring-border">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={logoPreview} alt="Store logo" className="size-full object-cover" />
+                  <Image src={logoPreview} alt="Store logo" fill className="object-cover" />
                 </div>
               ) : (
                 <div className="size-14 rounded-xl border-2 border-dashed border-muted-foreground/20 flex items-center justify-center group-hover:border-muted-foreground/40 transition-colors">

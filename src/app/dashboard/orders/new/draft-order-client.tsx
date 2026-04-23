@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -122,7 +123,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                     <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
                 </Button>
                 <div className="flex-1">
-                    <h1 className="text-xl font-semibold tracking-tight">Create order</h1>
+                    <h1 className="text-lg font-semibold tracking-tight">Create order</h1>
                     <p className="text-sm text-muted-foreground">Create a draft order for phone, wholesale, or manual sales.</p>
                 </div>
                 <Button onClick={handleCreate} disabled={isPending || !lines.length}>
@@ -168,7 +169,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                     onClick={() => addProduct(p)}
                                                 >
                                                     {p.images?.[0] ? (
-                                                        <img src={p.images[0]} alt="" className="size-8 rounded object-cover" />
+                                                        <Image src={p.images[0]} alt="" width={32} height={32} className="size-8 rounded object-cover" />
                                                     ) : (
                                                         <div className="size-8 rounded bg-muted" />
                                                     )}
@@ -197,7 +198,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                     {lines.map((line) => (
                                         <div key={line.key} className="flex items-center gap-3 rounded-md border p-3">
                                             {line.productImage ? (
-                                                <img src={line.productImage} alt="" className="size-10 rounded object-cover" />
+                                                <Image src={line.productImage} alt="" width={40} height={40} className="size-10 rounded object-cover" />
                                             ) : (
                                                 <div className="size-9 rounded-md bg-muted" />
                                             )}

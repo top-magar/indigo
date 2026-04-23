@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Settings, ChevronDown, ExternalLink, FileText, CreditCard, Truck, Globe } from "lucide-react";
 import {
@@ -26,7 +27,7 @@ interface StoreMenuProps {
 function StoreAvatar({ name, logo }: { name: string; logo?: string | null }) {
     return (
         <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs size-8 overflow-hidden">
-            {logo ? <img src={logo} alt={name} className="h-full w-full object-cover" /> : name.charAt(0).toUpperCase()}
+            {logo ? <Image src={logo} alt={name} fill className="object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );
 }

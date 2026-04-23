@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
@@ -210,7 +211,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
                     <div className="aspect-video bg-muted rounded-lg overflow-hidden border flex items-center justify-center relative group">
                       {fileType === "image" ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" />
+                        <NextImage src={asset.cdnUrl} alt={asset.filename} fill className="object-cover" />
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-muted-foreground">
                           {fileType === "video" ? <Video className="size-8" /> : <File className="size-8" />}

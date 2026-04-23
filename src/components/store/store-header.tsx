@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { Tenant, Category } from "@/infrastructure/supabase/types"
@@ -32,7 +33,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
           {/* Logo */}
           <Link href={baseUrl} className="flex items-center gap-2">
             {tenant.logo_url ? (
-              <img src={tenant.logo_url || "/placeholder.svg"} alt={tenant.name} className="h-8 w-auto" />
+              <Image src={tenant.logo_url || "/placeholder.svg"} alt={tenant.name} width={120} height={32} className="h-8 w-auto" />
             ) : (
               <div
                 className="flex h-9 w-9 items-center justify-center rounded-lg"

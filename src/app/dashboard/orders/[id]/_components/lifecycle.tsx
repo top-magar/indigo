@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Phone, Banknote, CreditCard, Truck, Package, CheckCircle2, AlertTriangle, MapPin, Clock } from "lucide-react";
@@ -196,7 +197,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
                 {fLines.map(line => (
                   <div key={line.id} className="flex items-center gap-3">
                     {line.productImage ? (
-                      <img src={line.productImage} alt="" className="size-9 rounded-md object-cover border" />
+                      <Image src={line.productImage} alt="" width={36} height={36} className="size-9 rounded-md object-cover border" />
                     ) : (
                       <div className="size-9 rounded-md bg-muted flex items-center justify-center">
                         <Package className="size-4 text-muted-foreground" />
@@ -255,7 +256,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
             {unfulfilledLines.map(line => (
               <div key={line.id} className="flex items-center gap-3">
                 {line.productImage ? (
-                  <img src={line.productImage} alt="" className="size-9 rounded-md object-cover border" />
+                  <Image src={line.productImage} alt="" width={36} height={36} className="size-9 rounded-md object-cover border" />
                 ) : (
                   <div className="size-9 rounded-md bg-muted flex items-center justify-center">
                     <Package className="size-4 text-muted-foreground" />

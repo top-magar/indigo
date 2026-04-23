@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, User, Moon, Sun, Monitor, Bell, Shield, HelpCircle, LogOut } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -38,7 +39,7 @@ const themes = [
 function Avatar({ name, url, color }: { name: string; url?: string | null; color: string }) {
     return (
         <div className={cn("flex shrink-0 items-center justify-center rounded-full text-white font-medium text-xs size-8 overflow-hidden", color)}>
-            {url ? <img src={url} alt={name} className="size-full object-cover" /> : name.charAt(0).toUpperCase()}
+            {url ? <Image src={url} alt={name} fill className="object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );
 }
