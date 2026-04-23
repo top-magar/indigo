@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
   const [s, setS] = useState(initial);
   const canEdit = userRole === "owner" || userRole === "admin";
   const hasChanges = JSON.stringify(s) !== JSON.stringify(initial);
+  useUnsavedChanges(hasChanges);
   const set = <K extends keyof CheckoutSettings>(k: K, v: CheckoutSettings[K]) => setS(prev => ({ ...prev, [k]: v }));
 
   const handleSave = () => startTransition(async () => {

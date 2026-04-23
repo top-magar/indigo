@@ -36,11 +36,11 @@ export function EnhancedMetricCard({ metric, currency = "NPR" }: Props) {
         {change !== undefined && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             {isPositive ? (
-              <ArrowUp className="size-3 text-foreground" />
+              <ArrowUp className="size-3 text-success" />
             ) : (
-              <ArrowDown className="size-3 text-foreground" />
+              <ArrowDown className="size-3 text-destructive" />
             )}
-            <span className={cn("font-medium", isPositive ? "text-foreground" : "text-foreground")}>
+            <span className={cn("font-medium", isPositive ? "text-success" : "text-destructive")}>
               {isPositive ? "+" : ""}{change.toFixed(1)}%
             </span>
             {changeLabel && <span>{changeLabel}</span>}

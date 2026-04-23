@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/utils";
 import { type PaymentSettings, updatePaymentSettings } from "./actions";
+import { HelpTooltip } from "@/components/dashboard";
 
 // ─── Logos ────────────────────────────────────────────────
 const ESEWA_LOGO = "https://cdn.esewa.com.np/ui/images/esewa_og.png";
@@ -61,11 +63,26 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
   const [isPending, startTransition] = useTransition();
   const set = <K extends keyof PaymentSettings>(k: K, v: PaymentSettings[K]) => setS(prev => ({ ...prev, [k]: v }));
   const hasChanges = JSON.stringify(s) !== JSON.stringify(initialSettings);
+  useUnsavedChanges(hasChanges);
 
-  const handleSave = () => startTransition(async () => {
-    const result = await updatePaymentSettings(s);
-    result.success ? toast.success("Payment settings saved") : toast.error(result.error ?? "Failed to save");
-  });
+  const handleSave = () => {
+    // Validate required fields for active methods
+    const errors: string[] = [];
+    if (s.bankTransfer) {
+      if (!s.bankName.trim()) errors.push("Bank name is required when bank transfer is enabled");
+      if (!s.accountNumber.trim()) errors.push("Account number is required when bank transfer is enabled");
+    }
+    if (s.esewa && !s.esewamerchantCode.trim()) errors.push("Merchant code is required when eSewa is enabled");
+    if (s.khalti && !s.khaltiSecretKey.trim()) errors.push("Secret key is required when Khalti is enabled");
+    if (errors.length) {
+      errors.forEach(e => toast.error(e));
+      return;
+    }
+    startTransition(async () => {
+      const result = await updatePaymentSettings(s);
+      result.success ? toast.success("Payment settings saved") : toast.error(result.error ?? "Failed to save");
+    });
+  };
 
   const activeCount = [s.cashOnDelivery, s.bankTransfer, s.esewa, s.khalti].filter(Boolean).length;
 
@@ -117,7 +134,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                   <Input value={s.accountHolderName} onChange={e => set("accountHolderName", e.target.value)} placeholder="Full name on account" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Account Number</Label>
+                  <Label className="text-xs">Account Number <HelpTooltip content="Your bank account number. Customers will transfer payments to this account." /></Label>
                   <Input value={s.accountNumber} onChange={e => set("accountNumber", e.target.value)} placeholder="Account number" />
                 </div>
                 <div className="space-y-1.5">
@@ -142,11 +159,11 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
             <div className="px-4 pb-4 pt-0 ml-[52px] space-y-3">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Merchant Code</Label>
+                  <Label className="text-xs">Merchant Code <HelpTooltip content="Your unique eSewa merchant code. Find it at developer.esewa.com.np after signing up as a merchant." /></Label>
                   <Input value={s.esewamerchantCode} onChange={e => set("esewamerchantCode", e.target.value)} placeholder="e.g. EPAYTEST" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Secret Key</Label>
+                  <Label className="text-xs">Secret Key <HelpTooltip content="Your eSewa API secret key. Keep this private — never share it publicly." /></Label>
                   <SecretInput id="esewaSecret" value={s.esewaSecret} onChange={v => set("esewaSecret", v)} placeholder="Your eSewa secret key" />
                 </div>
               </div>
@@ -169,7 +186,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
           {s.khalti && (
             <div className="px-4 pb-4 pt-0 ml-[52px] space-y-3">
               <div className="space-y-1.5">
-                <Label className="text-xs">Secret Key</Label>
+                <Label className="text-xs">Secret Key <HelpTooltip content="Your Khalti API secret key from the merchant dashboard at khalti.com." /></Label>
                 <SecretInput id="khaltiSecret" value={s.khaltiSecretKey} onChange={v => set("khaltiSecretKey", v)} placeholder="Your Khalti secret key" />
               </div>
               <a href="https://khalti.com/join/merchant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">

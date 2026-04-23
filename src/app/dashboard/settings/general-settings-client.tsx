@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { currencyOptions } from "@/shared/currency";
+import { HelpTooltip } from "@/components/dashboard";
 import { updateStoreSettings, updateCurrencySettings, updateStoreSeoSettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
@@ -35,6 +37,9 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
   const seo = (tenant.settings as Record<string, Record<string, string>> | null)?.seo || {};
   const [seoTitle, setSeoTitle] = useState(seo.metaTitle || "");
   const [seoDescription, setSeoDescription] = useState(seo.metaDescription || "");
+
+  const hasChanges = name !== tenant.name || description !== (tenant.description || "") || logoUrl !== (tenant.logo_url || "") || currency !== (tenant.currency || "USD") || seoTitle !== (seo.metaTitle || "") || seoDescription !== (seo.metaDescription || "");
+  useUnsavedChanges(hasChanges);
 
   const storeUrl = `https://${tenant.slug}.indigo.com`;
 
@@ -183,14 +188,14 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
           <div className="p-5 space-y-3">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-xs">Page Title</Label>
+                <Label className="text-xs">Page Title <HelpTooltip content="The title shown in browser tabs and Google search results. Keep it under 60 characters." /></Label>
                 <span className="text-[10px] tabular-nums text-muted-foreground">{seoTitle.length}/60</span>
               </div>
               <Input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} placeholder={tenant.name} maxLength={60} disabled={!canEdit} />
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-xs">Meta Description</Label>
+                <Label className="text-xs">Meta Description <HelpTooltip content="A short summary shown below your title in Google results. Keep it under 160 characters." /></Label>
                 <span className="text-[10px] tabular-nums text-muted-foreground">{seoDescription.length}/160</span>
               </div>
               <Textarea value={seoDescription} onChange={e => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} placeholder="A brief description for search engines" />

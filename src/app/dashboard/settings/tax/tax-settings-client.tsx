@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,6 +16,7 @@ export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSet
   const [s, setS] = useState(initialSettings);
   const [isPending, startTransition] = useTransition();
   const hasChanges = JSON.stringify(s) !== JSON.stringify(initialSettings);
+  useUnsavedChanges(hasChanges);
   const set = <K extends keyof TaxSettings>(k: K, v: TaxSettings[K]) => setS(prev => ({ ...prev, [k]: v }));
 
   const handleSave = () => startTransition(async () => {
