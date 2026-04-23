@@ -7,6 +7,9 @@ export { SettingsPage } from "./settings-page";
 export { ToggleRow } from "./toggle-row";
 export { StatBar } from "./stat-bar";
 export { StatusBadge } from "./status-badge";
+export { HelpTooltip } from "./help-tooltip";
+export { FormField } from "./form-field";
+export { StatusDot } from "./status-dot";
 
 // Templates
 export { EntityListPage } from "./templates/entity-list-page";

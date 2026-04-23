@@ -259,6 +259,9 @@ Rules:
 | `EntityListPage` | `@/components/dashboard/templates` | Full list page template |
 | `EntityDetailPage` | `@/components/dashboard/templates` | Detail page with sidebar |
 | `Savebar` | `@/components/dashboard` | Floating save/discard bar |
+| `HelpTooltip` | `@/components/dashboard` | Inline help icon with tooltip |
+| `FormField` | `@/components/dashboard` | Label + description + error wrapper |
+| `StatusDot` | `@/components/dashboard` | Semantic colored dot indicator |
 
 ## Animation
 
@@ -276,6 +279,160 @@ Rules:
 - No framer-motion in dashboard. Landing pages only.
 - No decorative animations (stagger, flip, glow, number-tick).
 - `animate-in`/`animate-out` for dialogs/dropdowns (shadcn default).
+
+## StatusBadge
+
+Semantic status badge with icon and color from centralized status config.
+
+```
+Import: @/components/dashboard/status-badge
+Props:
+  status    string         — Status value (e.g. "pending", "active")
+  type      StatusType     — "order" | "product" | "payment" | "fulfillment"
+  variant?  "badge"|"dot"  — Badge (default) or dot+label
+  showIcon? boolean        — Show status icon (default: true)
+
+Convenience: OrderStatusBadge, ProductStatusBadge, PaymentStatusBadge, FulfillmentStatusBadge
+```
+
+```tsx
+<StatusBadge status="pending" type="order" />
+<ProductStatusBadge status="active" />
+<StatusBadge status="paid" type="payment" variant="dot" />
+```
+
+## Savebar
+
+Sticky bottom bar for unsaved changes. Slides in from bottom with backdrop blur.
+
+```
+Import: @/components/dashboard/savebar
+Props:
+  show?       boolean    — Visibility (default: true)
+  isSaving?   boolean    — Disables buttons, shows spinner
+  hasErrors?  boolean    — Disables save
+  onDiscard?  () => void
+  onSave?     () => void
+  onDelete?   () => void
+  labels?     { discard?, save?, delete?, saving? }
+  children?   ReactNode  — Custom center content
+
+Sub-components: SavebarActions, SavebarSpacer
+```
+
+```tsx
+<Savebar
+  show={isDirty}
+  isSaving={saving}
+  onDiscard={reset}
+  onSave={handleSave}
+  onDelete={() => setShowDeleteDialog(true)}
+/>
+```
+
+## New Primitives
+
+### HelpTooltip
+
+Inline help icon (HelpCircle) with tooltip. Use next to labels for contextual help.
+
+```
+Import: @/components/dashboard
+Props:
+  content  string — Tooltip text (max-w-[200px])
+```
+
+```tsx
+<label className="text-xs font-medium">
+  API Key <HelpTooltip content="Used for external integrations" />
+</label>
+```
+
+### FormField
+
+Label + optional description + children + optional error message. Replaces ad-hoc form field wrappers.
+
+```
+Import: @/components/dashboard
+Props:
+  label        string       — Label text (text-xs font-medium)
+  description? string       — Help text below label (text-[10px])
+  error?       string       — Error message (text-[10px] text-destructive)
+  required?    boolean      — Shows red asterisk
+  horizontal?  boolean      — Inline layout (label 1/3, input 2/3)
+  children     ReactNode    — Form control
+```
+
+```tsx
+<FormField label="Store name" required error={errors.name}>
+  <Input value={name} onChange={e => setName(e.target.value)} />
+</FormField>
+
+<FormField label="Tax rate" description="Applied to all products" horizontal>
+  <Input type="number" value={rate} onChange={e => setRate(e.target.value)} />
+</FormField>
+```
+
+### StatusDot
+
+Tiny semantic colored dot. Use in tables and lists for inline status indication.
+
+```
+Import: @/components/dashboard
+Props:
+  status  Status   — "active"|"published"|"paid"|"draft"|"pending"|"archived"|"cancelled"|"error"|"failed"
+  pulse?  boolean  — animate-pulse
+  label?  string   — Text label next to dot (text-xs)
+
+Color mapping:
+  active/published/paid     → bg-success
+  draft/pending             → bg-muted-foreground
+  archived/cancelled        → bg-warning
+  error/failed              → bg-destructive
+```
+
+```tsx
+<StatusDot status="active" label="Active" />
+<StatusDot status="pending" pulse />
+```
+
+## Hooks
+
+### useUnsavedChanges
+
+Warns users before navigating away when form has unsaved changes. Handles `beforeunload` and Next.js client-side navigation.
+
+```
+Import: @/hooks/use-unsaved-changes
+useUnsavedChanges(isDirty: boolean, message?: string): void
+```
+
+```tsx
+const { isDirty, reset } = useFormDirty(formValues, initialValues);
+useUnsavedChanges(isDirty);
+```
+
+### useFormDirty
+
+Tracks dirty state by deep-comparing current vs initial values. Exported from the same file.
+
+```
+Import: @/hooks/use-unsaved-changes
+useFormDirty<T>(current: T, initial: T): { isDirty: boolean; reset: (newInitial?: T) => void }
+```
+
+### useSaveShortcut
+
+Binds ⌘S / Ctrl+S to a save callback. Prevents default browser save dialog.
+
+```
+Import: @/hooks/use-save-shortcut
+useSaveShortcut(onSave: () => void, enabled?: boolean): void
+```
+
+```tsx
+useSaveShortcut(handleSave, !isSaving);
+```
 
 ## Anti-Patterns (NEVER)
 
