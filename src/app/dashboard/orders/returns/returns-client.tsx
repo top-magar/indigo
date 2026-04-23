@@ -196,9 +196,6 @@ export function ReturnsClient({
       <div className="flex items-center gap-4">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Returns</h1>
-          <p className="text-xs text-muted-foreground">
-            Manage product returns and refunds
-          </p>
         </div>
       </div>
 
@@ -231,16 +228,6 @@ export function ReturnsClient({
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
-
-        <Button
-          variant="outline"
-          size="icon" aria-label="Refresh"
-          className="size-9 ml-auto"
-          onClick={() => router.refresh()}
-          disabled={isPending}
-        >
-          <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
-        </Button>
       </div>
 
       {/* Returns Table */}
