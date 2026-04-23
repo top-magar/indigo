@@ -38,7 +38,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <div className="relative z-10 flex items-center gap-6 text-[11px] text-background/25">
-          <span>© {new Date().getFullYear()} Indigo</span>
+          <span>© 2026 Indigo</span>
           <span>Terms</span>
           <span>Privacy</span>
         </div>
