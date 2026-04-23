@@ -14,7 +14,7 @@ export default function CustomerDetailLoading() {
                         <Skeleton className="size-48" />
                     </div>
                 </div>
-                <Skeleton className="h-10 w-20" />
+                <Skeleton className="h-7 w-20" />
                 <Skeleton className="size-10" />
             </div>
 

@@ -5,7 +5,7 @@ export default function PagesLoading() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Skeleton className="h-7 w-32" />
-        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-7 w-40" />
       </div>
       <Skeleton className="h-96" />
     </div>

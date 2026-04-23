@@ -28,7 +28,7 @@ export default function NotificationsSettingsLoading() {
             ))}
 
             <div className="flex justify-end">
-                <Skeleton className="h-10 w-36" />
+                <Skeleton className="h-7 w-36" />
             </div>
         </div>
     );

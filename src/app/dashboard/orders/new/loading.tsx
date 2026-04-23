@@ -10,7 +10,7 @@ export default function NewOrderLoading() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
         <div className="space-y-3">
-          <Card><CardContent className="p-4 space-y-3"><Skeleton className="h-4 w-24" /><Skeleton className="h-9 w-full" /><Skeleton className="h-4 w-24" /><Skeleton className="h-9 w-full" /></CardContent></Card>
+          <Card><CardContent className="p-4 space-y-3"><Skeleton className="h-4 w-24" /><Skeleton className="h-7 w-full" /><Skeleton className="h-4 w-24" /><Skeleton className="h-7 w-full" /></CardContent></Card>
           <Card><CardContent className="p-4 space-y-3"><Skeleton className="h-4 w-32" /><Skeleton className="h-20 w-full" /></CardContent></Card>
         </div>
         <div className="space-y-3">

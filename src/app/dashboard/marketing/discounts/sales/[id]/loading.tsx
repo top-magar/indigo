@@ -8,8 +8,8 @@ export default function Loading() {
                 <Skeleton className="size-8" />
                 <Skeleton className="h-8 w-48" />
                 <div className="ml-auto flex gap-2">
-                    <Skeleton className="h-9 w-20" />
-                    <Skeleton className="h-9 w-20" />
+                    <Skeleton className="h-7 w-20" />
+                    <Skeleton className="h-7 w-20" />
                 </div>
             </div>
             <div className="grid gap-4 lg:grid-cols-3">

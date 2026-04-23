@@ -13,7 +13,7 @@ export default function Loading() {
                                 <Skeleton className="h-4 w-32" />
                                 <Skeleton className="h-3 w-48" />
                             </div>
-                            <Skeleton className="h-9 w-24" />
+                            <Skeleton className="h-7 w-24" />
                         </div>
                     ))}
                 </CardContent>

@@ -15,7 +15,7 @@ export default function CustomerGroupsLoading() {
         </div>
         <div className="flex items-center gap-2">
           <Skeleton className="size-9" />
-          <Skeleton className="h-9 w-32" />
+          <Skeleton className="h-7 w-32" />
         </div>
       </div>
 

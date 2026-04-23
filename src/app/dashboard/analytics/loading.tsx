@@ -14,9 +14,9 @@ export default function AnalyticsLoading() {
                     <Skeleton className="h-4 w-64" />
                 </div>
                 <div className="flex gap-2">
-                    <Skeleton className="h-10 w-40" />
-                    <Skeleton className="h-10 w-24" />
-                    <Skeleton className="size-10" />
+                    <Skeleton className="h-7 w-40" />
+                    <Skeleton className="h-7 w-24" />
+                    <Skeleton className="size-7" />
                 </div>
             </div>
 

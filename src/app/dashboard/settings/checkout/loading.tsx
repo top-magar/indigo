@@ -30,7 +30,7 @@ export default function CheckoutSettingsLoading() {
             ))}
 
             <div className="flex justify-end">
-                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-7 w-32" />
             </div>
         </div>
     );

@@ -11,7 +11,7 @@ export default function SettingsLoading() {
             </div>
 
             {/* Tabs */}
-            <Skeleton className="h-10 w-80" />
+            <Skeleton className="h-7 w-80" />
 
             {/* Cards */}
             {Array.from({ length: 3 }).map((_, i) => (
@@ -24,11 +24,11 @@ export default function SettingsLoading() {
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-7 w-full" />
                             </div>
                             <div className="space-y-2">
                                 <Skeleton className="h-4 w-24" />
-                                <Skeleton className="h-10 w-full" />
+                                <Skeleton className="h-7 w-full" />
                             </div>
                         </div>
                         <div className="space-y-2">
@@ -41,7 +41,7 @@ export default function SettingsLoading() {
 
             {/* Save Button */}
             <div className="flex justify-end">
-                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-7 w-32" />
             </div>
         </div>
     );
