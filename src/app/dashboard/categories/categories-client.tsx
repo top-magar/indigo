@@ -294,7 +294,6 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
     return (
         <EntityListPage
             title="Categories"
-            description="Organize products with hierarchical categories"
             actions={
                 <Button onClick={() => handleCreate()}>
                     <Plus className="size-3.5" />
@@ -304,8 +303,8 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
         >
 
             {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="relative flex-1 max-w-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div className="relative flex-1 w-full sm:max-w-sm">
                     <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                     />
