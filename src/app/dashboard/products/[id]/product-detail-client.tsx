@@ -37,6 +37,11 @@ interface ProductDetailClientProps {
 export function ProductDetailClient({ initialProduct }: ProductDetailClientProps) {
     const router = useRouter();
     const [product, setProduct] = useState(initialProduct);
+
+    // Sync with server data after router.refresh()
+    useEffect(() => {
+        setProduct(initialProduct);
+    }, [initialProduct]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
