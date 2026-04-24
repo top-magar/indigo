@@ -11,6 +11,8 @@ BEGIN;
 
 -- 1a. editor_projects: Change tenant_id from TEXT to UUID + add FK
 ALTER TABLE editor_projects
+  ALTER COLUMN tenant_id DROP DEFAULT;
+ALTER TABLE editor_projects
   ALTER COLUMN tenant_id TYPE uuid USING tenant_id::uuid;
 
 -- Drop old FK if exists, then add with CASCADE
@@ -19,6 +21,15 @@ DO $$ BEGIN
     DROP CONSTRAINT IF EXISTS editor_projects_tenant_id_tenants_id_fk;
 EXCEPTION WHEN undefined_object THEN NULL;
 END $$;
+
+-- Clean up orphaned records before adding FK
+DELETE FROM editor_pages WHERE project_id IN (
+  SELECT id FROM editor_projects WHERE tenant_id NOT IN (SELECT id FROM tenants)
+);
+DELETE FROM editor_project_versions WHERE project_id IN (
+  SELECT id FROM editor_projects WHERE tenant_id NOT IN (SELECT id FROM tenants)
+);
+DELETE FROM editor_projects WHERE tenant_id NOT IN (SELECT id FROM tenants);
 
 ALTER TABLE editor_projects
   ADD CONSTRAINT editor_projects_tenant_id_tenants_id_fk
@@ -249,11 +260,15 @@ ALTER TABLE cart_items
 -- Make cart_items.product_id nullable (required for SET NULL)
 ALTER TABLE cart_items ALTER COLUMN product_id DROP NOT NULL;
 
--- delivery_attempts.cod_collection_id
-ALTER TABLE delivery_attempts DROP CONSTRAINT IF EXISTS delivery_attempts_cod_collection_id_cod_collections_id_fk;
-ALTER TABLE delivery_attempts
-  ADD CONSTRAINT delivery_attempts_cod_collection_id_cod_collections_id_fk
+-- delivery_attempts.cod_collection_id (table may not exist yet)
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'delivery_attempts') THEN
+    ALTER TABLE delivery_attempts DROP CONSTRAINT IF EXISTS delivery_attempts_cod_collection_id_cod_collections_id_fk;
+    ALTER TABLE delivery_attempts
+      ADD CONSTRAINT delivery_attempts_cod_collection_id_cod_collections_id_fk
   FOREIGN KEY (cod_collection_id) REFERENCES cod_collections(id) ON DELETE CASCADE;
+  END IF;
+END $$;
 
 -- dashboard_layouts.tenant_id
 ALTER TABLE dashboard_layouts DROP CONSTRAINT IF EXISTS dashboard_layouts_tenant_id_tenants_id_fk;
