@@ -84,6 +84,19 @@ export function NavItemComponent({
         </SidebarMenuBadge>
     );
 
+    // Inline badge for collapsible items (no absolute positioning)
+    const inlineBadge = item.badge && (
+        <span className={cn(
+            "text-[10px] font-medium min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center tabular-nums",
+            item.badgeVariant === "warning" && "bg-warning/10 text-warning",
+            item.badgeVariant === "success" && "bg-success/10 text-success",
+            item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground",
+            !item.badgeVariant && "bg-muted text-muted-foreground"
+        )}>
+            {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
+        </span>
+    );
+
     const statusBadge = (item.soon || item.isNew) && !isCollapsed && (
         <Badge className={cn(
             "ml-auto text-xs py-0 px-2 h-5",
@@ -232,7 +245,7 @@ export function NavItemComponent({
                         <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
                         <span className="truncate flex-1">{item.title}</span>
                         <div className="flex items-center gap-1 shrink-0 ml-auto">
-                            {badgeContent}
+                            {inlineBadge}
                             <ChevronRight className={cn("size-3.5 text-muted-foreground/50 transition-transform duration-200", isOpen && "rotate-90")} />
                         </div>
                     </SidebarMenuButton>
