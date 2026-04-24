@@ -10,8 +10,9 @@
 import { revalidateTag } from "next/cache"
 import { getCartId, setCartId, removeCartId, getCacheTag } from "@/features/store/data/cookies"
 import { db } from "@/infrastructure/db"
-import { carts, cartItems, orders, orderItems } from "@/db/schema"
+import { carts, cartItems, orders, orderItems, products, users, tenants } from "@/db/schema"
 import { eq, and, sql } from "drizzle-orm"
+import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from "@/infrastructure/services/email/actions"
 import { createLogger } from "@/lib/logger";
 const log = createLogger("features:store-cart");
 
@@ -448,6 +449,43 @@ export async function completeCart(
 
     // Remove cart cookie
     await removeCartId()
+
+    // --- Post-order side effects (fire-and-forget) ---
+
+    // 1. Decrement stock for each item
+    for (const item of cart.items) {
+      if (item.productId) {
+        db.update(products)
+          .set({ quantity: sql`GREATEST(0, ${products.quantity} - ${item.quantity})` })
+          .where(and(eq(products.id, item.productId), eq(products.tenantId, tenantId)))
+          .catch(err => log.error("Stock decrement failed:", err))
+      }
+    }
+
+    // 2. Send order confirmation email to customer
+    if (cart.email) {
+      const orderDetails = {
+        orderId: order.id,
+        orderNumber,
+        customerEmail: cart.email,
+        items: cart.items.map(i => ({ productName: i.productName, quantity: i.quantity, unitPrice: String(i.unitPrice), totalPrice: String(i.subtotal), productImage: i.productImage ?? undefined })),
+        subtotal: String(cart.subtotal),
+        total: String(cart.total),
+        currency: "NPR",
+        createdAt: new Date(),
+      }
+      const [tenant] = await db.select({ name: tenants.name, slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId))
+      const storeInfo = { name: tenant?.name ?? "Store", slug: tenant?.slug ?? "" }
+      sendOrderConfirmationEmail(cart.email, orderDetails, storeInfo)
+        .catch(err => log.error("Order confirmation email failed:", err))
+
+      // 3. Notify merchant
+      const [owner] = await db.select({ email: users.email }).from(users).where(and(eq(users.tenantId, tenantId), eq(users.role, "owner")))
+      if (owner?.email) {
+        sendOrderNotificationEmail(owner.email, orderDetails, storeInfo)
+          .catch(err => log.error("Merchant notification email failed:", err))
+      }
+    }
 
     // Revalidate caches
     const cartCacheTag = await getCacheTag("carts", tenantId)
