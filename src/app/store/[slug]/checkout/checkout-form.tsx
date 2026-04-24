@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,32 +10,46 @@ import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Price } from "@/components/ui/price"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { AlertCircle, Loader2, Banknote, Building2, Wallet, Gift } from "lucide-react"
+import { AlertCircle, Loader2, Banknote, Building2, Wallet, Gift, Truck } from "lucide-react"
 import { toast } from "sonner"
 import { validateGiftCard } from "./actions"
 import type { Cart } from "@/features/store/data/cart"
+
+interface ShippingZone {
+  id: string; name: string; regions: string[]
+  rates: { price: number; name: string }[]
+}
 
 interface CheckoutFormProps {
   tenantId: string
   slug: string
   cart: Cart
   currency?: string
+  taxRate?: number
+  taxName?: string
+  priceIncludesTax?: boolean
+  showTaxInCart?: boolean
+  shippingZones?: ShippingZone[]
+  freeShippingThreshold?: number | null
 }
 
-const PAYMENT_METHODS: { value: string; label: string; icon: typeof Banknote; description: string; disabled?: boolean }[] = [
+const PAYMENT_METHODS = [
   { value: "cod", label: "Cash on Delivery", icon: Banknote, description: "Pay when you receive your order" },
   { value: "bank_transfer", label: "Bank Transfer", icon: Building2, description: "Transfer to our bank account" },
   { value: "esewa", label: "eSewa", icon: Wallet, description: "Pay with eSewa" },
   { value: "khalti", label: "Khalti", icon: Wallet, description: "Pay with Khalti" },
-]
+] as const
 
-export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: CheckoutFormProps) {
+export function CheckoutForm({
+  tenantId, slug, cart, currency = "NPR",
+  taxRate = 0, taxName = "Tax", priceIncludesTax = false, showTaxInCart = true,
+  shippingZones = [], freeShippingThreshold = null,
+}: CheckoutFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState("cod")
 
-  // Customer info
   const [name, setName] = useState("")
   const [email, setEmail] = useState(cart.email || "")
   const [phone, setPhone] = useState("")
@@ -43,16 +57,37 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
   const [city, setCity] = useState("")
   const [area, setArea] = useState("")
 
-  // Gift card
   const [giftCardCode, setGiftCardCode] = useState("")
   const [giftCardDiscount, setGiftCardDiscount] = useState(0)
   const [applyingGiftCard, setApplyingGiftCard] = useState(false)
 
   const subtotal = cart.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
   const discount = cart.discountTotal || 0
-  const shipping = cart.shippingTotal || 0
-  const tax = cart.taxTotal || 0
-  const total = subtotal - discount - giftCardDiscount + shipping + tax
+
+  // Shipping: match city to zone, check free threshold
+  const shippingTotal = useMemo(() => {
+    if (freeShippingThreshold && subtotal >= freeShippingThreshold) return 0
+    if (!shippingZones.length) return 0
+    const zone = shippingZones.find(z => z.regions.some(r => r.toLowerCase() === city.toLowerCase())) || shippingZones[0]
+    return zone?.rates?.[0]?.price ?? 0
+  }, [city, subtotal, shippingZones, freeShippingThreshold])
+
+  // Tax
+  const taxTotal = useMemo(() => {
+    if (taxRate <= 0) return 0
+    if (priceIncludesTax) return subtotal - (subtotal / (1 + taxRate / 100))
+    return subtotal * (taxRate / 100)
+  }, [subtotal, taxRate, priceIncludesTax])
+
+  const total = subtotal - discount - giftCardDiscount + shippingTotal + (priceIncludesTax ? 0 : taxTotal)
+
+  // Shipping info text
+  const shippingLabel = useMemo(() => {
+    if (freeShippingThreshold && subtotal >= freeShippingThreshold) return "Free shipping"
+    if (!shippingZones.length) return null
+    const zone = shippingZones.find(z => z.regions.some(r => r.toLowerCase() === city.toLowerCase()))
+    return zone ? zone.name : shippingZones[0]?.name
+  }, [city, subtotal, shippingZones, freeShippingThreshold])
 
   const applyGiftCard = async () => {
     if (!giftCardCode.trim()) return
@@ -60,7 +95,7 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
     try {
       const result = await validateGiftCard(giftCardCode, tenantId)
       if (result.valid) {
-        const amount = Math.min(result.balance, subtotal - discount + shipping + tax)
+        const amount = Math.min(result.balance, subtotal - discount + shippingTotal + taxTotal)
         setGiftCardDiscount(amount)
         toast.success(`Gift card applied! -${currency} ${amount.toFixed(2)}`)
       } else {
@@ -100,12 +135,10 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
         setLoading(false)
         return
       }
-      // For eSewa/Khalti: redirect to payment gateway
       if (data.data.redirectUrl) {
         window.location.href = data.data.redirectUrl
         return
       }
-      // For COD/bank transfer: go to confirmation
       router.push(`/store/${slug}/order-confirmation?order=${data.data.orderNumber}`)
     } catch {
       setError("Something went wrong. Please try again.")
@@ -115,7 +148,6 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[1fr_400px]">
-      {/* Left: Customer Info + Payment */}
       <div className="space-y-6">
         <Card>
           <CardHeader><CardTitle>Contact Information</CardTitle></CardHeader>
@@ -136,6 +168,12 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
               <div><Label htmlFor="city">City *</Label><Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Kathmandu" required /></div>
               <div><Label htmlFor="area">Area</Label><Input id="area" value={area} onChange={(e) => setArea(e.target.value)} placeholder="Thamel, Baneshwor..." /></div>
             </div>
+            {shippingLabel && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Truck className="size-3.5" />
+                {shippingTotal === 0 ? "Free shipping!" : `${shippingLabel} — ${currency} ${shippingTotal}`}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -144,8 +182,8 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
           <CardContent>
             <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
               {PAYMENT_METHODS.map((m) => (
-                <label key={m.value} className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === m.value ? "border-primary bg-primary/5" : "hover:bg-muted/50"} ${m.disabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  <RadioGroupItem value={m.value} disabled={m.disabled} />
+                <label key={m.value} className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === m.value ? "border-primary bg-primary/5" : "hover:bg-muted/50"}`}>
+                  <RadioGroupItem value={m.value} />
                   <m.icon className="size-5 text-muted-foreground" />
                   <div className="flex-1">
                     <div className="font-medium text-sm">{m.label}</div>
@@ -185,8 +223,16 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
             <div className="flex justify-between text-sm"><span>Subtotal</span><Price amount={subtotal} currency={currency} /></div>
             {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount</span><span>-<Price amount={discount} currency={currency} /></span></div>}
             {giftCardDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Gift Card</span><span>-<Price amount={giftCardDiscount} currency={currency} /></span></div>}
-            {shipping > 0 && <div className="flex justify-between text-sm"><span>Shipping</span><Price amount={shipping} currency={currency} /></div>}
-            {tax > 0 && <div className="flex justify-between text-sm"><span>Tax</span><Price amount={tax} currency={currency} /></div>}
+            <div className="flex justify-between text-sm">
+              <span>Shipping</span>
+              {shippingTotal === 0 ? <span className="text-green-600">Free</span> : <Price amount={shippingTotal} currency={currency} />}
+            </div>
+            {showTaxInCart && taxTotal > 0 && (
+              <div className="flex justify-between text-sm">
+                <span>{taxName}{priceIncludesTax ? " (included)" : ""}</span>
+                <Price amount={Math.round(taxTotal * 100) / 100} currency={currency} />
+              </div>
+            )}
             <Separator />
             <div className="flex justify-between font-semibold"><span>Total</span><Price amount={total} currency={currency} /></div>
           </CardContent>
