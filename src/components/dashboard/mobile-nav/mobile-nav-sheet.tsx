@@ -36,8 +36,8 @@ export function MobileNavSheet({
     const pathname = usePathname();
 
     const navGroups: NavGroup[] = useMemo(
-        () => createNavigation({ pendingOrders: pendingReturnsCount, lowStock: lowStockCount }),
-        [pendingReturnsCount, lowStockCount]
+        () => createNavigation({}),
+        []
     );
 
     const isActive = (href: string) => {
