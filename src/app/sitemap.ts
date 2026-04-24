@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!tenantSlug || !p.slug) continue;
       const pageSlug = p.slug.startsWith("/") ? p.slug.slice(1) : p.slug;
       entries.push({
-        url: `${baseUrl}/store/${tenantSlug}/p/${pageSlug}`,
+        url: `${baseUrl}/store/${tenantSlug}/${pageSlug}`,
         lastModified: p.updated_at,
         changeFrequency: "weekly",
         priority: 0.8,

@@ -12,6 +12,20 @@ import { DefaultHomepage } from "@/components/store/default-homepage"
 import { SectionRenderer } from "@/features/store/section-renderer"
 import { PasswordGate } from "@/features/store/password-gate"
 
+/** Extract content between <body> tags from full HTML document */
+function extractBodyContent(html: string): string {
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  return bodyMatch ? bodyMatch[1] : html;
+}
+
+/** Extract <style> tags from <head> */
+function extractHeadStyles(html: string): string | null {
+  const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+  if (!headMatch) return null;
+  const styles = headMatch[1].match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+  return styles ? styles.map(s => s.replace(/<\/?style[^>]*>/gi, '')).join('\n') : null;
+}
+
 export async function generateStaticParams() {
   const { getAllTenantSlugs } = await import("@/features/store/data/tenants")
   return getAllTenantSlugs()
@@ -75,7 +89,15 @@ export default async function StorePage({
 
     const homepage = pages.find(p => p.isHomepage) || pages[0];
     if (homepage?.publishedHtml) {
-      return <html><body dangerouslySetInnerHTML={{ __html: homepage.publishedHtml }} /></html>;
+      // Extract body content from published HTML — render inside store layout, not raw <html>
+      const bodyContent = extractBodyContent(homepage.publishedHtml);
+      const headStyles = extractHeadStyles(homepage.publishedHtml);
+      return (
+        <>
+          {headStyles && <style dangerouslySetInnerHTML={{ __html: headStyles }} />}
+          <div dangerouslySetInnerHTML={{ __html: bodyContent }} />
+        </>
+      );
     }
   }
 
