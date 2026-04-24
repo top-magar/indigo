@@ -114,3 +114,14 @@ Design task routing (orchestrator → designer):
 - "Check a11y" → `/audit` (accessibility, perf)
 
 Skills live in `.kiro/skills/`. Read the SKILL.md for each before using.
+
+See `.kiro/steering/orchestration.md` for the full orchestration protocol (patterns, handoff, when to use which agent).
+
+## Git Discipline
+
+Every agent commits after completing work. The `stop` hook in each agent config runs `.kiro/hooks/auto-commit.sh` which:
+1. Runs `npx tsc --noEmit` — blocks commit if type errors
+2. Stages all changes
+3. Commits with `wip:` prefix (agents should make proper named commits before this fires)
+
+See `.kiro/steering/git-workflow.md` for commit conventions.

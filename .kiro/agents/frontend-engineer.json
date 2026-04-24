@@ -30,7 +30,9 @@
     "file://./../steering/ui-conventions.md",
     "skill://./../skills/impeccable/SKILL.md",
     "skill://./../skills/minimalist-ui/SKILL.md",
-    "skill://./../skills/full-output-enforcement/SKILL.md"
+    "skill://./../skills/full-output-enforcement/SKILL.md",
+    "file://./../steering/orchestration.md",
+    "file://./../steering/git-workflow.md"
   ],
   "hooks": {
     "stop": [

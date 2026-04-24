@@ -30,7 +30,9 @@
     "file://./../steering/architecture.md",
     "file://./../steering/database-conventions.md",
     "file://./../steering/commerce.md",
-    "file://./../steering/editor-patterns.md"
+    "file://./../steering/editor-patterns.md",
+    "file://./../steering/orchestration.md",
+    "file://./../steering/git-workflow.md"
   ],
   "hooks": {
     "stop": [

@@ -52,7 +52,9 @@
     "skill://./../skills/high-end-visual-design/SKILL.md",
     "skill://./../skills/redesign-existing-projects/SKILL.md",
     "skill://./../skills/design-taste-frontend/SKILL.md",
-    "skill://./../skills/full-output-enforcement/SKILL.md"
+    "skill://./../skills/full-output-enforcement/SKILL.md",
+    "file://./../steering/orchestration.md",
+    "file://./../steering/git-workflow.md"
   ],
   "hooks": {
     "stop": [

@@ -48,7 +48,9 @@
     "file://./../steering/commerce.md",
     "file://./../steering/storefront.md",
     "file://./../steering/database-conventions.md",
-    "file://./../steering/ui-conventions.md"
+    "file://./../steering/ui-conventions.md",
+    "file://./../steering/orchestration.md",
+    "file://./../steering/git-workflow.md"
   ],
   "hooks": {
     "agentSpawn": [
