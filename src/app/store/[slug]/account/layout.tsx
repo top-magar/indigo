@@ -60,7 +60,7 @@ export default async function AccountLayout({
                 href={`/store/${slug}`}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="size-4" />
                 Back to Store
               </Link>
             </div>
@@ -113,7 +113,7 @@ function AccountNavLink({
         "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="size-4" />
       {children}
     </Link>
   )

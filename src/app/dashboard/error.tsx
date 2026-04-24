@@ -21,7 +21,7 @@ export default function DashboardError({
         <div className="flex min-h-[60vh] items-center justify-center p-4">
             <Card className="max-w-md w-full">
                 <CardContent className="pt-4 text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
+                    <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-destructive/10">
                         <AlertCircle
                             className="size-7 text-destructive"
                         />

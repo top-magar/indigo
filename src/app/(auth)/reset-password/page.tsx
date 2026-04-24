@@ -70,8 +70,8 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-            <Store className="h-6 w-6 text-primary" />
+          <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+            <Store className="size-6 text-primary" />
           </div>
           <h1 className="text-xl font-semibold">Indigo</h1>
         </div>
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
           <CardContent>
             {success ? (
               <div className="flex flex-col items-center gap-3 py-4">
-                <CheckCircle2 className="h-10 w-10 text-green-500" />
+                <CheckCircle2 className="size-10 text-green-500" />
                 <p className="text-sm text-muted-foreground">Your password has been updated.</p>
               </div>
             ) : !sessionReady ? (

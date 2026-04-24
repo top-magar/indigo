@@ -138,7 +138,7 @@ export default async function ProductsPage({
                 {currentPage > 1 && (
                   <Button variant="outline" asChild>
                     <Link href={pageUrl(currentPage - 1)}>
-                      <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+                      <ChevronLeft className="mr-1 size-4" /> Previous
                     </Link>
                   </Button>
                 )}
@@ -148,7 +148,7 @@ export default async function ProductsPage({
                 {currentPage < totalPages && (
                   <Button variant="outline" asChild>
                     <Link href={pageUrl(currentPage + 1)}>
-                      Next <ChevronRight className="ml-1 h-4 w-4" />
+                      Next <ChevronRight className="ml-1 size-4" />
                     </Link>
                   </Button>
                 )}

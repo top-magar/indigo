@@ -210,7 +210,7 @@ export function ReviewCard({
                 onClick={onApprove}
                 className="text-success hover:bg-success/10"
               >
-                <CheckCircle className="mr-1.5 size-3.5" />
+                <CheckCircle className="size-3.5" />
                 Approve
               </Button>
             )}
@@ -221,7 +221,7 @@ export function ReviewCard({
                 onClick={onReject}
                 className="text-destructive hover:bg-destructive/10"
               >
-                <ThumbsDown className="mr-1.5 size-3.5" />
+                <ThumbsDown className="size-3.5" />
                 Reject
               </Button>
             )}

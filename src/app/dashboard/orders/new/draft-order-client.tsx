@@ -139,7 +139,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>Products</CardTitle>
                             <Button variant="outline" onClick={() => setShowSearch(true)}>
-                                <Plus className="mr-1 size-4" /> Add product
+                                <Plus className="size-4" /> Add product
                             </Button>
                         </CardHeader>
                         <CardContent>

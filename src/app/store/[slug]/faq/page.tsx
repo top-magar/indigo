@@ -205,7 +205,7 @@ export default function FAQPage() {
           <CardContent className="pt-6">
             <div className="relative">
               <Search
-                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 type="search"
@@ -239,7 +239,7 @@ export default function FAQPage() {
              
               onClick={() => setActiveCategory(category.id)}
             >
-              <category.icon className="mr-1.5 h-4 w-4" />
+              <category.icon className="mr-1.5 size-4" />
               {category.name}
             </Button>
           ))}
@@ -252,8 +252,8 @@ export default function FAQPage() {
               <Card key={category.id}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <category.icon className="h-5 w-5 text-primary" />
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                      <category.icon className="size-5 text-primary" />
                     </div>
                     <CardTitle>{category.name}</CardTitle>
                   </div>
@@ -277,7 +277,7 @@ export default function FAQPage() {
           <Card>
             <CardContent className="py-12 text-center">
               <Search
-                className="mx-auto h-12 w-12 text-muted-foreground"
+                className="mx-auto size-12 text-muted-foreground"
               />
               <h3 className="mt-4 text-lg font-semibold">No results found</h3>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -301,7 +301,7 @@ export default function FAQPage() {
         <Card className="mt-8">
           <CardContent className="py-8 text-center">
             <Headphones
-              className="mx-auto h-10 w-10 text-primary"
+              className="mx-auto size-10 text-primary"
             />
             <h3 className="mt-4 text-lg font-semibold">Still have questions?</h3>
             <p className="mt-2 text-sm text-muted-foreground">

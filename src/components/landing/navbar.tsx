@@ -179,7 +179,7 @@ export function Navbar() {
                             )}
                         >
                             Start Free
-                            <ArrowRight className="h-3 w-3" />
+                            <ArrowRight className="size-3" />
                         </Link>
                     </div>
 
@@ -193,7 +193,7 @@ export function Navbar() {
                         aria-label={isOpen ? "Close menu" : "Open menu"}
                         aria-expanded={isOpen}
                     >
-                        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                        {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
                     </button>
                 </nav>
             </header>
@@ -239,7 +239,7 @@ export function Navbar() {
                                 className="inline-flex items-center justify-center gap-2 bg-foreground text-background rounded-full py-3 text-base font-medium"
                             >
                                 Start Free
-                                <ArrowRight className="h-4 w-4" />
+                                <ArrowRight className="size-4" />
                             </Link>
                         </div>
                     </nav>

@@ -23,10 +23,10 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
                 <Image src={tenant.logo_url} alt={tenant.name} width={120} height={32} className="h-8 w-auto" />
               ) : (
                 <div
-                  className="flex h-9 w-9 items-center justify-center rounded-lg"
+                  className="flex size-9 items-center justify-center rounded-lg"
                   style={{ backgroundColor: tenant.primary_color }}
                 >
-                  <Store className="h-5 w-5 text-white" />
+                  <Store className="size-5 text-white" />
                 </div>
               )}
               <span className="text-lg font-semibold">{tenant.name}</span>

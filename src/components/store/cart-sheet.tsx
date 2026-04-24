@@ -34,14 +34,14 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             Your Cart {items.length > 0 && `(${items.length})`}
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 className="size-4 animate-spin" />}
           </SheetTitle>
         </SheetHeader>
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+            <div className="flex size-16 items-center justify-center rounded-full bg-muted">
+              <ShoppingCart className="size-8 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground">Your cart is empty</p>
             {slug && (
@@ -56,7 +56,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
               <div className="space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-4">
-                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-muted">
+                    <div className="relative size-20 shrink-0 overflow-hidden rounded-lg border bg-muted">
                       {item.productImage ? (
                         <Image
                           src={item.productImage}
@@ -66,7 +66,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                          <ShoppingCart className="h-6 w-6" />
+                          <ShoppingCart className="size-6" />
                         </div>
                       )}
                     </div>
@@ -76,11 +76,11 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6"
+                          className="size-6"
                           onClick={() => removeItem(item.id)}
                           disabled={isPending}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="size-4" />
                         </Button>
                       </div>
                       <p className="text-sm text-muted-foreground">${item.unitPrice.toFixed(2)}</p>
@@ -88,21 +88,21 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-7 w-7 bg-transparent"
+                          className="size-7 bg-transparent"
                           onClick={() => updateItem(item.id, item.quantity - 1)}
                           disabled={isPending}
                         >
-                          <Minus className="h-3 w-3" />
+                          <Minus className="size-3" />
                         </Button>
                         <span className="w-8 text-center text-sm">{item.quantity}</span>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-7 w-7 bg-transparent"
+                          className="size-7 bg-transparent"
                           onClick={() => updateItem(item.id, item.quantity + 1)}
                           disabled={isPending}
                         >
-                          <Plus className="h-3 w-3" />
+                          <Plus className="size-3" />
                         </Button>
                       </div>
                     </div>

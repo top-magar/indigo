@@ -16,7 +16,7 @@ export default function AccountSettingsLoading() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="flex items-start gap-4">
-                        <Skeleton className="h-24 w-24 rounded-full" />
+                        <Skeleton className="size-24 rounded-full" />
                         <div className="space-y-2">
                             <Skeleton className="h-6 w-40" />
                             <Skeleton className="size-48" />

@@ -61,8 +61,8 @@ export default async function AboutPage({ params }: PageProps) {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <div className="text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Store className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <Store className="size-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             About {tenant.name}
@@ -77,7 +77,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Mission Section */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Target className="h-6 w-6 text-primary" />
+            <Target className="size-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Mission</h2>
           </div>
           <Card>
@@ -99,8 +99,8 @@ export default async function AboutPage({ params }: PageProps) {
             {values.map((value) => (
               <Card key={value.title}>
                 <CardHeader>
-                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <value.icon className="h-5 w-5 text-primary" />
+                  <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                    <value.icon className="size-5 text-primary" />
                   </div>
                   <CardTitle className="text-base">{value.title}</CardTitle>
                 </CardHeader>
@@ -115,7 +115,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Story/Timeline Section */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Calendar className="h-6 w-6 text-primary" />
+            <Calendar className="size-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Journey</h2>
           </div>
           <Card>
@@ -124,7 +124,7 @@ export default async function AboutPage({ params }: PageProps) {
                 {milestones.map((milestone, index) => (
                   <div key={milestone.year} className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                      <div className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                         {milestone.year.slice(-2)}
                       </div>
                       {index < milestones.length - 1 && (
@@ -145,7 +145,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Team Section (Placeholder) */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <Users className="h-6 w-6 text-primary" />
+            <Users className="size-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Team</h2>
           </div>
           <Card>

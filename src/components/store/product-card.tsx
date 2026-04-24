@@ -62,7 +62,7 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <ImageIcon className="h-10 w-10 text-muted-foreground/30" />
+              <ImageIcon className="size-10 text-muted-foreground/30" />
             </div>
           )}
           {hasDiscount && (
@@ -79,9 +79,9 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <ShoppingCart className="mr-2 h-4 w-4" />
+                <ShoppingCart className="size-4" />
               )}
               {isAdding ? "Adding..." : "Add to Cart"}
             </Button>

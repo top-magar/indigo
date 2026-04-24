@@ -71,17 +71,17 @@ export default async function AccountProfilePage({
         <CardContent className="space-y-6">
           {/* Avatar and basic info */}
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <User className="h-8 w-8" />
+            <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <User className="size-8" />
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">{displayName}</h3>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4" />
+                <Mail className="size-4" />
                 {user.email}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="size-4" />
                 Member since {createdAt}
               </div>
             </div>

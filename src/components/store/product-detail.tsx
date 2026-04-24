@@ -67,7 +67,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <ImageIcon className="h-24 w-24 text-muted-foreground" />
+                  <ImageIcon className="size-24 text-muted-foreground" />
                 </div>
               )}
             </div>
@@ -78,7 +78,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
+                    className={`relative size-20 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
                       selectedImage === index ? "border-primary" : "border-transparent"
                     }`}
                   >
@@ -163,12 +163,12 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
               >
                 {isAdding ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="size-5 animate-spin" />
                     Adding...
                   </>
                 ) : (
                   <>
-                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    <ShoppingCart className="size-5" />
                     Add to Cart
                   </>
                 )}

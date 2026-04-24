@@ -119,7 +119,7 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
               {PAYMENT_METHODS.map((m) => (
                 <label key={m.value} className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === m.value ? "border-primary bg-primary/5" : "hover:bg-muted/50"} ${m.disabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                   <RadioGroupItem value={m.value} disabled={m.disabled} />
-                  <m.icon className="h-5 w-5 text-muted-foreground" />
+                  <m.icon className="size-5 text-muted-foreground" />
                   <div className="flex-1">
                     <div className="font-medium text-sm">{m.label}</div>
                     <div className="text-xs text-muted-foreground">{m.description}</div>
@@ -152,10 +152,10 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
           </CardContent>
         </Card>
 
-        {error && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
+        {error && <Alert variant="destructive"><AlertCircle className="size-4" /><AlertDescription>{error}</AlertDescription></Alert>}
 
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Placing Order...</> : `Place Order — ${currency} ${total.toFixed(2)}`}
+          {loading ? <><Loader2 className="mr-2 size-4 animate-spin" />Placing Order...</> : `Place Order — ${currency} ${total.toFixed(2)}`}
         </Button>
 
         <p className="text-xs text-center text-muted-foreground">

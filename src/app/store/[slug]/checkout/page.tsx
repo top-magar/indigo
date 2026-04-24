@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <ShoppingCart className="h-16 w-16 text-muted-foreground" />
+        <ShoppingCart className="size-16 text-muted-foreground" />
         <h1 className="text-2xl font-bold">Your cart is empty</h1>
         <p className="text-muted-foreground">Add some products to checkout</p>
         <Button asChild>
@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   if (!tenantId || !cart) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         <p className="text-muted-foreground">Loading checkout...</p>
       </div>
     )

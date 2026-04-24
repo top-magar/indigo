@@ -63,7 +63,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
         </div>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" asChild>
           <Link href={`/editor?project=${site.id}`} target="_blank">
             <Plus className="size-3.5" /> New Page
           </Link>

@@ -74,7 +74,7 @@ function WishlistItemSkeleton() {
           <Skeleton className="h-4 w-1/2" />
           <div className="flex gap-2 pt-2">
             <Skeleton className="h-9 w-28" />
-            <Skeleton className="h-9 w-9" />
+            <Skeleton className="size-9" />
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <ImageIcon className="h-10 w-10 text-muted-foreground" />
+                <ImageIcon className="size-10 text-muted-foreground" />
               </div>
             )}
             {hasDiscount && (
@@ -177,9 +177,9 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
               ) : (
-                <ShoppingCart className="mr-2 h-4 w-4" />
+                <ShoppingCart className="mr-2 size-4" />
               )}
               {isAdding ? "Adding..." : "Add to Cart"}
             </Button>
@@ -190,13 +190,13 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isRemoving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
               <span className="sr-only">Remove from wishlist</span>
             </Button>
             <Button variant="ghost" asChild className="ml-auto">
               <Link href={productUrl}>
                 View Details
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 size-4" />
               </Link>
             </Button>
           </div>
@@ -319,7 +319,7 @@ export default function WishlistPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-20">
-              <div className="rounded-full bg-muted flex items-center justify-center mb-4 h-16 w-16">
+              <div className="rounded-full bg-muted flex items-center justify-center mb-4 size-16">
                 <Heart className="w-8 h-8 text-muted-foreground" />
               </div>
               <h3 className="font-semibold text-foreground text-lg">
@@ -345,7 +345,7 @@ export default function WishlistPage() {
             <Button variant="outline" asChild>
               <Link href={`/store/${slug}/products`}>
                 Continue Shopping
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 size-4" />
               </Link>
             </Button>
           </div>

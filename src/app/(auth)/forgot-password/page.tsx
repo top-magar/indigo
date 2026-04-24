@@ -44,8 +44,8 @@ export default function ForgotPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-            <Store className="h-6 w-6 text-primary" />
+          <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+            <Store className="size-6 text-primary" />
           </div>
           <h1 className="text-xl font-semibold">Indigo</h1>
         </div>
@@ -62,8 +62,8 @@ export default function ForgotPasswordPage() {
           <CardContent>
             {sent ? (
               <div className="flex flex-col items-center gap-4 py-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
-                  <Mail className="h-6 w-6 text-green-500" />
+                <div className="flex size-12 items-center justify-center rounded-full bg-green-500/10">
+                  <Mail className="size-6 text-green-500" />
                 </div>
                 <p className="text-center text-sm text-muted-foreground">
                   We sent a password reset link to <span className="font-medium text-foreground">{email}</span>.
@@ -101,7 +101,7 @@ export default function ForgotPasswordPage() {
 
             <div className="mt-6 text-center">
               <Link href="/login" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-3 w-3" />
+                <ArrowLeft className="size-3" />
                 Back to login
               </Link>
             </div>

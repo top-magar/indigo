@@ -135,13 +135,13 @@ export default async function OrderDetailPage({
         <div>
           <Button variant="ghost" className="mb-2 -ml-2" asChild>
             <Link href={`/store/${slug}/account/orders`}>
-              <ArrowLeft className="mr-1 h-4 w-4" />
+              <ArrowLeft className="mr-1 size-4" />
               Back to Orders
             </Link>
           </Button>
           <h1 className="text-2xl font-bold">Order {order.order_number}</h1>
           <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
+            <Calendar className="size-4" />
             {formattedDate}
           </div>
         </div>
@@ -158,14 +158,14 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
+                <Package className="size-5" />
                 Order Items
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
-                  <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+                  <div className="relative size-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                     {item.product_image ? (
                       <Image
                         src={item.product_image}
@@ -175,7 +175,7 @@ export default async function OrderDetailPage({
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
-                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                        <ImageIcon className="size-8 text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -206,7 +206,7 @@ export default async function OrderDetailPage({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Truck className="h-5 w-5" />
+                  <Truck className="size-5" />
                   Shipping Information
                 </CardTitle>
               </CardHeader>
@@ -242,7 +242,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
+                <CreditCard className="size-5" />
                 Order Summary
               </CardTitle>
             </CardHeader>
@@ -286,7 +286,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+                <MapPin className="size-5" />
                 Contact Information
               </CardTitle>
             </CardHeader>

@@ -108,8 +108,8 @@ function OrderCard({
       <CardContent className="p-0">
         <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-              <Package className="h-6 w-6 text-muted-foreground" />
+            <div className="flex size-12 items-center justify-center rounded-lg bg-muted">
+              <Package className="size-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -130,7 +130,7 @@ function OrderCard({
             <Button variant="outline" asChild>
               <Link href={`/store/${storeSlug}/account/orders/${order.id}`}>
                 View Details
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 size-4" />
               </Link>
             </Button>
           </div>
@@ -216,8 +216,8 @@ function EmptyOrders({ storeSlug }: { storeSlug: string }) {
   return (
     <Card>
       <CardContent className="flex flex-col items-center justify-center py-12">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-          <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+        <div className="flex size-16 items-center justify-center rounded-full bg-muted">
+          <ShoppingBag className="size-8 text-muted-foreground" />
         </div>
         <h3 className="mt-4 text-lg font-semibold">No orders yet</h3>
         <p className="mt-2 text-center text-sm text-muted-foreground">

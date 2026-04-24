@@ -136,8 +136,8 @@ export default function ContactPage() {
             <CardContent>
               {isSubmitted ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50">
-                    <Send className="h-6 w-6 text-emerald-600" />
+                  <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-emerald-50">
+                    <Send className="size-6 text-emerald-600" />
                   </div>
                   <h3 className="text-lg font-semibold">Message Sent!</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -222,12 +222,12 @@ export default function ContactPage() {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 size-4 animate-spin" />
                         Sending...
                       </>
                     ) : (
                       <>
-                        <Send className="mr-2 h-4 w-4" />
+                        <Send className="mr-2 size-4" />
                         Send Message
                       </>
                     )}
@@ -247,8 +247,8 @@ export default function ContactPage() {
               <CardContent className="space-y-4">
                 {contactInfo.map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <item.icon className="h-5 w-5 text-primary" />
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <item.icon className="size-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">{item.label}</p>
@@ -272,7 +272,7 @@ export default function ContactPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-primary" />
+                  <Clock className="size-5 text-primary" />
                   <CardTitle>Business Hours</CardTitle>
                 </div>
               </CardHeader>
@@ -296,7 +296,7 @@ export default function ContactPage() {
               <CardContent>
                 <div className="aspect-video rounded-xl bg-muted flex items-center justify-center">
                   <div className="text-center">
-                    <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
+                    <MapPin className="mx-auto size-8 text-muted-foreground" />
                     <p className="mt-2 text-sm text-muted-foreground">Map placeholder</p>
                   </div>
                 </div>

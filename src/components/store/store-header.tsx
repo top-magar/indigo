@@ -36,10 +36,10 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
               <Image src={tenant.logo_url || "/placeholder.svg"} alt={tenant.name} width={120} height={32} className="h-8 w-auto" />
             ) : (
               <div
-                className="flex h-9 w-9 items-center justify-center rounded-lg"
+                className="flex size-9 items-center justify-center rounded-lg"
                 style={{ backgroundColor: tenant.primary_color }}
               >
-                <Store className="h-5 w-5 text-white" />
+                <Store className="size-5 text-white" />
               </div>
             )}
             <span className="text-lg font-semibold">{tenant.name}</span>
@@ -83,9 +83,9 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
           <div className="flex items-center gap-2">
             <CartSheet storeSlug={tenant.slug}>
               <Button variant="ghost" size="icon" className="relative" aria-label="Shopping cart">
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="size-5" />
                 {itemCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+                  <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                     {itemCount}
                   </span>
                 )}
@@ -95,7 +95,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
-                  <Menu className="h-5 w-5" />
+                  <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
