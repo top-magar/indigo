@@ -89,9 +89,8 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">Store</h1>
-          <p className="text-xs text-muted-foreground">Store name, logo, currency, and SEO settings</p>
-          <p className="text-xs text-muted-foreground">Manage your store details and how it appears online</p>
+          <h1 className="text-lg font-semibold tracking-tight">General</h1>
+          <p className="text-xs text-muted-foreground">Store name, logo, currency, and SEO</p>
         </div>
         {canEdit && (
           <Button onClick={handleSave} disabled={isPending} size="sm">
