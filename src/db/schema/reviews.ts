@@ -15,12 +15,12 @@ import { products } from "./products";
 import { customers } from "./customers";
 
 /**
- * Sentiment types from AWS Comprehend
+ * Sentiment types for review analysis
  */
 export type SentimentType = "POSITIVE" | "NEGATIVE" | "NEUTRAL" | "MIXED";
 
 /**
- * Sentiment scores from AWS Comprehend
+ * Sentiment confidence scores
  */
 export interface SentimentScores {
   positive: number;
@@ -32,7 +32,7 @@ export interface SentimentScores {
 /**
  * Reviews table for customer product reviews with sentiment analysis
  *
- * @see AWS Comprehend integration at src/infrastructure/aws/comprehend.ts
+ * Sentiment analysis can be added via any AI provider
  */
 export const reviews = pgTable(
   "reviews",
@@ -57,7 +57,7 @@ export const reviews = pgTable(
     title: varchar("title", { length: 255 }),
     content: text("content").notNull(),
 
-    // AWS Comprehend sentiment analysis
+    // Sentiment analysis fields
     sentiment: varchar("sentiment", { length: 20 })
       .default("NEUTRAL")
       .$type<SentimentType>(),

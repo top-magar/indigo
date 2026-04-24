@@ -2,7 +2,6 @@
 export {
   type OrderRow,
   type OrderStats,
-  type AIInsight,
   type Order,
   type OrderAddress,
   type OrderCustomer,
@@ -24,7 +23,6 @@ export interface OrdersClientProps {
   currentPage: number;
   pageSize: number;
   currency: string;
-  aiInsights?: import("./_lib/types").AIInsight[];
   filters?: {
     status?: string;
     payment?: string;

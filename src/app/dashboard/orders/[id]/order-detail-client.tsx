@@ -110,7 +110,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { cn, formatCurrency } from "@/shared/utils";
-import { OrderStatusBadge, SentimentIndicator, AddressCard, AIInsightsCard, OrderTimeline } from "./_components/helpers";
+import { OrderStatusBadge, SentimentIndicator, AddressCard, OrderTimeline } from "./_components/helpers";
 import { VerificationBanner, PaymentCard, FulfillmentCard } from "./_components/lifecycle";
 import type { OrderTransaction, Fulfillment, PaymentMethod } from "../_lib/types";
 

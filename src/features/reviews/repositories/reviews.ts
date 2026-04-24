@@ -44,7 +44,7 @@ export interface ReviewFilters {
 /**
  * Reviews Repository
  *
- * Handles CRUD operations for reviews with AWS Comprehend sentiment analysis
+ * Handles CRUD operations for reviews with sentiment analysis
  */
 export class ReviewsRepository {
   /**
@@ -171,7 +171,7 @@ export class ReviewsRepository {
   }
 
   /**
-   * Create a new review and analyze sentiment with AWS Comprehend
+   * Create a new review with default sentiment (no AI provider configured)
    */
   async create(
     tenantId: string,
@@ -218,7 +218,7 @@ export class ReviewsRepository {
   }
 
   /**
-   * Analyze an existing review with AWS Comprehend and update
+   * Re-analyze an existing review (no AI provider configured — returns unchanged)
    */
   async analyzeAndUpdate(tenantId: string, id: string): Promise<Review | null> {
     const review = await this.findById(tenantId, id);

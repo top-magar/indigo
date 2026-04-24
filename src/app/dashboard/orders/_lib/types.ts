@@ -33,14 +33,6 @@ export interface OrderStats {
   repeatCustomerRate: number;
 }
 
-export interface AIInsight {
-  id: string;
-  type: "warning" | "opportunity" | "info" | "success";
-  title: string;
-  description: string;
-  action?: { label: string; href: string };
-}
-
 // ─── Order Detail ────────────────────────────────────────
 
 export interface OrderAddress {

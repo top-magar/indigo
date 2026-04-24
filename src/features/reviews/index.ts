@@ -1,7 +1,7 @@
 /**
  * Reviews Feature Module
  * 
- * Provides customer review management with AWS Comprehend sentiment analysis
+ * Provides customer review management with sentiment tracking
  */
 
 export * from './actions';

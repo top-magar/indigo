@@ -5,7 +5,7 @@
  * Storage provider is determined by environment configuration
  * 
  * Features:
- * - Automatic image moderation via AWS Rekognition
+ * - Image upload to S3
  * - Auto-tagging for product images
  */
 
