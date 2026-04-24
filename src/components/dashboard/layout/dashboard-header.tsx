@@ -12,6 +12,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { useKeyboardShortcutsHelp } from "@/hooks";
+import { NotificationCenter } from "@/components/dashboard/notifications/notification-center";
 import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts/keyboard-shortcuts-modal";
 import type { ShortcutCategory } from "@/components/dashboard/keyboard-shortcuts/types";
 
@@ -134,6 +135,7 @@ export function DashboardHeader() {
           <span className="flex-1 text-left">Search…</span>
           <Kbd>⌘K</Kbd>
         </Button>
+        <NotificationCenter />
       </header>
 
       {/* Command Palette */}
