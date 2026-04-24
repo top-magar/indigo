@@ -2,515 +2,253 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EntityListPage } from '@/components/dashboard/templates';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Search,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  AlertTriangle,
-  Star,
-  CheckCircle,
-  Clock,
-  RefreshCw,
-  MoreVertical,
-  ThumbsDown,
-  Trash2,
-  RotateCcw,
-} from 'lucide-react';
-import { ReviewCard } from '@/features/reviews/components/review-card';
-import { ReviewSentimentSummary } from '@/features/reviews/components/review-sentiment-summary';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Search, Star, CheckCircle, MoreVertical, ThumbsDown, Trash2, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
 import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
 import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
+import { formatRelativeTime } from '@/shared/utils';
 import type { Review } from '@/db/schema/reviews';
 import type { SentimentStats } from '@/features/reviews/repositories/reviews';
-import {
-  approveReview,
-  rejectReview,
-  deleteReview,
-  bulkApproveReviews,
-  reanalyzeReview,
-} from './actions';
+import { approveReview, rejectReview, deleteReview, bulkApproveReviews, reanalyzeReview } from './actions';
 
 interface ReviewsClientProps {
   initialReviews: Review[];
   initialStats: SentimentStats | null;
 }
 
-const emptyStats: SentimentStats = {
-  total: 0, positive: 0, negative: 0, neutral: 0, mixed: 0,
-  averageRating: 0, percentPositive: 0, percentNegative: 0,
-  percentNeutral: 0, percentMixed: 0,
+const sentimentColor: Record<string, string> = {
+  POSITIVE: 'text-success bg-success/10',
+  NEGATIVE: 'text-destructive bg-destructive/10',
+  NEUTRAL: 'text-muted-foreground bg-muted',
+  MIXED: 'text-warning bg-warning/10',
 };
+
+function sentimentLabel(s: string | null) {
+  const v = s || 'NEUTRAL';
+  return v.charAt(0) + v.slice(1).toLowerCase();
+}
+
+function Stars({ rating, size = 'size-3.5' }: { rating: number; size?: string }) {
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star key={i} className={`${size} ${i < rating ? 'fill-warning text-warning' : 'text-border'}`} />
+      ))}
+    </div>
+  );
+}
 
 export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [sentimentFilter, setSentimentFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sentimentFilter, setSentimentFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-
-  const stats = initialStats || emptyStats;
-  const reviews = initialReviews;
   const confirmDelete = useConfirmDelete();
 
-  const toggleSelection = (id: string) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+  const stats = initialStats || { total: 0, averageRating: 0, positive: 0, negative: 0, neutral: 0, mixed: 0, percentPositive: 0, percentNegative: 0, percentNeutral: 0, percentMixed: 0 };
+  const reviews = initialReviews;
+  const pendingCount = reviews.filter((r) => !r.isApproved).length;
 
-  const handleRefresh = () => {
-    startTransition(() => router.refresh());
-  };
+  const toggle = (id: string) => setSelectedIds((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
 
-  const handleApprove = (reviewId: string) => {
+  const act = (fn: () => Promise<{ success: boolean; error?: string }>, msg: string) => {
     startTransition(async () => {
-      const result = await approveReview(reviewId);
-      if (result.success) {
-        toast.success('Review approved');
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to approve');
-      }
+      const r = await fn();
+      if (r.success) { toast.success(msg); router.refresh(); } else toast.error(r.error || 'Action failed');
     });
   };
 
-  const handleReject = (reviewId: string) => {
-    startTransition(async () => {
-      const result = await rejectReview(reviewId);
-      if (result.success) {
-        toast.success('Review rejected');
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to reject');
-      }
-    });
-  };
-
-  const handleDelete = async (reviewId: string) => {
-    const review = reviews.find(r => r.id === reviewId);
+  const handleDelete = async (id: string) => {
+    const review = reviews.find((r) => r.id === id);
     if (!(await confirmDelete(review?.customerName || 'this review', 'review'))) return;
-    startTransition(async () => {
-      const result = await deleteReview(reviewId);
-      if (result.success) {
-        toast.success('Review deleted');
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to delete');
-      }
-    });
-  };
-
-  const handleReanalyze = (reviewId: string) => {
-    startTransition(async () => {
-      const result = await reanalyzeReview(reviewId);
-      if (result.success) {
-        toast.success('Review re-analyzed');
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to re-analyze');
-      }
-    });
+    act(() => deleteReview(id), 'Review deleted');
   };
 
   const handleBulkApprove = () => {
-    const pendingIds = reviews.filter((r) => !r.isApproved).map((r) => r.id);
-    if (pendingIds.length === 0) return;
-    startTransition(async () => {
-      const result = await bulkApproveReviews(pendingIds);
-      if (result.success) {
-        toast.success(`${pendingIds.length} reviews approved`);
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to approve');
-      }
-    });
+    const ids = reviews.filter((r) => !r.isApproved).map((r) => r.id);
+    if (ids.length) act(() => bulkApproveReviews(ids), `${ids.length} reviews approved`);
   };
 
   const handleBulkApproveSelected = () => {
     const ids = Array.from(selectedIds);
-    if (ids.length === 0) return;
+    if (!ids.length) return;
     startTransition(async () => {
-      const result = await bulkApproveReviews(ids);
-      if (result.success) {
-        toast.success(`${ids.length} reviews approved`);
-        setSelectedIds(new Set());
-        router.refresh();
-      } else {
-        toast.error(result.error || 'Failed to approve');
-      }
+      const r = await bulkApproveReviews(ids);
+      if (r.success) { toast.success(`${ids.length} reviews approved`); setSelectedIds(new Set()); router.refresh(); }
+      else toast.error(r.error || 'Failed to approve');
     });
   };
 
   const handleBulkDeleteSelected = async () => {
     const ids = Array.from(selectedIds);
-    if (ids.length === 0) return;
+    if (!ids.length) return;
     if (!(await confirmDelete(`${ids.length} reviews`, 'review'))) return;
     startTransition(async () => {
       const results = await Promise.all(ids.map((id) => deleteReview(id)));
       const failed = results.filter((r) => !r.success).length;
-      if (failed === 0) {
-        toast.success(`${ids.length} reviews deleted`);
-      } else {
-        toast.error(`${failed} of ${ids.length} deletions failed`);
-      }
+      toast[failed === 0 ? 'success' : 'error'](failed === 0 ? `${ids.length} reviews deleted` : `${failed} of ${ids.length} deletions failed`);
       setSelectedIds(new Set());
       router.refresh();
     });
   };
 
-  const filteredReviews = reviews.filter((review) => {
-    if (sentimentFilter !== 'all' && review.sentiment !== sentimentFilter) {
-      return false;
-    }
-    if (statusFilter === 'pending' && review.isApproved) {
-      return false;
-    }
-    if (statusFilter === 'approved' && !review.isApproved) {
-      return false;
-    }
+  const filtered = reviews.filter((review) => {
+    if (sentimentFilter !== 'all' && review.sentiment !== sentimentFilter) return false;
+    if (statusFilter === 'pending' && review.isApproved) return false;
+    if (statusFilter === 'approved' && !review.isApproved) return false;
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return (
-        review.customerName.toLowerCase().includes(query) ||
-        review.content.toLowerCase().includes(query) ||
-        review.title?.toLowerCase().includes(query)
-      );
+      const q = searchQuery.toLowerCase();
+      return review.customerName.toLowerCase().includes(q) || review.content.toLowerCase().includes(q) || review.title?.toLowerCase().includes(q);
     }
     return true;
   });
 
-  const pendingCount = reviews.filter((r) => !r.isApproved).length;
-  const flaggedCount = reviews.filter((r) => Number(r.spamScore) > 50).length;
-
-  // Pagination
-  const pageCount = Math.ceil(filteredReviews.length / pageSize);
-  const paginatedReviews = filteredReviews.slice(
-    pageIndex * pageSize,
-    (pageIndex + 1) * pageSize,
-  );
-
-  // Reset page when filters change
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setPageIndex(0);
-  };
-  const handleSentimentChange = (value: string) => {
-    setSentimentFilter(value);
-    setPageIndex(0);
-  };
-  const handleStatusChange = (value: string) => {
-    setStatusFilter(value);
-    setPageIndex(0);
-  };
-
-  const renderReviewItem = (review: Review) => (
-    <div key={review.id} className="relative flex gap-3 items-start">
-      <div className="pt-4">
-        <Checkbox
-          checked={selectedIds.has(review.id)}
-          onCheckedChange={() => toggleSelection(review.id)}
-          aria-label={`Select review by ${review.customerName}`}
-        />
-      </div>
-      <div className="flex-1 relative">
-        <ReviewCard
-          review={review}
-          onApprove={() => handleApprove(review.id)}
-          onReject={() => handleReject(review.id)}
-          onDelete={() => handleDelete(review.id)}
-        />
-        <div className="absolute top-2 right-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-sm" aria-label="Review actions">
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleApprove(review.id)}>
-                <CheckCircle className="size-4 text-success" />
-                Approve
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleReject(review.id)}>
-                <ThumbsDown className="size-4 text-destructive" />
-                Reject
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleReanalyze(review.id)}>
-                <RotateCcw className="size-4" />
-                Re-analyze
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => handleDelete(review.id)}
-              >
-                <Trash2 className="size-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-    </div>
-  );
+  const pageCount = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+  const setF = <T,>(setter: (v: T) => void) => (v: T) => { setter(v); setPageIndex(0); };
 
   return (
-    <EntityListPage
-      title="Reviews"
-      actions={
-        <></>
-      }
-      stats={[
-        { label: "Total Reviews", value: stats.total, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="size-4 text-warning" /></div> },
-        { label: "Avg Rating", value: stats.averageRating.toFixed(1), icon: <div className="flex">{[...Array(5)].map((_, i) => (<Star key={i} className={`size-4 ${i < Math.round(stats.averageRating) ? 'fill-warning text-warning' : 'text-border'}`} />))}</div> },
-        { label: "Positive", value: stats.positive, icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="size-4 text-success" /></div> },
-        { label: "Negative", value: stats.negative, icon: <div className="size-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="size-4 text-destructive" /></div> },
-        { label: "Pending", value: pendingCount, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="size-4 text-warning" /></div> },
-      ]}
-    >
-      {/* Main Content */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        {/* Reviews List */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Filters */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <div className="relative flex-1 w-full sm:max-w-sm">
-                  <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    aria-label="Search reviews" placeholder="Search reviews..."
-                    value={searchQuery}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-                <Select value={sentimentFilter} onValueChange={handleSentimentChange}>
-                  <SelectTrigger className="w-full sm:w-40" aria-label="Filter by sentiment">
-                    <SelectValue placeholder="Sentiment" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sentiment</SelectItem>
-                    <SelectItem value="POSITIVE">Positive</SelectItem>
-                    <SelectItem value="NEGATIVE">Negative</SelectItem>
-                    <SelectItem value="NEUTRAL">Neutral</SelectItem>
-                    <SelectItem value="MIXED">Mixed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={statusFilter} onValueChange={handleStatusChange}>
-                  <SelectTrigger className="w-full sm:w-40" aria-label="Filter by status">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tabs */}
-          <Tabs defaultValue="all">
-            <TabsList>
-              <TabsTrigger value="all">
-                All
-                <Badge className="ml-2">
-                  {filteredReviews.length}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="pending">
-                Pending
-                <Badge className="ml-2 bg-warning/10 text-warning">
-                  {pendingCount}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="flagged">
-                Flagged
-                <Badge className="ml-2 bg-destructive/10 text-destructive">
-                  {flaggedCount}
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="all" className="space-y-4">
-              {paginatedReviews.length === 0 ? (
-                <Card>
-                  <CardContent className="p-4">
-                    <EmptyState
-                      icon={Star}
-                      title="No reviews yet"
-                      description="Reviews will appear here when customers leave feedback"
-                      className="py-8"
-                    />
-                  </CardContent>
-                </Card>
-              ) : (
-                paginatedReviews.map(renderReviewItem)
-              )}
-            </TabsContent>
-
-            <TabsContent value="pending" className="space-y-4">
-              {filteredReviews
-                .filter((r) => !r.isApproved)
-                .map(renderReviewItem)}
-              {pendingCount === 0 && (
-                <Card>
-                  <CardContent className="p-4">
-                    <EmptyState icon={CheckCircle} title="All reviews have been moderated" className="py-8" />
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="flagged" className="space-y-4">
-              {filteredReviews
-                .filter((r) => Number(r.spamScore) > 50)
-                .map(renderReviewItem)}
-              {flaggedCount === 0 && (
-                <Card>
-                  <CardContent className="p-4">
-                    <EmptyState icon={CheckCircle} title="No flagged reviews" className="py-8" />
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-          </Tabs>
-
-          {/* Bulk Actions Bar */}
-          {selectedIds.size > 0 && (
-            <BulkActionsBar
-              selectedCount={selectedIds.size}
-              onClear={() => setSelectedIds(new Set())}
-              itemLabel="review"
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleBulkApproveSelected}
-                disabled={isPending}
-              >
-                <CheckCircle className="size-3.5 text-success" />
-                Approve Selected
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBulkDeleteSelected}
-                disabled={isPending}
-              >
-                <Trash2 className="size-3.5" />
-                Delete Selected
-              </Button>
-            </BulkActionsBar>
-          )}
-
-          {/* Pagination */}
-          {filteredReviews.length > 0 && (
-            <DataTablePagination
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              pageCount={pageCount}
-              totalItems={filteredReviews.length}
-              onPageChange={setPageIndex}
-              onPageSizeChange={(size) => {
-                setPageSize(size);
-                setPageIndex(0);
-              }}
-              selectedCount={selectedIds.size}
-            />
-          )}
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Reviews</h1>
+          <p className="text-xs text-muted-foreground">{stats.averageRating.toFixed(1)} avg · {stats.total} reviews · {pendingCount} pending</p>
         </div>
-
-        {/* Sidebar */}
-        <div className="space-y-4">
-          <ReviewSentimentSummary stats={stats} />
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={handleBulkApprove}
-                disabled={isPending || pendingCount === 0}
-              >
-                <CheckCircle className="size-3.5 text-success" />
-                Approve All Pending ({pendingCount})
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={handleRefresh}
-                disabled={isPending}
-              >
-                <RefreshCw className="size-3.5" />
-                Re-analyze Sentiment
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Sentiment Legend */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Sentiment Guide</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="size-4 text-success" />
-                <span className="text-sm text-muted-foreground">Positive - Happy customers</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Minus className="size-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Neutral - Factual feedback</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="size-4 text-warning" />
-                <span className="text-sm text-muted-foreground">Mixed - Both pros and cons</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingDown className="size-4 text-destructive" />
-                <span className="text-sm text-muted-foreground">Negative - Needs attention</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {pendingCount > 0 && (
+          <Button variant="outline" size="sm" onClick={handleBulkApprove} disabled={isPending}>
+            <CheckCircle className="size-3.5 text-success" /> Approve All Pending ({pendingCount})
+          </Button>
+        )}
       </div>
-    </EntityListPage>
+
+      {/* Filters */}
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1 sm:max-w-sm">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input placeholder="Search reviews..." value={searchQuery} onChange={(e) => setF(setSearchQuery)(e.target.value)} className="pl-9" />
+        </div>
+        <Select value={statusFilter} onValueChange={setF(setStatusFilter)}>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={sentimentFilter} onValueChange={setF(setSentimentFilter)}>
+          <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Sentiment</SelectItem>
+            <SelectItem value="POSITIVE">Positive</SelectItem>
+            <SelectItem value="NEGATIVE">Negative</SelectItem>
+            <SelectItem value="NEUTRAL">Neutral</SelectItem>
+            <SelectItem value="MIXED">Mixed</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {paginated.length === 0 ? (
+        <EmptyState icon={Star} title="No reviews found" description="Reviews will appear here when customers leave feedback" className="py-16" />
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block rounded-lg border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead><Checkbox checked={selectedIds.size === paginated.length && paginated.length > 0} onCheckedChange={() => selectedIds.size === paginated.length ? setSelectedIds(new Set()) : setSelectedIds(new Set(paginated.map((r) => r.id)))} aria-label="Select all" /></TableHead>
+                  <TableHead>Review</TableHead>
+                  <TableHead>Rating</TableHead>
+                  <TableHead>Sentiment</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="w-10" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginated.map((review) => (
+                  <TableRow key={review.id} data-state={selectedIds.has(review.id) ? 'selected' : undefined}>
+                    <TableCell><Checkbox checked={selectedIds.has(review.id)} onCheckedChange={() => toggle(review.id)} aria-label={`Select review by ${review.customerName}`} /></TableCell>
+                    <TableCell>
+                      <div className="font-medium">{review.customerName}</div>
+                      <div className="text-muted-foreground truncate max-w-[300px]">&ldquo;{review.content.slice(0, 80)}{review.content.length > 80 ? '...' : ''}&rdquo;</div>
+                    </TableCell>
+                    <TableCell><Stars rating={review.rating} /></TableCell>
+                    <TableCell><Badge variant="secondary" className={sentimentColor[review.sentiment || 'NEUTRAL']}>{sentimentLabel(review.sentiment)}</Badge></TableCell>
+                    <TableCell><Badge variant={review.isApproved ? 'secondary' : 'outline'}>{review.isApproved ? 'Approved' : 'Pending'}</Badge></TableCell>
+                    <TableCell className="text-muted-foreground">{formatRelativeTime(review.createdAt)}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon-sm" aria-label="Review actions"><MoreVertical className="size-4" /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => act(() => approveReview(review.id), 'Review approved')}><CheckCircle className="size-4 text-success" /> Approve</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => act(() => rejectReview(review.id), 'Review rejected')}><ThumbsDown className="size-4 text-destructive" /> Reject</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => act(() => reanalyzeReview(review.id), 'Review re-analyzed')}><RotateCcw className="size-4" /> Re-analyze</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(review.id)}><Trash2 className="size-4" /> Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-2">
+            {paginated.map((review) => (
+              <div key={review.id} className="rounded-lg border p-3 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{review.customerName}</span>
+                  <Stars rating={review.rating} size="size-3" />
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-2">&ldquo;{review.content}&rdquo;</p>
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <Badge variant="secondary" className={`text-[11px] ${sentimentColor[review.sentiment || 'NEUTRAL']}`}>{sentimentLabel(review.sentiment)}</Badge>
+                  <span>·</span>
+                  <span>{review.isApproved ? 'Approved' : 'Pending'}</span>
+                  <span>·</span>
+                  <span>{formatRelativeTime(review.createdAt)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Bulk Actions */}
+      {selectedIds.size > 0 && (
+        <BulkActionsBar selectedCount={selectedIds.size} onClear={() => setSelectedIds(new Set())} itemLabel="review">
+          <Button variant="outline" size="sm" onClick={handleBulkApproveSelected} disabled={isPending}><CheckCircle className="size-3.5 text-success" /> Approve</Button>
+          <Button variant="destructive" size="sm" onClick={handleBulkDeleteSelected} disabled={isPending}><Trash2 className="size-3.5" /> Delete</Button>
+        </BulkActionsBar>
+      )}
+
+      {/* Pagination */}
+      {filtered.length > 0 && (
+        <DataTablePagination pageIndex={pageIndex} pageSize={pageSize} pageCount={pageCount} totalItems={filtered.length} onPageChange={setPageIndex} onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }} selectedCount={selectedIds.size} />
+      )}
+    </div>
   );
 }
