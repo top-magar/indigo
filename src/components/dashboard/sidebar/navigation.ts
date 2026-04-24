@@ -85,10 +85,10 @@ export function createNavigation(counts: {
             items: [
                 {
                     id: "pages",
-                    title: "Pages",
+                    title: "Website",
                     href: "/dashboard/pages",
-                    icon: FileText,
-                    keywords: ["pages", "editor", "builder", "landing"],
+                    icon: Globe,
+                    keywords: ["website", "pages", "editor", "builder", "storefront", "site"],
                 },
                 {
                     id: "media",

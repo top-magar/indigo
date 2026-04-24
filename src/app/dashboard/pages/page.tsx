@@ -21,7 +21,7 @@ export default async function PagesPage() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">Pages</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Website</h1>
           <p className="text-xs text-muted-foreground">Manage your storefront pages</p>
         </div>
         <div className="flex items-center gap-2">
