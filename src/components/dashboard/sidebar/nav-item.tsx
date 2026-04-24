@@ -71,31 +71,6 @@ export function NavItemComponent({
         }
     }, [pathname, hasChildren, item.children]);
 
-    const badgeEl = item.badge ? (
-        <span className={cn(
-            "text-[10px] font-medium tabular-nums min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center shrink-0",
-            item.badgeVariant === "warning" && "bg-warning/10 text-warning",
-            item.badgeVariant === "success" && "bg-success/10 text-success",
-            item.badgeVariant === "destructive" && "bg-destructive/10 text-destructive",
-            !item.badgeVariant && "bg-muted text-muted-foreground"
-        )}>
-            {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </span>
-    ) : null;
-
-    // Inline badge for collapsible items (no absolute positioning)
-    const inlineBadge = item.badge && (
-        <span className={cn(
-            "text-[10px] font-medium min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center tabular-nums",
-            item.badgeVariant === "warning" && "bg-warning/10 text-warning",
-            item.badgeVariant === "success" && "bg-success/10 text-success",
-            item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground",
-            !item.badgeVariant && "bg-muted text-muted-foreground"
-        )}>
-            {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </span>
-    );
-
     const statusBadge = (item.soon || item.isNew) && !isCollapsed && (
         <Badge className={cn(
             "ml-auto text-xs py-0 px-2 h-5",
@@ -133,18 +108,10 @@ export function NavItemComponent({
                                     href={item.href}
                                     target={item.external ? "_blank" : undefined}
                                     rel={item.external ? "noopener noreferrer" : undefined}
-                                    className="flex items-center gap-2 w-full relative"
+                                    className="flex items-center gap-2 w-full"
                                 >
                                     <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
-                                    {isCollapsed && item.badge && (
-                                        <span className={cn(
-                                            "absolute -top-0.5 -right-0.5 size-2 rounded-full",
-                                            item.badgeVariant === "warning" ? "bg-warning" :
-                                            item.badgeVariant === "destructive" ? "bg-destructive" : "bg-primary"
-                                        )} />
-                                    )}
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
-                                    {!isCollapsed && badgeEl}
                                     {!isCollapsed && statusBadge}
                                     {item.external && !isCollapsed && (
                                         <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
@@ -157,11 +124,6 @@ export function NavItemComponent({
                         <TooltipContent side="right" sideOffset={12}>
                             <div className="flex items-center gap-2">
                                 {item.title}
-                                {item.badge && (
-                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-warning/10 text-warning", item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground")}>
-                                        {item.badge}
-                                    </Badge>
-                                )}
                                 {item.soon && <Badge variant="secondary" className="text-xs py-0 px-1 bg-muted text-muted-foreground">Soon…</Badge>}
                             </div>
                         </TooltipContent>
@@ -186,17 +148,11 @@ export function NavItemComponent({
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
                         <TooltipContent side="right" sideOffset={12}>
-                            <div className="flex items-center gap-2">
-                                {item.title}
-                                {item.badge && <Badge className="bg-warning/10 text-warning text-[10px] py-0 px-1.5 tabular-nums">{item.badge}</Badge>}
-                            </div>
+                            {item.title}
                         </TooltipContent>
                     </Tooltip>
                     <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
-                        <DropdownMenuLabel className="flex items-center gap-2">
-                            {item.title}
-                            {item.badge && <Badge className="bg-warning/10 text-warning text-xs py-0 px-2">{item.badge}</Badge>}
-                        </DropdownMenuLabel>
+                        <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {Array.from(groups.entries()).map(([group, children], gi) => (
                             <div key={group}>
@@ -219,7 +175,6 @@ export function NavItemComponent({
                                             ) : (
                                                 <Link href={child.href} target={child.external ? "_blank" : undefined} rel={child.external ? "noopener noreferrer" : undefined} className="flex items-center gap-2 w-full">
                                                     {child.title}
-                                                    {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
                                                     {child.external && <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />}
                                                 </Link>
                                             )}
@@ -243,21 +198,7 @@ export function NavItemComponent({
                     <SidebarMenuButton isActive={isActive} className={activeCn}>
                         <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
                         <span className="truncate flex-1">{item.title}</span>
-                        {item.badge ? (
-                            <span className={cn(
-                                "text-[10px] font-medium tabular-nums min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center shrink-0",
-                                item.badgeVariant === "warning" && "bg-warning/10 text-warning",
-                                item.badgeVariant === "destructive" && "bg-destructive/10 text-destructive",
-                                !item.badgeVariant && "bg-muted text-muted-foreground"
-                            )}>
-                                {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-                            </span>
-                        ) : (
-                            <ChevronRight className={cn(
-                                "size-3.5 shrink-0 text-muted-foreground/40 transition-transform duration-200",
-                                isOpen && "rotate-90"
-                            )} />
-                        )}
+                        <ChevronRight className={cn("size-3.5 shrink-0 text-muted-foreground/40 transition-transform duration-200", isOpen && "rotate-90")} />
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
@@ -283,7 +224,6 @@ export function NavItemComponent({
                                                 ) : (
                                                     <Link href={child.href} target={child.external ? "_blank" : undefined} rel={child.external ? "noopener noreferrer" : undefined} className="flex items-center gap-2 w-full">
                                                         {child.title}
-                                                        {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
                                                         {child.external && <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />}
                                                     </Link>
                                                 )}
