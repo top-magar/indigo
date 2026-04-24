@@ -4,7 +4,44 @@ import { z } from "zod"
 import { updateCart, completeCart, retrieveCart } from "@/features/store/data/cart"
 import { redirect } from "next/navigation"
 import { createLogger } from "@/lib/logger";
+import { createAdminClient } from "@/infrastructure/supabase/admin";
 const log = createLogger("store:checkout");
+
+/**
+ * Validate a gift card code for use at checkout.
+ * Uses admin client since storefront users are not authenticated.
+ * Tenant-scoped: only matches cards belonging to the given tenant.
+ */
+export async function validateGiftCard(
+  code: string,
+  tenantId: string
+): Promise<{ valid: true; balance: number; cardId: string } | { valid: false; error: string }> {
+  const trimmed = code.trim().toUpperCase()
+  if (!trimmed || !z.string().uuid().safeParse(tenantId).success) {
+    return { valid: false, error: "Invalid gift card code." }
+  }
+
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from("gift_cards")
+    .select("id, current_balance, is_active, expires_at")
+    .eq("code", trimmed)
+    .eq("tenant_id", tenantId)
+    .eq("is_active", true)
+    .gt("current_balance", 0)
+    .single()
+
+  if (error || !data) {
+    return { valid: false, error: "Gift card not found or has no balance." }
+  }
+
+  if (data.expires_at && new Date(data.expires_at) < new Date()) {
+    return { valid: false, error: "This gift card has expired." }
+  }
+
+  return { valid: true, balance: Number(data.current_balance), cardId: data.id }
+}
 
 /**
  * Checkout form validation schema

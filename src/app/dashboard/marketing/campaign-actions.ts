@@ -353,27 +353,85 @@ export async function sendCampaign(id: string): Promise<{ success: boolean; erro
         return { success: false, error: "Campaign must have content" };
     }
 
-    // Get recipient count
-    const recipientCount = await getSegmentRecipientCount(campaign.segment_id || "all");
+    // Get recipients from the segment
+    const recipients = await getSegmentRecipients(tenantId, campaign.segment_id || "all");
 
-    if (recipientCount === 0) {
+    if (recipients.length === 0) {
         return { success: false, error: "No recipients found for this segment" };
     }
 
-    // Update status to sending (in production, this would trigger actual email sending)
+    // Mark campaign as sending
+    await supabase
+        .from("campaigns")
+        .update({ status: "sending", recipients_count: recipients.length })
+        .eq("id", id)
+        .eq("tenant_id", tenantId);
+
+    // Insert campaign_recipients rows
+    const recipientRows = recipients.map((r) => ({
+        tenant_id: tenantId,
+        campaign_id: id,
+        customer_id: r.id,
+        email: r.email,
+        status: "pending" as const,
+    }));
+
+    await supabase.from("campaign_recipients").insert(recipientRows);
+
+    // Send emails via EmailService
+    const { EmailService } = await import("@/infrastructure/services/email");
+    const emailService = new EmailService();
+
+    let deliveredCount = 0;
+    let bouncedCount = 0;
+    const now = new Date().toISOString();
+
+    for (const recipient of recipients) {
+        const result = await emailService.send({
+            to: recipient.email,
+            subject: campaign.subject,
+            html: campaign.content,
+            from: campaign.from_email
+                ? `${campaign.from_name || ""} <${campaign.from_email}>`.trim()
+                : undefined,
+            replyTo: campaign.reply_to || undefined,
+        });
+
+        if (result.success) {
+            deliveredCount++;
+            await supabase
+                .from("campaign_recipients")
+                .update({ status: "sent", sent_at: now })
+                .eq("campaign_id", id)
+                .eq("email", recipient.email)
+                .eq("tenant_id", tenantId);
+        } else {
+            bouncedCount++;
+            log.warn(`Failed to send campaign email to ${recipient.email}: ${result.error}`);
+            await supabase
+                .from("campaign_recipients")
+                .update({ status: "bounced", bounced_at: now })
+                .eq("campaign_id", id)
+                .eq("email", recipient.email)
+                .eq("tenant_id", tenantId);
+        }
+    }
+
+    // Finalize campaign status
+    const finalStatus = deliveredCount > 0 ? "sent" : "failed";
     const { error } = await supabase
         .from("campaigns")
-        .update({ 
-            status: "sent", // In production: "sending", then update to "sent" after completion
-            sent_at: new Date().toISOString(),
-            recipients_count: recipientCount,
-            delivered_count: recipientCount, // Simulated - in production this would be tracked
+        .update({
+            status: finalStatus,
+            sent_at: now,
+            delivered_count: deliveredCount,
+            bounced_count: bouncedCount,
         })
         .eq("id", id)
         .eq("tenant_id", tenantId);
 
     if (error) {
-        log.error("Error sending campaign:", error);
+        log.error("Error finalizing campaign:", error);
         return { success: false, error: error.message };
     }
 
@@ -477,34 +535,33 @@ export async function getSegments(): Promise<{ segments: CustomerSegment[]; erro
 }
 
 async function getSegmentRecipientCount(segmentId: string): Promise<number> {
+    const recipients = await getSegmentRecipients(await getTenantId() || "", segmentId);
+    return recipients.length;
+}
+
+async function getSegmentRecipients(tenantId: string, segmentId: string): Promise<{ id: string; email: string }[]> {
+    if (!tenantId) return [];
+
     const supabase = await createClient();
-    const tenantId = await getTenantId();
-    
-    if (!tenantId) return 0;
 
     let query = supabase
         .from("customers")
-        .select("*", { count: "exact", head: true })
+        .select("id, email")
         .eq("tenant_id", tenantId)
-        .eq("accepts_marketing", true);
+        .eq("accepts_marketing", true)
+        .not("email", "is", null);
 
-    // Apply segment filters
     switch (segmentId) {
-        case "new":
+        case "new": {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             query = query.gte("created_at", thirtyDaysAgo.toISOString());
             break;
-        case "returning":
-            // This would need a join with orders - simplified for now
-            break;
-        case "vip":
-            // This would need aggregation - simplified for now
-            break;
+        }
     }
 
-    const { count } = await query;
-    return count || 0;
+    const { data } = await query;
+    return (data || []).filter((c): c is { id: string; email: string } => !!c.email);
 }
 
 // ============================================================================

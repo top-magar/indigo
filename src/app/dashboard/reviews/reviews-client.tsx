@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -16,12 +17,11 @@ import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
 import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
 import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
 import { formatRelativeTime } from '@/shared/utils';
-import type { Review } from '@/db/schema/reviews';
-import type { SentimentStats } from '@/features/reviews/repositories/reviews';
+import type { SentimentStats, ReviewWithProduct } from '@/features/reviews/repositories/reviews';
 import { approveReview, rejectReview, deleteReview, bulkApproveReviews, reanalyzeReview } from './actions';
 
 interface ReviewsClientProps {
-  initialReviews: Review[];
+  initialReviews: ReviewWithProduct[];
   initialStats: SentimentStats | null;
 }
 
@@ -176,6 +176,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 <TableRow>
                   <TableHead><Checkbox checked={selectedIds.size === paginated.length && paginated.length > 0} onCheckedChange={() => selectedIds.size === paginated.length ? setSelectedIds(new Set()) : setSelectedIds(new Set(paginated.map((r) => r.id)))} aria-label="Select all" /></TableHead>
                   <TableHead>Review</TableHead>
+                  <TableHead>Product</TableHead>
                   <TableHead>Rating</TableHead>
                   <TableHead>Sentiment</TableHead>
                   <TableHead>Status</TableHead>
@@ -190,6 +191,13 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                     <TableCell>
                       <div className="font-medium">{review.customerName}</div>
                       <div className="text-muted-foreground truncate max-w-[300px]">&ldquo;{review.content.slice(0, 80)}{review.content.length > 80 ? '...' : ''}&rdquo;</div>
+                    </TableCell>
+                    <TableCell>
+                      {review.productName ? (
+                        <Link href={`/dashboard/products/${review.productId}`} className="text-sm text-primary hover:underline">{review.productName}</Link>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell><Stars rating={review.rating} /></TableCell>
                     <TableCell><Badge variant="secondary" className={sentimentColor[review.sentiment || 'NEUTRAL']}>{sentimentLabel(review.sentiment)}</Badge></TableCell>
@@ -224,6 +232,9 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                   <Stars rating={review.rating} size="size-3" />
                 </div>
                 <p className="text-xs text-muted-foreground line-clamp-2">&ldquo;{review.content}&rdquo;</p>
+                {review.productName && (
+                  <Link href={`/dashboard/products/${review.productId}`} className="text-xs text-primary hover:underline">{review.productName}</Link>
+                )}
                 <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                   <Badge variant="secondary" className={`text-[11px] ${sentimentColor[review.sentiment || 'NEUTRAL']}`}>{sentimentLabel(review.sentiment)}</Badge>
                   <span>·</span>

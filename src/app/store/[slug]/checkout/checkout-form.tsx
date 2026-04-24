@@ -10,7 +10,9 @@ import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Price } from "@/components/ui/price"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { AlertCircle, Loader2, Banknote, Building2, Wallet } from "lucide-react"
+import { AlertCircle, Loader2, Banknote, Building2, Wallet, Gift } from "lucide-react"
+import { toast } from "sonner"
+import { validateGiftCard } from "./actions"
 import type { Cart } from "@/features/store/data/cart"
 
 interface CheckoutFormProps {
@@ -41,11 +43,36 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
   const [city, setCity] = useState("")
   const [area, setArea] = useState("")
 
+  // Gift card
+  const [giftCardCode, setGiftCardCode] = useState("")
+  const [giftCardDiscount, setGiftCardDiscount] = useState(0)
+  const [applyingGiftCard, setApplyingGiftCard] = useState(false)
+
   const subtotal = cart.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
   const discount = cart.discountTotal || 0
   const shipping = cart.shippingTotal || 0
   const tax = cart.taxTotal || 0
-  const total = subtotal - discount + shipping + tax
+  const total = subtotal - discount - giftCardDiscount + shipping + tax
+
+  const applyGiftCard = async () => {
+    if (!giftCardCode.trim()) return
+    setApplyingGiftCard(true)
+    try {
+      const result = await validateGiftCard(giftCardCode, tenantId)
+      if (result.valid) {
+        const amount = Math.min(result.balance, subtotal - discount + shipping + tax)
+        setGiftCardDiscount(amount)
+        toast.success(`Gift card applied! -${currency} ${amount.toFixed(2)}`)
+      } else {
+        setGiftCardDiscount(0)
+        toast.error(result.error)
+      }
+    } catch {
+      toast.error("Failed to validate gift card.")
+    } finally {
+      setApplyingGiftCard(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -129,6 +156,18 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
             </RadioGroup>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader><CardTitle className="flex items-center gap-2"><Gift className="size-5" />Gift Card</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Input placeholder="Enter gift card code" value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} />
+              <Button type="button" variant="outline" onClick={applyGiftCard} disabled={applyingGiftCard || !giftCardCode.trim()}>
+                {applyingGiftCard ? <Loader2 className="size-4 animate-spin" /> : "Apply"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Right: Order Summary */}
@@ -145,6 +184,7 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
             <Separator />
             <div className="flex justify-between text-sm"><span>Subtotal</span><Price amount={subtotal} currency={currency} /></div>
             {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount</span><span>-<Price amount={discount} currency={currency} /></span></div>}
+            {giftCardDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Gift Card</span><span>-<Price amount={giftCardDiscount} currency={currency} /></span></div>}
             {shipping > 0 && <div className="flex justify-between text-sm"><span>Shipping</span><Price amount={shipping} currency={currency} /></div>}
             {tax > 0 && <div className="flex justify-between text-sm"><span>Tax</span><Price amount={tax} currency={currency} /></div>}
             <Separator />
