@@ -47,6 +47,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EmptyState } from "@/components/ui/empty-state";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { cn } from "@/shared/utils";
 import { CreateAttributeDialog } from "@/features/attributes/components";
 import { bulkDeleteAttributes } from "./attribute-actions";
@@ -94,6 +95,11 @@ export function AttributesClient({
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(20);
+
+    const pageCount = Math.ceil(attributes.length / pageSize);
+    const paginatedAttributes = attributes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
         if (selectedIds.size === attributes.length) {
@@ -152,7 +158,7 @@ export function AttributesClient({
                                 <Input
                                     aria-label="Search attributes" placeholder="Search attributes…"
                                     value={searchValue}
-                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    onChange={(e) => { setSearchValue(e.target.value); setPageIndex(0); }}
                                     className="pl-9"
                                 />
                             </div>
@@ -222,7 +228,7 @@ export function AttributesClient({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {attributes.map((attribute) => {
+                                    {paginatedAttributes.map((attribute) => {
                                         const config = INPUT_TYPE_CONFIG[attribute.inputType];
                                         const Icon = inputTypeIcons[attribute.inputType] || Type;
                                         
@@ -307,6 +313,17 @@ export function AttributesClient({
                             </Table>
                         )}
                 </div>
+                {attributes.length > 0 && (
+                    <DataTablePagination
+                        pageIndex={pageIndex}
+                        pageSize={pageSize}
+                        pageCount={pageCount}
+                        totalItems={attributes.length}
+                        onPageChange={setPageIndex}
+                        onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+                        selectedCount={selectedIds.size}
+                    />
+                )}
             </EntityListPage>
 
             <CreateAttributeDialog

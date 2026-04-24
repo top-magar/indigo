@@ -43,6 +43,7 @@ import {
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { EntityListPage } from "@/components/dashboard/templates";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
 import type { CategoryWithCount } from "./types";
@@ -70,6 +71,8 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(categories.map(c => c.id)));
     const [viewMode, setViewMode] = useState<"tree" | "flat">("tree");
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(20);
 
     // Build tree structure
     const buildTree = useMemo(() => {
@@ -127,6 +130,13 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             c.slug.toLowerCase().includes(query)
         );
     }, [categories, searchQuery, buildTree, expandedIds, viewMode]);
+
+    // Pagination
+    const pageCount = Math.ceil(filteredCategories.length / pageSize);
+    const paginatedCategories = filteredCategories.slice(
+        pageIndex * pageSize,
+        (pageIndex + 1) * pageSize
+    );
 
     // Stats
     const stats = useMemo(() => {
@@ -311,7 +321,10 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <Input
                         aria-label="Search categories" placeholder="Search categories..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setPageIndex(0);
+                        }}
                         className="pl-9"
                     />
                 </div>
@@ -392,7 +405,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             </div>
                             
                             {/* Rows */}
-                            {filteredCategories.map((category, index) => {
+                            {paginatedCategories.map((category, index) => {
                                 const hasChildren = categories.some(c => c.parent_id === category.id);
                                 const isExpanded = expandedIds.has(category.id);
                                 const level = viewMode === "tree" && !searchQuery ? (category as TreeNode).level || 0 : 0;
@@ -538,6 +551,22 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         </div>
                     )}
             </div>
+
+            {/* Pagination */}
+            {filteredCategories.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filteredCategories.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => {
+                        setPageSize(size);
+                        setPageIndex(0);
+                    }}
+                    selectedCount={selectedIds.size}
+                />
+            )}
 
             {/* Category Dialog */}
             <CategoryDialog
