@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/shared/utils";
 import { StoreMenu } from "./store-menu";
 import { UserMenu } from "./user-menu";
@@ -57,8 +58,7 @@ export function SidebarClient({
 
   return (
     <TooltipProvider delayDuration={150}>
-
-      <SidebarHeader className={cn("p-2", isCollapsed && "p-2")}>
+      <SidebarHeader className="p-2">
         <StoreMenu
           tenantName={tenantName}
           storeLogo={storeLogo}
@@ -69,14 +69,18 @@ export function SidebarClient({
         />
       </SidebarHeader>
 
-      <SidebarContent className={cn("px-2", isCollapsed && "px-0")} role="navigation" aria-label="Main navigation">
-        {navigation.map((section) => (
-          <SidebarGroup key={section.id} className="py-1">
+      <SidebarContent className={cn("px-2", isCollapsed && "px-1")} role="navigation" aria-label="Main navigation">
+        {navigation.map((section, idx) => (
+          <SidebarGroup key={section.id} className="py-0.5">
             {section.label && !isCollapsed && (
-              <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2 mb-1">
-                {section.label}
-              </SidebarGroupLabel>
+              <>
+                {idx > 0 && <Separator className="mb-2 -mx-2 w-[calc(100%+1rem)]" />}
+                <SidebarGroupLabel className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-[0.08em] px-2 mb-0.5 h-6">
+                  {section.label}
+                </SidebarGroupLabel>
+              </>
             )}
+            {!section.label && idx > 0 && !isCollapsed && <div className="h-1" />}
             <SidebarGroupContent>
               <SidebarMenu>
                 {section.items.map((item) => (
@@ -98,7 +102,7 @@ export function SidebarClient({
 
       <SidebarFooter className={cn("p-2", isCollapsed && "p-2 gap-2")}>
         {!isCollapsed && planType !== "pro" && (
-          <Button variant="outline" className="w-full text-xs justify-start gap-2">
+          <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs h-8 border-dashed">
             <Rocket className="size-3.5" />
             {planType === "trial" ? `Upgrade · ${trialDaysLeft}d left` : "Upgrade to Pro"}
           </Button>
