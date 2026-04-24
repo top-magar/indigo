@@ -25,7 +25,8 @@ export class EsewaPaymentProvider implements PaymentProvider {
   async createPayment(input: CreateOrderPayment): Promise<PaymentResult> {
     const cfg = await getTenantPaymentConfig(input.tenantId)
     const merchantCode = (cfg.esewamerchantCode as string) || process.env.ESEWA_MERCHANT_CODE || "EPAYTEST"
-    const secret = (cfg.esewaSecret as string) || process.env.ESEWA_SECRET || ""
+    const secret = (cfg.esewaSecret as string) || process.env.ESEWA_SECRET;
+    if (!secret) throw new Error("eSewa secret key not configured. Set ESEWA_SECRET env var or configure in payment settings.");
 
     const { orderId, amount } = input
     const storeSlug = input.metadata?.storeSlug ?? "default"
@@ -94,7 +95,8 @@ export class KhaltiPaymentProvider implements PaymentProvider {
 
   async createPayment(input: CreateOrderPayment): Promise<PaymentResult> {
     const cfg = await getTenantPaymentConfig(input.tenantId)
-    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY || ""
+    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY;
+    if (!secretKey) throw new Error("Khalti secret key not configured.");
     const storeSlug = input.metadata?.storeSlug ?? "default"
     const returnUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${storeSlug}/checkout/callback?gateway=khalti`
 
@@ -131,7 +133,8 @@ export class KhaltiPaymentProvider implements PaymentProvider {
 
   async getStatus(paymentId: string, tenantId: string): Promise<PaymentStatus> {
     const cfg = await getTenantPaymentConfig(tenantId)
-    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY || ""
+    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY;
+    if (!secretKey) throw new Error("Khalti secret key not configured.");
     const pidx = paymentId.replace("khalti_", "")
 
     try {

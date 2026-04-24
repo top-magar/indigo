@@ -39,7 +39,14 @@ export default async function CustomDomainPage({ searchParams }: { searchParams:
       : pages.find(p => p.isHomepage) || pages[0];
 
     if (page?.publishedHtml) {
-      return <html><body dangerouslySetInnerHTML={{ __html: page.publishedHtml }} /></html>;
+      // Redirect to store route so the page renders inside the store shell
+      // with proper header/footer/cart instead of raw HTML
+      const [tenant] = await db.select({ slug: tenants.slug })
+        .from(tenants).where(eq(tenants.id, domainRecord.tenantId)).limit(1);
+      if (tenant) {
+        const storePath = page.isHomepage ? `/store/${tenant.slug}` : `/store/${tenant.slug}/${page.slug}`;
+        redirect(storePath);
+      }
     }
   }
 
