@@ -198,7 +198,7 @@ export function ProductsClient({
     };
 
     const handleBulkDelete = async () => {
-        if (!confirm(`Delete ${bulkActions.selectedCount} products? This cannot be undone.`)) return;
+        if (!(await confirmDelete(`${bulkActions.selectedCount} products`, "selection"))) return;
         try {
             await bulkDeleteProducts(bulkActions.selectedArray);
             toast.success(`Deleted ${bulkActions.selectedCount} products`);

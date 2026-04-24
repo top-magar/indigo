@@ -104,6 +104,7 @@ export function AccountSettingsClient({ user }: Props) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Account</h1>
+          <p className="text-xs text-muted-foreground">Your profile, email, and security</p>
           <p className="text-xs text-muted-foreground">Your profile and security settings</p>
         </div>
         <Button onClick={handleSaveProfile} disabled={isPending || !hasProfileChanges} size="sm">

@@ -90,6 +90,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Store</h1>
+          <p className="text-xs text-muted-foreground">Store name, logo, currency, and SEO settings</p>
           <p className="text-xs text-muted-foreground">Manage your store details and how it appears online</p>
         </div>
         {canEdit && (

@@ -65,6 +65,7 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Checkout</h1>
+          <p className="text-xs text-muted-foreground">Customize the checkout experience</p>
           <p className="text-xs text-muted-foreground">Configure the checkout experience for your customers</p>
         </div>
         {canEdit && (

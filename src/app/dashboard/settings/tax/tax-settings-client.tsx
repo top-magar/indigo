@@ -31,6 +31,7 @@ export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSet
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Tax</h1>
+          <p className="text-xs text-muted-foreground">Configure tax rates and collection</p>
           <p className="text-xs text-muted-foreground">
             {s.defaultRate > 0 ? `${s.taxName || "Tax"} at ${s.defaultRate}%` : "No tax configured"} · Prices {s.priceIncludesTax ? "include" : "exclude"} tax
           </p>

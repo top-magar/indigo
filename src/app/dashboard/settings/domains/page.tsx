@@ -118,6 +118,7 @@ export default function DomainsSettingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Domains</h1>
+          <p className="text-xs text-muted-foreground">Connect custom domains to your store</p>
           <p className="text-xs text-muted-foreground">Connect custom domains to your storefront</p>
         </div>
         <Button onClick={() => setAddDialogOpen(true)} size="sm">

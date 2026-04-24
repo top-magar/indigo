@@ -82,6 +82,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Team</h1>
+          <p className="text-xs text-muted-foreground">Manage team members and roles</p>
           <p className="text-xs text-muted-foreground">
             {teamMembers.length} member{teamMembers.length !== 1 ? "s" : ""} · {teamMembers.filter(m => m.role === "admin").length} admin{teamMembers.filter(m => m.role === "admin").length !== 1 ? "s" : ""}
           </p>

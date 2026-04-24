@@ -68,6 +68,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Shipping</h1>
+          <p className="text-xs text-muted-foreground">Manage shipping zones and delivery rates</p>
           <p className="text-xs text-muted-foreground">{zones.length} zone{zones.length !== 1 ? "s" : ""} · {totalRates} rate{totalRates !== 1 ? "s" : ""}</p>
         </div>
         <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }} size="sm">

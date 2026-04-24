@@ -662,77 +662,116 @@ export function OrdersListView({
         <OrdersTableSkeleton rows={pageSize} />
       ) : (
         <div>
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent border-b">
-                <TableHead className="w-12">
-                  <Checkbox
-                    checked={isAllSelected(orderNodes)}
-                    onCheckedChange={() => onToggleAll(orderNodes)}
-                    aria-label="Select all orders"
-                  />
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  <button onClick={() => onSort("created_at")} className="flex items-center gap-1 hover:text-foreground transition-colors">
-                    Order {sort === "created_at" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
-                  </button>
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Customer
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Items
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  <button onClick={() => onSort("status")} className="flex items-center gap-1 hover:text-foreground transition-colors">
-                    Status {sort === "status" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
-                  </button>
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Payment
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Fulfillment
-                </TableHead>
-                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
-                  <button onClick={() => onSort("total")} className="flex items-center gap-1 hover:text-foreground transition-colors ml-auto">
-                    Total {sort === "total" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
-                  </button>
-                </TableHead>
-                <TableHead className="w-24">
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="h-64">
-                    <EmptyState
-                      icon={ShoppingCart}
-                      title="No orders found"
-                      description="Orders will appear here once customers start purchasing."
-                      hint="Press ⌘K to navigate or G then O to jump here"
-                      action={{
-                        label: "Create Order",
-                        onClick: () => onNavigate("/dashboard/orders/new"),
-                      }}
+          {/* Desktop table */}
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent border-b">
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={isAllSelected(orderNodes)}
+                      onCheckedChange={() => onToggleAll(orderNodes)}
+                      aria-label="Select all orders"
                     />
-                  </TableCell>
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <button onClick={() => onSort("created_at")} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                      Order {sort === "created_at" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                    </button>
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Customer
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Items
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <button onClick={() => onSort("status")} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                      Status {sort === "status" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                    </button>
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Payment
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Fulfillment
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
+                    <button onClick={() => onSort("total")} className="flex items-center gap-1 hover:text-foreground transition-colors ml-auto">
+                      Total {sort === "total" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                    </button>
+                  </TableHead>
+                  <TableHead className="w-24">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
-              ) : (
-                orders.map((order) => (
-                  <OrderTableRow
-                    key={order.id}
-                    order={order}
-                    isSelected={selectedIds.includes(order.id)}
-                    onSelect={(checked) => onToggleSelection(order.id)}
-                    currency={currency}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {orders.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="h-64">
+                      <EmptyState
+                        icon={ShoppingCart}
+                        title="No orders found"
+                        description="Orders will appear here once customers start purchasing."
+                        hint="Press ⌘K to navigate or G then O to jump here"
+                        action={{
+                          label: "Create Order",
+                          onClick: () => onNavigate("/dashboard/orders/new"),
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  orders.map((order) => (
+                    <OrderTableRow
+                      key={order.id}
+                      order={order}
+                      isSelected={selectedIds.includes(order.id)}
+                      onSelect={(checked) => onToggleSelection(order.id)}
+                      currency={currency}
+                    />
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-2">
+            {orders.length === 0 ? (
+              <EmptyState
+                icon={ShoppingCart}
+                title="No orders found"
+                description="Orders will appear here once customers start purchasing."
+                action={{
+                  label: "Create Order",
+                  onClick: () => onNavigate("/dashboard/orders/new"),
+                }}
+              />
+            ) : (
+              orders.map((order) => (
+                <Link
+                  key={order.id}
+                  href={`/dashboard/orders/${order.id}`}
+                  className="block rounded-lg border p-3 space-y-2 active:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">#{order.order_number}</span>
+                    <OrderStatusBadge status={order.status} />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{order.customer_name || "Guest"}</span>
+                    <PaymentStatusBadge status={order.payment_status} />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{formatDistanceToNow(new Date(order.created_at), { addSuffix: true })}</span>
+                    <span className="font-medium text-foreground">{formatCurrency(order.total, currency)}</span>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
 
           {/* Pagination */}
           {orders.length > 0 && totalCount > 0 && (

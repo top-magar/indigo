@@ -92,6 +92,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Payments</h1>
+          <p className="text-xs text-muted-foreground">Configure payment providers and methods</p>
           <p className="text-xs text-muted-foreground">
             {activeCount} payment method{activeCount !== 1 ? "s" : ""} active
           </p>
