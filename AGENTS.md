@@ -115,6 +115,18 @@ Design task routing (orchestrator → designer):
 
 Skills live in `.kiro/skills/`. Read the SKILL.md for each before using.
 
+### External Skills (from alirezarezvani/claude-skills)
+
+These are gitignored — install on each machine:
+```bash
+# Clone and copy (one-time setup)
+git clone --depth 1 --sparse https://github.com/alirezarezvani/claude-skills.git /tmp/cs
+cd /tmp/cs && git sparse-checkout set engineering/ci-cd-pipeline-builder engineering/database-schema-designer engineering/api-test-suite-builder engineering/performance-profiler marketing-skill/seo-audit
+cp -r engineering/{ci-cd-pipeline-builder,database-schema-designer,api-test-suite-builder,performance-profiler} /path/to/indigo/.kiro/skills/
+cp -r marketing-skill/seo-audit /path/to/indigo/.kiro/skills/
+rm -rf /tmp/cs
+```
+
 See `.kiro/steering/orchestration.md` for the full orchestration protocol (patterns, handoff, when to use which agent).
 
 ## Git Discipline
