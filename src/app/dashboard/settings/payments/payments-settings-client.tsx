@@ -167,9 +167,9 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                   <SecretInput id="esewaSecret" value={s.esewaSecret} onChange={v => set("esewaSecret", v)} placeholder="Your eSewa secret key" />
                 </div>
               </div>
-              <a href="https://developer.esewa.com.np" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Get credentials from eSewa Developer Portal <ExternalLink className="size-3.5" />
-              </a>
+              <p className="text-xs text-muted-foreground">
+                Get credentials from <a href="https://developer.esewa.com.np" target="_blank" rel="noopener noreferrer" className="text-info hover:underline">eSewa Developer Portal <ExternalLink className="size-3" /></a>
+              </p>
             </div>
           )}
         </div>
@@ -189,9 +189,9 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                 <Label className="text-xs">Secret Key <HelpTooltip content="Your Khalti API secret key from the merchant dashboard at khalti.com." /></Label>
                 <SecretInput id="khaltiSecret" value={s.khaltiSecretKey} onChange={v => set("khaltiSecretKey", v)} placeholder="Your Khalti secret key" />
               </div>
-              <a href="https://khalti.com/join/merchant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Get credentials from Khalti Merchant Portal <ExternalLink className="size-3.5" />
-              </a>
+              <p className="text-xs text-muted-foreground">
+                Get credentials from <a href="https://admin.khalti.com" target="_blank" rel="noopener noreferrer" className="text-info hover:underline">Khalti Merchant Portal <ExternalLink className="size-3" /></a>
+              </p>
             </div>
           )}
         </div>

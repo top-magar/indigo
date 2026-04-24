@@ -17,12 +17,14 @@ import {
     ShoppingBag,
     Image,
     FileText,
+    ExternalLink,
 } from "lucide-react";
-import type { NavGroup } from "./types";
+import type { NavGroup, NavItem } from "./types";
 
 export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
+    storeSlug?: string;
 }): NavGroup[] {
     return [
         {
@@ -97,6 +99,14 @@ export function createNavigation(counts: {
                     icon: Image,
                     keywords: ["media", "images", "files", "uploads", "assets"],
                 },
+                ...(counts.storeSlug ? [{
+                    id: "view-store",
+                    title: "View Store",
+                    href: `/store/${counts.storeSlug}`,
+                    icon: ExternalLink,
+                    keywords: ["view", "store", "preview", "live"],
+                    external: true,
+                } satisfies NavItem] : []),
             ],
         },
         {
