@@ -43,7 +43,7 @@ export function SidebarClient({
   const isCollapsed = state === "collapsed";
 
   const navigation = useMemo(
-    () => createNavigation({ pendingOrders: pendingOrdersCount, lowStock: lowStockCount, storeSlug: storeSlug || undefined }),
+    () => createNavigation({ pendingOrders: pendingOrdersCount, lowStock: lowStockCount, pendingReviews: 0, storeSlug: storeSlug || undefined }),
     [pendingOrdersCount, lowStockCount, storeSlug]
   );
 

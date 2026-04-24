@@ -24,6 +24,7 @@ import type { NavGroup, NavItem } from "./types";
 export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
+    pendingReviews?: number;
     storeSlug?: string;
 }): NavGroup[] {
     return [
@@ -56,7 +57,7 @@ export function createNavigation(counts: {
                     title: "Products",
                     href: "/dashboard/products",
                     icon: Tag,
-                    badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
+                    badge: counts.lowStock > 0 ? counts.lowStock : undefined,
                     badgeVariant: counts.lowStock > 0 ? "warning" : undefined,
                     keywords: ["items", "goods", "sku", "inventory", "stock"],
                     children: [
@@ -145,6 +146,7 @@ export function createNavigation(counts: {
                     title: "Reviews",
                     href: "/dashboard/reviews",
                     icon: Star,
+                    badge: counts.pendingReviews && counts.pendingReviews > 0 ? counts.pendingReviews : undefined,
                     keywords: ["ratings", "feedback", "testimonials"],
                 },
             ],

@@ -121,9 +121,16 @@ export function NavItemComponent({
                                     href={item.href}
                                     target={item.external ? "_blank" : undefined}
                                     rel={item.external ? "noopener noreferrer" : undefined}
-                                    className="flex items-center gap-2 w-full"
+                                    className="flex items-center gap-2 w-full relative"
                                 >
                                     <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
+                                    {isCollapsed && item.badge && (
+                                        <span className={cn(
+                                            "absolute -top-0.5 -right-0.5 size-2 rounded-full",
+                                            item.badgeVariant === "warning" ? "bg-warning" :
+                                            item.badgeVariant === "destructive" ? "bg-destructive" : "bg-primary"
+                                        )} />
+                                    )}
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && badgeContent}
                                     {!isCollapsed && statusBadge}
