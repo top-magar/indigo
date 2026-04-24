@@ -139,9 +139,9 @@ export function AnalyticsDashboardView({
                         {isFreeTier ? (
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border text-muted-foreground">
+                                    <div className="flex items-center gap-1.5 h-7 px-2 rounded-md border bg-background text-muted-foreground text-xs">
                                         <Calendar className="size-3.5" />
-                                        <span className="text-sm">Last 7 days</span>
+                                        Last 7 days
                                     </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
