@@ -128,13 +128,11 @@ export async function publishPage(page: {
   const cssVal = (v: string) => v.replace(/[<>"';{}()\\]/g, '');
   const themeCss = theme ? `<style>:root{--primary:${cssVal(theme.primaryColor || '#10b981')};--bg:${cssVal(theme.backgroundColor || '#fff')};--text:${cssVal(theme.textColor || '#111827')};--heading-font:${cssVal(theme.headingFont || 'Inter')},sans-serif;--body-font:${cssVal(theme.bodyFont || 'Inter')},sans-serif;--radius:${cssVal(theme.borderRadius || '8px')}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
 
-  // Generate global header/footer HTML
-  const headerEls = project.headerData as import('../core/types').El[] | null;
-  const footerEls = project.footerData as import('../core/types').El[] | null;
-  const headerHtml = headerEls?.length ? headerEls.map(el => renderElToHtml(el, generateHTML)).join('') : '';
-  const footerHtml = footerEls?.length ? footerEls.map(el => renderElToHtml(el, generateHTML)).join('') : '';
+  // Editor header/footer are NOT injected into published HTML.
+  // The store shell (layout.tsx) provides the React header/footer with cart, navigation, etc.
+  // Editor header/footer data stays in editor_projects for the editor UI only.
 
-  // Publish each page with SEO + theme + header/footer
+  // Publish each page with SEO + theme, resolve page links
   for (const p of pages) {
     const rawElements = p.data as import('../core/types').El[];
     const elements = await resolveBindings(rawElements, tenantId);
@@ -143,10 +141,8 @@ export async function publishPage(page: {
       description: p.seoDescription || undefined,
       ogImage: p.ogImage || undefined,
     });
-    // Inject theme into <head>, header/footer, resolve page links
+    // Inject theme into <head>, resolve page links
     let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
-    if (headerHtml) finalHtml = finalHtml.replace(/<body[^>]*>/, (m) => `${m}${headerHtml}`);
-    if (footerHtml) finalHtml = finalHtml.replace('</body>', `${footerHtml}</body>`);
     // Resolve #page:slug → /store/{tenantSlug}/{pageSlug}
     const [tenantRow] = await db.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
     const tenantSlug = tenantRow?.slug || projectSlug;
