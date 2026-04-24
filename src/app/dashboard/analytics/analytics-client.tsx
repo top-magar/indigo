@@ -150,7 +150,7 @@ export function AnalyticsDashboardView({
                             </Tooltip>
                         ) : (
                             <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
-                                <SelectTrigger className="w-[160px]" aria-label="Date range">
+                                <SelectTrigger className="h-9 w-[160px]" aria-label="Date range">
                                     <Calendar className="size-3.5" />
                                     <SelectValue />
                                 </SelectTrigger>
