@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -96,6 +97,7 @@ export function AccountSettingsClient({ user }: Props) {
   });
 
   const hasProfileChanges = fullName !== (user.fullName || "") || avatarUrl !== (user.avatarUrl || "");
+  useUnsavedChanges(hasProfileChanges);
 
   return (
     <div className="max-w-2xl space-y-6">
