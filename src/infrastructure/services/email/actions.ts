@@ -12,7 +12,7 @@ import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
-import { orderConfirmationTemplate, orderNotificationTemplate } from './templates';
+import { orderConfirmationTemplate, orderNotificationTemplate, orderShippedTemplate, orderDeliveredTemplate } from './templates';
 import type { OrderDetails, OrderAddress, StoreInfo, EmailResult } from './types';
 import { sendEmailViaSES, isSESConfigured } from '../../aws/ses';
 
@@ -49,11 +49,13 @@ export interface SendEmailInput {
 export type EmailTemplate =
     | 'order_confirmation'
     | 'order_shipped'
+    | 'order_delivered'
     | 'order_completed'
     | 'order_cancelled'
     | 'payment_received'
     | 'refund_processed'
     | 'low_stock_alert'
+    | 'abandoned_cart'
     | 'welcome';
 
 /**
@@ -74,10 +76,11 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
         const sesStatus = await isSESConfigured();
         if (sesStatus.configured && sesStatus.fromEmail) {
             log.info(`[EmailService] Sending ${template} email via SES to ${to}`);
+            const htmlContent = typeof data.html === 'string' ? data.html : `<h1>${subject}</h1><pre>${JSON.stringify(data, null, 2)}</pre>`;
             return sendEmailViaSES({
                 to,
                 subject,
-                html: `<h1>${subject}</h1><pre>${JSON.stringify(data, null, 2)}</pre>`,
+                html: htmlContent,
                 text: `${subject}\n\n${JSON.stringify(data, null, 2)}`,
                 from: sesStatus.fromEmail,
             });
@@ -103,7 +106,7 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
             from: DEFAULT_FROM_EMAIL,
             to: [to],
             subject,
-            text: `${subject}\n\n${JSON.stringify(data, null, 2)}`,
+            ...(typeof data.html === 'string' ? { html: data.html } : { text: `${subject}\n\n${JSON.stringify(data, null, 2)}` }),
         });
 
         if (error) {
@@ -280,13 +283,35 @@ export async function sendOrderConfirmation(
 export async function sendOrderShipped(
     customerEmail: string,
     orderId: string,
-    trackingNumber?: string
+    trackingNumber?: string,
+    carrier?: string
 ): Promise<void> {
+    const orderNumber = orderId.slice(0, 8).toUpperCase();
+    const html = orderShippedTemplate(orderNumber, trackingNumber, carrier);
     await sendEmail({
         to: customerEmail,
-        subject: `Your Order Has Shipped - #${orderId.slice(0, 8).toUpperCase()}`,
+        subject: `Your Order Has Shipped - #${orderNumber}`,
         template: 'order_shipped',
-        data: { orderId, trackingNumber },
+        data: { html },
+    });
+}
+
+/**
+ * Send order delivered email
+ */
+export async function sendOrderDelivered(
+    customerEmail: string,
+    orderNumber: string,
+    storeName: string,
+    storeSlug: string
+): Promise<void> {
+    const reviewUrl = `${process.env.NEXT_PUBLIC_APP_URL}/store/${storeSlug}/account/orders`;
+    const html = orderDeliveredTemplate(orderNumber, storeName, reviewUrl);
+    await sendEmail({
+        to: customerEmail,
+        subject: `Your Order #${orderNumber} Has Been Delivered`,
+        template: 'order_delivered',
+        data: { html },
     });
 }
 

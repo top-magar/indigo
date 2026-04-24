@@ -232,6 +232,66 @@ export function orderConfirmationTemplate(order: OrderDetails, store: StoreInfo)
 }
 
 /**
+ * Order Shipped Email Template (for customers)
+ */
+export function orderShippedTemplate(orderNumber: string, trackingNumber?: string, carrier?: string, storeUrl?: string): string {
+  const content = `
+    <tr>
+      <td style="padding: 32px 32px 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">Your Order Has Shipped!</h1>
+        <p style="margin: 8px 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.9);">Order #${orderNumber} is on its way</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 24px 32px;">
+        <p style="margin: 0 0 16px; font-size: 16px; color: #374151;">Great news! Your order has been shipped and is on its way to you.</p>
+        ${trackingNumber ? `
+        <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f9fafb; border-radius: 8px;">
+          ${carrier ? `<tr><td style="padding: 12px 16px; font-size: 14px; color: #6b7280;">Carrier</td><td style="padding: 12px 16px; text-align: right; font-size: 14px; font-weight: 600; color: #111827;">${carrier}</td></tr>` : ''}
+          <tr><td style="padding: 12px 16px; font-size: 14px; color: #6b7280;">Tracking Number</td><td style="padding: 12px 16px; text-align: right; font-size: 14px; font-weight: 600; color: #111827;">${trackingNumber}</td></tr>
+        </table>
+        ` : ''}
+      </td>
+    </tr>
+    ${storeUrl ? `
+    <tr>
+      <td style="padding: 0 32px 32px; text-align: center;">
+        <a href="${storeUrl}" style="display: inline-block; padding: 14px 32px; font-size: 16px; font-weight: 600; color: #ffffff; background-color: #667eea; border-radius: 8px; text-decoration: none;">View Your Order</a>
+      </td>
+    </tr>
+    ` : ''}
+  `;
+  return emailWrapper(content, 'Indigo');
+}
+
+/**
+ * Order Delivered Email Template (for customers)
+ */
+export function orderDeliveredTemplate(orderNumber: string, storeName: string, reviewUrl?: string): string {
+  const content = `
+    <tr>
+      <td style="padding: 32px 32px 24px; text-align: center; background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">Your Order Has Been Delivered!</h1>
+        <p style="margin: 8px 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.9);">Order #${orderNumber}</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 24px 32px;">
+        <p style="margin: 0 0 16px; font-size: 16px; color: #374151;">Your order from <strong>${storeName}</strong> has been delivered. We hope you love it!</p>
+      </td>
+    </tr>
+    ${reviewUrl ? `
+    <tr>
+      <td style="padding: 0 32px 32px; text-align: center;">
+        <a href="${reviewUrl}" style="display: inline-block; padding: 14px 32px; font-size: 16px; font-weight: 600; color: #ffffff; background-color: #059669; border-radius: 8px; text-decoration: none;">Leave a Review</a>
+      </td>
+    </tr>
+    ` : ''}
+  `;
+  return emailWrapper(content, storeName);
+}
+
+/**
  * Order Notification Email Template (for merchants)
  */
 export function orderNotificationTemplate(order: OrderDetails, store: StoreInfo): string {
@@ -342,4 +402,68 @@ export function orderNotificationTemplate(order: OrderDetails, store: StoreInfo)
   `;
   
   return emailWrapper(content, store.name);
+}
+
+/**
+ * Abandoned Cart Recovery Email Template
+ */
+export function abandonedCartTemplate(
+  storeName: string,
+  cartUrl: string,
+  items: { name: string; price: string }[]
+): string {
+  const itemsHtml = items
+    .map(
+      (item) => `
+    <tr>
+      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #111827;">${item.name}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #111827;">${item.price}</td>
+    </tr>`
+    )
+    .join('');
+
+  const content = `
+    <!-- Header -->
+    <tr>
+      <td style="padding: 32px 32px 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff;">You left items in your cart</h1>
+        <p style="margin: 8px 0 0; font-size: 16px; color: rgba(255, 255, 255, 0.9);">Complete your purchase at ${storeName}</p>
+      </td>
+    </tr>
+
+    <!-- Items -->
+    <tr>
+      <td style="padding: 24px 32px;">
+        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">Item</th>
+              <th style="padding: 12px; text-align: right; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">Price</th>
+            </tr>
+          </thead>
+          <tbody>${itemsHtml}</tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- CTA -->
+    <tr>
+      <td style="padding: 0 32px 32px; text-align: center;">
+        <a href="${cartUrl}" style="display: inline-block; padding: 14px 32px; font-size: 16px; font-weight: 600; color: #ffffff; background-color: #667eea; border-radius: 8px; text-decoration: none;">
+          Complete Your Purchase
+        </a>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding: 24px 32px; background-color: #f9fafb; text-align: center;">
+        <p style="margin: 0; font-size: 14px; color: #6b7280;">
+          If you have any questions, contact us at <a href="mailto:support@${storeName.toLowerCase().replace(/\s+/g, '')}.com" style="color: #667eea; text-decoration: none;">support</a>.
+        </p>
+      </td>
+    </tr>
+  `;
+
+  return emailWrapper(content, storeName);
 }

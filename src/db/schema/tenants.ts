@@ -49,6 +49,12 @@ export interface TenantSettings {
     orderStatusUpdates?: boolean;
     lowStockAlerts?: boolean;
   };
+  whatsapp?: {
+    enabled?: boolean;
+    apiUrl?: string;
+    apiToken?: string;
+    merchantPhone?: string;
+  };
   tax?: {
     defaultRate?: number;
     taxName?: string;

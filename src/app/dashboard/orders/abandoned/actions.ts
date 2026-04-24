@@ -5,6 +5,9 @@ import { createLogger } from "@/lib/logger";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 
+import { sendEmail } from "@/infrastructure/services/email/actions";
+import { abandonedCartTemplate } from "@/infrastructure/services/email/templates";
+
 const log = createLogger("orders:abandoned");
 
 export interface AbandonedCheckout {
@@ -85,7 +88,44 @@ export async function sendRecoveryEmail(cartId: string): Promise<{ success: bool
     if (!cart) return { success: false, error: "Cart not found" };
     if (!cart.email) return { success: false, error: "No email address on this checkout" };
 
-    // Mark as sent (actual email sending would use the email service)
+    // Fetch tenant info for branding
+    const { data: tenant } = await supabase
+        .from("tenants")
+        .select("name, slug")
+        .eq("id", tenantId)
+        .single();
+
+    if (!tenant) return { success: false, error: "Tenant not found" };
+
+    // Fetch cart items
+    const { data: items } = await supabase
+        .from("cart_items")
+        .select("product_name, unit_price")
+        .eq("cart_id", validCartId);
+
+    const cartUrl = `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenant.slug}/checkout`;
+    const html = abandonedCartTemplate(
+        tenant.name,
+        cartUrl,
+        (items ?? []).map((i: { product_name: string; unit_price: string }) => ({
+            name: i.product_name,
+            price: String(i.unit_price),
+        }))
+    );
+
+    const emailResult = await sendEmail({
+        to: cart.email,
+        subject: `You left items in your cart at ${tenant.name}`,
+        template: 'abandoned_cart',
+        data: { html },
+    });
+
+    if (!emailResult.success) {
+        log.error("Failed to send recovery email", { error: emailResult.error });
+        return { success: false, error: emailResult.error };
+    }
+
+    // Mark as sent
     const { error } = await supabase
         .from("carts")
         .update({ metadata: { recovery_email_sent: true, recovery_sent_at: new Date().toISOString() } })
@@ -94,10 +134,9 @@ export async function sendRecoveryEmail(cartId: string): Promise<{ success: bool
 
     if (error) {
         log.error("Failed to mark recovery email", { error: error.message });
-        return { success: false, error: error.message };
     }
 
-    log.info("Recovery email queued", { cartId: validCartId, email: cart.email });
+    log.info("Recovery email sent", { cartId: validCartId, email: cart.email });
     return { success: true };
 }
 

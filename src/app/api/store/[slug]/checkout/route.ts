@@ -7,6 +7,7 @@ import { codCollections } from "@/db/schema/cod"
 import { eq, and, sql } from "drizzle-orm"
 import { getCartId, removeCartId } from "@/features/store/data/cookies"
 import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from "@/infrastructure/services/email/actions"
+import { sendWhatsAppMessage, orderReceivedMessage } from "@/infrastructure/services/whatsapp"
 import { createLogger } from "@/lib/logger"
 import { NextResponse } from "next/server"
 
@@ -186,6 +187,16 @@ export async function POST(
     const [owner] = await db.select({ email: users.email }).from(users).where(and(eq(users.tenantId, tenant.id), eq(users.role, "owner")))
     if (owner?.email) {
       sendOrderNotificationEmail(owner.email, orderDetails, storeInfo).catch(err => log.error("Merchant notification failed:", err))
+    }
+
+    // WhatsApp notification to merchant (fire-and-forget)
+    if (settings.whatsapp?.enabled && settings.whatsapp.apiUrl && settings.whatsapp.apiToken && settings.whatsapp.merchantPhone) {
+      const msg = orderReceivedMessage(orderNumber, String(total), currency, customerName)
+      sendWhatsAppMessage({
+        to: settings.whatsapp.merchantPhone,
+        message: msg,
+        config: { apiUrl: settings.whatsapp.apiUrl, apiToken: settings.whatsapp.apiToken },
+      }).catch(err => log.error("WhatsApp merchant notification failed:", err))
     }
 
     return NextResponse.json({

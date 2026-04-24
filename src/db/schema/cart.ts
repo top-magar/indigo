@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, integer, decimal, boolean, index, check } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, decimal, boolean, index, check, jsonb } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { products, productVariants } from "./products";
@@ -47,6 +47,9 @@ export const carts = pgTable("carts", {
     discountId: uuid("discount_id"),
     voucherCodeId: uuid("voucher_code_id"),
     voucherCode: text("voucher_code"),
+
+    // Metadata (JSONB for flexible flags like recovery_email_sent)
+    metadata: jsonb("metadata").$type<Record<string, unknown>>(),
 
     // Timestamps
     createdAt: timestamp("created_at").defaultNow().notNull(),

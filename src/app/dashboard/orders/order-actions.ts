@@ -5,7 +5,8 @@ const log = createLogger("orders-order-actions");
 
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { sendOrderShipped } from "@/infrastructure/services/email/actions";
+import { sendOrderShipped, sendOrderDelivered } from "@/infrastructure/services/email/actions";
+import { sendWhatsAppMessage, orderShippedMessage, orderDeliveredMessage } from "@/infrastructure/services/whatsapp";
 import type {
     Order,
     OrderLine,
@@ -399,7 +400,7 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
         // Send shipped email (fire-and-forget)
         supabase
             .from("orders")
-            .select("customer_email")
+            .select("customer_email, customer_phone")
             .eq("id", fulfillment.order_id)
             .eq("tenant_id", tenantId)
             .single()
@@ -408,6 +409,17 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
                     sendOrderShipped(order.customer_email, fulfillment.order_id, fulfillment.tracking_number ?? undefined)
                         .catch((err: unknown) => log.error("Failed to send order shipped email:", err));
                 }
+                // WhatsApp to customer (fire-and-forget)
+                if (order?.customer_phone) {
+                    supabase.from("tenants").select("settings").eq("id", tenantId).single()
+                        .then(({ data: t }) => {
+                            const wa = (t?.settings as Record<string, unknown> | null)?.whatsapp as { enabled?: boolean; apiUrl?: string; apiToken?: string } | undefined;
+                            if (wa?.enabled && wa.apiUrl && wa.apiToken) {
+                                sendWhatsAppMessage({ to: order.customer_phone, message: orderShippedMessage(fulfillment.order_id, fulfillment.tracking_number ?? undefined), config: { apiUrl: wa.apiUrl, apiToken: wa.apiToken } })
+                                    .catch((err: unknown) => log.error("WhatsApp shipped notification failed:", err));
+                            }
+                        }, (err: unknown) => log.error("Failed to fetch tenant for WhatsApp:", err));
+                }
             }, (err: unknown) => log.error("Failed to fetch order for shipped email:", err));
 
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
@@ -415,6 +427,65 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
     } catch (error) {
         log.error("Failed to mark as shipped:", error);
         return { success: false, error: "Failed to mark as shipped" };
+    }
+}
+
+export async function markAsDelivered(fulfillmentId: string) {
+    const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
+
+    try {
+        const { data: fulfillment, error } = await supabase
+            .from("fulfillments")
+            .update({ status: "delivered", updated_at: new Date().toISOString() })
+            .eq("id", fulfillmentId)
+            .eq("tenant_id", tenantId)
+            .select("order_id")
+            .single();
+
+        if (error || !fulfillment) {
+            return { success: false, error: "Failed to mark as delivered" };
+        }
+
+        // Update order status
+        await supabase
+            .from("orders")
+            .update({ fulfillment_status: "delivered", status: "delivered", updated_at: new Date().toISOString() })
+            .eq("id", fulfillment.order_id)
+            .eq("tenant_id", tenantId);
+
+        await addOrderEvent(fulfillment.order_id, "fulfillment_delivered", "Fulfillment delivered", userId, userName);
+
+        // Send delivered email (fire-and-forget)
+        supabase
+            .from("orders")
+            .select("customer_email, order_number, customer_phone")
+            .eq("id", fulfillment.order_id)
+            .eq("tenant_id", tenantId)
+            .single()
+            .then(async ({ data: order }) => {
+                if (!order) return;
+                const { data: tenant } = await supabase
+                    .from("tenants")
+                    .select("name, slug, settings")
+                    .eq("id", tenantId)
+                    .single();
+                if (tenant && order.customer_email) {
+                    sendOrderDelivered(order.customer_email, order.order_number, tenant.name, tenant.slug)
+                        .catch((err: unknown) => log.error("Failed to send order delivered email:", err));
+                }
+                // WhatsApp to customer (fire-and-forget)
+                const wa = (tenant?.settings as Record<string, unknown> | null)?.whatsapp as { enabled?: boolean; apiUrl?: string; apiToken?: string } | undefined;
+                if (order.customer_phone && wa?.enabled && wa.apiUrl && wa.apiToken) {
+                    sendWhatsAppMessage({ to: order.customer_phone, message: orderDeliveredMessage(order.order_number), config: { apiUrl: wa.apiUrl, apiToken: wa.apiToken } })
+                        .catch((err: unknown) => log.error("WhatsApp delivered notification failed:", err));
+                }
+            }, (err: unknown) => log.error("Failed to fetch order for delivered email:", err));
+
+        revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
+        return { success: true };
+    } catch (error) {
+        log.error("Failed to mark as delivered:", error);
+        return { success: false, error: "Failed to mark as delivered" };
     }
 }
 
