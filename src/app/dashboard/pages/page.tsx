@@ -26,13 +26,13 @@ export default async function PagesPage() {
         </div>
         <div className="flex items-center gap-2">
           {site.published && tenantSlug && (
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" asChild>
               <a href={`/store/${tenantSlug}`} target="_blank" rel="noopener noreferrer">
                 <Globe className="size-3.5" /> View Site
               </a>
             </Button>
           )}
-          <Button size="sm" asChild>
+          <Button asChild>
             <Link href={`/editor?project=${site.id}`} target="_blank">
               <ExternalLink className="size-3.5" /> Open Editor
             </Link>
@@ -88,7 +88,7 @@ export default async function PagesPage() {
           </div>
           <p className="text-sm font-medium mb-1">No pages yet</p>
           <p className="text-xs text-muted-foreground mb-4">Open the visual editor to create your first page</p>
-          <Button size="sm" asChild>
+          <Button asChild>
             <Link href={`/editor?project=${site.id}`} target="_blank">
               <ExternalLink className="size-3.5" /> Open Editor
             </Link>
