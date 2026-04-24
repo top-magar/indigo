@@ -47,6 +47,9 @@ export default async function ProductsPage({
     const { supabase, tenantId } = await auth();
     const currency = await getTenantCurrency(supabase, tenantId);
 
+    const { data: tenantData } = await supabase.from("tenants").select("slug").eq("id", tenantId).single();
+    const storeSlug = tenantData?.slug || "";
+
     const [{ data: productsData, count: totalCount }, stats, categories] = await Promise.all([
         getProducts(tenantId, supabase, params),
         getProductStats(tenantId),
@@ -85,6 +88,7 @@ export default async function ProductsPage({
             currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
+            storeSlug={storeSlug}
             filters={{
                 status: params.status,
                 stock: params.stock,

@@ -2,7 +2,7 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { ProductCard } from "@/components/store/product-card"
 import Link from "next/link"
 import { storeHref } from "@/features/store/url"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react"
 
 interface DefaultHomepageProps {
   tenantId: string
@@ -15,85 +15,135 @@ interface DefaultHomepageProps {
   heroImageUrl?: string
 }
 
-export async function DefaultHomepage({ tenantId, tenantName, tenantDescription, storeSlug, heroTitle, heroSubtitle, heroCta, heroImageUrl }: DefaultHomepageProps) {
+export async function DefaultHomepage({
+  tenantId, tenantName, tenantDescription, storeSlug,
+  heroTitle, heroSubtitle, heroCta, heroImageUrl,
+}: DefaultHomepageProps) {
   const supabase = await createClient()
 
-  const { data: products } = await supabase
-    .from("products")
-    .select("*, category:categories(id, name, slug)")
-    .eq("tenant_id", tenantId)
-    .eq("status", "active")
-    .order("created_at", { ascending: false })
-    .limit(8)
+  const [{ data: products }, { data: categories }] = await Promise.all([
+    supabase.from("products")
+      .select("*, category:categories(id, name, slug)")
+      .eq("tenant_id", tenantId).eq("status", "active")
+      .order("created_at", { ascending: false }).limit(8),
+    supabase.from("categories")
+      .select("id, name, slug, image_url")
+      .eq("tenant_id", tenantId).order("sort_order").limit(6),
+  ])
 
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("id, name, slug")
-    .eq("tenant_id", tenantId)
-    .order("name")
-    .limit(6)
+  const hasProducts = products && products.length > 0
+  const hasCategories = categories && categories.length > 1
 
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden" style={heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+      <section
+        className="relative overflow-hidden"
+        style={heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+      >
         {heroImageUrl && <div className="absolute inset-0 bg-black/40" />}
-        <div className={`relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36 ${heroImageUrl ? "text-white" : ""}`}>
+        <div className={`relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 ${heroImageUrl ? "text-white" : ""}`}>
           <div className="max-w-2xl">
-            <p className="text-sm font-medium tracking-widest uppercase text-muted-foreground">
-              Welcome to
-            </p>
-            <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
               {heroTitle || tenantName}
             </h1>
             {(heroSubtitle || tenantDescription) && (
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
                 {heroSubtitle || tenantDescription}
               </p>
             )}
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href={storeHref(storeSlug, "/products")}
-                className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-sm font-semibold text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3 text-sm font-medium text-background hover:opacity-90 transition-opacity"
               >
-                {heroCta || "Shop Now"}
-                <ArrowRight className="h-4 w-4" />
+                {heroCta || "Shop Now"} <ArrowRight className="size-4" />
               </Link>
-              {categories && categories.length > 0 && (
-                <Link
-                  href={storeHref(storeSlug, `/products?category=${categories[0].slug}`)}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-semibold transition-colors hover:bg-accent"
-                >
-                  Browse {categories[0].name}
-                </Link>
-              )}
             </div>
           </div>
         </div>
-        {/* Subtle decorative element — not a generic gradient */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-[500px] w-[500px] rounded-full bg-primary/[0.03]" />
       </section>
 
-      {/* Featured Products — with visual rhythm */}
-      {products && products.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between border-b border-border/50 pb-4">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Curated for you</p>
-              <h2 className="mt-1 text-2xl font-bold tracking-tight">Featured Products</h2>
+      {/* Trust Signals */}
+      <section className="border-y bg-muted/30">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="flex items-center gap-3">
+              <Truck className="size-5 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Fast Delivery</p>
+                <p className="text-xs text-muted-foreground">Across Nepal via Pathao</p>
+              </div>
             </div>
-            <Link
-              href={storeHref(storeSlug, "/products")}
-              className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              View all <ArrowRight className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-3">
+              <CreditCard className="size-5 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Secure Payment</p>
+                <p className="text-xs text-muted-foreground">eSewa, Khalti & Cards</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Shield className="size-5 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-sm font-medium">Buyer Protection</p>
+                <p className="text-xs text-muted-foreground">Easy returns & refunds</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      {hasCategories && (
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-8">
+            <h2 className="text-2xl font-bold tracking-tight">Shop by Category</h2>
+            <Link href={storeHref(storeSlug, "/products")} className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1">
+              View all <ArrowRight className="size-3.5" />
             </Link>
           </div>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+            {categories!.map((cat) => (
+              <Link
+                key={cat.id}
+                href={storeHref(storeSlug, `/products?category=${cat.slug}`)}
+                className="group rounded-xl border bg-card p-4 text-center transition-colors hover:border-foreground/20"
+              >
+                <div className="mx-auto mb-3 size-12 rounded-full bg-muted flex items-center justify-center text-lg">
+                  {cat.name.charAt(0)}
+                </div>
+                <p className="text-sm font-medium group-hover:text-foreground">{cat.name}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Featured Products */}
+      {hasProducts && (
+        <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">New Arrivals</p>
+              <h2 className="mt-1 text-2xl font-bold tracking-tight">Featured Products</h2>
+            </div>
+            <Link href={storeHref(storeSlug, "/products")} className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1">
+              View all <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {products!.map((product) => (
               <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
             ))}
           </div>
+        </section>
+      )}
+
+      {/* Empty state */}
+      {!hasProducts && (
+        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 text-center">
+          <p className="text-lg font-medium">Coming soon</p>
+          <p className="mt-2 text-muted-foreground">We&apos;re adding products. Check back shortly!</p>
         </section>
       )}
     </div>

@@ -100,6 +100,7 @@ interface ProductsClientProps {
     currentPage: number;
     pageSize: number;
     currency: string;
+    storeSlug: string;
     filters: {
         status?: string;
         stock?: string;
@@ -120,6 +121,7 @@ export interface ProductsListViewProps {
     currentPage: number;
     pageSize: number;
     currency: string;
+    storeSlug: string;
     // Filter state
     searchValue: string;
     onSearchChange: (value: string) => void;
@@ -154,6 +156,7 @@ export function ProductsClient({
     currentPage,
     pageSize,
     currency,
+    storeSlug,
     filters,
 }: ProductsClientProps) {
     const router = useRouter();
@@ -240,6 +243,7 @@ export function ProductsClient({
             currentPage={currentPage}
             pageSize={pageSize}
             currency={currency}
+            storeSlug={storeSlug}
             searchValue={searchValue}
             onSearchChange={setSearchValue}
             getFilter={getFilter}
@@ -272,6 +276,7 @@ export function ProductsListView({
     currentPage,
     pageSize,
     currency,
+    storeSlug,
     searchValue,
     onSearchChange,
     getFilter,
@@ -667,7 +672,7 @@ export function ProductsListView({
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
-                                                        <Link href={`/store/products/${product.slug}`} target="_blank">
+                                                        <Link href={`/store/${storeSlug}/products/${product.slug}`} target="_blank">
                                                             <Eye className="size-3.5" />
                                                             View in Store
                                                         </Link>
