@@ -230,9 +230,11 @@ export function NavItemComponent({
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={isActive} className={activeCn}>
                         <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
-                        <span className="truncate">{item.title}</span>
-                        {badgeContent}
-                        <ChevronRight className={cn("size-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
+                        <span className="truncate flex-1">{item.title}</span>
+                        <div className="flex items-center gap-1 shrink-0 ml-auto">
+                            {badgeContent}
+                            <ChevronRight className={cn("size-3.5 text-muted-foreground/50 transition-transform duration-200", isOpen && "rotate-90")} />
+                        </div>
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
