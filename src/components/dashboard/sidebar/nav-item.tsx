@@ -6,7 +6,6 @@ import { ChevronRight, ExternalLink } from "lucide-react";
 import {
     SidebarMenuItem,
     SidebarMenuButton,
-    SidebarMenuBadge,
     SidebarMenuSub,
     SidebarMenuSubItem,
     SidebarMenuSubButton,
@@ -72,17 +71,17 @@ export function NavItemComponent({
         }
     }, [pathname, hasChildren, item.children]);
 
-    const badgeContent = item.badge && (
-        <SidebarMenuBadge className={cn(
-            "text-xs min-w-5 h-5",
+    const badgeEl = item.badge ? (
+        <span className={cn(
+            "text-[10px] font-medium tabular-nums min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center shrink-0",
             item.badgeVariant === "warning" && "bg-warning/10 text-warning",
             item.badgeVariant === "success" && "bg-success/10 text-success",
-            item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground",
+            item.badgeVariant === "destructive" && "bg-destructive/10 text-destructive",
             !item.badgeVariant && "bg-muted text-muted-foreground"
         )}>
             {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
-        </SidebarMenuBadge>
-    );
+        </span>
+    ) : null;
 
     // Inline badge for collapsible items (no absolute positioning)
     const inlineBadge = item.badge && (
@@ -145,7 +144,7 @@ export function NavItemComponent({
                                         )} />
                                     )}
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
-                                    {!isCollapsed && badgeContent}
+                                    {!isCollapsed && badgeEl}
                                     {!isCollapsed && statusBadge}
                                     {item.external && !isCollapsed && (
                                         <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
