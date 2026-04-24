@@ -22,6 +22,7 @@ import {
     EditCustomerDialog,
 } from "@/features/customers/components";
 import { EntityDetailPage } from "@/components/dashboard/templates";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import type { Customer, CustomerAddress } from "@/app/dashboard/customers/types";
 import { formatCurrency } from "@/shared/utils";
 
@@ -47,6 +48,18 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
 
     return (
         <>
+            <Breadcrumb className="mb-4">
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/dashboard/customers">Customers</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>{`${customer.firstName || ""} ${customer.lastName || ""}`.trim() || customer.email.split("@")[0]}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+
             <EntityDetailPage
                 backHref="/dashboard/customers"
                 backLabel="Customers"

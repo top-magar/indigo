@@ -109,6 +109,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { cn, formatCurrency } from "@/shared/utils";
 import { OrderStatusBadge, SentimentIndicator, AddressCard, OrderTimeline } from "./_components/helpers";
 import { VerificationBanner, PaymentCard, FulfillmentCard } from "./_components/lifecycle";
@@ -274,6 +275,18 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
 
   return (
     <div className="space-y-3">
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/dashboard/orders">Orders</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>#{order.orderNumber}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">

@@ -375,7 +375,58 @@ export function InventoryClient({
                 )}
             </div>
 
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-3">
+                {localProducts.length === 0 ? (
+                    <EmptyState
+                        icon={Package}
+                        title={filters.search || filters.stock || filters.category
+                            ? "No products match your filters"
+                            : "No products in inventory"}
+                        description={filters.search || filters.stock || filters.category
+                            ? "Try adjusting your search or filters"
+                            : "Add products to start tracking inventory"}
+                        action={(filters.search || filters.stock || filters.category) ? {
+                            label: "Clear Filters",
+                            onClick: () => router.push(pathname),
+                        } : {
+                            label: "Add Product",
+                            onClick: () => router.push("/dashboard/products/new"),
+                        }}
+                    />
+                ) : (
+                    localProducts.map((product) => (
+                        <Card key={product.id}>
+                            <CardContent className="flex items-center justify-between gap-4 p-4">
+                                <div className="min-w-0 space-y-1">
+                                    <Link
+                                        href={`/dashboard/products/${product.id}`}
+                                        className="font-medium hover:text-primary transition-colors line-clamp-1"
+                                    >
+                                        {product.name}
+                                    </Link>
+                                    {product.sku && (
+                                        <p className="text-xs text-muted-foreground font-mono">{product.sku}</p>
+                                    )}
+                                </div>
+                                <div className="flex flex-col items-end gap-1 shrink-0">
+                                    <span className={cn(
+                                        "font-semibold tabular-nums",
+                                        product.quantity === 0 && "text-destructive",
+                                        product.quantity > 0 && product.quantity <= product.reorder_point && "text-warning"
+                                    )}>
+                                        {product.quantity}
+                                    </span>
+                                    <StockBadge quantity={product.quantity} reorderPoint={product.reorder_point} />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))
+                )}
+            </div>
+
             {/* Inventory Table */}
+            <div className="hidden md:block">
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -528,6 +579,7 @@ export function InventoryClient({
                         )}
                     </TableBody>
                 </Table>
+            </div>
 
             {/* Pagination */}
             {pageCount > 1 && (

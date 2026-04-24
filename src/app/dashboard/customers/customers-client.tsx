@@ -295,6 +295,29 @@ export function CustomersClient({
                                 className="py-16"
                             />
                         ) : (
+                            <>
+                            <div className="md:hidden space-y-2 p-2">
+                                {customers.map((customer) => (
+                                    <div key={customer.id} className="rounded-lg border p-3 cursor-pointer" onClick={() => router.push(`/dashboard/customers/${customer.id}`)}>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="size-8">
+                                                <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                                                    {getInitials(customer.first_name, customer.last_name, customer.email)}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium truncate">{getDisplayName(customer.first_name, customer.last_name, customer.email)}</p>
+                                                <p className="text-xs text-muted-foreground truncate">{customer.email}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
+                                            <span>{customer.orders_count} orders</span>
+                                            <span>{formatCurrency(customer.total_spent, currency)}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="hidden md:block">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="hover:bg-transparent">
@@ -455,6 +478,8 @@ export function CustomersClient({
                                     ))}
                                 </TableBody>
                             </Table>
+                            </div>
+                            </>
                         )}
                     
                 </div>

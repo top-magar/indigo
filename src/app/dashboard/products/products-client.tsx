@@ -523,7 +523,7 @@ export function ProductsListView({
             </div>
 
             {/* Products Table */}
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -694,6 +694,60 @@ export function ProductsListView({
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-2">
+              {products.length === 0 ? (
+                <EmptyState
+                  icon={Package}
+                  title={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
+                    ? "No products match your filters"
+                    : "No products yet"}
+                  description={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
+                    ? "Try adjusting your search or filters"
+                    : "Add your first product to start selling"}
+                  action={searchValue || getFilter("status") || getFilter("stock") || getFilter("category") ? {
+                    label: "Clear Filters",
+                    onClick: () => onClearFilters(),
+                  } : {
+                    label: "Add Product",
+                    onClick: () => onNavigate("/dashboard/products/new"),
+                  }}
+                />
+              ) : (
+                products.map((product) => {
+                  const status = productStatusConfig[product.status];
+                  return (
+                    <div
+                      key={product.id}
+                      className="rounded-lg border p-3 space-y-2 cursor-pointer"
+                      onClick={() => onNavigate(`/dashboard/products/${product.id}`)}
+                    >
+                      <div className="flex items-center gap-3">
+                        {product.images?.[0]?.url ? (
+                          <Image src={product.images[0].url} alt={product.name} width={40} height={40} className="size-10 rounded-md object-cover" />
+                        ) : (
+                          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+                            <ImageIcon className="size-4 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{product.name}</p>
+                          <p className="text-xs text-muted-foreground">{product.category_name || "Uncategorized"}</p>
+                        </div>
+                        <Badge variant="secondary" className={cn("border-0 gap-1 text-[10px] shrink-0", status.bgColor, status.color)}>
+                          {status.label}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{formatCurrency(Number(product.price), currency)}</span>
+                        <span>{product.quantity} in stock</span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             {/* Pagination */}

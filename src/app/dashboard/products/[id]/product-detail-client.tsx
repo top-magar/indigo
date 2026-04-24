@@ -29,6 +29,7 @@ import {
     ProductVariantsCard,
 } from "@/features/products/components";
 import { EntityDetailPage } from "@/components/dashboard/templates";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface ProductDetailClientProps {
     initialProduct: Product;
@@ -124,6 +125,18 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
 
     return (
         <div className="pb-20">
+            <Breadcrumb className="mb-4">
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/dashboard/products">Products</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>{product.name}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+
             <ProductHeader
                 product={product}
                 onDelete={() => setDeleteDialogOpen(true)}
