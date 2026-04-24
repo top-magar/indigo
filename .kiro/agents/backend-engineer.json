@@ -35,8 +35,8 @@
   "hooks": {
     "stop": [
       {
-        "command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | grep 'error TS' | head -5",
-        "timeout_ms": 30000
+        "command": "bash /Users/topmagar/Desktop/indigo/.kiro/hooks/auto-commit.sh",
+        "timeout_ms": 45000
       }
     ]
   },
