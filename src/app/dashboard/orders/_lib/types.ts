@@ -62,6 +62,7 @@ export interface OrderCustomer {
 
 export interface OrderLine {
   id: string;
+  productId?: string | null;
   productName: string;
   productSku?: string | null;
   productImage?: string | null;

@@ -154,6 +154,7 @@ interface OrderCustomer {
 
 interface OrderLine {
   id: string;
+  productId?: string | null;
   productName: string;
   productSku?: string | null;
   productImage?: string | null;

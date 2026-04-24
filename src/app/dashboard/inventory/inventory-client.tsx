@@ -401,7 +401,7 @@ export function InventoryClient({
                                 <div className="min-w-0 space-y-1">
                                     <Link
                                         href={`/dashboard/products/${product.id}`}
-                                        className="font-medium hover:text-primary transition-colors line-clamp-1"
+                                        className="font-medium hover:underline hover:text-primary transition-colors line-clamp-1"
                                     >
                                         {product.name}
                                     </Link>
@@ -506,7 +506,7 @@ export function InventoryClient({
                                             <div className="min-w-0">
                                                 <Link 
                                                     href={`/dashboard/products/${product.id}`}
-                                                    className="font-medium hover:text-primary transition-colors line-clamp-1"
+                                                    className="font-medium hover:underline hover:text-primary transition-colors line-clamp-1"
                                                 >
                                                     {product.name}
                                                 </Link>

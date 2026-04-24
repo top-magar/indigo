@@ -1,6 +1,8 @@
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 import { createClient } from "@/infrastructure/supabase/server"
 import { db } from "@/infrastructure/db"
 import { users } from "@/db/schema"
@@ -135,6 +137,11 @@ export default async function DashboardPage() {
           <Suspense fallback={<StatCardGridSkeleton count={4} />}>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {metrics.map((m, i) => <EnhancedMetricCard key={i} metric={m} currency={currency} />)}
+            </div>
+            <div className="flex justify-end">
+              <Link href="/dashboard/analytics" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+                View analytics <ArrowRight className="size-3" />
+              </Link>
             </div>
           </Suspense>
 

@@ -38,6 +38,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     billingAddress: order.billing_address as Record<string, string> | null,
     lines: ((order.order_items ?? []) as Array<Record<string, unknown>>).map(item => ({
       id: item.id as string,
+      productId: (item.product_id as string) || null,
       productName: item.product_name as string,
       productSku: item.product_sku as string | null,
       productImage: item.product_image as string | null,

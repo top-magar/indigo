@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,6 +99,9 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
                         <span className={cn("size-1.5 rounded-full", stockStatus.dotColor)} />
                         {stockStatus.label}
                     </Badge>
+                    <Link href="/dashboard/inventory" className="text-xs text-muted-foreground hover:text-foreground">
+                        View all inventory
+                    </Link>
                 </div>
                 {!isEditing ? (
                     <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setIsEditing(true)}>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Phone, Banknote, CreditCard, Truck, Package, CheckCircle2, AlertTriangle, MapPin, Clock } from "lucide-react";
@@ -204,7 +205,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm truncate">{line.productName}</p>
+                      <p className="text-sm truncate">{line.productId ? <Link href={`/dashboard/products/${line.productId}`} className="hover:underline">{line.productName}</Link> : line.productName}</p>
                       <p className="text-xs text-muted-foreground">Qty: {line.quantity}</p>
                     </div>
                     <span className="text-sm tabular-nums">{formatCurrency(line.totalPrice, currency)}</span>
@@ -263,7 +264,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{line.productName}</p>
+                  <p className="text-sm truncate">{line.productId ? <Link href={`/dashboard/products/${line.productId}`} className="hover:underline">{line.productName}</Link> : line.productName}</p>
                   <p className="text-xs text-muted-foreground">Qty: {line.quantity}</p>
                 </div>
                 <span className="text-sm tabular-nums">{formatCurrency(line.totalPrice, currency)}</span>
