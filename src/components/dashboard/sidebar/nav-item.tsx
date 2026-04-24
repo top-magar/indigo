@@ -244,10 +244,21 @@ export function NavItemComponent({
                     <SidebarMenuButton isActive={isActive} className={activeCn}>
                         <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
                         <span className="truncate flex-1">{item.title}</span>
-                        <div className="flex items-center gap-1 shrink-0 ml-auto">
-                            {inlineBadge}
-                            <ChevronRight className={cn("size-3.5 text-muted-foreground/50 transition-transform duration-200", isOpen && "rotate-90")} />
-                        </div>
+                        {item.badge ? (
+                            <span className={cn(
+                                "text-[10px] font-medium tabular-nums min-w-5 h-5 rounded-md px-1.5 flex items-center justify-center shrink-0",
+                                item.badgeVariant === "warning" && "bg-warning/10 text-warning",
+                                item.badgeVariant === "destructive" && "bg-destructive/10 text-destructive",
+                                !item.badgeVariant && "bg-muted text-muted-foreground"
+                            )}>
+                                {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
+                            </span>
+                        ) : (
+                            <ChevronRight className={cn(
+                                "size-3.5 shrink-0 text-muted-foreground/40 transition-transform duration-200",
+                                isOpen && "rotate-90"
+                            )} />
+                        )}
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
