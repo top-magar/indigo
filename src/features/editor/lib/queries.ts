@@ -8,6 +8,7 @@ import { products } from '@/db/schema/products';
 import { collections } from '@/db/schema/collections';
 import { eq, and, asc, desc, sql } from 'drizzle-orm';
 import { requireUser } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 function safeJsonParse(str: string, fallback: unknown = []): unknown {
   try { return JSON.parse(str); } catch { return fallback; }
@@ -42,6 +43,7 @@ export async function savePage(page: {
     // Also update project timestamp
     await db.update(editorProjects).set({ updatedAt: new Date() })
       .where(eq(editorProjects.id, page.id));
+    revalidatePath('/dashboard/pages');
     return updated;
   }
 
@@ -50,6 +52,7 @@ export async function savePage(page: {
     .set({ data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
     .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
     .returning();
+  revalidatePath('/dashboard/pages');
   return updated;
 }
 
@@ -133,6 +136,8 @@ export async function publishPage(page: {
   // Editor header/footer data stays in editor_projects for the editor UI only.
 
   // Publish each page with SEO + theme, resolve page links
+  const [tenantRow] = await db.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  const tenantSlug = tenantRow?.slug || projectSlug;
   for (const p of pages) {
     const rawElements = p.data as import('../core/types').El[];
     const elements = await resolveBindings(rawElements, tenantId);
@@ -144,8 +149,6 @@ export async function publishPage(page: {
     // Inject theme into <head>, resolve page links
     let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
     // Resolve #page:slug → /store/{tenantSlug}/{pageSlug}
-    const [tenantRow] = await db.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-    const tenantSlug = tenantRow?.slug || projectSlug;
     finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
       const target = pages.find(pg => pg.slug === slug);
       return target?.isHomepage ? `/store/${tenantSlug}` : `/store/${tenantSlug}/${slug}`;
@@ -159,6 +162,9 @@ export async function publishPage(page: {
   await db.update(editorProjects)
     .set({ slug: projectSlug, published: true, updatedAt: new Date() })
     .where(eq(editorProjects.id, page.id));
+
+  revalidatePath('/dashboard/pages');
+  revalidatePath(`/store/${tenantSlug}`, 'layout');
 
   return { ...page, slug: projectSlug };
 }
@@ -219,6 +225,7 @@ export async function createPage(projectId: string, name: string) {
   const [page] = await db.insert(editorPages)
     .values({ projectId, name, slug, order: nextOrder, data: [], createdAt: new Date(), updatedAt: new Date() })
     .returning();
+  revalidatePath('/dashboard/pages');
   return page;
 }
 
@@ -244,6 +251,7 @@ export async function updatePage(pageId: string, data: { name?: string; slug?: s
 
   const [updated] = await db.update(editorPages).set(updates)
     .where(eq(editorPages.id, pageId)).returning();
+  revalidatePath('/dashboard/pages');
   return updated;
 }
 
@@ -257,6 +265,7 @@ export async function deletePage2(pageId: string) {
     .limit(1);
   if (!project) return;
   await db.delete(editorPages).where(eq(editorPages.id, pageId));
+  revalidatePath('/dashboard/pages');
 }
 
 export async function setHomepage(projectId: string, pageId: string) {
@@ -267,6 +276,7 @@ export async function setHomepage(projectId: string, pageId: string) {
   // Unset all pages, then set the target
   await db.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
   await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(eq(editorPages.id, pageId));
+  revalidatePath('/dashboard/pages');
 }
 
 // ─── SEO + Navigation ───────────────────────────────────

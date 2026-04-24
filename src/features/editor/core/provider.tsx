@@ -43,7 +43,7 @@ type EditorState = {
   zoom: number;
 };
 
-type HistoryState = { snapshots: El[][]; currentIndex: number };
+type HistoryState = { patchCount: number; currentIndex: number };
 type EditorStore = { editor: EditorState; history: HistoryState };
 export type { EditorState, HistoryState, EditorStore };
 
@@ -69,7 +69,7 @@ export function useEditor() {
 
   const elements = useDocumentStore(s => s.elements);
   const dirty = useDocumentStore(s => s.dirty);
-  const snapshots = useDocumentStore(s => s.snapshots);
+  const patchCount = useDocumentStore(s => s.patches.length);
   const currentIndex = useDocumentStore(s => s.currentIndex);
 
   const selected = useEditorStore(s => s.selected);
@@ -116,8 +116,8 @@ export function useEditor() {
 
   const state: EditorStore = useMemo(() => ({
     editor: { elements, selected, device, preview, hovered, dropTarget, dirty, clipboard: null, zoom },
-    history: { snapshots, currentIndex },
-  }), [elements, selected, device, preview, hovered, dropTarget, dirty, zoom, snapshots, currentIndex]);
+    history: { patchCount, currentIndex },
+  }), [elements, selected, device, preview, hovered, dropTarget, dirty, zoom, patchCount, currentIndex]);
 
   return { state, dispatch, ...ctx };
 }

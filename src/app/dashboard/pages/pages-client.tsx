@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, FileText, Home, Eye, MoreHorizontal, Pencil, Globe, Trash2 } from "lucide-react";
+import { Search, FileText, Home, Eye, MoreHorizontal, Pencil, Globe, Trash2, Type } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,13 +15,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConfirmDelete } from "@/hooks/use-confirm-dialog";
-import { deletePage } from "./actions";
+import { deletePage, renamePage } from "./actions";
 import type { EditorPage } from "@/db/schema/editor-pages";
 
 type Site = { id: string; name: string; published: boolean | null; slug: string | null };
 
 export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: EditorPage[]; tenantSlug: string }) {
   const [query, setQuery] = useState("");
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const renameRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const confirmDelete = useConfirmDelete();
 
@@ -36,6 +39,20 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const handleDelete = async (page: EditorPage) => {
     if (!(await confirmDelete(page.name, "page"))) return;
     await deletePage(page.id);
+    router.refresh();
+  };
+
+  const startRename = (page: EditorPage) => {
+    setRenamingId(page.id);
+    setRenameValue(page.name);
+    setTimeout(() => renameRef.current?.select(), 0);
+  };
+
+  const commitRename = async (id: string) => {
+    const trimmed = renameValue.trim();
+    setRenamingId(null);
+    if (!trimmed) return;
+    await renamePage(id, trimmed);
     router.refresh();
   };
 
@@ -64,17 +81,35 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-sm font-medium truncate">{page.name}</p>
+                <span className={`size-1.5 rounded-full shrink-0 ${page.published ? "bg-success" : "bg-muted-foreground/40"}`} />
+                {renamingId === page.id ? (
+                  <Input
+                    ref={renameRef}
+                    value={renameValue}
+                    onChange={(e) => setRenameValue(e.target.value)}
+                    onBlur={() => commitRename(page.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") commitRename(page.id);
+                      if (e.key === "Escape") setRenamingId(null);
+                    }}
+                    className="h-6 text-sm font-medium px-1 py-0"
+                    autoFocus
+                  />
+                ) : (
+                  <button
+                    className="text-sm font-medium truncate text-left hover:underline"
+                    onClick={() => startRename(page)}
+                  >
+                    {page.name}
+                  </button>
+                )}
                 {page.isHomepage && (
                   <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">
                     Home
                   </Badge>
                 )}
-                {page.published && (
-                  <span className="size-1.5 rounded-full bg-success shrink-0" />
-                )}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground ml-3.5">
                 /{page.slug}
                 {page.views ? (
                   <>
@@ -95,6 +130,10 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => startRename(page)}>
+                  <Type className="size-4" />
+                  Rename
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href={`/editor?project=${site.id}&page=${page.id}`} target="_blank">
                     <Pencil className="size-4" />

@@ -60,7 +60,7 @@ export default function EditorNavigation({
   const device = state.editor.device;
   const preview = state.editor.preview;
   const canUndo = state.history.currentIndex > 0;
-  const canRedo = state.history.currentIndex < state.history.snapshots.length - 1;
+  const canRedo = state.history.currentIndex < state.history.patchCount;
 
   return (
     <TooltipProvider delayDuration={200}>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { El } from '../types';
+import { resolveStyles } from '../types';
 import { useDocumentStore } from '../document-store';
 import { useEditorStore } from '../editor-store';
 import ElementWrapper from '../../canvas/element-wrapper';
@@ -11,7 +12,8 @@ import { registry } from './types';
 // ─── Helpers ────────────────────────────────────────────────
 
 function W({ element, children }: { element: El; children: ReactNode }) {
-  return <ElementWrapper element={element} style={element.styles}>{children}</ElementWrapper>;
+  const device = useEditorStore(s => s.device);
+  return <ElementWrapper element={element} style={resolveStyles(element, device)}>{children}</ElementWrapper>;
 }
 function c(el: El) { return el.content as Record<string, string>; }
 
