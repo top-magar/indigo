@@ -6,7 +6,6 @@ import { AlertTriangle, Sparkles, Brain, CheckCircle2, ArrowUpRight, Zap, Chevro
 import { Button } from "@/components/ui/button"
 import { NoiseBackground } from "@/components/ui/aceternity/noise-background"
 import { cn } from "@/shared/utils"
-import { motion, AnimatePresence } from "motion/react"
 import type { AIInsight } from "../types"
 
 function AIInsightCard({ insight }: { insight: AIInsight }) {
@@ -53,16 +52,17 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
             <ChevronDown className={cn("size-4 transition-transform duration-200", !isExpanded && "-rotate-90")} />
           </Button>
         </div>
-        <AnimatePresence initial={false}>
-          {isExpanded && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden">
-              <div className="px-4 pb-4 space-y-2">
-                {insights.slice(0, 3).map((insight) => (<AIInsightCard key={insight.id} insight={insight} />))}
-                {insights.length > 3 && (<Button variant="ghost" className="w-full mt-2 text-xs">View {insights.length - 3} more insights</Button>)}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className={cn(
+          "grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(0.4,0,0.2,1)]",
+          isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        )}>
+          <div className="overflow-hidden">
+            <div className="px-4 pb-4 space-y-2">
+              {insights.slice(0, 3).map((insight) => (<AIInsightCard key={insight.id} insight={insight} />))}
+              {insights.length > 3 && (<Button variant="ghost" className="w-full mt-2 text-xs">View {insights.length - 3} more insights</Button>)}
+            </div>
+          </div>
+        </div>
       </div>
     </NoiseBackground>
   )

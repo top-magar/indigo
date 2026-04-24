@@ -160,7 +160,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                         <Package className="size-3.5 text-muted-foreground shrink-0" />
                         <span className="text-sm flex-1">{rate.name}</span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <Clock className="size-3" />
+                          <Clock className="size-3.5" />
                           {rate.min_days === rate.max_days ? `${rate.min_days}d` : `${rate.min_days}-${rate.max_days}d`}
                         </span>
                         <span className="text-sm font-medium tabular-nums w-20 text-right">
@@ -168,7 +168,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                         </span>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="size-7"><MoreHorizontal className="size-3" /></Button>
+                            <Button variant="ghost" size="icon" className="size-7"><MoreHorizontal className="size-3.5" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-32">
                             <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }} className="text-xs gap-2">

@@ -103,7 +103,7 @@ export function NotificationsSettingsClient({ initialPreferences, userRole }: {
           {CHANNELS.map(ch => (
             <div key={ch.id} className="w-16 text-center">
               <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                <ch.icon className="size-3" />
+                <ch.icon className="size-3.5" />
                 {ch.label}
               </div>
             </div>

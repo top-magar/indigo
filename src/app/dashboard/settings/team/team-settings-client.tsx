@@ -115,7 +115,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <p className="text-xs text-muted-foreground truncate">{member.email} · Joined {format(new Date(member.created_at), "MMM yyyy")}</p>
               </div>
               <Badge className={cn("text-[10px] px-1.5 py-0 gap-1 capitalize", ROLE_STYLE[member.role])}>
-                <Icon className="size-3" />
+                <Icon className="size-3.5" />
                 {member.role}
               </Badge>
               {canModify && (

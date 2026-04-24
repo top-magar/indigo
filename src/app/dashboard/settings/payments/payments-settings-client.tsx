@@ -168,7 +168,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                 </div>
               </div>
               <a href="https://developer.esewa.com.np" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Get credentials from eSewa Developer Portal <ExternalLink className="size-3" />
+                Get credentials from eSewa Developer Portal <ExternalLink className="size-3.5" />
               </a>
             </div>
           )}
@@ -190,7 +190,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                 <SecretInput id="khaltiSecret" value={s.khaltiSecretKey} onChange={v => set("khaltiSecretKey", v)} placeholder="Your Khalti secret key" />
               </div>
               <a href="https://khalti.com/join/merchant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                Get credentials from Khalti Merchant Portal <ExternalLink className="size-3" />
+                Get credentials from Khalti Merchant Portal <ExternalLink className="size-3.5" />
               </a>
             </div>
           )}
