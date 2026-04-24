@@ -10,21 +10,6 @@ import { LinkPicker } from "./link-content";
 export function RichTextField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-1 pb-1">
-        {[
-          { icon: 'format_bold', wrap: ['**', '**'], tip: 'Bold' },
-          { icon: 'format_italic', wrap: ['_', '_'], tip: 'Italic' },
-          { icon: 'format_underlined', wrap: ['<u>', '</u>'], tip: 'Underline' },
-        ].map(({ icon, tip }) => (
-          <button key={icon} className="size-6 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title={tip}>
-            <MIcon name={icon} size={13} />
-          </button>
-        ))}
-        <div className="w-px h-3 bg-sidebar-border/50 mx-0.5" />
-        <button className="size-6 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title="Clear formatting">
-          <MIcon name="format_clear" size={13} />
-        </button>
-      </div>
       <textarea value={value} onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-md border border-sidebar-border bg-sidebar px-2.5 py-2 text-xs leading-relaxed outline-none resize-y focus:border-primary min-h-[72px] transition-colors" rows={3} />
       <div className="flex items-center justify-between">

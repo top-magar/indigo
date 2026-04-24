@@ -16,6 +16,7 @@ import {
   CloudUpload, RemoveFormatting, SquareMousePointer, SlidersVertical, Crop, Radius, Blend, PaintBucket,
   Monitor, Tablet, Smartphone,
   Droplets, CircleDot, Sun, Contrast, FilterX, RotateCw, ZoomOutIcon, ArrowUpDown, Check,
+  Home, Users, Briefcase, HelpCircle, MessageSquare, Rocket, ShoppingBag, File,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -108,6 +109,10 @@ const iconMap: Record<string, LucideIcon> = {
   opacity: Droplets, blur_circular: CircleDot, light_mode: Sun, contrast: Contrast,
   filter_b_and_w: FilterX, color_lens: Paintbrush,
   rotate_right: RotateCw, zoom_out_map: ZoomOutIcon, swap_vert: ArrowUpDown, check: Check,
+
+  // Pages
+  home: Home, file: File, people: Users, work: Briefcase, help: HelpCircle,
+  chat: MessageSquare, rocket_launch: Rocket, shopping_bag: ShoppingBag,
 };
 
 /** Lucide icon wrapper — drop-in replacement for Material Symbols MIcon */

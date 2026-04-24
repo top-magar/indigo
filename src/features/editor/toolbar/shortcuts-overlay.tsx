@@ -1,34 +1,35 @@
 'use client';
 
 import { MIcon } from '../ui/m-icon';
+import { k } from '../lib/keys';
 
 const groups = [
   { title: 'General', shortcuts: [
-    { keys: '⌘ Z', action: 'Undo' },
-    { keys: '⌘ ⇧ Z', action: 'Redo' },
-    { keys: '⌘ D', action: 'Duplicate' },
-    { keys: '⌘ C / V', action: 'Copy / Paste' },
-    { keys: '⌘ ⌥ C', action: 'Copy styles' },
-    { keys: '⌘ ⌥ V', action: 'Paste styles' },
+    { keys: k('⌘ Z', 'Ctrl+Z'), action: 'Undo' },
+    { keys: k('⌘ ⇧ Z', 'Ctrl+Shift+Z'), action: 'Redo' },
+    { keys: k('⌘ D', 'Ctrl+D'), action: 'Duplicate' },
+    { keys: k('⌘ C / V', 'Ctrl+C / V'), action: 'Copy / Paste' },
+    { keys: k('⌘ ⌥ C', 'Ctrl+Alt+C'), action: 'Copy styles' },
+    { keys: k('⌘ ⌥ V', 'Ctrl+Alt+V'), action: 'Paste styles' },
     { keys: 'Del', action: 'Delete element' },
     { keys: 'Esc', action: 'Select parent' },
-    { keys: '⌘ A', action: 'Select body' },
+    { keys: k('⌘ A', 'Ctrl+A'), action: 'Select body' },
   ]},
   { title: 'Navigation', shortcuts: [
-    { keys: '⌘ + / −', action: 'Zoom in / out' },
-    { keys: '⌘ 0', action: 'Zoom to 100%' },
-    { keys: '⌘ 1', action: 'Zoom to fit' },
-    { keys: '⌘ 2', action: 'Zoom to selection' },
-    { keys: '⌘ Scroll', action: 'Zoom to cursor' },
+    { keys: k('⌘ + / −', 'Ctrl++ / -'), action: 'Zoom in / out' },
+    { keys: k('⌘ 0', 'Ctrl+0'), action: 'Zoom to 100%' },
+    { keys: k('⌘ 1', 'Ctrl+1'), action: 'Zoom to fit' },
+    { keys: k('⌘ 2', 'Ctrl+2'), action: 'Zoom to selection' },
+    { keys: k('⌘ Scroll', 'Ctrl+Scroll'), action: 'Zoom to cursor' },
     { keys: 'Scroll', action: 'Pan canvas' },
     { keys: 'Space + Drag', action: 'Pan canvas' },
     { keys: 'Middle-click', action: 'Pan canvas' },
   ]},
   { title: 'Elements', shortcuts: [
-    { keys: '⌘ [ / ]', action: 'Send backward / forward' },
-    { keys: '⌘ ↑ / ↓', action: 'Reorder in tree' },
-    { keys: '⌘ ⇧ L', action: 'Lock / unlock' },
-    { keys: '⌘ ⇧ H', action: 'Hide / show' },
+    { keys: k('⌘ [ / ]', 'Ctrl+[ / ]'), action: 'Send backward / forward' },
+    { keys: k('⌘ ↑ / ↓', 'Ctrl+↑ / ↓'), action: 'Reorder in tree' },
+    { keys: k('⌘ ⇧ L', 'Ctrl+Shift+L'), action: 'Lock / unlock' },
+    { keys: k('⌘ ⇧ H', 'Ctrl+Shift+H'), action: 'Hide / show' },
     { keys: 'Right-click', action: 'Context menu' },
   ]},
   { title: 'Handles', shortcuts: [

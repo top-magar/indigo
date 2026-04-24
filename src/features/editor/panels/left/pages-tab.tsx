@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  Plus, Home, FileText, Trash2, GripVertical, Eye, EyeOff,
-  Settings, ChevronLeft, File, Users, Mail, Briefcase,
-  HelpCircle, MessageSquare, CreditCard, Image, Rocket, ShoppingBag,
-  type LucideIcon,
-} from "lucide-react";
+import { MIcon } from "../../ui/m-icon";
 import { cn } from "@/shared/utils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEditor } from "../../core/provider";
@@ -23,9 +18,9 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 
-const iconMap: Record<string, LucideIcon> = {
-  File, Users, Mail, Briefcase, HelpCircle,
-  MessageSquare, CreditCard, Image, Rocket, ShoppingBag,
+const templateIconMap: Record<string, string> = {
+  File: "file", Users: "people", Mail: "contact_mail", Briefcase: "work", HelpCircle: "help",
+  MessageSquare: "chat", CreditCard: "credit_card", Image: "image", Rocket: "rocket_launch", ShoppingBag: "shopping_bag",
 };
 
 interface PageItem {
@@ -151,13 +146,13 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center gap-2 px-2 py-2 border-b">
           <button onClick={() => setView("list")} className="p-1 rounded-md hover:bg-muted">
-            <ChevronLeft className="size-3.5" />
+            <MIcon name="chevron_left" size={14} />
           </button>
           <span className="text-xs font-medium">Choose a Template</span>
         </div>
         <div className="grid grid-cols-2 gap-2 p-2">
           {pageTemplates.map(tmpl => {
-            const Icon = iconMap[tmpl.icon] ?? File;
+            const iconName = templateIconMap[tmpl.icon] ?? "description";
             return (
               <button
                 key={tmpl.id}
@@ -165,7 +160,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 onClick={() => handleCreateFromTemplate(tmpl.id)}
                 className="flex flex-col items-center gap-2 rounded-lg border border-transparent p-3 text-center hover:bg-muted hover:border-border transition-colors"
               >
-                <Icon className="size-5 text-muted-foreground" />
+                <MIcon name={iconName} size={20} className="text-muted-foreground" />
                 <span className="text-xs font-medium leading-tight">{tmpl.name}</span>
                 <span className="text-[10px] text-muted-foreground leading-tight">{tmpl.description}</span>
               </button>
@@ -182,7 +177,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center gap-2 px-2 py-2 border-b">
           <button onClick={() => { setView("list"); setSettingsPage(null); }} className="p-1 rounded-md hover:bg-muted">
-            <ChevronLeft className="size-3.5" />
+            <MIcon name="chevron_left" size={14} />
           </button>
           <span className="text-xs font-medium truncate">{settingsPage.name}</span>
         </div>
@@ -280,8 +275,8 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
             page.id === activePageId ? "bg-primary/10 text-primary" : "hover:bg-muted"
           )}
         >
-          <GripVertical className="size-3 text-muted-foreground/40 shrink-0" />
-          {page.isHomepage ? <Home className="size-3.5 shrink-0" /> : <FileText className="size-3.5 shrink-0" />}
+          <MIcon name="drag_indicator" size={12} className="text-muted-foreground/40 shrink-0" />
+          {page.isHomepage ? <MIcon name="home" size={14} className="shrink-0" /> : <MIcon name="description" size={14} className="shrink-0" />}
 
           {editingId === page.id ? (
             <input
@@ -305,21 +300,25 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
           <span className="text-[10px] text-muted-foreground/40 font-mono">/{page.slug}</span>
 
           {page.published ? (
-            <Eye className="size-3 text-emerald-500/50 shrink-0" />
+            <MIcon name="visibility" size={12} className="text-emerald-500/50 shrink-0" />
           ) : (
-            <EyeOff className="size-3 text-muted-foreground/40 shrink-0" />
+            <MIcon name="visibility_off" size={12} className="text-muted-foreground/40 shrink-0" />
           )}
 
-          <Settings
-            className="size-3 shrink-0 opacity-0 group-hover:opacity-40 hover:!opacity-100 transition-opacity"
+          <span
+            className="shrink-0 opacity-0 group-hover:opacity-40 hover:!opacity-100 transition-opacity"
             onClick={e => { e.stopPropagation(); setSettingsPage(page); setView("settings"); }}
-          />
+          >
+            <MIcon name="settings" size={12} />
+          </span>
 
           {!page.isHomepage && (
-            <Trash2
-              className="size-3 shrink-0 opacity-0 group-hover:opacity-40 hover:!opacity-100 hover:text-destructive transition-opacity"
+            <span
+              className="shrink-0 opacity-0 group-hover:opacity-40 hover:!opacity-100 hover:text-destructive transition-opacity"
               onClick={e => { e.stopPropagation(); handleDelete(page.id); }}
-            />
+            >
+              <MIcon name="delete" size={12} />
+            </span>
           )}
         </button>
       ))}
@@ -329,7 +328,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
         disabled={creating}
         className="flex items-center gap-2 w-full rounded-md px-2 py-2 mt-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors border border-dashed border-transparent hover:border-border"
       >
-        <Plus className="size-3.5" />
+        <MIcon name="add" size={14} />
         {creating ? "Creating..." : "Add Page"}
       </button>
 

@@ -12,16 +12,17 @@ import { Input } from "@/components/ui/input";
 
 export type IconOpt = { value: string; label: string; icon: ReactNode };
 
-/** Ensure value has px suffix */
+/** Ensure value has px suffix — preserves %, vh, vw, rem, em */
 export function px(v: string): string {
+  if (!v || /[%vrem]/.test(v)) return v;
   const n = parseFloat(v);
   return isNaN(n) ? v : `${n}px`;
 }
 
-/** Strip px suffix, return raw number string */
+/** Strip px suffix only, preserves other units */
 export function strip(v: string): string {
-  const n = parseFloat(v);
-  return isNaN(n) ? v : String(n);
+  if (!v) return v;
+  return v.replace(/px$/, '');
 }
 
 export const selectOptions: Record<string, string[]> = {
@@ -33,6 +34,20 @@ export const selectOptions: Record<string, string[]> = {
   backgroundSize: ["auto", "cover", "contain"],
   backgroundPosition: ["center", "top", "bottom", "left", "right"],
   objectFit: ["fill", "contain", "cover", "none"],
+};
+
+export const labelMap: Record<string, string> = {
+  "block": "Stack", "flex": "Flex", "grid": "Grid", "inline": "Inline", "inline-block": "Inline Block", "none": "Hidden",
+  "visible": "Show", "hidden": "Clip", "auto": "Auto Scroll", "scroll": "Always Scroll",
+  "static": "Default", "relative": "Relative", "absolute": "Free", "fixed": "Fixed", "sticky": "Sticky",
+  "default": "Default", "pointer": "Hand", "text": "Text", "move": "Move", "not-allowed": "Disabled",
+  "solid": "Solid", "dashed": "Dashed", "dotted": "Dotted",
+  "cover": "Fill", "contain": "Fit",
+  "center": "Center", "top": "Top", "bottom": "Bottom", "left": "Left", "right": "Right",
+  "fill": "Stretch", "scale-down": "Shrink to Fit",
+  "flex-start": "Start", "flex-end": "End", "space-between": "Space Between", "space-around": "Space Around",
+  "stretch": "Stretch",
+  "nowrap": "No Wrap", "wrap": "Wrap",
 };
 
 export function Tip({ children, label }: { children: ReactNode; label: string }) {
@@ -114,7 +129,7 @@ export function SelectField({ label, value, options, onChange }: { label: string
       {label && <label className="mb-1 block text-[10px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Select value={value || undefined} onValueChange={onChange}>
         <SelectTrigger className="h-7 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
-        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-xs">{o || "none"}</SelectItem>)}</SelectContent>
+        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-xs">{labelMap[o] || o || "none"}</SelectItem>)}</SelectContent>
       </Select>
     </div>
   );

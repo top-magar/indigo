@@ -185,7 +185,7 @@ function EditorInner() {
               const hasSel = !!selected;
               const isGrid = hasSel && selected.styles.display === "grid";
               return (<>
-                {!isDragging && hasSel && altHeld && <SnapDistances altHeld={altHeld} />}
+                {!isDragging && hasSel && <SnapDistances />}
                 {!isDragging && isGrid && <GridEditor />}
                 <PixelGrid zoom={zoom} />
               </>);

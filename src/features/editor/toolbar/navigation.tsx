@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/shared/utils";
 import type { Device } from "../core/types";
 import { useEditor } from "../core/provider";
+import { k } from "../lib/keys";
 
 const devices: [Device, string, string][] = [
   ["Desktop", "laptop_mac", "Desktop"],
@@ -96,8 +97,8 @@ export default function EditorNavigation({
 
         {/* ── Center ── */}
         <div className="flex items-center gap-1 h-full">
-          <Btn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
-          <Btn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
+          <Btn icon="undo" label={`Undo ${k('⌘Z', 'Ctrl+Z')}`} onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
+          <Btn icon="redo" label={`Redo ${k('⌘⇧Z', 'Ctrl+Shift+Z')}`} onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
 
           <div className="h-5 w-px bg-border/40 mx-1.5" />
 
@@ -115,13 +116,13 @@ export default function EditorNavigation({
 
           <div className="h-5 w-px bg-border/40 mx-1.5" />
 
-          <Btn icon="remove" label="Zoom out ⌘−" onClick={onZoomOut} />
-          <Tip label="Reset zoom ⌘0">
+          <Btn icon="remove" label={`Zoom out ${k('⌘−', 'Ctrl+-')}`} onClick={onZoomOut} />
+          <Tip label={`Reset zoom ${k('⌘0', 'Ctrl+0')}`}>
             <button onClick={onZoomReset} className="min-w-[40px] text-center text-[10px] font-mono text-muted-foreground/70 tabular-nums hover:text-foreground hover:bg-muted transition-colors rounded-md h-8 px-1">
               {zoom}%
             </button>
           </Tip>
-          <Btn icon="add" label="Zoom in ⌘+" onClick={onZoomIn} />
+          <Btn icon="add" label={`Zoom in ${k('⌘+', 'Ctrl++')}`} onClick={onZoomIn} />
         </div>
 
         {/* ── Right ── */}
@@ -172,6 +173,8 @@ export default function EditorNavigation({
           </Popover>
 
           <div className="h-5 w-px bg-border/40 mx-0.5" />
+
+          <Btn icon="save" label={`Save ${k('⌘S', 'Ctrl+S')}`} onClick={onSave} disabled={!dirty && !saving} />
 
           <Button size="sm" onClick={onPublish}
             className="h-8 gap-2 px-3.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">

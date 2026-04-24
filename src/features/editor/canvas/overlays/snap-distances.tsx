@@ -57,14 +57,14 @@ function measureToParent(selRect: DOMRect, parentRect: DOMRect): Line[] {
   return lines;
 }
 
-export default function SnapDistances({ altHeld }: { altHeld: boolean }): ReactNode {
+export default function SnapDistances(): ReactNode {
   const { state } = useEditor();
   const { selected, elements, preview } = state.editor;
   const [lines, setLines] = useState<Line[]>([]);
   const rafRef = useRef(0);
 
   useEffect(() => {
-    if (!selected || preview || selected.type === '__body' || !altHeld) { setLines([]); return; }
+    if (!selected || preview || selected.type === '__body') { setLines([]); return; }
 
     // RAF-batched calculation
     rafRef.current = requestAnimationFrame(() => {
@@ -103,7 +103,7 @@ export default function SnapDistances({ altHeld }: { altHeld: boolean }): ReactN
     });
 
     return () => cancelAnimationFrame(rafRef.current);
-  }, [selected, elements, preview, altHeld]);
+  }, [selected, elements, preview]);
 
   if (lines.length === 0) return null;
 

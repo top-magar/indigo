@@ -94,7 +94,7 @@ export function ResizeHandles({ element, wrapperRef, dispatch }: {
             <div className={cn('absolute inset-0 rounded-[2px] border transition-all shadow-sm',
               isAct ? 'bg-blue-500 border-blue-500 scale-[1.15]' :
               isHov ? 'bg-blue-500 border-blue-500' :
-              'bg-white border-blue-500'
+              'bg-background border-blue-500'
             )} />
           </div>
         );
