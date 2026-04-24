@@ -18,7 +18,7 @@ const CSP_HEADER = [
   "frame-src 'self' https://js.stripe.com https://esewa.com.np https://khalti.com",
 ].join("; ");
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host")?.split(":")[0] || "";
   const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost";
