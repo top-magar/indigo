@@ -59,7 +59,7 @@ export const deliveryAttempts = pgTable("delivery_attempts", {
   id: uuid("id").defaultRandom().primaryKey(),
   tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
   orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }).notNull(),
-  codCollectionId: uuid("cod_collection_id").references(() => codCollections.id),
+  codCollectionId: uuid("cod_collection_id").references(() => codCollections.id, { onDelete: "cascade" }),
 
   attemptNumber: integer("attempt_number").default(1).notNull(),
   status: deliveryAttemptStatusEnum("status").default("scheduled").notNull(),

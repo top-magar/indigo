@@ -114,7 +114,7 @@ export async function ensureTenantSite() {
   const insertedPageIds: string[] = [];
   for (const p of pages) {
     const [inserted] = await db.insert(editorPages).values({
-      projectId: siteId, name: p.name, slug: p.slug, order: p.order,
+      projectId: siteId, tenantId, name: p.name, slug: p.slug, order: p.order,
       data: p.data, isHomepage: p.isHomepage, createdAt: now, updatedAt: now,
     }).returning({ id: editorPages.id });
     insertedPageIds.push(inserted.id);

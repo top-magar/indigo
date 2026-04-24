@@ -21,7 +21,7 @@ const CART_CACHE_PROFILE = "seconds"
 // Types
 export interface CartItem {
   id: string
-  productId: string
+  productId: string | null
   variantId: string | null
   productName: string
   productSku: string | null

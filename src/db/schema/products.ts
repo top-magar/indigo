@@ -1,4 +1,5 @@
-import { pgTable, uuid, text, timestamp, jsonb, integer, index, varchar, decimal, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, jsonb, integer, index, varchar, decimal, boolean, unique, check } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 
 /**
@@ -28,6 +29,7 @@ export const categories = pgTable("categories", {
 }, (table) => ({
     tenantSlugIdx: index("categories_tenant_slug_idx").on(table.tenantId, table.slug),
     parentIdx: index("categories_parent_idx").on(table.parentId),
+    tenantSlugUnique: unique("categories_tenant_slug").on(table.tenantId, table.slug),
 }));
 
 /**
@@ -79,6 +81,9 @@ export const products = pgTable("products", {
     categoryIdx: index("products_category_idx").on(table.categoryId),
     statusIdx: index("products_status_idx").on(table.tenantId, table.status),
     skuIdx: index("products_sku_idx").on(table.tenantId, table.sku),
+    activeIdx: index("products_active_idx").on(table.tenantId).where(sql`status = 'active'`),
+    tenantSlugUnique: unique("products_tenant_slug").on(table.tenantId, table.slug),
+    pricePositive: check("products_price_positive", sql`price >= 0`),
 }));
 
 /**

@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, timestamp, integer, decimal, boolean, index } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { pgTable, uuid, text, timestamp, integer, decimal, boolean, index, check } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { products, productVariants } from "./products";
 
@@ -13,7 +13,7 @@ import { products, productVariants } from "./products";
  */
 export const carts = pgTable("carts", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     customerId: text("customer_id"), // Can be null for guest carts
     
     // Customer Info (for checkout)
@@ -54,6 +54,7 @@ export const carts = pgTable("carts", {
 }, (table) => ({
     tenantCustomerIdx: index("carts_tenant_customer_idx").on(table.tenantId, table.customerId),
     statusIdx: index("carts_status_idx").on(table.status),
+    activeCartIdx: index("carts_active_idx").on(table.tenantId).where(sql`status = 'active'`),
 }));
 
 /**
@@ -61,12 +62,12 @@ export const carts = pgTable("carts", {
  */
 export const cartItems = pgTable("cart_items", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     cartId: uuid("cart_id").references(() => carts.id, { onDelete: 'cascade' }).notNull(),
 
     // Product Link
-    productId: uuid("product_id").references(() => products.id).notNull(),
-    variantId: uuid("variant_id").references(() => productVariants.id),
+    productId: uuid("product_id").references(() => products.id, { onDelete: "set null" }),
+    variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }),
 
     // Snapshot of product data at time of addition (to prevent price change issues)
     productName: text("product_name").notNull(),
@@ -85,6 +86,7 @@ export const cartItems = pgTable("cart_items", {
 }, (table) => ({
     tenantIdx: index("cart_items_tenant_idx").on(table.tenantId),
     cartIdx: index("cart_items_cart_idx").on(table.cartId),
+    quantityPositive: check("cart_items_quantity_positive", sql`quantity > 0`),
 }));
 
 /**

@@ -38,7 +38,7 @@ export interface DashboardWidget {
  */
 export const dashboardLayouts = pgTable("dashboard_layouts", {
   id: uuid("id").defaultRandom().primaryKey(),
-  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
   userId: text("user_id").notNull(),
   
   // Layout configuration

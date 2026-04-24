@@ -6,7 +6,7 @@ export type CampaignStatus = "draft" | "scheduled" | "sending" | "sent" | "pause
 
 export const campaigns = pgTable("campaigns", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     name: text("name").notNull(),
     type: text("type").$type<CampaignType>().notNull().default("email"),
     status: text("status").$type<CampaignStatus>().notNull().default("draft"),
@@ -41,8 +41,8 @@ export const campaigns = pgTable("campaigns", {
 // Track individual email sends for analytics
 export const campaignRecipients = pgTable("campaign_recipients", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
-    campaignId: uuid("campaign_id").references(() => campaigns.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+    campaignId: uuid("campaign_id").references(() => campaigns.id, { onDelete: "cascade" }).notNull(),
     customerId: uuid("customer_id"),
     email: text("email").notNull(),
     status: text("status").$type<"pending" | "sent" | "delivered" | "opened" | "clicked" | "bounced" | "unsubscribed">().notNull().default("pending"),
@@ -57,12 +57,13 @@ export const campaignRecipients = pgTable("campaign_recipients", {
     campaignIdx: index("campaign_recipients_campaign_idx").on(table.campaignId),
     customerIdx: index("campaign_recipients_customer_idx").on(table.customerId),
     emailIdx: index("campaign_recipients_email_idx").on(table.email),
+    campaignStatusIdx: index("campaign_recipients_status_idx").on(table.campaignId, table.status),
 }));
 
 // Customer segments for targeting
 export const customerSegments = pgTable("customer_segments", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     name: text("name").notNull(),
     description: text("description"),
     type: text("type").$type<"static" | "dynamic">().notNull().default("dynamic"),

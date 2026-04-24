@@ -1,4 +1,5 @@
-import { pgTable, uuid, text, timestamp, integer, index, varchar, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, index, varchar, decimal, jsonb, check } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { customers } from "./customers";
 import { products, productVariants } from "./products";
@@ -109,6 +110,7 @@ export const orderItems = pgTable("order_items", {
 }, (table) => ({
     orderIdx: index("order_items_order_idx").on(table.orderId),
     tenantIdx: index("order_items_tenant_idx").on(table.tenantId),
+    quantityPositive: check("order_items_quantity_positive", sql`quantity > 0`),
 }));
 
 /**

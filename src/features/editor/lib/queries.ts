@@ -223,7 +223,7 @@ export async function createPage(projectId: string, name: string) {
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   const [page] = await db.insert(editorPages)
-    .values({ projectId, name, slug, order: nextOrder, data: [], createdAt: new Date(), updatedAt: new Date() })
+    .values({ projectId, tenantId, name, slug, order: nextOrder, data: [], createdAt: new Date(), updatedAt: new Date() })
     .returning();
   revalidatePath('/dashboard/pages');
   return page;

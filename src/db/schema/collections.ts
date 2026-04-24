@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, boolean, integer, jsonb, index, varchar } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, boolean, integer, jsonb, index, varchar, unique } from "drizzle-orm/pg-core";
 import { tenants } from "./tenants";
 import { products } from "./products";
 
@@ -33,6 +33,7 @@ export const collections = pgTable("collections", {
     tenantIdx: index("collections_tenant_idx").on(table.tenantId),
     slugIdx: index("collections_slug_idx").on(table.tenantId, table.slug),
     isActiveIdx: index("collections_is_active_idx").on(table.tenantId, table.isActive),
+    tenantSlugUnique: unique("collections_tenant_slug").on(table.tenantId, table.slug),
 }));
 
 /**

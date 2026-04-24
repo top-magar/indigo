@@ -9,7 +9,9 @@ import {
   varchar,
   boolean,
   decimal,
+  check,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { products } from "./products";
 import { customers } from "./customers";
@@ -93,6 +95,7 @@ export const reviews = pgTable(
       table.isApproved
     ),
     ratingIdx: index("reviews_rating_idx").on(table.tenantId, table.rating),
+    ratingRange: check("reviews_rating_range", sql`rating >= 1 AND rating <= 5`),
   })
 );
 

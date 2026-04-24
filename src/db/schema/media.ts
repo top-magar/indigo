@@ -8,7 +8,7 @@ import {
   index,
   unique,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 
 /**
@@ -79,6 +79,7 @@ export const mediaAssets = pgTable(
     folderIdx: index("media_assets_folder_idx").on(table.folderId),
     createdIdx: index("media_assets_created_idx").on(table.createdAt),
     mimeTypeIdx: index("media_assets_mime_type_idx").on(table.mimeType),
+    activeMediaIdx: index("media_assets_active_idx").on(table.tenantId).where(sql`deleted_at IS NULL`),
   })
 );
 

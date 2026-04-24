@@ -16,7 +16,7 @@ export type VoucherCodeStatus = "active" | "used" | "expired" | "deactivated";
 
 export const discounts = pgTable("discounts", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     
     // Basic info
     name: text("name").notNull(),
@@ -75,7 +75,7 @@ export const discounts = pgTable("discounts", {
 
 export const voucherCodes = pgTable("voucher_codes", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     discountId: uuid("discount_id").references(() => discounts.id, { onDelete: "cascade" }).notNull(),
     
     code: text("code").notNull(),
@@ -101,9 +101,9 @@ export const voucherCodes = pgTable("voucher_codes", {
 
 export const discountUsages = pgTable("discount_usages", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
-    discountId: uuid("discount_id").references(() => discounts.id).notNull(),
-    voucherCodeId: uuid("voucher_code_id").references(() => voucherCodes.id),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+    discountId: uuid("discount_id").references(() => discounts.id, { onDelete: "cascade" }).notNull(),
+    voucherCodeId: uuid("voucher_code_id").references(() => voucherCodes.id, { onDelete: "cascade" }),
     customerId: uuid("customer_id"),
     orderId: uuid("order_id"),
     discountAmount: numeric("discount_amount", { precision: 10, scale: 2 }).notNull(),
@@ -123,7 +123,7 @@ export type RuleConditionType = "product" | "collection" | "category" | "variant
 
 export const discountRules = pgTable("discount_rules", {
     id: uuid("id").defaultRandom().primaryKey(),
-    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     discountId: uuid("discount_id").references(() => discounts.id, { onDelete: "cascade" }).notNull(),
     
     name: text("name"),
