@@ -1,29 +1,26 @@
 # Indigo Documentation
 
-## Quick Start
+## Getting Started
+
 - [QUICK_START.md](QUICK_START.md) — Setup and first run
 
-## Architecture
-- [specs/PRODUCT-REQUIREMENTS.md](specs/PRODUCT-REQUIREMENTS.md) — PRD
-- [specs/SYSTEM-ARCHITECTURE.md](specs/SYSTEM-ARCHITECTURE.md) — System design
-- [specs/IMPLEMENTATION-PLAN.md](specs/IMPLEMENTATION-PLAN.md) — Build plan
-- [architecture/](architecture/) — Infrastructure and multi-agent patterns
-
-## Features
-- [features/visual-editor/](features/visual-editor/) — Storefront visual editor
-- [features/ai-services/](features/ai-services/) — AI service integration
-- [features/email/](features/email/) — Email service
-
 ## Guides
-- [guides/DEPLOYMENT.md](guides/DEPLOYMENT.md) — Deployment
-- [guides/SUPABASE-INTEGRATION.md](guides/SUPABASE-INTEGRATION.md) — Database setup
-- [guides/AWS-GETTING-STARTED.md](guides/AWS-GETTING-STARTED.md) — AWS setup
 
-## AWS
-- [aws/](aws/) — Architecture, services, Well-Architected review
+- [DEPLOYMENT.md](guides/DEPLOYMENT.md) — Deploy to Vercel
+- [SUPABASE-INTEGRATION.md](guides/SUPABASE-INTEGRATION.md) — Database setup
+- [DECOMPOSE-CLIENT-COMPONENTS.md](guides/DECOMPOSE-CLIENT-COMPONENTS.md) — Client component refactoring pattern
 
-## Research (historical)
-- [comparisons/](comparisons/) — Medusa, Saleor competitive analysis
+## Agent Context
 
-## Design System
-**Source of truth:** [`../design-system/indigo/MASTER.md`](../design-system/indigo/MASTER.md)
+These files are loaded by AI agents as knowledge base context:
+
+- [design-system.md](design-system.md) — Design tokens, typography, colors, spacing
+- [editor-v3-kb.md](editor-v3-kb.md) — Editor architecture and patterns
+
+## Audits
+
+- [CODE-ANALYSIS.md](CODE-ANALYSIS.md) — Platform audit with specific bugs, security issues, and line numbers (Apr 2026)
+
+## Archive
+
+Historical docs preserved in [`_archive/`](_archive/) — original specs, competitive research, AWS plans, editor v2 docs. All in git history.
