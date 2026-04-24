@@ -129,6 +129,17 @@ const defaultConfig: NotificationDisplayConfig = {
   category: "system",
 };
 
+function formatRelative(date: string | Date): string {
+  const now = Date.now();
+  const then = new Date(date).getTime();
+  const diff = Math.floor((now - then) / 1000);
+  if (diff < 60) return "Just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export interface NotificationItemProps {
   notification: Notification;
   onClick?: (notification: Notification) => void;
@@ -153,18 +164,6 @@ export function NotificationItem({
       handleClick();
     }
   };
-
-  // Custom avatar with notification icon
-  const NotificationAvatar = (
-    <div
-      className={cn(
-        "flex items-center justify-center rounded-lg size-8",
-        config.bgColor
-      )}
-    >
-      <Icon className={cn("size-4", config.color)} />
-    </div>
-  );
 
   return (
     <div
@@ -191,8 +190,8 @@ export function NotificationItem({
 
       {/* Notification layout */}
       <div className="flex items-start gap-3">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-          {NotificationAvatar}
+        <div className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg", config.bgColor)}>
+          <Icon className={cn("size-4", config.color)} />
         </div>
         <div className="flex flex-col gap-1 pr-4">
           <span
@@ -208,7 +207,7 @@ export function NotificationItem({
           </span>
           <div className="mt-1">
             <time className="text-[10px] text-muted-foreground">
-              {new Date(notification.createdAt).toLocaleDateString()}
+              {formatRelative(notification.createdAt)}
             </time>
           </div>
         </div>
