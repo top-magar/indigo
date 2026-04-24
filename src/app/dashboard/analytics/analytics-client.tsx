@@ -11,6 +11,7 @@ import {
     TrendingUp,
     Package,
     ShoppingCart,
+    BarChart3,
     Image as ImageIcon,
 } from "lucide-react";
 import { getOrderStatus } from "@/config/status";
@@ -101,14 +102,19 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
 
 function StatItem({ label, value, change }: { label: string; value: string; change: number }) {
     return (
-        <div className="flex-1 min-w-0">
-            <p className="text-sm text-muted-foreground">{label}</p>
+        <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">{label}</p>
             <p className="text-xl font-semibold tabular-nums tracking-tight">{value}</p>
             <p className={cn("text-xs tabular-nums", change >= 0 ? "text-success" : "text-destructive")}>
                 {change >= 0 ? "+" : ""}{change.toFixed(1)}%
             </p>
         </div>
     );
+}
+
+function hasData(data: AnalyticsData): boolean {
+    const { overview } = data;
+    return overview.revenue > 0 || overview.orders > 0 || overview.customers > 0;
 }
 
 export function AnalyticsDashboardView({
@@ -121,19 +127,20 @@ export function AnalyticsDashboardView({
     onExport,
 }: AnalyticsDashboardViewProps) {
     const { overview } = data;
+    const empty = !hasData(data);
 
     return (
         <TooltipProvider>
-            <div className={cn("space-y-6", isPending && "opacity-60 pointer-events-none")}>
+            <div className={cn("space-y-6", isPending && "opacity-60 pointer-events-none transition-opacity")}>
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <h1 className="text-lg font-semibold tracking-tight">Analytics</h1>
                     <div className="flex items-center gap-2">
                         {isFreeTier ? (
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
-                                        <Calendar className="size-4" />
+                                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border text-muted-foreground">
+                                        <Calendar className="size-3.5" />
                                         <span className="text-sm">Last 7 days</span>
                                     </div>
                                 </TooltipTrigger>
@@ -143,7 +150,7 @@ export function AnalyticsDashboardView({
                             </Tooltip>
                         ) : (
                             <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
-                                <SelectTrigger className="w-full sm:w-[160px]">
+                                <SelectTrigger className="w-[160px]">
                                     <Calendar className="size-3.5" />
                                     <SelectValue />
                                 </SelectTrigger>
@@ -157,7 +164,7 @@ export function AnalyticsDashboardView({
                                 </SelectContent>
                             </Select>
                         )}
-                        <Button variant="outline" onClick={onExport}>
+                        <Button variant="outline" size="sm" onClick={onExport}>
                             <Download className="size-3.5" />
                             Export
                         </Button>
@@ -166,93 +173,104 @@ export function AnalyticsDashboardView({
 
                 {/* Free Tier Banner */}
                 {isFreeTier && (
-                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/40">
                         <div className="flex items-center gap-3">
                             <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
                                 <TrendingUp className="size-4 text-warning" />
                             </div>
                             <div>
-                                <p className="font-medium">You&apos;re viewing limited analytics</p>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm font-medium">You&apos;re viewing limited analytics</p>
+                                <p className="text-xs text-muted-foreground">
                                     Free plan shows last 7 days only. Upgrade for full history and advanced insights.
                                 </p>
                             </div>
                         </div>
-                        <Button asChild>
+                        <Button variant="outline" size="sm" asChild>
                             <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
                         </Button>
                     </div>
                 )}
 
-                {/* Stats Row */}
-                <div className="flex gap-6 rounded-lg border p-4">
-                    <StatItem label="Revenue" value={formatCurrency(overview.revenue, currency)} change={overview.revenueChange} />
-                    <StatItem label="Orders" value={overview.orders.toString()} change={overview.ordersChange} />
-                    <StatItem label="Avg Order" value={formatCurrency(overview.avgOrderValue, currency)} change={overview.avgOrderValueChange} />
-                    <StatItem label="Customers" value={overview.customers.toString()} change={overview.customersChange} />
-                </div>
+                {empty ? (
+                    <EmptyState
+                        icon={BarChart3}
+                        title="No analytics data yet"
+                        description="Once you receive orders, your sales data will appear here."
+                        className="py-16"
+                    />
+                ) : (
+                    <>
+                        {/* Stats Row */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 rounded-lg border p-4">
+                            <StatItem label="Revenue" value={formatCurrency(overview.revenue, currency)} change={overview.revenueChange} />
+                            <StatItem label="Orders" value={overview.orders.toLocaleString()} change={overview.ordersChange} />
+                            <StatItem label="Avg Order" value={formatCurrency(overview.avgOrderValue, currency)} change={overview.avgOrderValueChange} />
+                            <StatItem label="Customers" value={overview.customers.toLocaleString()} change={overview.customersChange} />
+                        </div>
 
-                {/* Revenue Chart */}
-                <div className="rounded-lg border p-4 space-y-3">
-                    <h2 className="text-sm font-medium">Revenue Over Time</h2>
-                    <RevenueChart data={data.revenueChart} currency={currency} />
-                </div>
+                        {/* Revenue Chart */}
+                        <div className="rounded-lg border p-4 space-y-3">
+                            <h2 className="text-sm font-medium">Revenue Over Time</h2>
+                            <RevenueChart data={data.revenueChart} currency={currency} />
+                        </div>
 
-                {/* Bottom Row: Top Products + Orders by Status */}
-                <div className="grid gap-4 lg:grid-cols-2">
-                    {/* Top Products */}
-                    <div className="rounded-lg border p-4 space-y-3">
-                        <h2 className="text-sm font-medium">Top Products</h2>
-                        {data.topProducts.length === 0 ? (
-                            <EmptyState icon={Package} title="No product sales yet" className="py-8" />
-                        ) : (
-                            <div className="space-y-3">
-                                {data.topProducts.map((product, index) => (
-                                    <div key={product.id} className="flex items-center gap-3">
-                                        <span className="text-sm text-muted-foreground w-4 tabular-nums">{index + 1}</span>
-                                        <div className="size-8 rounded bg-muted overflow-hidden shrink-0">
-                                            {product.image ? (
-                                                <Image src={product.image} alt={product.name} width={32} height={32} className="size-full object-cover" />
-                                            ) : (
-                                                <div className="size-full flex items-center justify-center">
-                                                    <ImageIcon className="size-3.5 text-muted-foreground" />
+                        {/* Bottom Row: Top Products + Orders by Status */}
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            {/* Top Products */}
+                            <div className="rounded-lg border p-4 space-y-3">
+                                <h2 className="text-sm font-medium">Top Products</h2>
+                                {data.topProducts.length === 0 ? (
+                                    <EmptyState icon={Package} title="No product sales yet" className="py-8" />
+                                ) : (
+                                    <div className="space-y-3">
+                                        {data.topProducts.map((product, index) => (
+                                            <div key={product.id} className="flex items-center gap-3">
+                                                <span className="text-xs font-semibold tabular-nums text-muted-foreground w-5 text-center">{index + 1}</span>
+                                                <div className="size-8 rounded bg-muted overflow-hidden shrink-0">
+                                                    {product.image ? (
+                                                        <Image src={product.image} alt={product.name} width={32} height={32} className="size-full object-cover" />
+                                                    ) : (
+                                                        <div className="size-full flex items-center justify-center">
+                                                            <ImageIcon className="size-3.5 text-muted-foreground" />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
-                                        </div>
-                                        <span className="flex-1 min-w-0 text-sm truncate">{product.name}</span>
-                                        <span className="text-sm font-medium tabular-nums">{formatCurrency(product.revenue, currency)}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Orders by Status */}
-                    <div className="rounded-lg border p-4 space-y-3">
-                        <h2 className="text-sm font-medium">Orders by Status</h2>
-                        {data.ordersByStatus.length === 0 ? (
-                            <EmptyState icon={ShoppingCart} title="No orders yet" className="py-8" />
-                        ) : (
-                            <div className="space-y-3">
-                                {data.ordersByStatus.map((item) => {
-                                    const config = getOrderStatus(item.status);
-                                    return (
-                                        <div key={item.status} className="flex items-center gap-3">
-                                            <span className="text-sm capitalize w-24 shrink-0">{item.status}</span>
-                                            <span className="text-sm text-muted-foreground w-8 text-right tabular-nums">{item.count}</span>
-                                            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                                                <div
-                                                    className={cn("h-full rounded-full bg-primary")}
-                                                    style={{ width: `${item.percentage}%` }}
-                                                />
+                                                <span className="flex-1 min-w-0 text-sm truncate">{product.name}</span>
+                                                <span className="text-sm font-medium tabular-nums">{formatCurrency(product.revenue, currency)}</span>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                </div>
+
+                            {/* Orders by Status */}
+                            <div className="rounded-lg border p-4 space-y-3">
+                                <h2 className="text-sm font-medium">Orders by Status</h2>
+                                {data.ordersByStatus.length === 0 ? (
+                                    <EmptyState icon={ShoppingCart} title="No orders yet" className="py-8" />
+                                ) : (
+                                    <div className="space-y-3">
+                                        {data.ordersByStatus.map((item) => {
+                                            const config = getOrderStatus(item.status);
+                                            return (
+                                                <div key={item.status} className="flex items-center gap-3">
+                                                    <span className="text-sm w-24 shrink-0">{config.label}</span>
+                                                    <span className="text-xs text-muted-foreground w-8 text-right tabular-nums">{item.count}</span>
+                                                    <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                                                        <div
+                                                            className={cn("h-full rounded-full", config.color.replace("text-", "bg-"))}
+                                                            style={{ width: `${item.percentage}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </TooltipProvider>
     );
