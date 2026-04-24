@@ -168,11 +168,15 @@ export async function getTenantSitePages() {
     .from(editorProjects)
     .where(eq(editorProjects.tenantId, user.tenantId))
     .limit(1);
-  if (!site) return { site: null, pages: [] };
+  if (!site) return { site: null, pages: [], tenantSlug: "" };
+
+  // Get tenant slug for store URLs
+  const [tenant] = await db.select({ slug: tenants.slug })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
 
   const pages = await db.select().from(editorPages)
     .where(eq(editorPages.projectId, site.id))
     .orderBy(asc(editorPages.order));
 
-  return { site, pages };
+  return { site, pages, tenantSlug: tenant?.slug || "" };
 }

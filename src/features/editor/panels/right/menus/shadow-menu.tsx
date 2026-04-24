@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Section, ColorField, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 type Shadow = { x: number; y: number; blur: number; spread: number; color: string; inset: boolean };
 

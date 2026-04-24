@@ -6,7 +6,7 @@ import { useDocumentStore } from "../core/document-store";
 import { useEditorStore } from "../core/editor-store";
 import ElementWrapper from "./element-wrapper";
 import { makeElInContext } from "../core/registry";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import type { El } from "../core/types";
 import { resolveStyles } from "../core/types";
 import Recursive from "./recursive";

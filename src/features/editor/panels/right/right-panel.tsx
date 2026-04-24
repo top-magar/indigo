@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MIcon } from "../../ui/m-icon";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { useEditor } from "../../core/provider";
 import SettingsTab from "./settings-tab";
 

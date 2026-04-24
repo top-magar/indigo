@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import type { El } from "../../core/types";
 import { useEditor } from "../../core/provider";
 import { findParentId, findEl, isDescendant } from "../../core/tree-helpers";

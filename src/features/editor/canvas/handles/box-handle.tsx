@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils';
 import type { El } from '../../core/types';
 import type { useHandles } from './use-handles';
 

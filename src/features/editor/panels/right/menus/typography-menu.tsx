@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Section, ColorField, IconToggle, textAlignOpts, fontStyleOpts, textDecoOpts, type StyleProps } from "../shared";
 import { MIcon } from "../../../ui/m-icon";
 import { N } from "./measures-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 const fonts = ["Inter", "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins", "Raleway", "Nunito", "Playfair Display", "Merriweather", "Source Code Pro", "Fira Code", "DM Sans", "Space Grotesk", "Outfit", "Geist"];
 

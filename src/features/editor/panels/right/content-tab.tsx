@@ -5,7 +5,7 @@ import { MIcon } from "../../ui/m-icon";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { El } from "../../core/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { uploadEditorAsset } from "../../lib/upload";
 import { MediaPicker } from "@/features/media/components/media-picker";
 import { getProjectPages, getEditorProducts } from "../../lib/queries";

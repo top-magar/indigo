@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Section, ColorField, SelectField, selectOptions, Tip, type StyleProps } from "../shared";
 import { MIcon } from "../../../ui/m-icon";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 type Stop = { color: string; pos: number };
 

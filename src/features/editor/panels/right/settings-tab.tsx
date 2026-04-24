@@ -3,7 +3,7 @@
 import { useState, type CSSProperties } from "react";
 import { MIcon } from "../../ui/m-icon";
 import type { El } from "../../core/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { useEditor } from "../../core/provider";
 import { findParentId } from "../../core/tree-helpers";
 import DesignTab from "./design-tab";

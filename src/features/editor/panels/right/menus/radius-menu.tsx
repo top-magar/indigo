@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Section, px, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 
 function num(v: string): string {

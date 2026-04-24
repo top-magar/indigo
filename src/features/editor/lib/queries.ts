@@ -3,6 +3,7 @@
 import { db } from '@/infrastructure/db';
 import { editorProjects } from '@/db/schema/editor-projects';
 import { editorPages } from '@/db/schema/editor-pages';
+import { tenants } from '@/db/schema/tenants';
 import { products } from '@/db/schema/products';
 import { collections } from '@/db/schema/collections';
 import { eq, and, asc, desc, sql } from 'drizzle-orm';
@@ -146,10 +147,12 @@ export async function publishPage(page: {
     let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
     if (headerHtml) finalHtml = finalHtml.replace(/<body[^>]*>/, (m) => `${m}${headerHtml}`);
     if (footerHtml) finalHtml = finalHtml.replace('</body>', `${footerHtml}</body>`);
-    // Resolve #page:slug → /p/{projectSlug}/{pageSlug}
+    // Resolve #page:slug → /store/{tenantSlug}/{pageSlug}
+    const [tenantRow] = await db.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+    const tenantSlug = tenantRow?.slug || projectSlug;
     finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
       const target = pages.find(pg => pg.slug === slug);
-      return target?.isHomepage ? `/p/${projectSlug}` : `/p/${projectSlug}/${slug}`;
+      return target?.isHomepage ? `/store/${tenantSlug}` : `/store/${tenantSlug}/${slug}`;
     });
     await db.update(editorPages)
       .set({ publishedHtml: finalHtml, published: true, updatedAt: new Date() })

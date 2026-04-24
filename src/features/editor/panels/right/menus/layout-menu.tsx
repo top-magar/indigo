@@ -5,7 +5,7 @@ import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
 import { Section, IconToggle, SelectField, selectOptions, px, strip, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import type { El } from "../../../core/types";
 
 const dirOpts = [

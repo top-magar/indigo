@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils';
 import { MIcon } from './m-icon';
 
 // ─── Color Math ─────────────────────────────────────────

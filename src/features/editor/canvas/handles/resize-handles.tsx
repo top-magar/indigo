@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useEffect, useState, type CSSProperties } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils';
 import type { El } from '../../core/types';
 import type { useEditor } from '../../core/provider';
 

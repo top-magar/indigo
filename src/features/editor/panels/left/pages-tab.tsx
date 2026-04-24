@@ -7,7 +7,7 @@ import {
   HelpCircle, MessageSquare, CreditCard, Image, Rocket, ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEditor } from "../../core/provider";
 import { useEditorStore } from "../../core/editor-store";

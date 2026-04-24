@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Section, ColorField, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 const styles = [
   { value: "none", label: "None", icon: "block" },

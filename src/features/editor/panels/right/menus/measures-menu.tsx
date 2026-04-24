@@ -4,7 +4,7 @@ import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Section, IconToggle, type StyleProps } from "../shared";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider }: { icon: string; value: string; onChange: (v: string) => void; placeholder?: string; tip: string; disabled?: boolean; slider?: { min: number; max: number; gradient?: string } }) {
   const pct = slider ? ((+value || 0) - slider.min) / (slider.max - slider.min) * 100 : 0;

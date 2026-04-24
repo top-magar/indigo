@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { savePage, publishPage, updatePageSeo } from "./lib/queries";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import Recursive from "./canvas/recursive";
 import SnapDistances from "./canvas/overlays/snap-distances";
 import PixelGrid from "./canvas/overlays/pixel-grid";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import ComponentsTab from "./components-tab";
 import LayersTab from "./layers-tab";
 import TemplatesTab from "./templates-tab";
