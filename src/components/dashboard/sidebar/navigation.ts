@@ -4,20 +4,15 @@ import {
     Settings,
     Users,
     Tag,
-    Store,
     Megaphone,
     BarChart3,
     Star,
-    CreditCard,
-    Truck,
-    Receipt,
-    Globe,
-    UserCog,
-    Bell,
     ShoppingBag,
     Image,
-    FileText,
+    Globe,
     ExternalLink,
+    Gift,
+    Warehouse,
 } from "lucide-react";
 import type { NavGroup, NavItem } from "./types";
 
@@ -26,7 +21,7 @@ export function createNavigation(counts: {
 }): NavGroup[] {
     return [
         {
-            id: "daily",
+            id: "main",
             items: [
                 {
                     id: "home",
@@ -52,14 +47,22 @@ export function createNavigation(counts: {
                     title: "Products",
                     href: "/dashboard/products",
                     icon: Tag,
-                    keywords: ["items", "goods", "sku", "inventory", "stock"],
+                    keywords: ["items", "goods", "sku", "catalog"],
                     children: [
                         { id: "products-list", title: "All Products", href: "/dashboard/products" },
                         { id: "categories", title: "Categories", href: "/dashboard/categories" },
                         { id: "collections", title: "Collections", href: "/dashboard/collections" },
-                        { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },
+                    ],
+                },
+                {
+                    id: "inventory",
+                    title: "Inventory",
+                    href: "/dashboard/inventory",
+                    icon: Warehouse,
+                    keywords: ["stock", "inventory", "warehouse", "attributes"],
+                    children: [
+                        { id: "inventory-list", title: "Stock Levels", href: "/dashboard/inventory" },
                         { id: "attributes", title: "Attributes", href: "/dashboard/attributes" },
-                        { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
                     ],
                 },
                 {
@@ -120,6 +123,13 @@ export function createNavigation(counts: {
                     href: "/dashboard/marketing/campaigns",
                     icon: Megaphone,
                     keywords: ["campaigns", "email", "marketing", "automation"],
+                },
+                {
+                    id: "gift-cards",
+                    title: "Gift Cards",
+                    href: "/dashboard/gift-cards",
+                    icon: Gift,
+                    keywords: ["gift", "cards", "vouchers", "store credit"],
                 },
             ],
         },
