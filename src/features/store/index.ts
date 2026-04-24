@@ -20,8 +20,5 @@ export {
   createDefaultHomepageLayout,
 } from "./default-layout";
 
-// Theme
-export { themeToVars } from "@/shared/renderer";
-
 // URL utilities
 export { storeHref, storeBaseUrl } from "./url";
