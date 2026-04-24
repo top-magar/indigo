@@ -150,7 +150,7 @@ export function AnalyticsDashboardView({
                             </Tooltip>
                         ) : (
                             <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
-                                <SelectTrigger className="w-[160px]">
+                                <SelectTrigger className="w-[160px]" aria-label="Date range">
                                     <Calendar className="size-3.5" />
                                     <SelectValue />
                                 </SelectTrigger>
@@ -164,7 +164,7 @@ export function AnalyticsDashboardView({
                                 </SelectContent>
                             </Select>
                         )}
-                        <Button variant="outline" size="sm" onClick={onExport}>
+                        <Button variant="outline" onClick={onExport}>
                             <Download className="size-3.5" />
                             Export
                         </Button>
@@ -185,7 +185,7 @@ export function AnalyticsDashboardView({
                                 </p>
                             </div>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
+                        <Button variant="outline" asChild>
                             <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
                         </Button>
                     </div>
