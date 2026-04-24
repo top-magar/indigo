@@ -8,6 +8,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { updateOrderNotes, cancelOrder, updateOrderTags } from "../actions";
 import { generateInvoice } from "../order-actions";
+import { Invoice } from "./_components/invoice";
 
 function TagsInput({ orderId, initialTags }: { orderId: string; initialTags: string[] }) {
   const [tags, setTags] = useState(initialTags);
@@ -275,7 +276,8 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
 
 
   return (
-    <div className="space-y-3">
+    <>
+    <div className="space-y-3 print:hidden">
       <Breadcrumb className="mb-4">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -647,5 +649,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
         </div>
       </div>
     </div>
+    <Invoice order={order} storeName="Indigo" />
+    </>
   );
 }

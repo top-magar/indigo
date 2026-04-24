@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
+import { ServiceWorkerRegister } from "@/components/sw-register";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -71,6 +72,7 @@ export default function RootLayout({
           </Suspense>
           {children}
         </ThemeProvider>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
