@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
+import { useConfirmDelete } from "@/hooks/use-confirm-dialog"
 import { createCustomerGroup, updateCustomerGroup, deleteCustomerGroup } from "./actions"
 
 interface CustomerGroup {
@@ -56,6 +57,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [groups, setGroups] = useState(initialGroups)
+  const confirmDelete = useConfirmDelete()
   
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -119,10 +121,10 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
     })
   }
 
-  const handleDelete = async (groupId: string) => {
-    if (!confirm("Delete this group? Members won't be deleted.")) return;
+  const handleDelete = async (group: CustomerGroup) => {
+    if (!(await confirmDelete(group.name, "group"))) return;
     startTransition(async () => {
-      const result = await deleteCustomerGroup(groupId)
+      const result = await deleteCustomerGroup(group.id)
       if (result.error) {
         toast.error(result.error)
       } else {
@@ -200,7 +202,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
-                        onClick={() => handleDelete(group.id)}
+                        onClick={() => handleDelete(group)}
                       >
                         <Trash2 className="size-3.5" />
                         Delete

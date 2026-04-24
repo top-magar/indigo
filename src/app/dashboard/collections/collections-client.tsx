@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Table,
     TableBody,
@@ -50,6 +51,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
 import type { Collection } from "@/infrastructure/supabase/types";
@@ -68,6 +71,9 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
     const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [collectionToDelete, setCollectionToDelete] = useState<Collection | null>(null);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
 
     // Filter collections
     const filteredCollections = collections.filter(c =>
@@ -75,9 +81,83 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
         c.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Pagination
+    const pageCount = Math.ceil(filteredCollections.length / pageSize);
+    const paginatedCollections = filteredCollections.slice(
+        pageIndex * pageSize,
+        (pageIndex + 1) * pageSize
+    );
+
     // Stats
     const activeCount = collections.filter(c => c.is_active).length;
     const totalProducts = collections.reduce((sum, c) => sum + (c.products_count || 0), 0);
+
+    // Selection helpers
+    const toggleAll = () => {
+        if (selectedIds.size === filteredCollections.length && filteredCollections.length > 0) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filteredCollections.map(c => c.id)));
+        }
+    };
+
+    const toggleRow = (id: string) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    };
+
+    // Bulk actions
+    const handleBulkActivate = () => {
+        startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            const results = await Promise.all(ids.map(id => toggleCollectionStatus(id, true)));
+            const failed = results.filter(r => r.error);
+            if (failed.length > 0) {
+                toast.error(`Failed to activate ${failed.length} collection(s)`);
+            } else {
+                setCollections(prev => prev.map(c => selectedIds.has(c.id) ? { ...c, is_active: true } : c));
+                toast.success(`${ids.length} collection(s) activated`);
+            }
+            setSelectedIds(new Set());
+        });
+    };
+
+    const handleBulkDeactivate = () => {
+        startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            const results = await Promise.all(ids.map(id => toggleCollectionStatus(id, false)));
+            const failed = results.filter(r => r.error);
+            if (failed.length > 0) {
+                toast.error(`Failed to deactivate ${failed.length} collection(s)`);
+            } else {
+                setCollections(prev => prev.map(c => selectedIds.has(c.id) ? { ...c, is_active: false } : c));
+                toast.success(`${ids.length} collection(s) deactivated`);
+            }
+            setSelectedIds(new Set());
+        });
+    };
+
+    const handleBulkDelete = () => {
+        startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            const results = await Promise.all(ids.map(id => deleteCollection(id)));
+            const failed = results.filter(r => r.error);
+            if (failed.length > 0) {
+                toast.error(`Failed to delete ${failed.length} collection(s)`);
+            } else {
+                setCollections(prev => prev.filter(c => !selectedIds.has(c.id)));
+                toast.success(`${ids.length} collection(s) deleted`);
+            }
+            setSelectedIds(new Set());
+        });
+    };
 
     const handleEdit = (collection: Collection) => {
         setEditingCollection(collection);
@@ -165,6 +245,13 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
         router.refresh();
     };
 
+    // Reset page when search changes
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+        setPageIndex(0);
+        setSelectedIds(new Set());
+    };
+
     return (
         <EntityListPage
             title="Collections"
@@ -189,7 +276,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         <Input
                             aria-label="Search collections" placeholder="Search collections..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                             className="pl-9"
                         />
                     </div>
@@ -200,6 +287,13 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
+                            <TableHead className="w-12">
+                                <Checkbox
+                                    checked={selectedIds.size === filteredCollections.length && filteredCollections.length > 0}
+                                    onCheckedChange={toggleAll}
+                                    aria-label="Select all"
+                                />
+                            </TableHead>
                             <TableHead className="w-12"></TableHead>
                             <TableHead>Collection</TableHead>
                             <TableHead className="hidden md:table-cell">Products</TableHead>
@@ -209,9 +303,9 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredCollections.length === 0 ? (
+                        {paginatedCollections.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
-                                <TableCell colSpan={6} className="h-[300px]">
+                                <TableCell colSpan={7} className="h-[300px]">
                                     <EmptyState
                                         icon={FolderOpen}
                                         title={searchQuery ? "No collections match your search" : "No collections yet"}
@@ -226,8 +320,15 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredCollections.map((collection, index) => (
+                            paginatedCollections.map((collection, index) => (
                                 <TableRow key={collection.id} className="group">
+                                    <TableCell>
+                                        <Checkbox
+                                            checked={selectedIds.has(collection.id)}
+                                            onCheckedChange={() => toggleRow(collection.id)}
+                                            aria-label={`Select ${collection.name}`}
+                                        />
+                                    </TableCell>
                                     <TableCell>
                                         <div className="flex flex-col gap-1">
                                             <button
@@ -239,7 +340,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                             </button>
                                             <button
                                                 onClick={() => handleMoveDown(index)}
-                                                disabled={index === filteredCollections.length - 1 || isPending}
+                                                disabled={index === paginatedCollections.length - 1 || isPending}
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                             >
                                                 <ChevronDown className="size-3.5" />
@@ -346,6 +447,44 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         )}
                     </TableBody>
                 </Table>
+
+            {/* Bulk Actions */}
+            {selectedIds.size > 0 && (
+                <StickyBulkActionsBar
+                    selectedCount={selectedIds.size}
+                    onClear={() => setSelectedIds(new Set())}
+                    itemLabel="collection"
+                >
+                    <Button variant="outline" size="sm" onClick={handleBulkActivate} disabled={isPending}>
+                        <CheckCircle className="size-3.5" />
+                        Activate
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleBulkDeactivate} disabled={isPending}>
+                        <X className="size-3.5" />
+                        Deactivate
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={handleBulkDelete} disabled={isPending}>
+                        <Trash2 className="size-3.5" />
+                        Delete
+                    </Button>
+                </StickyBulkActionsBar>
+            )}
+
+            {/* Pagination */}
+            {filteredCollections.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filteredCollections.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => {
+                        setPageSize(size);
+                        setPageIndex(0);
+                    }}
+                    selectedCount={selectedIds.size}
+                />
+            )}
 
             {/* Collection Dialog */}
             <CollectionDialog

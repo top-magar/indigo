@@ -88,6 +88,8 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/shared/utils";
 import { EntityListPage } from "@/components/dashboard/templates";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];
@@ -353,165 +355,141 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
             }
         >
 
-
-            {/* Campaigns List */}
-            {/* Toolbar */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <p className="text-sm font-medium">All Campaigns</p>
-                            <p className="text-xs text-muted-foreground">
-                                {filteredCampaigns.length} campaign{filteredCampaigns.length !== 1 ? "s" : ""}
-                                {selectedIds.size > 0 && ` • ${selectedIds.size} selected`}
-                            </p>
-                        </div>
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                            {selectedIds.size > 0 ? (
-                                <Button
-                                    variant="outline" 
-                                    className="text-destructive hover:text-destructive"
-                                    onClick={() => setBulkDeleteDialogOpen(true)}
-                                >
-                                    <Trash2 className="size-4" />
-                                    Delete ({selectedIds.size})
-                                </Button>
-                            ) : (
-                                <>
-                                    <div className="relative">
-                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                                        <Input
-                                            aria-label="Search campaigns" placeholder="Search campaigns..."
-                                            value={searchQuery}
-                                            onChange={(e) => {
-                                                setSearchQuery(e.target.value);
-                                                setCurrentPage(1);
-                                            }}
-                                            className="pl-8 w-full sm:max-w-sm"
-                                        />
-                                    </div>
-                                    <Select 
-                                        value={statusFilter} 
-                                        onValueChange={(v) => {
-                                            setStatusFilter(v);
-                                            updateFilters("status", v);
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
-                                            <SelectValue placeholder="Status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Status</SelectItem>
-                                            <SelectItem value="sent">Sent</SelectItem>
-                                            <SelectItem value="scheduled">Scheduled</SelectItem>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="paused">Paused</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <Select 
-                                        value={segmentFilter} 
-                                        onValueChange={(v) => {
-                                            setSegmentFilter(v);
-                                            updateFilters("segment", v);
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by segment">
-                                            <SelectValue placeholder="Segment" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Segments</SelectItem>
-                                            {segments.map(segment => (
-                                                <SelectItem key={segment.id} value={segment.id}>
-                                                    {segment.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </>
-                            )}
-                        </div>
+            {/* Filters — left-aligned, same row, matching Orders/Products */}
+            <div className="flex flex-1 items-center gap-2 flex-wrap">
+                <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <Input
+                        aria-label="Search campaigns" placeholder="Search campaigns..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setCurrentPage(1);
+                        }}
+                        className="pl-9"
+                    />
+                </div>
+                <Select 
+                    value={statusFilter} 
+                    onValueChange={(v) => {
+                        setStatusFilter(v);
+                        updateFilters("status", v);
+                        setCurrentPage(1);
+                    }}
+                >
+                    <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="sent">Sent</SelectItem>
+                        <SelectItem value="scheduled">Scheduled</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
+                        <SelectItem value="paused">Paused</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select 
+                    value={segmentFilter} 
+                    onValueChange={(v) => {
+                        setSegmentFilter(v);
+                        updateFilters("segment", v);
+                        setCurrentPage(1);
+                    }}
+                >
+                    <SelectTrigger className="w-[160px]" aria-label="Filter by segment">
+                        <SelectValue placeholder="Segment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Segments</SelectItem>
+                        {segments.map(segment => (
+                            <SelectItem key={segment.id} value={segment.id}>
+                                {segment.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
 
-            {/* Table */}
-            <div className="rounded-lg border">
-                    {filteredCampaigns.length === 0 ? (
-                        <EmptyState
-                            icon={Mail}
-                            title={searchQuery || statusFilter !== "all" ? "No campaigns found" : "No campaigns yet"}
-                            description={searchQuery || statusFilter !== "all"
-                                ? "Try adjusting your filters"
-                                : "Create your first email campaign to engage customers"
-                            }
-                            action={!searchQuery && statusFilter === "all" ? {
-                                label: "Create Campaign",
-                                onClick: () => { setSelectedCampaignForEdit(null); setDialogOpen(true); },
-                            } : undefined}
-                            size="md"
-                            className="py-12"
-                        />
+            {/* Table — headers always visible, empty state inside tbody */}
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-[40px]">
+                            <Checkbox
+                                checked={isAllSelected}
+                                onCheckedChange={toggleSelectAll}
+                                aria-label="Select all"
+                                className={isSomeSelected && !isAllSelected ? "opacity-50" : ""}
+                            />
+                        </TableHead>
+                        <TableHead 
+                            className="cursor-pointer hover:text-foreground"
+                            onClick={() => handleSort("name")}
+                        >
+                            <div className="flex items-center">
+                                Campaign
+                                <SortIcon field="name" />
+                            </div>
+                        </TableHead>
+                        <TableHead 
+                            className="cursor-pointer hover:text-foreground"
+                            onClick={() => handleSort("status")}
+                        >
+                            <div className="flex items-center">
+                                Status
+                                <SortIcon field="status" />
+                            </div>
+                        </TableHead>
+                        <TableHead 
+                            className="cursor-pointer hover:text-foreground"
+                            onClick={() => handleSort("recipients_count")}
+                        >
+                            <div className="flex items-center">
+                                Recipients
+                                <SortIcon field="recipients_count" />
+                            </div>
+                        </TableHead>
+                        <TableHead 
+                            className="cursor-pointer hover:text-foreground hidden md:table-cell"
+                            onClick={() => handleSort("opened_count")}
+                        >
+                            <div className="flex items-center">
+                                Performance
+                                <SortIcon field="opened_count" />
+                            </div>
+                        </TableHead>
+                        <TableHead 
+                            className="cursor-pointer hover:text-foreground hidden lg:table-cell"
+                            onClick={() => handleSort("revenue_generated")}
+                        >
+                            <div className="flex items-center">
+                                Revenue
+                                <SortIcon field="revenue_generated" />
+                            </div>
+                        </TableHead>
+                        <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {paginatedCampaigns.length === 0 ? (
+                        <TableRow className="hover:bg-transparent">
+                            <TableCell colSpan={7} className="h-[300px]">
+                                <EmptyState
+                                    icon={Mail}
+                                    title={searchQuery || statusFilter !== "all" ? "No campaigns found" : "No campaigns yet"}
+                                    description={searchQuery || statusFilter !== "all"
+                                        ? "Try adjusting your filters"
+                                        : "Create your first email campaign to engage customers"
+                                    }
+                                    action={!searchQuery && statusFilter === "all" ? {
+                                        label: "Create Campaign",
+                                        onClick: () => { setSelectedCampaignForEdit(null); setDialogOpen(true); },
+                                    } : undefined}
+                                />
+                            </TableCell>
+                        </TableRow>
                     ) : (
-                        <>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[40px]">
-                                            <Checkbox
-                                                checked={isAllSelected}
-                                                onCheckedChange={toggleSelectAll}
-                                                aria-label="Select all"
-                                                className={isSomeSelected && !isAllSelected ? "opacity-50" : ""}
-                                            />
-                                        </TableHead>
-                                        <TableHead 
-                                            className="cursor-pointer hover:text-foreground"
-                                            onClick={() => handleSort("name")}
-                                        >
-                                            <div className="flex items-center">
-                                                Campaign
-                                                <SortIcon field="name" />
-                                            </div>
-                                        </TableHead>
-                                        <TableHead 
-                                            className="cursor-pointer hover:text-foreground"
-                                            onClick={() => handleSort("status")}
-                                        >
-                                            <div className="flex items-center">
-                                                Status
-                                                <SortIcon field="status" />
-                                            </div>
-                                        </TableHead>
-                                        <TableHead 
-                                            className="cursor-pointer hover:text-foreground"
-                                            onClick={() => handleSort("recipients_count")}
-                                        >
-                                            <div className="flex items-center">
-                                                Recipients
-                                                <SortIcon field="recipients_count" />
-                                            </div>
-                                        </TableHead>
-                                        <TableHead 
-                                            className="cursor-pointer hover:text-foreground hidden md:table-cell"
-                                            onClick={() => handleSort("opened_count")}
-                                        >
-                                            <div className="flex items-center">
-                                                Performance
-                                                <SortIcon field="opened_count" />
-                                            </div>
-                                        </TableHead>
-                                        <TableHead 
-                                            className="cursor-pointer hover:text-foreground hidden lg:table-cell"
-                                            onClick={() => handleSort("revenue_generated")}
-                                        >
-                                            <div className="flex items-center">
-                                                Revenue
-                                                <SortIcon field="revenue_generated" />
-                                            </div>
-                                        </TableHead>
-                                        <TableHead className="w-[50px]"></TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {paginatedCampaigns.map((campaign) => {
+                        paginatedCampaigns.map((campaign) => {
                                         const openRate = campaign.delivered_count > 0 
                                             ? ((campaign.opened_count / campaign.delivered_count) * 100)
                                             : 0;
@@ -685,65 +663,42 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <div className="flex items-center justify-between px-4 py-3 border-t">
-                                    <p className="text-sm text-muted-foreground">
-                                        Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredCampaigns.length)} of {filteredCampaigns.length}
-                                    </p>
-                                    <div className="flex items-center gap-2">
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                            disabled={currentPage === 1}
-                                        >
-                                            Previous
-                                        </Button>
-                                        <div className="flex items-center gap-1">
-                                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                                let pageNum: number;
-                                                if (totalPages <= 5) {
-                                                    pageNum = i + 1;
-                                                } else if (currentPage <= 3) {
-                                                    pageNum = i + 1;
-                                                } else if (currentPage >= totalPages - 2) {
-                                                    pageNum = totalPages - 4 + i;
-                                                } else {
-                                                    pageNum = currentPage - 2 + i;
-                                                }
-                                                return (
-                                                    <Button
-                                                        key={pageNum}
-                                                        variant={currentPage === pageNum ? "default" : "outline"}
-                                                       
-                                                        className="size-8 p-0"
-                                                        onClick={() => setCurrentPage(pageNum)}
-                                                    >
-                                                        {pageNum}
-                                                    </Button>
-                                                );
-                                            })}
-                                        </div>
-                                        <Button
-                                            variant="outline"
-                                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                            disabled={currentPage === totalPages}
-                                        >
-                                            Next
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                        </>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })
                     )}
-            </div>
+                </TableBody>
+            </Table>
+
+            {/* Pagination */}
+            {filteredCampaigns.length > 0 && (
+                <DataTablePagination
+                    pageIndex={currentPage - 1}
+                    pageSize={pageSize}
+                    pageCount={totalPages}
+                    totalItems={filteredCampaigns.length}
+                    onPageChange={(page) => setCurrentPage(page + 1)}
+                    onPageSizeChange={() => {}}
+                    selectedCount={selectedIds.size}
+                />
+            )}
+
+            {/* Bulk Actions Bar */}
+            <StickyBulkActionsBar
+                selectedCount={selectedIds.size}
+                onClear={() => setSelectedIds(new Set())}
+                itemLabel="campaign"
+            >
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setBulkDeleteDialogOpen(true)}
+                >
+                    <Trash2 className="size-3.5" />
+                    Delete
+                </Button>
+            </StickyBulkActionsBar>
 
             {/* Analytics Dialog */}
             <Dialog open={analyticsDialogOpen} onOpenChange={setAnalyticsDialogOpen}>

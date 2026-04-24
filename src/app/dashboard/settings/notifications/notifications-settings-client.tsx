@@ -1,5 +1,6 @@
 "use client";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedChanges, useFormDirty } from "@/hooks/use-unsaved-changes";
 
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -52,6 +53,16 @@ export function NotificationsSettingsClient({ initialPreferences, userRole }: {
 
   const toggle = (cat: NotificationCategory, ch: NotificationChannel) =>
     setPrefs(p => ({ ...p, [`${cat}-${ch}`]: !p[`${cat}-${ch}`] }));
+
+  const { isDirty: prefsDirty } = useFormDirty(prefs, buildMap());
+  const { isDirty: quietDirty } = useFormDirty(quietHours, {
+    enabled: initialPreferences.quietHours?.enabled ?? false,
+    startTime: initialPreferences.quietHours?.startTime ?? "22:00",
+    endTime: initialPreferences.quietHours?.endTime ?? "08:00",
+    timezone: initialPreferences.quietHours?.timezone ?? "Asia/Kathmandu",
+  });
+  const isDirty = prefsDirty || quietDirty;
+  useUnsavedChanges(isDirty);
 
   const handleSave = () => startTransition(async () => {
     const inputs: NotificationPreferenceInput[] = [];

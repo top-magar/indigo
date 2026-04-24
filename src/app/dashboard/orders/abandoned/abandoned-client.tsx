@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { Mail, ShoppingCart, DollarSign, Users } from "lucide-react";
+import { Mail, ShoppingCart, DollarSign, Users, Search, MoreHorizontal, Eye, Trash2 } from "lucide-react";
 import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -23,6 +30,27 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
     const [checkouts, setCheckouts] = useState(initialCheckouts);
     const [stats] = useState(initialStats);
     const [isPending, startTransition] = useTransition();
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+
+    const filtered = useMemo(() => {
+        let result = checkouts;
+        if (search) {
+            const q = search.toLowerCase();
+            result = result.filter(
+                (c) => c.customer_name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q),
+            );
+        }
+        if (statusFilter !== "all") {
+            result = result.filter((c) => {
+                if (statusFilter === "sent") return c.recovery_email_sent;
+                if (statusFilter === "recoverable") return c.email && !c.recovery_email_sent;
+                if (statusFilter === "no-email") return !c.email;
+                return true;
+            });
+        }
+        return result;
+    }, [checkouts, search, statusFilter]);
 
     function handleSendRecovery(cartId: string) {
         startTransition(async () => {
@@ -46,6 +74,11 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
         });
     }
 
+    function handleRemove(cartId: string) {
+        setCheckouts((prev) => prev.filter((c) => c.id !== cartId));
+        toast.success("Cart removed from list");
+    }
+
     const recoverable = checkouts.filter((c) => c.email && !c.recovery_email_sent);
 
     const statItems: StatItem[] = [
@@ -65,11 +98,35 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                     </Button>
                 ) : undefined
             }
+            filters={
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <div className="relative flex-1 w-full sm:max-w-sm">
+                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            placeholder="Search abandoned carts..."
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by status">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="recoverable">Recoverable</SelectItem>
+                            <SelectItem value="sent">Sent</SelectItem>
+                            <SelectItem value="no-email">No Email</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            }
         >
 
             {/* Table */}
             <div className="rounded-lg border">
-                    {checkouts.length === 0 ? (
+                    {filtered.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-8">No abandoned checkouts found. 🎉</p>
                     ) : (
                         <Table>
@@ -79,12 +136,12 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                                     <TableHead>Total</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Time</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
+                                    <TableHead className="w-12"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {checkouts.map((c) => (
-                                    <TableRow key={c.id}>
+                                {filtered.map((c) => (
+                                    <TableRow key={c.id} className="group">
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium text-sm">{c.customer_name || "Guest"}</p>
@@ -104,17 +161,39 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                                         <TableCell className="text-sm text-muted-foreground">
                                             {formatDistanceToNow(new Date(c.updated_at), { addSuffix: true })}
                                         </TableCell>
-                                        <TableCell className="text-right">
-                                            {c.email && !c.recovery_email_sent && (
-                                                <Button
-                                                    variant="outline"
-                                                   
-                                                    onClick={() => handleSendRecovery(c.id)}
-                                                    disabled={isPending}
-                                                >
-                                                    <Mail className="mr-1 size-3.5" /> Recover
-                                                </Button>
-                                            )}
+                                        <TableCell>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon-sm"
+                                                        aria-label="More actions"
+                                                        className="size-8 opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <MoreHorizontal className="size-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-48">
+                                                    {c.email && !c.recovery_email_sent && (
+                                                        <DropdownMenuItem onClick={() => handleSendRecovery(c.id)} disabled={isPending}>
+                                                            <Mail className="size-3.5" />
+                                                            Send Recovery Email
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                    <DropdownMenuItem disabled>
+                                                        <Eye className="size-3.5" />
+                                                        View Cart Details
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem
+                                                        className="text-destructive focus:text-destructive"
+                                                        onClick={() => handleRemove(c.id)}
+                                                    >
+                                                        <Trash2 className="size-3.5" />
+                                                        Remove
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 ))}

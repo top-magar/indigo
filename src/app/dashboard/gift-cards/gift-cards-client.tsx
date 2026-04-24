@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { toast } from "sonner";
-import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight } from "lucide-react";
+import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight, Search, MoreHorizontal } from "lucide-react";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,22 @@ import {
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
+import {
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { formatCurrency } from "@/shared/utils";
 import { type GiftCard, type GiftCardStats, createGiftCard, toggleGiftCardStatus } from "./actions";
+
+type StatusFilter = "all" | "active" | "inactive" | "depleted";
+
+function getCardStatus(card: GiftCard): "active" | "inactive" | "depleted" {
+    if (card.current_balance <= 0) return "depleted";
+    return card.is_active ? "active" : "inactive";
+}
 
 interface Props {
     initialCards: GiftCard[];
@@ -30,11 +44,48 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
     const [isPending, startTransition] = useTransition();
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    // Filters
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+
+    // Pagination
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+
     // Form state
     const [balance, setBalance] = useState("");
     const [customerName, setCustomerName] = useState("");
     const [customerEmail, setCustomerEmail] = useState("");
     const [note, setNote] = useState("");
+
+    const filtered = useMemo(() => {
+        let result = cards;
+        if (search) {
+            const q = search.toLowerCase();
+            result = result.filter((c) =>
+                c.code.toLowerCase().includes(q) ||
+                c.customer_name?.toLowerCase().includes(q) ||
+                c.customer_email?.toLowerCase().includes(q)
+            );
+        }
+        if (statusFilter !== "all") {
+            result = result.filter((c) => getCardStatus(c) === statusFilter);
+        }
+        return result;
+    }, [cards, search, statusFilter]);
+
+    const pageCount = Math.ceil(filtered.length / pageSize);
+    const paged = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+
+    // Reset to first page when filters change
+    function handleSearchChange(value: string) {
+        setSearch(value);
+        setPageIndex(0);
+    }
+    function handleStatusChange(value: StatusFilter) {
+        setStatusFilter(value);
+        setPageIndex(0);
+    }
 
     function handleCreate() {
         const amount = parseFloat(balance);
@@ -120,10 +171,38 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                 { label: "Outstanding Balance", value: formatCurrency(stats.totalRemaining, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
             ]}
         >
+            {/* Filters */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="relative flex-1 w-full sm:max-w-sm">
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        placeholder="Search by code, name, or email..."
+                        className="pl-9"
+                        value={search}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                    />
+                </div>
+                <Select value={statusFilter} onValueChange={(v) => handleStatusChange(v as StatusFilter)}>
+                    <SelectTrigger className="w-[150px]">
+                        <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="depleted">Depleted</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
             {/* Table */}
             <div className="rounded-lg border">
-                    {cards.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-8">No gift cards issued yet. Click &quot;Issue gift card&quot; to create one.</p>
+                    {filtered.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-8">
+                            {cards.length === 0
+                                ? 'No gift cards issued yet. Click "Issue gift card" to create one.'
+                                : "No gift cards match your filters."}
+                        </p>
                     ) : (
                         <Table>
                             <TableHeader>
@@ -136,15 +215,10 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {cards.map((card) => (
+                                {paged.map((card) => (
                                     <TableRow key={card.id}>
                                         <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <code className="text-sm font-mono">{card.code}</code>
-                                                <Button variant="ghost" size="icon-sm" aria-label="Copy" className="size-5" onClick={() => copyCode(card.code)}>
-                                                    <Copy className="size-3.5" />
-                                                </Button>
-                                            </div>
+                                            <code className="text-sm font-mono">{card.code}</code>
                                         </TableCell>
                                         <TableCell>
                                             <div>
@@ -161,19 +235,37 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {card.is_active && card.current_balance > 0 ? (
+                                            {getCardStatus(card) === "active" ? (
                                                 <Badge variant="outline" className="text-success">Active</Badge>
-                                            ) : card.current_balance <= 0 ? (
+                                            ) : getCardStatus(card) === "depleted" ? (
                                                 <Badge variant="outline" className="text-muted-foreground">Depleted</Badge>
                                             ) : (
                                                 <Badge variant="outline" className="text-warning">Inactive</Badge>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="ghost" onClick={() => handleToggle(card)} disabled={isPending}>
-                                                {card.is_active ? <ToggleRight className="size-4 mr-1" /> : <ToggleLeft className="size-4 mr-1" />}
-                                                {card.is_active ? "Deactivate" : "Activate"}
-                                            </Button>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon">
+                                                        <MoreHorizontal className="size-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem onClick={() => copyCode(card.code)}>
+                                                        <Copy className="size-3.5" />
+                                                        Copy code
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem
+                                                        onClick={() => handleToggle(card)}
+                                                        disabled={isPending}
+                                                        className={card.is_active ? "text-destructive" : ""}
+                                                    >
+                                                        {card.is_active ? <ToggleLeft className="size-3.5" /> : <ToggleRight className="size-3.5" />}
+                                                        {card.is_active ? "Deactivate" : "Activate"}
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -181,6 +273,18 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                         </Table>
                     )}
             </div>
+
+            {/* Pagination */}
+            {filtered.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filtered.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+                />
+            )}
         </EntityListPage>
     );
 }

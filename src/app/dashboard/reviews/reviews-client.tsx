@@ -15,6 +15,14 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Search,
   TrendingUp,
@@ -25,11 +33,18 @@ import {
   CheckCircle,
   Clock,
   RefreshCw,
+  MoreVertical,
+  ThumbsDown,
+  Trash2,
+  RotateCcw,
 } from 'lucide-react';
 import { ReviewCard } from '@/features/reviews/components/review-card';
 import { ReviewSentimentSummary } from '@/features/reviews/components/review-sentiment-summary';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
+import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
+import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
 import type { Review } from '@/db/schema/reviews';
 import type { SentimentStats } from '@/features/reviews/repositories/reviews';
 import {
@@ -37,6 +52,7 @@ import {
   rejectReview,
   deleteReview,
   bulkApproveReviews,
+  reanalyzeReview,
 } from './actions';
 
 interface ReviewsClientProps {
@@ -54,11 +70,24 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   const [searchQuery, setSearchQuery] = useState('');
   const [sentimentFilter, setSentimentFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const stats = initialStats || emptyStats;
   const reviews = initialReviews;
+  const confirmDelete = useConfirmDelete();
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const handleRefresh = () => {
     startTransition(() => router.refresh());
@@ -88,8 +117,9 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
     });
   };
 
-  const handleDelete = (reviewId: string) => {
-    if (!confirm('Delete this review?')) return;
+  const handleDelete = async (reviewId: string) => {
+    const review = reviews.find(r => r.id === reviewId);
+    if (!(await confirmDelete(review?.customerName || 'this review', 'review'))) return;
     startTransition(async () => {
       const result = await deleteReview(reviewId);
       if (result.success) {
@@ -97,6 +127,18 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
         router.refresh();
       } else {
         toast.error(result.error || 'Failed to delete');
+      }
+    });
+  };
+
+  const handleReanalyze = (reviewId: string) => {
+    startTransition(async () => {
+      const result = await reanalyzeReview(reviewId);
+      if (result.success) {
+        toast.success('Review re-analyzed');
+        router.refresh();
+      } else {
+        toast.error(result.error || 'Failed to re-analyze');
       }
     });
   };
@@ -112,6 +154,38 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
       } else {
         toast.error(result.error || 'Failed to approve');
       }
+    });
+  };
+
+  const handleBulkApproveSelected = () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    startTransition(async () => {
+      const result = await bulkApproveReviews(ids);
+      if (result.success) {
+        toast.success(`${ids.length} reviews approved`);
+        setSelectedIds(new Set());
+        router.refresh();
+      } else {
+        toast.error(result.error || 'Failed to approve');
+      }
+    });
+  };
+
+  const handleBulkDeleteSelected = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) return;
+    if (!(await confirmDelete(`${ids.length} reviews`, 'review'))) return;
+    startTransition(async () => {
+      const results = await Promise.all(ids.map((id) => deleteReview(id)));
+      const failed = results.filter((r) => !r.success).length;
+      if (failed === 0) {
+        toast.success(`${ids.length} reviews deleted`);
+      } else {
+        toast.error(`${failed} of ${ids.length} deletions failed`);
+      }
+      setSelectedIds(new Set());
+      router.refresh();
     });
   };
 
@@ -138,6 +212,78 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
 
   const pendingCount = reviews.filter((r) => !r.isApproved).length;
   const flaggedCount = reviews.filter((r) => Number(r.spamScore) > 50).length;
+
+  // Pagination
+  const pageCount = Math.ceil(filteredReviews.length / pageSize);
+  const paginatedReviews = filteredReviews.slice(
+    pageIndex * pageSize,
+    (pageIndex + 1) * pageSize,
+  );
+
+  // Reset page when filters change
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setPageIndex(0);
+  };
+  const handleSentimentChange = (value: string) => {
+    setSentimentFilter(value);
+    setPageIndex(0);
+  };
+  const handleStatusChange = (value: string) => {
+    setStatusFilter(value);
+    setPageIndex(0);
+  };
+
+  const renderReviewItem = (review: Review) => (
+    <div key={review.id} className="relative flex gap-3 items-start">
+      <div className="pt-4">
+        <Checkbox
+          checked={selectedIds.has(review.id)}
+          onCheckedChange={() => toggleSelection(review.id)}
+          aria-label={`Select review by ${review.customerName}`}
+        />
+      </div>
+      <div className="flex-1 relative">
+        <ReviewCard
+          review={review}
+          onApprove={() => handleApprove(review.id)}
+          onReject={() => handleReject(review.id)}
+          onDelete={() => handleDelete(review.id)}
+        />
+        <div className="absolute top-2 right-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm" aria-label="Review actions">
+                <MoreVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleApprove(review.id)}>
+                <CheckCircle className="size-4 text-success" />
+                Approve
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleReject(review.id)}>
+                <ThumbsDown className="size-4 text-destructive" />
+                Reject
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleReanalyze(review.id)}>
+                <RotateCcw className="size-4" />
+                Re-analyze
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => handleDelete(review.id)}
+              >
+                <Trash2 className="size-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <EntityListPage
@@ -166,11 +312,11 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                   <Input
                     aria-label="Search reviews" placeholder="Search reviews..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="pl-9"
                   />
                 </div>
-                <Select value={sentimentFilter} onValueChange={setSentimentFilter}>
+                <Select value={sentimentFilter} onValueChange={handleSentimentChange}>
                   <SelectTrigger className="w-full sm:w-40" aria-label="Filter by sentiment">
                     <SelectValue placeholder="Sentiment" />
                   </SelectTrigger>
@@ -182,7 +328,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                     <SelectItem value="MIXED">Mixed</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter} onValueChange={handleStatusChange}>
                   <SelectTrigger className="w-full sm:w-40" aria-label="Filter by status">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
@@ -220,43 +366,26 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
             </TabsList>
 
             <TabsContent value="all" className="space-y-4">
-              {filteredReviews.length === 0 ? (
+              {paginatedReviews.length === 0 ? (
                 <Card>
                   <CardContent className="p-4">
                     <EmptyState
                       icon={Star}
                       title="No reviews yet"
                       description="Reviews will appear here when customers leave feedback"
-                     
                       className="py-8"
                     />
                   </CardContent>
                 </Card>
               ) : (
-                filteredReviews.map((review) => (
-                  <ReviewCard
-                    key={review.id}
-                    review={review}
-                    onApprove={() => handleApprove(review.id)}
-                    onReject={() => handleReject(review.id)}
-                    onDelete={() => handleDelete(review.id)}
-                  />
-                ))
+                paginatedReviews.map(renderReviewItem)
               )}
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-4">
               {filteredReviews
                 .filter((r) => !r.isApproved)
-                .map((review) => (
-                  <ReviewCard
-                    key={review.id}
-                    review={review}
-                    onApprove={() => handleApprove(review.id)}
-                    onReject={() => handleReject(review.id)}
-                    onDelete={() => handleDelete(review.id)}
-                  />
-                ))}
+                .map(renderReviewItem)}
               {pendingCount === 0 && (
                 <Card>
                   <CardContent className="p-4">
@@ -269,15 +398,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
             <TabsContent value="flagged" className="space-y-4">
               {filteredReviews
                 .filter((r) => Number(r.spamScore) > 50)
-                .map((review) => (
-                  <ReviewCard
-                    key={review.id}
-                    review={review}
-                    onApprove={() => handleApprove(review.id)}
-                    onReject={() => handleReject(review.id)}
-                    onDelete={() => handleDelete(review.id)}
-                  />
-                ))}
+                .map(renderReviewItem)}
               {flaggedCount === 0 && (
                 <Card>
                   <CardContent className="p-4">
@@ -287,6 +408,50 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               )}
             </TabsContent>
           </Tabs>
+
+          {/* Bulk Actions Bar */}
+          {selectedIds.size > 0 && (
+            <BulkActionsBar
+              selectedCount={selectedIds.size}
+              onClear={() => setSelectedIds(new Set())}
+              itemLabel="review"
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBulkApproveSelected}
+                disabled={isPending}
+              >
+                <CheckCircle className="size-3.5 text-success" />
+                Approve Selected
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleBulkDeleteSelected}
+                disabled={isPending}
+              >
+                <Trash2 className="size-3.5" />
+                Delete Selected
+              </Button>
+            </BulkActionsBar>
+          )}
+
+          {/* Pagination */}
+          {filteredReviews.length > 0 && (
+            <DataTablePagination
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              pageCount={pageCount}
+              totalItems={filteredReviews.length}
+              onPageChange={setPageIndex}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setPageIndex(0);
+              }}
+              selectedCount={selectedIds.size}
+            />
+          )}
         </div>
 
         {/* Sidebar */}
@@ -302,7 +467,6 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               <Button
                 variant="outline"
                 className="w-full justify-start"
-               
                 onClick={handleBulkApprove}
                 disabled={isPending || pendingCount === 0}
               >
@@ -312,7 +476,6 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               <Button
                 variant="outline"
                 className="w-full justify-start"
-               
                 onClick={handleRefresh}
                 disabled={isPending}
               >
