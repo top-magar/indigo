@@ -353,11 +353,11 @@ export function ProductsListView({
             actions={
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={onExport}>
-                        <Download className="size-4" />
+                        <Download className="size-3.5" />
                         <span className="hidden sm:inline">Export</span>
                     </Button>
                     <Button variant="outline" onClick={() => onImportOpen()}>
-                        <Upload className="size-4" />
+                        <Upload className="size-3.5" />
                         <span className="hidden sm:inline">Import</span>
                     </Button>
                     <Button asChild>

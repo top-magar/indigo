@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/infrastructure/db";
 import { orders } from "@/db/schema/orders";
 import { tenants } from "@/db/schema/tenants";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { verifyKhaltiPayment } from "@/infrastructure/payments/khalti";
 import { createLogger } from "@/lib/logger";
 
@@ -36,14 +36,11 @@ export async function GET(
       return NextResponse.redirect(new URL(`/store/${slug}?payment=error&reason=invalid_store`, request.url));
     }
 
-    // 6. Look up order by stored khaltiPidx from metadata instead of trusting purchase_order_id
-    const tenantOrders = await db.select({ id: orders.id, tenantId: orders.tenantId, total: orders.total, paymentStatus: orders.paymentStatus, metadata: orders.metadata })
-      .from(orders).where(eq(orders.tenantId, tenant.id));
-
-    const order = tenantOrders.find((o) => {
-      const meta = o.metadata as Record<string, any> | null;
-      return meta?.khaltiPidx === pidx;
-    });
+    // 6. Look up order by stored khaltiPidx using JSONB query (no full table scan)
+    const [order] = await db.select({ id: orders.id, tenantId: orders.tenantId, total: orders.total, paymentStatus: orders.paymentStatus, metadata: orders.metadata })
+      .from(orders)
+      .where(and(eq(orders.tenantId, tenant.id), sql`${orders.metadata}->>'khaltiPidx' = ${pidx}`))
+      .limit(1);
 
     if (!order) {
       return NextResponse.redirect(new URL(`/store/${slug}?payment=error&reason=order_not_found`, request.url));

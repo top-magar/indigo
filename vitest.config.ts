@@ -10,6 +10,7 @@ export default defineConfig({
       '**/node_modules/**',
       '**/resources/**',
       '**/.next/**',
+      '**/e2e/**',
     ],
   },
   resolve: {

@@ -212,8 +212,8 @@ export function CustomersClient({
                             <Download className="size-3.5" />
                             Export
                         </Button>
-                        <Button className="gap-2" onClick={() => setCreateOpen(true)}>
-                            <UserPlus className="size-4" />
+                        <Button onClick={() => setCreateOpen(true)}>
+                            <UserPlus className="size-3.5" />
                             Add Customer
                         </Button>
                     </>

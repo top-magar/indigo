@@ -18,8 +18,8 @@ export default function ErrorBoundary({ error, reset }: { error: Error & { diges
                     <p className="text-xs text-muted-foreground mt-1">Please try again or go back to the dashboard.</p>
                 </div>
                 <div className="flex gap-2 justify-center">
-                    <Button variant="outline" size="sm" asChild><Link href="/dashboard"><ArrowLeft className="size-3.5 mr-1.5" />Dashboard</Link></Button>
-                    <Button size="sm" onClick={reset}><RefreshCw className="size-3.5 mr-1.5" />Try again</Button>
+                    <Button variant="outline" size="sm" asChild><Link href="/dashboard"><ArrowLeft className="size-3.5" />Dashboard</Link></Button>
+                    <Button size="sm" onClick={reset}><RefreshCw className="size-3.5" />Try again</Button>
                 </div>
             </div>
         </div>

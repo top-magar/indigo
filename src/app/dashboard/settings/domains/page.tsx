@@ -141,10 +141,10 @@ export default function DomainsSettingsPage() {
             <p className="text-xs text-muted-foreground">Free subdomain · Always active · SSL included</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <Button variant="outline" size="icon" className="size-8" onClick={() => { navigator.clipboard.writeText(`https://${storeSlug}.indigo.com`); toast.success("Copied"); }}>
+            <Button variant="outline" size="icon" onClick={() => { navigator.clipboard.writeText(`https://${storeSlug}.indigo.com`); toast.success("Copied"); }}>
               <Copy className="size-3.5" />
             </Button>
-            <Button variant="outline" size="icon" className="size-8" asChild>
+            <Button variant="outline" size="icon" asChild>
               <a href={`https://${storeSlug}.indigo.com`} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /></a>
             </Button>
           </div>

@@ -31,12 +31,12 @@ export const getUser = cache(async (): Promise<AuthUser | null> => {
     .eq("id", user.id)
     .single()
 
-  if (!data?.tenant_id) return null
+  if (!data?.tenant_id && data?.role !== "platform_admin") return null
 
   return {
     id: user.id,
     email: user.email || "",
-    tenantId: data.tenant_id,
+    tenantId: data.tenant_id || "",
     role: data.role || "owner",
     fullName: data.full_name,
     avatarUrl: data.avatar_url,

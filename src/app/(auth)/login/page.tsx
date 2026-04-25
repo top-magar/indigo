@@ -50,9 +50,11 @@ function LoginForm() {
     setError(null)
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error, data } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw new Error(error.message.includes("Invalid login") ? "Invalid email or password." : error.message)
-      router.push(callbackUrl)
+      // Route platform_admin to /admin, everyone else to dashboard
+      const role = data.user?.user_metadata?.role
+      router.push(role === "platform_admin" ? "/admin" : callbackUrl)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally { setIsLoading(false) }

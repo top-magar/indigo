@@ -132,7 +132,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             actions={
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button className="gap-2"><Plus className="size-4" /> Issue gift card</Button>
+                        <Button><Plus className="size-3.5" /> Issue gift card</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader><DialogTitle>Issue Gift Card</DialogTitle></DialogHeader>

@@ -8,6 +8,9 @@ const API_STORE_PREFIX = "/api/store/";
 /** Routes that require owner or admin role */
 const ADMIN_ROUTES = ["/dashboard/settings"];
 
+/** Routes that require platform_admin role */
+const PLATFORM_ADMIN_ROUTES = ["/admin"];
+
 const CSP_HEADER = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com",
@@ -43,7 +46,10 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/api/contact") ||
     pathname.startsWith("/api/newsletter") ||
     pathname.startsWith("/api/checkout") ||
-    pathname.startsWith("/_next/");
+    pathname.startsWith("/_next/") ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml";
 
   // Create Supabase client that can refresh the session
   let response = NextResponse.next({ request });
@@ -83,11 +89,19 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }
-  }
 
-  // Redirect authenticated users away from auth pages
-  if (user && (pathname === "/login" || pathname === "/signup")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    // Platform admin routes require platform_admin role
+    if (PLATFORM_ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
+      if (role !== "platform_admin") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+
+    // Redirect authenticated users away from auth pages (role-based routing)
+    if (pathname === "/login" || pathname === "/signup") {
+      const destination = role === "platform_admin" ? "/admin" : "/dashboard";
+      return NextResponse.redirect(new URL(destination, request.url));
+    }
   }
 
   // Security headers

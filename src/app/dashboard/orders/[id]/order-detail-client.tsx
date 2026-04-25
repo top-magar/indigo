@@ -293,15 +293,15 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="size-8" asChild>
+          <Button variant="ghost" size="icon" asChild>
             <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
           </Button>
           <Separator orientation="vertical" className="h-6" />
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="size-7" disabled={!prevOrderId} asChild={!!prevOrderId}>
+            <Button variant="ghost" size="icon-sm" disabled={!prevOrderId} asChild={!!prevOrderId}>
               {prevOrderId ? <Link href={`/dashboard/orders/${prevOrderId}`}><ChevronLeft className="size-4" /></Link> : <ChevronLeft className="size-4" />}
             </Button>
-            <Button variant="ghost" size="icon" className="size-7" disabled={!nextOrderId} asChild={!!nextOrderId}>
+            <Button variant="ghost" size="icon-sm" disabled={!nextOrderId} asChild={!!nextOrderId}>
               {nextOrderId ? <Link href={`/dashboard/orders/${nextOrderId}`}><ChevronRight className="size-4" /></Link> : <ChevronRight className="size-4" />}
             </Button>
           </div>
@@ -338,7 +338,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline">
                 Actions
                 <ChevronRight className="size-4 rotate-90" />
               </Button>

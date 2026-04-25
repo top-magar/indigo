@@ -17,7 +17,7 @@ const cancelOrderSchema = z.object({
     reason: z.string().optional().default(""),
 });
 import { getAuthenticatedClient } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure/workflows/order";
 import * as OrderService from "@/infrastructure/services/order";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
@@ -61,6 +61,7 @@ export async function updateOrderStatus(formData: FormData) {
         }
 
         revalidatePath(`/dashboard/orders`);
+        revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : "Failed to update order status");
@@ -85,6 +86,7 @@ export async function cancelOrder(formData: FormData) {
         });
 
         revalidatePath(`/dashboard/orders`);
+        revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : "Failed to cancel order");

@@ -122,7 +122,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
               {canModify && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="size-8"><MoreHorizontal className="size-3.5" /></Button>
+                    <Button variant="ghost" size="icon"><MoreHorizontal className="size-3.5" /></Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
                     <DropdownMenuItem onClick={() => handleRoleChange(member.id, "admin")} className="text-xs gap-2">

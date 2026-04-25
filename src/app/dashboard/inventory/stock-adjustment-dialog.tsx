@@ -220,7 +220,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <Plus className="size-4" />
+                                    <Plus className="size-3.5" />
                                     Add
                                 </Button>
                                 <Button
@@ -235,19 +235,18 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <Minus className="size-4" />
+                                    <Minus className="size-3.5" />
                                     Remove
                                 </Button>
                                 <Button
                                     type="button"
                                     variant={type === "set" ? "default" : "outline"}
-                                    className="gap-2"
                                     onClick={() => {
                                         setType("set");
                                         setReason("");
                                     }}
                                 >
-                                    <Edit className="size-4" />
+                                    <Edit className="size-3.5" />
                                     Set
                                 </Button>
                             </div>

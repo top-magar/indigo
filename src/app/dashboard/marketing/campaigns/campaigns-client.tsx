@@ -341,7 +341,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     size="icon-sm" aria-label="Download" 
                                     onClick={() => exportToCSV(filteredCampaigns, currency)}
                                 >
-                                    <Download className="size-4" />
+                                    <Download className="size-3.5" />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Export to CSV</TooltipContent>

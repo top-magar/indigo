@@ -1,4 +1,5 @@
 import "server-only"
+import { unstable_cache } from "next/cache"
 import { db, withTenant } from "@/infrastructure/db"
 import { tenants, type TenantSettings } from "@/db/schema/tenants"
 import { tenantDomains } from "@/db/schema/domains"
@@ -36,6 +37,11 @@ export interface DashboardData {
 }
 
 export async function fetchDashboardData(userId: string, tenantId: string): Promise<DashboardData> {
+  return _fetchDashboardDataCached(userId, tenantId)
+}
+
+const _fetchDashboardDataCached = unstable_cache(
+  async (userId: string, tenantId: string): Promise<DashboardData> => {
   const dates = getDateRanges()
 
   // Non-tenant-scoped lookups (tenant + user + domains)
@@ -121,7 +127,10 @@ export async function fetchDashboardData(userId: string, tenantId: string): Prom
     hasStorefront: !!(tenantRow?.logoUrl || tenantRow?.description),
     ...data,
   }
-}
+},
+  [`dashboard-data`],
+  { revalidate: 60, tags: ["dashboard"] }
+)
 
 // ── Metric calculations ──
 

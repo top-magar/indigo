@@ -17,9 +17,14 @@ export async function GET(request: Request) {
       if (user) {
         const { data: userData } = await supabase
           .from("users")
-          .select("tenant_id")
+          .select("tenant_id, role")
           .eq("id", user.id)
           .single()
+
+        // Platform admin has no tenant — redirect to /admin
+        if (userData?.role === "platform_admin") {
+          return NextResponse.redirect(`${requestUrl.origin}/admin`)
+        }
 
         // If no tenant, redirect to onboarding
         if (!userData?.tenant_id) {

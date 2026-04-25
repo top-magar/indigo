@@ -103,7 +103,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button variant="outline" size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
-                                    <Save className="size-3.5 mr-1.5" aria-hidden="true" />Save draft
+                                    <Save className="size-3.5" aria-hidden="true" />Save draft
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>⌘S</TooltipContent>

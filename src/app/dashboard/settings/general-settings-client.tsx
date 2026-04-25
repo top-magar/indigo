@@ -149,10 +149,10 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
             <p className="text-sm text-muted-foreground">{tenant.slug}.indigo.com</p>
           </div>
           <div className="flex gap-1.5">
-            <Button variant="outline" size="icon" className="size-8" onClick={() => { navigator.clipboard.writeText(storeUrl); toast.success("Copied"); }}>
+            <Button variant="outline" size="icon" onClick={() => { navigator.clipboard.writeText(storeUrl); toast.success("Copied"); }}>
               <Copy className="size-3.5" />
             </Button>
-            <Button variant="outline" size="icon" className="size-8" asChild>
+            <Button variant="outline" size="icon" asChild>
               <a href={storeUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /></a>
             </Button>
           </div>

@@ -243,7 +243,7 @@ export async function POST(
         });
         if (result.success && result.paymentUrl) {
           paymentRedirectUrl = result.paymentUrl;
-          await db.update(orders).set({ metadata: { paymentMethod: "khalti", khaltiPidx: result.pidx } }).where(eq(orders.id, order.id));
+          await db.update(orders).set({ metadata: sql`COALESCE(${orders.metadata}, '{}'::jsonb) || ${JSON.stringify({ paymentMethod: "khalti", khaltiPidx: result.pidx })}::jsonb` }).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
         }
       }
     }
@@ -261,7 +261,7 @@ export async function POST(
           metadata: { orderId: order.id, orderNumber, tenantId: tenant.id },
           ...(tenant.stripeAccountId ? { transfer_data: { destination: tenant.stripeAccountId } } : {}),
         });
-        await db.update(orders).set({ stripePaymentIntentId: pi.id, metadata: { paymentMethod: "stripe" } }).where(eq(orders.id, order.id));
+        await db.update(orders).set({ stripePaymentIntentId: pi.id, metadata: sql`COALESCE(${orders.metadata}, '{}'::jsonb) || ${JSON.stringify({ paymentMethod: "stripe" })}::jsonb` }).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
         stripeClientSecret = pi.client_secret ?? undefined
       } catch (stripeErr) {
         log.error("Stripe PaymentIntent creation failed:", stripeErr);
