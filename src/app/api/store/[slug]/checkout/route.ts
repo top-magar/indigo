@@ -1,4 +1,4 @@
-"use server"
+// Checkout API route — processes orders from the storefront
 
 import { db } from "@/infrastructure/db"
 import { tenants, type TenantSettings } from "@/db/schema/tenants"
@@ -12,6 +12,9 @@ import { createLogger } from "@/lib/logger"
 import { NextResponse } from "next/server"
 
 const log = createLogger("api:checkout")
+
+const VALID_PAYMENT_METHODS = ['cod', 'bank_transfer', 'esewa', 'khalti', 'stripe', 'card'] as const
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 interface ShippingRate {
   id: string; name: string; price: number; min_days: number; max_days: number
@@ -76,6 +79,16 @@ export async function POST(
       return NextResponse.json({ error: { message: "Missing required fields" } }, { status: 400 })
     }
 
+    // [Fix 4] Validate paymentMethod against allowlist
+    if (!paymentMethod || !VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+      return NextResponse.json({ error: { message: "Invalid payment method" } }, { status: 400 })
+    }
+
+    // [Fix 10] Validate email if provided
+    if (email && !EMAIL_REGEX.test(email)) {
+      return NextResponse.json({ error: { message: "Invalid email address" } }, { status: 400 })
+    }
+
     // Get tenant
     const [tenant] = await db.select().from(tenants).where(eq(tenants.slug, slug)).limit(1)
     if (!tenant) return NextResponse.json({ error: { message: "Store not found" } }, { status: 404 })
@@ -99,69 +112,165 @@ export async function POST(
     const discountTotal = Number(cartData.discountTotal || 0)
     const total = subtotal - discountTotal + shippingTotal + (tenant.priceIncludesTax ? 0 : taxTotal)
 
-    // Generate order number
-    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`
+    // [Fix 8] Order number with random suffix
+    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`
 
-    // Create order
-    const [order] = await db.insert(orders).values({
-      tenantId: tenant.id,
-      orderNumber,
-      status: "pending",
-      paymentStatus: "pending",
-      subtotal: String(subtotal),
-      shippingTotal: String(shippingTotal),
-      taxTotal: String(taxTotal),
-      discountTotal: String(discountTotal),
-      total: String(total),
-      customerName,
-      customerEmail: email || null,
-      shippingAddress: JSON.stringify({ address: shippingAddress, city: shippingCity, area: shippingArea, country: "Nepal", phone: customerPhone }),
-      currency: tenant.currency || "NPR",
-      metadata: { paymentMethod },
-    }).returning()
+    // [Fix 1] Wrap order creation in a transaction
+    const order = await db.transaction(async (tx) => {
+      // [Fix 2] Lock the cart row with FOR UPDATE
+      const lockedCart = await tx.execute(sql`SELECT id FROM carts WHERE id = ${cartId} AND tenant_id = ${tenant.id} AND status = 'active' FOR UPDATE`)
+      if (!lockedCart.length) {
+        throw new Error("CART_UNAVAILABLE")
+      }
 
-    // Create order items
-    for (const item of items) {
-      await db.insert(orderItems).values({
-        orderId: order.id,
+      // [Fix 3] Stock validation
+      for (const item of items) {
+        if (item.productId) {
+          const [product] = await tx.select({ quantity: products.quantity, trackQuantity: products.trackQuantity, allowBackorder: products.allowBackorder }).from(products).where(and(eq(products.id, item.productId), eq(products.tenantId, tenant.id))).limit(1)
+          if (product && product.trackQuantity && !product.allowBackorder && (product.quantity ?? 0) < item.quantity) {
+            throw new Error(`INSUFFICIENT_STOCK:${item.productName}`)
+          }
+        }
+      }
+
+      // Create order — [Fix 7] pass shippingAddress object directly
+      const [created] = await tx.insert(orders).values({
         tenantId: tenant.id,
-        productId: item.productId,
-        variantId: item.variantId,
-        productName: item.productName,
-        productSku: item.productSku,
-        productImage: item.productImage,
-        quantity: item.quantity,
-        unitPrice: String(item.unitPrice),
-        totalPrice: String(Number(item.unitPrice) * item.quantity),
-      })
-    }
-
-    // COD: create collection record
-    if (paymentMethod === "cod") {
-      await db.insert(codCollections).values({
-        tenantId: tenant.id,
-        orderId: order.id,
-        expectedAmount: String(total),
-        currency: tenant.currency || "NPR",
+        orderNumber,
         status: "pending",
-      })
-    }
+        paymentStatus: "pending",
+        subtotal: String(subtotal),
+        shippingTotal: String(shippingTotal),
+        taxTotal: String(taxTotal),
+        discountTotal: String(discountTotal),
+        total: String(total),
+        customerName,
+        customerEmail: email || null,
+        shippingAddress: { address: shippingAddress, city: shippingCity, area: shippingArea, country: "Nepal", phone: customerPhone },
+        currency: tenant.currency || "NPR",
+        metadata: { paymentMethod },
+      }).returning()
 
-    // Mark cart completed
-    await db.update(carts).set({ status: "completed", updatedAt: new Date() }).where(eq(carts.id, cartId))
+      // Create order items
+      for (const item of items) {
+        await tx.insert(orderItems).values({
+          orderId: created.id,
+          tenantId: tenant.id,
+          productId: item.productId,
+          variantId: item.variantId,
+          productName: item.productName,
+          productSku: item.productSku,
+          productImage: item.productImage,
+          quantity: item.quantity,
+          unitPrice: String(item.unitPrice),
+          totalPrice: String(Number(item.unitPrice) * item.quantity),
+        })
+      }
+
+      // COD: create collection record
+      if (paymentMethod === "cod") {
+        await tx.insert(codCollections).values({
+          tenantId: tenant.id,
+          orderId: created.id,
+          expectedAmount: String(total),
+          currency: tenant.currency || "NPR",
+          status: "pending",
+        })
+      }
+
+      // [Fix 9] Stock decrement inside transaction
+      for (const item of items) {
+        if (item.productId) {
+          await tx.update(products)
+            .set({ quantity: sql`GREATEST(0, ${products.quantity} - ${item.quantity})` })
+            .where(and(eq(products.id, item.productId), eq(products.tenantId, tenant.id)))
+        }
+      }
+
+      // Mark cart completed
+      await tx.update(carts).set({ status: "completed", updatedAt: new Date() }).where(eq(carts.id, cartId))
+
+      return created
+    })
+
     await removeCartId()
 
-    // --- Fire-and-forget side effects ---
+    // --- Payment processing (outside transaction, but order exists) ---
 
-    // Stock decrement
-    for (const item of items) {
-      if (item.productId) {
-        db.update(products)
-          .set({ quantity: sql`GREATEST(0, ${products.quantity} - ${item.quantity})` })
-          .where(and(eq(products.id, item.productId), eq(products.tenantId, tenant.id)))
-          .catch(err => log.error("Stock decrement failed:", err))
+    // [Fix 5] eSewa: return form data for frontend POST
+    let esewaFormData: Record<string, string> | undefined
+    let esewaFormAction: string | undefined
+
+    if (paymentMethod === "esewa") {
+      const paySettings = (settings as Record<string, unknown>).payments as Record<string, unknown> | undefined;
+      const merchantCode = paySettings?.esewamerchantCode as string;
+      const merchantSecret = paySettings?.esewaSecret as string;
+      if (merchantCode && merchantSecret) {
+        const { initiateEsewaPayment } = await import("@/infrastructure/payments/esewa");
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const result = initiateEsewaPayment({
+          amount: total,
+          transactionUuid: order.id,
+          merchantCode,
+          merchantSecret,
+          successUrl: `${baseUrl}/api/store/${slug}/payment/esewa`,
+          failureUrl: `${baseUrl}/store/${slug}?payment=failed`,
+        });
+        esewaFormData = result.formData
+        esewaFormAction = result.redirectUrl
       }
     }
+
+    // Khalti: initiate and get redirect URL
+    let paymentRedirectUrl: string | undefined
+
+    if (paymentMethod === "khalti") {
+      const paySettings = (settings as Record<string, unknown>).payments as Record<string, unknown> | undefined;
+      const secretKey = paySettings?.khaltiSecretKey as string;
+      if (secretKey) {
+        const { initiateKhaltiPayment } = await import("@/infrastructure/payments/khalti");
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const result = await initiateKhaltiPayment({
+          amount: Math.round(total * 100), // paisa
+          purchaseOrderId: order.id,
+          purchaseOrderName: `Order ${orderNumber}`,
+          returnUrl: `${baseUrl}/api/store/${slug}/payment/khalti`,
+          websiteUrl: `${baseUrl}/store/${slug}`,
+          secretKey,
+          customerName: customerName,
+          customerEmail: email,
+          customerPhone: customerPhone,
+        });
+        if (result.success && result.paymentUrl) {
+          paymentRedirectUrl = result.paymentUrl;
+          await db.update(orders).set({ metadata: { paymentMethod: "khalti", khaltiPidx: result.pidx } }).where(eq(orders.id, order.id));
+        }
+      }
+    }
+
+    // [Fix 6] Stripe: delete order on failure
+    let stripeClientSecret: string | undefined
+
+    if (paymentMethod === "stripe" || paymentMethod === "card") {
+      try {
+        const Stripe = (await import("stripe")).default;
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+        const pi = await stripe.paymentIntents.create({
+          amount: Math.round(total * 100),
+          currency: (tenant.currency || "NPR").toLowerCase(),
+          metadata: { orderId: order.id, orderNumber, tenantId: tenant.id },
+          ...(tenant.stripeAccountId ? { transfer_data: { destination: tenant.stripeAccountId } } : {}),
+        });
+        await db.update(orders).set({ stripePaymentIntentId: pi.id, metadata: { paymentMethod: "stripe" } }).where(eq(orders.id, order.id));
+        stripeClientSecret = pi.client_secret ?? undefined
+      } catch (stripeErr) {
+        log.error("Stripe PaymentIntent creation failed:", stripeErr);
+        await db.delete(orders).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)))
+        return NextResponse.json({ error: { message: "Payment initialization failed. Please try again." } }, { status: 500 })
+      }
+    }
+
+    // --- Fire-and-forget side effects ---
 
     // Emails
     const currency = tenant.currency || "NPR"
@@ -205,9 +314,19 @@ export async function POST(
         orderNumber,
         total,
         paymentMethod,
+        ...(paymentRedirectUrl && { paymentRedirectUrl }),
+        ...(esewaFormData && { esewaFormData, esewaFormAction }),
+        ...(stripeClientSecret && { stripeClientSecret }),
       }
     })
   } catch (error) {
+    if (error instanceof Error && error.message === "CART_UNAVAILABLE") {
+      return NextResponse.json({ error: { message: "Cart is no longer available" } }, { status: 400 })
+    }
+    if (error instanceof Error && error.message.startsWith("INSUFFICIENT_STOCK:")) {
+      const productName = error.message.split(":")[1]
+      return NextResponse.json({ error: { message: `Insufficient stock for ${productName}` } }, { status: 400 })
+    }
     log.error("Checkout error:", error)
     return NextResponse.json({ error: { message: "Checkout failed. Please try again." } }, { status: 500 })
   }

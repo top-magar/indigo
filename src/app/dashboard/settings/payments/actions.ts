@@ -45,9 +45,9 @@ export async function getPaymentSettings(): Promise<{ settings: PaymentSettings;
       branch: (s?.branch as string) ?? "",
       esewa: (s?.esewa as boolean) ?? false,
       esewamerchantCode: (s?.esewamerchantCode as string) ?? "",
-      esewaSecret: (s?.esewaSecret as string) ?? "",
+      esewaSecret: s?.esewaSecret ? '••••••' + (s.esewaSecret as string).slice(-4) : '',
       khalti: (s?.khalti as boolean) ?? false,
-      khaltiSecretKey: (s?.khaltiSecretKey as string) ?? "",
+      khaltiSecretKey: s?.khaltiSecretKey ? '••••••' + (s.khaltiSecretKey as string).slice(-4) : '',
     },
   };
 }
@@ -78,6 +78,7 @@ export async function updatePaymentSettings(input: PaymentSettings): Promise<{ s
 
   const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", userData.tenant_id).single();
   const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
+  const currentPayments = currentSettings.payments as Record<string, unknown> | undefined;
 
   const { error } = await supabase
     .from("tenants")
@@ -93,9 +94,9 @@ export async function updatePaymentSettings(input: PaymentSettings): Promise<{ s
           branch: data.branch,
           esewa: data.esewa,
           esewamerchantCode: data.esewamerchantCode,
-          esewaSecret: data.esewaSecret,
+          esewaSecret: data.esewaSecret.startsWith('••••••') ? (currentPayments?.esewaSecret as string) ?? '' : data.esewaSecret,
           khalti: data.khalti,
-          khaltiSecretKey: data.khaltiSecretKey,
+          khaltiSecretKey: data.khaltiSecretKey.startsWith('••••••') ? (currentPayments?.khaltiSecretKey as string) ?? '' : data.khaltiSecretKey,
         },
       },
     })

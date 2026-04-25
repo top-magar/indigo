@@ -46,10 +46,11 @@ export async function updateOrderStatus(formData: FormData) {
         .single();
 
     try {
-        await updateOrderStatusWorkflow(tenantId, {
+        await updateOrderStatusWorkflow({
+            tenantId,
             orderId,
-            status,
-            note: note || undefined,
+            status: status as import("@/shared/types/status").OrderStatus,
+            internalNotes: note || undefined,
         });
 
         // Audit log - non-blocking
@@ -77,7 +78,8 @@ export async function cancelOrder(formData: FormData) {
     const { tenantId } = await getAuthenticatedTenant();
 
     try {
-        await cancelOrderWorkflow(tenantId, {
+        await cancelOrderWorkflow({
+            tenantId,
             orderId,
             reason: reason || undefined,
         });

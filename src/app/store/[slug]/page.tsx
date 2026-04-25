@@ -2,7 +2,8 @@ import { db } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
 import { editorProjects } from "@/db/schema/editor-projects"
 import { editorPages } from "@/db/schema/editor-pages"
-import { eq, and, desc, asc, sql } from "drizzle-orm"
+import { storeLayouts } from "@/db/schema/store-layouts"
+import { eq, and, desc, asc } from "drizzle-orm"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
@@ -59,12 +60,13 @@ export default async function StorePage({
     layout = result.layout
   }
 
-  // Fetch theme_overrides directly via Drizzle raw SQL
-  const layoutRows = await db.execute(
-    sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
-  )
-  if (layoutRows[0]?.theme_overrides) {
-    themeOverrides = layoutRows[0].theme_overrides as Record<string, unknown>
+  // Fetch theme_overrides via Drizzle
+  const layoutRows = await db.select({ themeOverrides: storeLayouts.themeOverrides })
+    .from(storeLayouts)
+    .where(and(eq(storeLayouts.tenantId, tenant.id), eq(storeLayouts.isHomepage, true)))
+    .limit(1)
+  if (layoutRows[0]?.themeOverrides) {
+    themeOverrides = layoutRows[0].themeOverrides as Record<string, unknown>
   }
 
   // Merge storefront settings from dashboard (takes priority over store_layouts)
@@ -176,11 +178,12 @@ export async function generateMetadata({
 
   if (!tenant) return { title: "Store Not Found" }
 
-  const layoutRows = await db.execute(
-    sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
-  )
+  const layoutRows = await db.select({ themeOverrides: storeLayouts.themeOverrides })
+    .from(storeLayouts)
+    .where(and(eq(storeLayouts.tenantId, tenant.id), eq(storeLayouts.isHomepage, true)))
+    .limit(1)
 
-  const theme = layoutRows[0]?.theme_overrides as Record<string, unknown> | undefined
+  const theme = layoutRows[0]?.themeOverrides as Record<string, unknown> | undefined
   const seo = theme?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string; twitterCard?: "summary" | "summary_large_image" } | undefined
   const title = (theme?.seoTitle as string) || seo?.title || tenant.name
   const description = (theme?.seoDescription as string) || seo?.description || tenant.description || `Shop at ${tenant.name}`

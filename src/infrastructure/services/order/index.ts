@@ -50,7 +50,7 @@ export async function searchOrders(tenantId: string, query: string, options?: { 
 // ── Commands (via workflows) ──
 
 export async function createOrder(tenantId: string, input: CreateOrderInput) {
-  const result = await createOrderWorkflow(tenantId, input);
+  const result = await createOrderWorkflow({ ...input, tenantId });
 
   eventBus.emit("order.created", createEventPayload(tenantId, {
     orderId: result.order?.id,
@@ -62,19 +62,19 @@ export async function createOrder(tenantId: string, input: CreateOrderInput) {
 }
 
 export async function updateStatus(tenantId: string, input: UpdateOrderStatusInput) {
-  return updateOrderStatusWorkflow(tenantId, input);
+  return updateOrderStatusWorkflow({ ...input, tenantId });
 }
 
 export async function cancelOrder(tenantId: string, input: CancelOrderInput) {
-  return cancelOrderWorkflow(tenantId, input);
+  return cancelOrderWorkflow({ ...input, tenantId });
 }
 
 export async function createReturn(tenantId: string, input: CreateReturnInput) {
-  return createReturnWorkflow(tenantId, input);
+  return createReturnWorkflow({ ...input, tenantId });
 }
 
 export async function processRefund(tenantId: string, input: ProcessRefundInput) {
-  return processRefundWorkflow(tenantId, input);
+  return processRefundWorkflow({ ...input, tenantId });
 }
 
 // ── Direct repository operations (no workflow needed) ──

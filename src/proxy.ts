@@ -94,8 +94,14 @@ export async function proxy(request: NextRequest) {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  // CI-7: CSP header for XSS protection on payment pages
-  response.headers.set("Content-Security-Policy", CSP_HEADER);
+
+  // Stricter CSP for published editor pages — no JS execution allowed
+  if (pathname.startsWith("/p/")) {
+    response.headers.set("Content-Security-Policy", "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; frame-ancestors 'self'");
+    response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  } else {
+    response.headers.set("Content-Security-Policy", CSP_HEADER);
+  }
 
   return response;
 }

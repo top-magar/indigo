@@ -411,7 +411,14 @@ class NotificationEmitter {
     // Dynamic import to avoid circular dependency
     const { deliverNotification } = await import("./notification-delivery");
     
-    return deliverNotification(userId, tenantId, notification, userEmail);
+    return deliverNotification({
+      tenantId,
+      userId,
+      recipientEmail: userEmail,
+      type: "order_confirmation",
+      subject: notification.title || "Notification",
+      body: notification.message || "",
+    });
   }
 }
 

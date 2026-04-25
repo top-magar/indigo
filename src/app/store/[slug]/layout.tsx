@@ -3,7 +3,8 @@ import { unstable_cache } from "next/cache"
 import { db, withTenant } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
 import { categories } from "@/db/schema/products"
-import { eq, asc, sql } from "drizzle-orm"
+import { storeLayouts } from "@/db/schema/store-layouts"
+import { eq, asc, and } from "drizzle-orm"
 import { CartProvider } from "@/features/store/cart-provider"
 import { StoreHeader } from "@/components/store/store-header"
 import { StoreFooter } from "@/components/store/store-footer"
@@ -38,12 +39,13 @@ const getCategories = unstable_cache(
   { revalidate: 300, tags: ["store-categories"] }
 )
 
-/** Cached homepage layout — raw SQL since store_layouts has no Drizzle schema */
+/** Cached homepage layout via Drizzle */
 const getHomepageLayout = unstable_cache(
   async (tenantId: string) => {
-    const rows = await db.execute(
-      sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenantId} AND is_homepage = true LIMIT 1`
-    )
+    const rows = await db.select({ themeOverrides: storeLayouts.themeOverrides })
+      .from(storeLayouts)
+      .where(and(eq(storeLayouts.tenantId, tenantId), eq(storeLayouts.isHomepage, true)))
+      .limit(1)
     return rows[0] ?? null
   },
   ["store-homepage-layout"],
@@ -71,16 +73,24 @@ export default async function StoreLayout({
   const tenantSettings = (tenant.settings as Record<string, any>) ?? {}
   const sf = (tenantSettings.storefront ?? {}) as Record<string, any>
 
-  const themeOverrides = (homepageLayout?.theme_overrides as Record<string, unknown>) ?? {}
+  const themeOverrides = (homepageLayout?.themeOverrides as Record<string, unknown>) ?? {}
   const cookieEnabled = themeOverrides.cookieConsent === true
   const cookieText = (themeOverrides.cookieText as string) || "We use cookies to improve your experience."
 
-  // Theme CSS variables from storefront settings
-  const primaryColor = (sf.primaryColor as string) || "#3b82f6"
-  const secondaryColor = (sf.secondaryColor as string) || "#8b5cf6"
-  const backgroundColor = (sf.backgroundColor as string) || "#ffffff"
-  const headingFont = (sf.headingFont as string) || "Inter"
-  const bodyFont = (sf.bodyFont as string) || "Inter"
+  // Theme CSS variables from storefront settings — sanitized to prevent CSS injection
+  const sanitizeCss = (v: string, fallback: string) => {
+    const s = (v || fallback).replace(/[;{}()<>\\]/g, "").replace(/\/\*/g, "").replace(/\*\//g, "").trim()
+    return s || fallback
+  }
+  const sanitizeFont = (v: string, fallback: string) => {
+    const s = (v || fallback).replace(/[;{}()<>\\'"]/g, "").replace(/\/\*/g, "").trim()
+    return s || fallback
+  }
+  const primaryColor = sanitizeCss(sf.primaryColor as string, "#3b82f6")
+  const secondaryColor = sanitizeCss(sf.secondaryColor as string, "#8b5cf6")
+  const backgroundColor = sanitizeCss(sf.backgroundColor as string, "#ffffff")
+  const headingFont = sanitizeFont(sf.headingFont as string, "Inter")
+  const bodyFont = sanitizeFont(sf.bodyFont as string, "Inter")
   const logoUrl = (sf.logoUrl as string) || tenant.logoUrl || ""
   const announcementBar = (sf.announcementBar as string) || ""
 
