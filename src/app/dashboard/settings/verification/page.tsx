@@ -105,8 +105,9 @@ export default async function VerificationPage() {
           registration details, PAN/VAT number, and contact information on their platform. 
           Non-compliance may result in fines of NPR 20,000 to NPR 500,000.
         </p>
-        <div className="flex gap-3 mt-2">
-          <a href="https://shrigo.com/blogs/1175-e-commerce-registration-process-in-nepal-2025-everything-you-need-to-know" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Read the full guide →</a>
+        <div className="flex flex-wrap gap-3 mt-2">
+          <a href="https://giwmscdnone.gov.np/media/files/E-Commerce%20Act%2C%202081_yr7k9o5.pdf" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Official Act (PDF) →</a>
+          <a href="https://shrigo.com/blogs/1175-e-commerce-registration-process-in-nepal-2025-everything-you-need-to-know" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Registration guide →</a>
           <a href="https://notarynepal.com/blog/e-commerce-act-nepal-2025" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Key rules & penalties →</a>
         </div>
       </div>
