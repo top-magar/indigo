@@ -6,7 +6,7 @@ import { cn } from "@/shared/utils";
 import { Menu, X, ArrowRight, ChevronDown, Wallet, Truck, BarChart3, Smartphone, Globe, Palette } from "lucide-react";
 
 const FEATURE_ITEMS = [
-    { icon: Wallet, label: "Payments", desc: "eSewa, Khalti & cards", href: "/#features" },
+    { icon: Wallet, label: "Payments", desc: "Digital wallets & cards", href: "/#features" },
     { icon: Truck, label: "Shipping", desc: "Pathao integration", href: "/#features" },
     { icon: BarChart3, label: "Analytics", desc: "Real-time insights", href: "/#features" },
     { icon: Smartphone, label: "Mobile", desc: "Manage on the go", href: "/#features" },

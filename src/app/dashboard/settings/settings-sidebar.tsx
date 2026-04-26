@@ -14,7 +14,7 @@ const sections = [
     { title: "Domains", href: "/dashboard/settings/domains", icon: Globe, description: "Custom domains" },
   ]},
   { label: "Commerce", items: [
-    { title: "Payments", href: "/dashboard/settings/payments", icon: CreditCard, description: "eSewa, Khalti, cards" },
+    { title: "Payments", href: "/dashboard/settings/payments", icon: CreditCard, description: "Payment methods" },
     { title: "Checkout", href: "/dashboard/settings/checkout", icon: ShoppingBag, description: "Checkout flow" },
     { title: "Shipping", href: "/dashboard/settings/shipping", icon: Truck, description: "Zones and rates" },
     { title: "Tax", href: "/dashboard/settings/tax", icon: Receipt, description: "Tax collection" },

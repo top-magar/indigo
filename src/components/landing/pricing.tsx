@@ -21,7 +21,7 @@ const plans = [
     {
         id: "pro", name: "Pro", description: "For serious sellers",
         price: { monthly: 2500, yearly: 25000 },
-        features: ["Unlimited products", "eSewa, Khalti & IME Pay", "Custom domain", "Real-time analytics", "Priority WhatsApp support", "FB & Instagram sync"],
+        features: ["Unlimited products", "Online payment integrations", "Custom domain", "Real-time analytics", "Priority WhatsApp support", "FB & Instagram sync"],
         cta: "Start 14-Day Trial", highlighted: true,
     },
     {
@@ -37,7 +37,7 @@ const compareRows: [string, V, V, V][] = [
     ["Products", "50", "Unlimited", "Unlimited"],
     ["Store themes", "1", "All", "All + custom"],
     ["Custom domain", false, true, true],
-    ["eSewa & Khalti", false, true, true],
+    ["Online payments", false, true, true],
     ["Cash on delivery", true, true, true],
     ["Real-time analytics", false, true, true],
     ["FB & Instagram sync", false, true, true],

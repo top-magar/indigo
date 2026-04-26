@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils";
 
 const STEPS = [
   { id: "product", label: "Add your first product", description: "List something to sell — add photos, pricing, and inventory", href: "/dashboard/products/new", icon: Package, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-950", ring: "stroke-blue-600" },
-  { id: "payments", label: "Set up payments", description: "Connect eSewa, Khalti, or enable cash on delivery", href: "/dashboard/settings/payments", icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-950", ring: "stroke-emerald-600" },
+  { id: "payments", label: "Set up payments", description: "Connect payment methods or enable cash on delivery", href: "/dashboard/settings/payments", icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-950", ring: "stroke-emerald-600" },
   { id: "storefront", label: "Customize your store", description: "Add your brand colors, logo, and homepage layout", href: "/dashboard/pages", icon: Palette, color: "text-violet-600", bg: "bg-violet-100 dark:bg-violet-950", ring: "stroke-violet-600" },
   { id: "domain", label: "Add a custom domain", description: "Connect your own .com or .np domain", href: "/dashboard/settings/domains", icon: Globe, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-950", ring: "stroke-amber-600" },
 ] as const;

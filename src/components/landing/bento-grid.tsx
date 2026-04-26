@@ -11,10 +11,10 @@ const cards = [
     {
         icon: Zap,
         title: "Lightning fast checkout",
-        description: "One-tap payments with eSewa & Khalti. Customers buy in seconds, not minutes.",
+        description: "One-tap payments with Nepal's top digital wallets. Customers buy in seconds, not minutes.",
         span: "col-span-1 lg:col-span-2 lg:row-span-2 min-h-[300px] lg:min-h-[400px]",
         containerClassName: "bg-amber-900",
-        features: ["One-tap eSewa pay", "Khalti QR scan", "Auto-fill addresses", "Guest checkout"],
+        features: ["One-tap wallet pay", "QR scan checkout", "Auto-fill addresses", "Guest checkout"],
     },
     {
         icon: Shield,

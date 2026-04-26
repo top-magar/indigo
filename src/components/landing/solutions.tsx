@@ -27,7 +27,7 @@ const solutions: Solution[] = [
     },
     {
         icon: CreditCard, title: "Payments",
-        description: "Accept eSewa, Khalti, IME Pay, ConnectIPS, and international cards. Same-day settlement.",
+        description: "Accept all major Nepal payment methods — digital wallets, bank transfers, and international cards. Same-day settlement.",
         stats: [{ label: "Methods", value: "6+" }, { label: "Settlement", value: "Same day" }, { label: "Fees", value: "From 1.5%" }],
         color: "from-emerald-500/20 to-transparent",
     },

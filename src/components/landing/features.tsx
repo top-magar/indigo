@@ -25,7 +25,7 @@ const features: Feature[] = [
     {
         icon: Wallet, tab: "Payments",
         title: "Accept every payment method in Nepal",
-        description: "eSewa, Khalti, IME Pay, ConnectIPS, and international Visa/Mastercard. Money hits your account same day.",
+        description: "All major Nepal payment methods — digital wallets, bank transfers, and international cards. Money hits your account same day.",
         preview: [
             { label: "eSewa", value: "Rs 23,400", change: "+18%" },
             { label: "Khalti", value: "Rs 18,200", change: "+12%" },

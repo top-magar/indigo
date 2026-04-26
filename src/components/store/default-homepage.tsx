@@ -79,7 +79,7 @@ export async function DefaultHomepage({
               <CreditCard className="size-5 text-muted-foreground shrink-0" />
               <div>
                 <p className="text-sm font-medium">Secure Payment</p>
-                <p className="text-xs text-muted-foreground">eSewa, Khalti & Cards</p>
+                <p className="text-xs text-muted-foreground">Digital Wallets & Cards</p>
               </div>
             </div>
             <div className="flex items-center gap-3">

@@ -24,7 +24,7 @@ const data = [
         content: (
             <div>
                 <p className="text-sm font-semibold text-foreground mb-1">Connect payments</p>
-                <p className="text-sm text-muted-foreground">Link eSewa, Khalti, or bank transfer. Start accepting money immediately.</p>
+                <p className="text-sm text-muted-foreground">Connect your payment provider or enable bank transfer. Start accepting money immediately.</p>
             </div>
         ),
     },

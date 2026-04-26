@@ -11,7 +11,7 @@ import { Plus, MessageCircle } from "lucide-react";
 
 const faqs = [
     { q: "How much does it cost?", a: "Free forever for up to 50 products. Pro starts at Rs 2,500/month. No hidden fees." },
-    { q: "Can I accept eSewa and Khalti?", a: "Yes. eSewa, Khalti, IME Pay, ConnectIPS, and international Visa/Mastercard. Setup takes 5 minutes." },
+    { q: "What payment methods are supported?", a: "All major Nepal payment methods including digital wallets, bank transfers, and international cards. Setup takes 5 minutes." },
     { q: "How does shipping work?", a: "One-click Pathao booking. Auto labels, real-time tracking, SMS notifications to your customers." },
     { q: "Do I need technical skills?", a: "No. Pick a theme, add products, connect payments. Your store is live. No code required." },
     { q: "Can I use my own domain?", a: "Yes, on Pro and Scale plans. Connect your domain and we handle SSL automatically." },
