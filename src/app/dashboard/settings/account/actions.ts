@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { getAuthenticatedClient } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const log = createLogger("actions:account");
 
@@ -20,6 +20,7 @@ export async function updateUserProfile(formData: FormData): Promise<{ error?: s
 
     if (error) return { error: error.message };
     revalidatePath("/dashboard/settings/account");
+    revalidateTag("dashboard", "seconds");
     return {};
   } catch (err) {
     log.error("Update profile error:", err);
