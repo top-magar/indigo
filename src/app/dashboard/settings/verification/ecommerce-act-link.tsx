@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, X } from "lucide-react";
 
@@ -22,6 +22,7 @@ export function ECommerceActLink() {
         </button>
       </DialogTrigger>
       <DialogContent className="p-0 gap-0 border-0 max-w-[calc(100vw-2rem)] w-full h-[calc(100vh-2rem)] flex flex-col overflow-hidden rounded-xl">
+        <DialogTitle className="sr-only">{pdf.title}</DialogTitle>
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-background shrink-0">
           <div className="flex items-center gap-3">
