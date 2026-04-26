@@ -14,7 +14,8 @@ export async function renamePage(id: string, name: string) {
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return;
-  await db.update(editorPages).set({ name, updatedAt: new Date() }).where(eq(editorPages.id, id));
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  await db.update(editorPages).set({ name, slug, updatedAt: new Date() }).where(eq(editorPages.id, id));
   revalidatePath("/dashboard/pages");
 }
 
