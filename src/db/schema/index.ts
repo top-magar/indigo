@@ -58,3 +58,4 @@ export * from "./editor-project-versions";
 export * from "./editor-pages";
 export * from "./billing";
 export * from "./platform-invites";
+export * from "./tenant-kyc";

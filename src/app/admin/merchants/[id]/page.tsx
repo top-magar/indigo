@@ -1,5 +1,6 @@
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
+import { tenantKyc } from "@/db/schema/tenant-kyc";
 import { orders } from "@/db/schema/orders";
 import { products } from "@/db/schema/products";
 import { customers } from "@/db/schema/customers";
@@ -11,6 +12,7 @@ import { ArrowLeft, ExternalLink, Store } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/shared/utils";
+import { KycSection } from "./kyc-section";
 import { requirePermission } from "../../_lib/permissions";
 import type { Metadata } from "next";
 
@@ -48,6 +50,9 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
     db.select({ id: users.id, email: users.email, fullName: users.fullName, role: users.role }).from(users).where(eq(users.tenantId, id)),
     db.select({ id: orders.id, orderNumber: orders.orderNumber, total: orders.total, status: orders.status, createdAt: orders.createdAt }).from(orders).where(eq(orders.tenantId, id)).orderBy(desc(orders.createdAt)).limit(5),
   ]);
+
+  // KYC status
+  const [kyc] = await db.select().from(tenantKyc).where(eq(tenantKyc.tenantId, id)).limit(1);
 
   const currency = tenant.currency || "NPR";
 
@@ -141,6 +146,9 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
           </div>
         </div>
       </div>
+
+      {/* KYC Verification */}
+      <KycSection kyc={kyc} tenantId={id} />
 
       {/* Store metadata */}
       <div className="rounded-lg border p-4">

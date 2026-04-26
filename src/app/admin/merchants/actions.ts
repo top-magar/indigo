@@ -87,3 +87,38 @@ export async function restoreMerchant(tenantId: string): Promise<{ error?: strin
     return { error: "Failed to restore merchant" };
   }
 }
+
+export async function approveVerification(tenantId: string): Promise<{ error?: string }> {
+  const user = await requirePermission("manage_merchants");
+  const parsed = uuidSchema.safeParse(tenantId);
+  if (!parsed.success) return { error: "Invalid ID" };
+
+  try {
+    const { tenantKyc } = await import("@/db/schema/tenant-kyc");
+    await db.update(tenantKyc).set({
+      status: "verified", verifiedBy: user.id, verifiedAt: new Date(), updatedAt: new Date(),
+    }).where(eq(tenantKyc.tenantId, parsed.data));
+
+    logAdminAction({ actorId: user.id, actorEmail: user.email, action: "merchant.reactivate", targetType: "kyc", targetId: parsed.data });
+    revalidatePath("/admin/merchants");
+    return {};
+  } catch { return { error: "Failed to approve" }; }
+}
+
+export async function rejectVerification(tenantId: string, reason: string): Promise<{ error?: string }> {
+  const user = await requirePermission("manage_merchants");
+  const parsed = uuidSchema.safeParse(tenantId);
+  if (!parsed.success) return { error: "Invalid ID" };
+  if (!reason.trim()) return { error: "Rejection reason required" };
+
+  try {
+    const { tenantKyc } = await import("@/db/schema/tenant-kyc");
+    await db.update(tenantKyc).set({
+      status: "rejected", rejectionReason: reason.trim(), updatedAt: new Date(),
+    }).where(eq(tenantKyc.tenantId, parsed.data));
+
+    logAdminAction({ actorId: user.id, actorEmail: user.email, action: "merchant.suspend", targetType: "kyc", targetId: parsed.data });
+    revalidatePath("/admin/merchants");
+    return {};
+  } catch { return { error: "Failed to reject" }; }
+}

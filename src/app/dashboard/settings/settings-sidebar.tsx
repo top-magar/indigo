@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils";
 import {
   Store, CreditCard, Truck, Receipt, ShoppingBag,
-  Globe, User, Users, Bell, MessageCircle, Wallet,
+  Globe, User, Users, Bell, MessageCircle, Wallet, ShieldCheck,
 } from "lucide-react";
 
 const sections = [
@@ -23,6 +23,7 @@ const sections = [
     { title: "Account", href: "/dashboard/settings/account", icon: User, description: "Profile and security" },
     { title: "Team", href: "/dashboard/settings/team", icon: Users, description: "Members and roles" },
     { title: "Billing", href: "/dashboard/settings/billing", icon: Wallet, description: "Plan and usage" },
+    { title: "Verification", href: "/dashboard/settings/verification", icon: ShieldCheck, description: "KYC and identity" },
     { title: "Notifications", href: "/dashboard/settings/notifications", icon: Bell, description: "Alerts and channels" },
     { title: "WhatsApp", href: "/dashboard/settings/whatsapp", icon: MessageCircle, description: "Order alerts via WhatsApp" },
   ]},

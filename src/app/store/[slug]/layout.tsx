@@ -76,6 +76,21 @@ export default async function StoreLayout({
     )
   }
 
+  // Block unverified stores
+  const { tenantKyc } = await import("@/db/schema/tenant-kyc")
+  const [kyc] = await db.select({ status: tenantKyc.status })
+    .from(tenantKyc).where(eq(tenantKyc.tenantId, tenant.id)).limit(1)
+  if (!kyc || kyc.status !== "verified") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center space-y-2">
+          <p className="text-lg font-semibold">Store Coming Soon</p>
+          <p className="text-sm text-muted-foreground">This store is being set up. Check back soon!</p>
+        </div>
+      </div>
+    )
+  }
+
   const [cats, cart, homepageLayout] = await Promise.all([
     getCategories(tenant.id),
     retrieveCart(tenant.id),
