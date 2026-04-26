@@ -151,9 +151,8 @@ export default async function StoreLayout({
     <CartProvider tenantId={tenant.id} initialCart={cart}>
       {/* Force light mode on storefront regardless of dashboard preference */}
       <div className="light" style={{ colorScheme: "light" }}>
-      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-      <link rel="stylesheet" href={fontsUrl} />
-      <style dangerouslySetInnerHTML={{ __html: cssVars }} />
+      {fontsUrl && <link rel="stylesheet" href={fontsUrl} />}
+      {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
       <StoreShell
         storeSlug={slug}
         header={<>
