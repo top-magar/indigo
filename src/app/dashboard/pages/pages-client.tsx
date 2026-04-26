@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,10 +36,11 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
       )
     : pages;
 
-  const handleDelete = async (page: EditorPage) => {
-    if (!confirm(`Delete "${page.name}"? This cannot be undone.`)) return;
-    await deletePage(page.id);
-    router.refresh();
+  const handleDelete = (page: EditorPage) => {
+    startTransition(async () => {
+      await deletePage(page.id);
+      router.refresh();
+    });
   };
 
   const [newPageName, setNewPageName] = useState("");
@@ -209,9 +211,23 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                   {!page.isHomepage && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(page)}>
-                        <Trash2 className="size-3.5" /> Delete
-                      </DropdownMenuItem>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={e => e.preventDefault()}>
+                            <Trash2 className="size-3.5" /> Delete
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete "{page.name}"?</AlertDialogTitle>
+                            <AlertDialogDescription>This will permanently delete this page and its content. This cannot be undone.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => handleDelete(page)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </>
                   )}
                 </DropdownMenuContent>
