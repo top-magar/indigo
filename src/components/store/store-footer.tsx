@@ -7,9 +7,10 @@ import { storeHref } from "@/features/store/url"
 
 interface StoreFooterProps {
   tenant: Tenant
+  showBranding?: boolean
 }
 
-export function StoreFooter({ tenant }: StoreFooterProps) {
+export function StoreFooter({ tenant, showBranding = false }: StoreFooterProps) {
   const baseUrl = storeHref(tenant.slug)
 
   return (
@@ -65,6 +66,11 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
           <p className="text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} {tenant.name}. All rights reserved.
           </p>
+          {showBranding && (
+            <p className="text-center text-xs text-muted-foreground/60 mt-2">
+              Powered by <a href="https://indigo.store" target="_blank" rel="noopener noreferrer" className="underline hover:text-muted-foreground">Indigo</a>
+            </p>
+          )}
         </div>
       </div>
     </footer>

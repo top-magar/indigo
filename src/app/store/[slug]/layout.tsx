@@ -6,6 +6,7 @@ import { categories } from "@/db/schema/products"
 import { storeLayouts } from "@/db/schema/store-layouts"
 import { editorPages } from "@/db/schema/editor-pages"
 import { editorProjects } from "@/db/schema/editor-projects"
+import { subscriptions } from "@/db/schema/billing"
 import { eq, asc, and } from "drizzle-orm"
 import { CartProvider } from "@/features/store/cart-provider"
 import { StoreHeader } from "@/components/store/store-header"
@@ -111,7 +112,7 @@ export default async function StoreLayout({
     // Owner can preview — show banner below
   }
 
-  const [cats, cart, homepageLayout, navPages] = await Promise.all([
+  const [cats, cart, homepageLayout, navPages, paidPlanRows] = await Promise.all([
     getCategories(tenant.id),
     retrieveCart(tenant.id),
     getHomepageLayout(tenant.id),
@@ -124,6 +125,10 @@ export default async function StoreLayout({
         eq(editorPages.isHomepage, false),
       ))
       .orderBy(editorPages.order),
+    // Check if merchant has a paid plan (for branding badge)
+    db.select({ id: subscriptions.id }).from(subscriptions)
+      .where(and(eq(subscriptions.tenantId, tenant.id), eq(subscriptions.status, "active")))
+      .limit(1),
   ])
 
   const tenantSettings = (tenant.settings as Record<string, any>) ?? {}
@@ -152,6 +157,7 @@ export default async function StoreLayout({
 
   const cssVars = ""
   const fontsUrl = ""
+  const hasPaidPlan = paidPlanRows.length > 0
 
   // Read sections config for announcement bar
   const sections = (sf.sections as Array<{ type: string; content: Record<string, string>; visible: boolean; order: number }>) ?? []
@@ -178,7 +184,7 @@ export default async function StoreLayout({
           )}
           <StoreHeader tenant={{ ...tenant as any, logoUrl }} categories={cats} navPages={navPages} />
         </>}
-        footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
+        footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} showBranding={!isVerified || !hasPaidPlan} />}
       >
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />

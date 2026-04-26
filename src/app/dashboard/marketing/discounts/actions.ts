@@ -227,6 +227,13 @@ export async function createDiscount(input: CreateDiscountInput) {
         return { success: false, error: "Not authenticated" };
     }
 
+    // Discounts require Growth+ plan
+    const { getTenantPlanLimits } = await import("@/lib/plan-limits");
+    const limits = await getTenantPlanLimits(tenantId);
+    if (limits.planName === "Free") {
+        return { success: false, error: "Discounts require a paid plan. Upgrade to Growth to create discounts." };
+    }
+
     try {
         const validated = createDiscountSchema.parse(input);
 
