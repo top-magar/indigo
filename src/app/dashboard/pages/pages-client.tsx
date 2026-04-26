@@ -14,7 +14,6 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useConfirmDelete } from "@/hooks/use-confirm-dialog";
 import { deletePage, renamePage, createPage } from "./actions";
 import type { EditorPage } from "@/db/schema/editor-pages";
 
@@ -27,7 +26,6 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const renameRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const confirmDelete = useConfirmDelete();
 
   const filtered = query
     ? pages.filter(p =>
@@ -37,7 +35,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     : pages;
 
   const handleDelete = async (page: EditorPage) => {
-    if (!(await confirmDelete(page.name, "page"))) return;
+    if (!confirm(`Delete "${page.name}"? This cannot be undone.`)) return;
     await deletePage(page.id);
     router.refresh();
   };
