@@ -149,6 +149,8 @@ export default async function StoreLayout({
 
   return (
     <CartProvider tenantId={tenant.id} initialCart={cart}>
+      {/* Force light mode on storefront regardless of dashboard preference */}
+      <div className="light" style={{ colorScheme: "light" }}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={fontsUrl} />
       <style dangerouslySetInnerHTML={{ __html: cssVars }} />
@@ -171,6 +173,7 @@ export default async function StoreLayout({
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
+      </div>
     </CartProvider>
   )
 }
