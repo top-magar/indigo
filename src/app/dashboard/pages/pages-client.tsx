@@ -77,10 +77,8 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
         <Button variant="outline" onClick={() => {
           startTransition(async () => {
             const result = await createPage(site.id);
-            if (result.id) {
-              window.open(`/editor?project=${site.id}&page=${result.id}`, "_blank");
-              router.refresh();
-            }
+            if (result.error) return;
+            router.refresh();
           });
         }}>
           <Plus className="size-3.5" /> New Page
