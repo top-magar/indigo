@@ -14,7 +14,7 @@ export function ECommerceActLink() {
           Nepal's E-Commerce Act 2081
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl h-[90vh] flex flex-col">
+      <DialogContent className="w-[95vw] max-w-6xl h-[90vh] flex flex-col">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>E-Commerce Act, 2081</DialogTitle>
