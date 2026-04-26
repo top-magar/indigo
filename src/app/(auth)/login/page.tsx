@@ -30,7 +30,7 @@ function LoginForm() {
   const emailRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+  const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("next") || "/dashboard"
 
   useEffect(() => { emailRef.current?.focus() }, [])
 
@@ -52,9 +52,9 @@ function LoginForm() {
       const supabase = createClient()
       const { error, data } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw new Error(error.message.includes("Invalid login") ? "Invalid email or password." : error.message)
-      // Route platform_admin to /admin, everyone else to dashboard
-      const role = data.user?.user_metadata?.role
-      router.push(role === "platform_admin" ? "/admin" : callbackUrl)
+      // Proxy handles role-based routing — refresh triggers it
+      router.refresh()
+      router.push(callbackUrl)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally { setIsLoading(false) }

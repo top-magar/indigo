@@ -17,18 +17,25 @@ export async function GET(request: Request) {
       if (user) {
         const { data: userData } = await supabase
           .from("users")
-          .select("tenant_id, role")
+          .select("tenant_id, role, platform_role")
           .eq("id", user.id)
           .single()
 
-        // Platform admin has no tenant — redirect to /admin
-        if (userData?.role === "platform_admin") {
+        // Platform access: role is platform_admin OR has platform_role
+        const hasPlatformAccess = userData?.role === "platform_admin" || !!userData?.platform_role;
+
+        if (hasPlatformAccess && !userData?.tenant_id) {
           return NextResponse.redirect(`${requestUrl.origin}/admin`)
         }
 
-        // If no tenant, redirect to onboarding
-        if (!userData?.tenant_id) {
+        // If no tenant and no platform access, redirect to onboarding
+        if (!userData?.tenant_id && !hasPlatformAccess) {
           return NextResponse.redirect(`${requestUrl.origin}/auth/onboarding`)
+        }
+
+        // Dual-role users: respect the `next` param, default to admin
+        if (hasPlatformAccess) {
+          return NextResponse.redirect(`${requestUrl.origin}${next === "/dashboard" ? "/admin" : next}`)
         }
       }
 

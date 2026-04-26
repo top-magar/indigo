@@ -27,7 +27,12 @@ export default async function InviteAcceptPage({ searchParams }: { searchParams:
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user) {
-    // User is logged in — accept the invite
+    // Verify the logged-in user matches the invite email
+    if (user.email !== invite.email) {
+      return <ErrorState message={`This invite is for ${invite.email}. You're logged in as ${user.email}.`} />;
+    }
+
+    // User is logged in and email matches — accept the invite
     const [existingUser] = await db.select({ id: users.id })
       .from(users).where(eq(users.id, user.id)).limit(1);
 

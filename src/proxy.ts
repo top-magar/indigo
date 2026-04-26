@@ -90,8 +90,8 @@ export async function proxy(request: NextRequest) {
     const role = dbUser?.role ?? "owner";
     const hasPlatformAccess = role === "platform_admin" || !!dbUser?.platform_role;
 
-    // Check if merchant is suspended (block dashboard access)
-    if (!hasPlatformAccess && dbUser?.tenant_id && pathname.startsWith("/dashboard")) {
+    // Check if merchant is suspended (block dashboard access — even if they have platform access)
+    if (dbUser?.tenant_id && pathname.startsWith("/dashboard")) {
       const { data: tenant } = await supabase
         .from("tenants")
         .select("settings")
