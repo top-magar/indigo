@@ -1,6 +1,6 @@
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
-import { plans, subscriptions, payments } from "@/db/schema/billing";
+import { plans, subscriptions, payments, invoices } from "@/db/schema/billing";
 import { eq, desc, sql, count } from "drizzle-orm";
 import { requirePermission } from "../_lib/permissions";
 import { formatCurrency } from "@/shared/utils";
@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Billing | Admin" };
 export default async function BillingPage() {
   await requirePermission("view_billing");
 
-  const [allPlans, allSubs, recentPayments, [{ value: totalRevenue }], merchantList] = await Promise.all([
+  const [allPlans, allSubs, recentPayments, [{ value: totalRevenue }], merchantList, recentInvoices] = await Promise.all([
     db.select().from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
     db.select({
       id: subscriptions.id,
@@ -32,6 +32,11 @@ export default async function BillingPage() {
     }).from(payments).orderBy(desc(payments.createdAt)).limit(20),
     db.select({ value: sql<string>`COALESCE(SUM(${payments.amount}), 0)` }).from(payments),
     db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug }).from(tenants).orderBy(tenants.name),
+    db.select({
+      id: invoices.id, tenantId: invoices.tenantId, periodStart: invoices.periodStart,
+      orderTotal: invoices.orderTotal, commissionRate: invoices.commissionRate,
+      finalAmount: invoices.finalAmount, status: invoices.status,
+    }).from(invoices).orderBy(desc(invoices.createdAt)).limit(30),
   ]);
 
   // Count subs per status
@@ -94,6 +99,11 @@ export default async function BillingPage() {
           ...p,
           merchantName: merchantList.find(m => m.id === p.tenantId)?.name ?? "Unknown",
           createdAt: p.createdAt.toISOString(),
+        }))}
+        invoices={recentInvoices.map(i => ({
+          ...i,
+          merchantName: merchantList.find(m => m.id === i.tenantId)?.name ?? "Unknown",
+          periodStart: i.periodStart.toISOString(),
         }))}
       />
     </div>

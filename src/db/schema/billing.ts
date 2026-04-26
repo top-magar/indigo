@@ -79,3 +79,34 @@ export const payments = pgTable("payments", {
 export type Plan = typeof plans.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type Payment = typeof payments.$inferSelect;
+
+/**
+ * Platform invoices — auto-generated monthly for each merchant.
+ * Calculates MIN(commission × order_total, plan_cap).
+ */
+export const invoices = pgTable("invoices", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
+  planId: uuid("plan_id").references(() => plans.id),
+
+  // Period
+  periodStart: timestamp("period_start", { withTimezone: true }).notNull(),
+  periodEnd: timestamp("period_end", { withTimezone: true }).notNull(),
+
+  // Calculation
+  orderTotal: decimal("order_total", { precision: 12, scale: 2 }).notNull().default("0"),
+  orderCount: integer("order_count").notNull().default(0),
+  commissionRate: decimal("commission_rate", { precision: 4, scale: 2 }).notNull().default("0"),
+  commissionAmount: decimal("commission_amount", { precision: 10, scale: 2 }).notNull().default("0"),
+  capAmount: decimal("cap_amount", { precision: 10, scale: 2 }).notNull().default("0"),
+  finalAmount: decimal("final_amount", { precision: 10, scale: 2 }).notNull().default("0"),
+
+  status: varchar("status", { length: 20 }).notNull().default("pending")
+    .$type<"pending" | "paid" | "overdue" | "waived">(),
+  paidAt: timestamp("paid_at", { withTimezone: true }),
+  paymentId: uuid("payment_id").references(() => payments.id),
+
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Invoice = typeof invoices.$inferSelect;

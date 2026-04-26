@@ -8,15 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { formatCurrency } from "@/shared/utils";
 import { assignPlan, recordPayment } from "./actions";
+import { generateMonthlyInvoices, markInvoicePaid, waiveInvoice } from "./invoice-actions";
 
 type Props = {
   merchants: { id: string; name: string; slug: string }[];
   plans: { id: string; name: string; priceMonthly: string }[];
   subscriptions: { id: string; tenantId: string; planId: string; status: string; periodEnd: Date; billingCycle: string }[];
   payments: { id: string; tenantId: string; amount: string; method: string; reference: string | null; merchantName: string; createdAt: string }[];
+  invoices: { id: string; tenantId: string; merchantName: string; periodStart: string; orderTotal: string; commissionRate: string; finalAmount: string; status: string }[];
 };
 
-export default function BillingClient({ merchants, plans, subscriptions, payments }: Props) {
+export default function BillingClient({ merchants, plans, subscriptions, payments, invoices: invoiceList }: Props) {
   const [isPending, startTransition] = useTransition();
 
   // Assign plan form
@@ -156,6 +158,52 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
           </div>
         ) : (
           <p className="p-4 text-xs text-muted-foreground text-center">No subscriptions yet</p>
+        )}
+      </div>
+
+      {/* Invoice Generation */}
+      <div className="rounded-lg border p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">Monthly Invoices</p>
+          <Button size="sm" onClick={() => {
+            const now = new Date();
+            startTransition(async () => {
+              const result = await generateMonthlyInvoices(now.getFullYear(), now.getMonth() + 1);
+              if (result.error) toast.error(result.error);
+              else toast.success(`Generated ${result.generated} invoices (${result.skipped} skipped)`);
+            });
+          }} disabled={isPending}>
+            Generate This Month
+          </Button>
+        </div>
+        {invoiceList.length > 0 ? (
+          <div className="divide-y">
+            {invoiceList.map(inv => (
+              <div key={inv.id} className="flex items-center justify-between py-2.5">
+                <div>
+                  <p className="text-sm font-medium">{inv.merchantName}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {new Date(inv.periodStart).toLocaleDateString("en-US", { month: "short", year: "numeric" })} · {inv.commissionRate}% on {formatCurrency(Number(inv.orderTotal), "NPR")}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
+                  {inv.status === "pending" ? (
+                    <div className="flex gap-1">
+                      <Button variant="outline" size="sm" onClick={() => startTransition(async () => { await markInvoicePaid(inv.id); toast.success("Marked paid"); })} disabled={isPending}>Paid</Button>
+                      <Button variant="ghost" size="sm" onClick={() => startTransition(async () => { await waiveInvoice(inv.id); toast.success("Waived"); })} disabled={isPending}>Waive</Button>
+                    </div>
+                  ) : (
+                    <Badge className={`text-[10px] ${inv.status === "paid" ? "bg-success/10 text-success" : inv.status === "waived" ? "bg-muted text-muted-foreground" : "bg-destructive/10 text-destructive"}`}>
+                      {inv.status}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground text-center py-4">No invoices generated yet. Click "Generate This Month" to calculate commissions.</p>
         )}
       </div>
     </div>

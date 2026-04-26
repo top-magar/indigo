@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { db } from "@/infrastructure/db";
-import { plans, payments } from "@/db/schema/billing";
+import { plans, payments, invoices as invoicesTable } from "@/db/schema/billing";
 import { eq, desc } from "drizzle-orm";
 import { formatCurrency } from "@/shared/utils";
 import { Check } from "lucide-react";
@@ -13,7 +13,7 @@ export default async function MerchantBillingPage() {
   const user = await requireUser();
   const limits = await getTenantPlanLimits(user.tenantId);
 
-  const [allPlans, recentPayments] = await Promise.all([
+  const [allPlans, recentPayments, recentInvoices] = await Promise.all([
     db.select({
       id: plans.id, name: plans.name, slug: plans.slug,
       priceMonthly: plans.priceMonthly, priceYearly: plans.priceYearly,
@@ -24,6 +24,11 @@ export default async function MerchantBillingPage() {
       id: payments.id, amount: payments.amount, method: payments.method,
       reference: payments.reference, createdAt: payments.createdAt,
     }).from(payments).where(eq(payments.tenantId, user.tenantId)).orderBy(desc(payments.createdAt)).limit(10),
+    db.select({
+      id: invoicesTable.id, periodStart: invoicesTable.periodStart,
+      orderTotal: invoicesTable.orderTotal, commissionRate: invoicesTable.commissionRate,
+      finalAmount: invoicesTable.finalAmount, status: invoicesTable.status,
+    }).from(invoicesTable).where(eq(invoicesTable.tenantId, user.tenantId)).orderBy(desc(invoicesTable.createdAt)).limit(6),
   ]);
 
   const usagePercent = (current: number, max: number) => Math.min((current / max) * 100, 100);
@@ -117,6 +122,32 @@ export default async function MerchantBillingPage() {
         </div>
         <p className="text-xs text-muted-foreground mt-3">To upgrade, contact us via eSewa/Khalti or bank transfer. We'll activate your plan within 24 hours.</p>
       </div>
+
+      {/* Invoices */}
+      {recentInvoices.length > 0 && (
+        <div className="rounded-lg border">
+          <div className="p-4 border-b">
+            <p className="text-sm font-medium">Invoices</p>
+          </div>
+          <div className="divide-y">
+            {recentInvoices.map(inv => (
+              <div key={inv.id} className="flex items-center justify-between p-3">
+                <div>
+                  <p className="text-sm font-medium tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {new Date(inv.periodStart).toLocaleDateString("en-US", { month: "long", year: "numeric" })} · {inv.commissionRate}% on {formatCurrency(Number(inv.orderTotal), "NPR")} sales
+                  </p>
+                </div>
+                <span className={`text-[10px] px-2 py-1 rounded ${
+                  inv.status === "paid" ? "bg-success/10 text-success" :
+                  inv.status === "waived" ? "bg-muted text-muted-foreground" :
+                  "bg-warning/10 text-warning"
+                }`}>{inv.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Payment History */}
       <div className="rounded-lg border">
