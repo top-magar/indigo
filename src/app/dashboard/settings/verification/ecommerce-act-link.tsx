@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, X } from "lucide-react";
 
@@ -21,13 +21,14 @@ export function ECommerceActLink() {
           Nepal's E-Commerce Act 2081
         </button>
       </DialogTrigger>
-      <DialogContent className="p-0 gap-0 border-0 max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] w-full h-[calc(100vh-2rem)] flex flex-col overflow-hidden rounded-xl">
+      <DialogContent className="p-0 gap-0 border-0 max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] w-full h-[calc(100vh-2rem)] flex flex-col overflow-hidden rounded-xl [&>button:last-child]:hidden">
         <DialogTitle className="sr-only">{pdf.title}</DialogTitle>
+
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-background shrink-0">
-          <div className="flex items-center gap-3">
-            <p className="text-sm font-semibold">{pdf.title}</p>
-            <div className="flex rounded-md border overflow-hidden">
+          <div className="flex items-center gap-3 min-w-0">
+            <p className="text-sm font-semibold truncate">{pdf.title}</p>
+            <div className="flex rounded-md border overflow-hidden shrink-0">
               {(["en", "np"] as const).map(l => (
                 <button
                   key={l}
@@ -39,9 +40,20 @@ export function ECommerceActLink() {
               ))}
             </div>
           </div>
-          <a href={pdf.src} download className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-            <Download className="size-3.5" /> Download
-          </a>
+
+          <div className="flex items-center gap-1 shrink-0">
+            <Button variant="outline" size="sm" asChild>
+              <a href={pdf.src} download>
+                <Download className="size-3.5" /> Download
+              </a>
+            </Button>
+            <DialogClose asChild>
+              <Button variant="ghost" size="icon-sm">
+                <X className="size-4" />
+                <span className="sr-only">Close</span>
+              </Button>
+            </DialogClose>
+          </div>
         </div>
 
         {/* PDF */}
