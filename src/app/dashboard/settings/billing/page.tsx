@@ -38,21 +38,38 @@ export default async function MerchantBillingPage() {
   const rate = Number(currentPlan?.commissionRate ?? 0);
   const cap = Number(currentPlan?.priceMonthly ?? 0);
 
+  // Calculate savings for celebration message
+  const latestInvoice = recentInvoices[0];
+  const savings = latestInvoice ? Number(latestInvoice.commissionAmount) - Number(latestInvoice.finalAmount) : 0;
+
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl space-y-6">
+      {/* Header */}
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">Plan & Billing</h1>
+        <h2 className="text-lg font-semibold tracking-tight">Plan & Billing</h2>
         <p className="text-xs text-muted-foreground">Manage your subscription, view invoices, and understand pricing</p>
       </div>
 
-      {/* Top row: Plan + Usage side by side */}
+      {/* Celebration banner — show when cap saves money */}
+      {latestInvoice && savings > 0 && (
+        <div className="rounded-lg bg-success/10 p-4">
+          <p className="text-sm font-medium text-success">
+            Your cap saved you {formatCurrency(savings, "NPR")} this month
+          </p>
+          <p className="text-xs text-success/80 mt-0.5">
+            You processed {latestInvoice.orderCount} orders worth {formatCurrency(Number(latestInvoice.orderTotal), "NPR")} — commission would be {formatCurrency(Number(latestInvoice.commissionAmount), "NPR")} but you only pay {formatCurrency(Number(latestInvoice.finalAmount), "NPR")}.
+          </p>
+        </div>
+      )}
+
+      {/* Top row: Plan + Usage */}
       <div className="grid lg:grid-cols-5 gap-3">
-        {/* Current plan — 3 cols */}
-        <div className="lg:col-span-3 rounded-lg border p-5">
+        {/* Current plan */}
+        <section className="lg:col-span-3 rounded-lg border p-4" aria-label="Current plan">
           <div className="flex items-start justify-between mb-4">
             <div>
               <p className="text-xs text-muted-foreground">Current Plan</p>
-              <p className="text-2xl font-semibold tracking-tight">{limits.planName}</p>
+              <p className="text-lg font-semibold tracking-tight">{limits.planName}</p>
               {currentPlan?.description && <p className="text-xs text-muted-foreground mt-1">{currentPlan.description}</p>}
             </div>
             <span className={`text-[10px] px-2 py-1 rounded font-medium ${
@@ -60,22 +77,22 @@ export default async function MerchantBillingPage() {
               limits.status === "grace" ? "bg-warning/10 text-warning" :
               limits.status === "none" ? "bg-muted text-muted-foreground" :
               "bg-destructive/10 text-destructive"
-            }`}>{limits.status === "none" ? "Free Tier" : limits.status}</span>
+            }`} role="status">{limits.status === "none" ? "Free Tier" : limits.status}</span>
           </div>
 
           {rate > 0 ? (
             <div className="grid grid-cols-3 gap-4 p-3 rounded-md bg-muted/50">
               <div>
                 <p className="text-[10px] text-muted-foreground">Commission</p>
-                <p className="text-lg font-semibold tabular-nums">{rate}%</p>
+                <p className="text-sm font-semibold tabular-nums">{rate}%</p>
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground">Monthly Cap</p>
-                <p className="text-lg font-semibold tabular-nums">{formatCurrency(cap, "NPR")}</p>
+                <p className="text-sm font-semibold tabular-nums">{formatCurrency(cap, "NPR")}</p>
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground">Annual</p>
-                <p className="text-lg font-semibold tabular-nums">{currentPlan?.priceYearly ? formatCurrency(Number(currentPlan.priceYearly), "NPR") : "—"}</p>
+                <p className="text-sm font-semibold tabular-nums">{currentPlan?.priceYearly ? formatCurrency(Number(currentPlan.priceYearly), "NPR") : "—"}</p>
               </div>
             </div>
           ) : (
@@ -83,14 +100,14 @@ export default async function MerchantBillingPage() {
           )}
 
           {limits.periodEnd && (
-            <p className="text-[11px] text-muted-foreground mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               Renews {new Date(limits.periodEnd).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
           )}
-        </div>
+        </section>
 
-        {/* Usage — 2 cols */}
-        <div className="lg:col-span-2 rounded-lg border p-5 flex flex-col justify-between">
+        {/* Usage */}
+        <section className="lg:col-span-2 rounded-lg border p-4 flex flex-col justify-between" aria-label="Usage">
           <p className="text-xs text-muted-foreground mb-4">Usage</p>
           <div className="space-y-4 flex-1">
             {[
@@ -102,7 +119,7 @@ export default async function MerchantBillingPage() {
                   <span className="flex items-center gap-1.5 text-muted-foreground"><u.icon className="size-3" />{u.label}</span>
                   <span className="tabular-nums font-medium">{u.current}<span className="text-muted-foreground">/{u.max}</span></span>
                 </div>
-                <div className="h-2 bg-muted rounded-full">
+                <div className="h-2 bg-muted rounded-full" role="progressbar" aria-valuenow={u.current} aria-valuemax={u.max} aria-label={`${u.label}: ${u.current} of ${u.max}`}>
                   <div
                     className={`h-2 rounded-full transition-all ${pct(u.current, u.max) >= 90 ? "bg-destructive" : pct(u.current, u.max) >= 70 ? "bg-warning" : "bg-foreground"}`}
                     style={{ width: `${Math.max(pct(u.current, u.max), 2)}%` }}
@@ -112,13 +129,13 @@ export default async function MerchantBillingPage() {
             ))}
           </div>
           {(pct(limits.currentProducts, limits.maxProducts) >= 80 || pct(limits.currentStaff, limits.maxStaff) >= 80) && (
-            <p className="text-[10px] text-warning mt-3">Approaching limit — consider upgrading</p>
+            <p className="text-xs text-warning mt-3">Approaching limit — consider upgrading</p>
           )}
-        </div>
+        </section>
       </div>
 
-      {/* Plans row — full width, 3 columns */}
-      <div>
+      {/* Plans */}
+      <section aria-label="Available plans">
         <p className="text-sm font-medium mb-3">Available Plans</p>
         <div className="grid sm:grid-cols-3 gap-3">
           {allPlans.map(plan => {
@@ -132,7 +149,7 @@ export default async function MerchantBillingPage() {
                   <p className="text-sm font-semibold">{plan.name}</p>
                   {isCurrent && <span className="text-[10px] bg-foreground text-background px-1.5 py-0.5 rounded">Current</span>}
                 </div>
-                <p className="text-2xl font-semibold tabular-nums">
+                <p className="text-lg font-semibold tabular-nums">
                   {c === 0 ? "Free" : formatCurrency(c, "NPR")}
                   {c > 0 && <span className="text-xs text-muted-foreground font-normal">/mo cap</span>}
                 </p>
@@ -151,12 +168,15 @@ export default async function MerchantBillingPage() {
             );
           })}
         </div>
-        <p className="text-xs text-muted-foreground mt-3">To upgrade, pay via eSewa, Khalti, or bank transfer and contact us at support@indigo.store</p>
-      </div>
+        <div className="mt-3 rounded-md bg-muted/50 p-3">
+          <p className="text-xs font-medium">Ready to upgrade?</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Pay via eSewa, Khalti, or bank transfer and message us on WhatsApp. We activate within 1 hour during business hours.</p>
+        </div>
+      </section>
 
-      {/* How it works + Example — side by side */}
+      {/* How it works + Example */}
       <div className="grid lg:grid-cols-2 gap-3">
-        <div className="rounded-lg border p-5">
+        <section className="rounded-lg border p-4" aria-label="How pricing works">
           <div className="flex items-center gap-2 mb-3">
             <HelpCircle className="size-4 text-muted-foreground" />
             <p className="text-sm font-medium">How Pricing Works</p>
@@ -171,73 +191,74 @@ export default async function MerchantBillingPage() {
                 <div className="size-5 rounded-full bg-muted flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">{s.n}</div>
                 <div>
                   <p className="text-xs font-medium">{s.title}</p>
-                  <p className="text-[11px] text-muted-foreground">{s.desc}</p>
+                  <p className="text-xs text-muted-foreground">{s.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-lg border p-5">
+        <section className="rounded-lg border p-4" aria-label="Pricing example">
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="size-4 text-muted-foreground" />
-            <p className="text-sm font-medium">Example (Growth Plan)</p>
+            <p className="text-sm font-medium">Example ({currentPlan?.name ?? "Growth"} Plan)</p>
           </div>
-          <div className="space-y-2">
-            {[
-              { sales: 10000, rate: 2, cap: 499 },
-              { sales: 25000, rate: 2, cap: 499 },
-              { sales: 50000, rate: 2, cap: 499 },
-              { sales: 100000, rate: 2, cap: 499 },
-            ].map(ex => {
-              const comm = ex.sales * (ex.rate / 100);
-              const pay = Math.min(comm, ex.cap);
-              const capped = comm > ex.cap;
+          <div className="space-y-0">
+            {[10000, 25000, 50000, 100000].map(sales => {
+              const exRate = rate || 2;
+              const exCap = cap || 499;
+              const comm = sales * (exRate / 100);
+              const pay = Math.min(comm, exCap);
+              const capped = comm > exCap;
               return (
-                <div key={ex.sales} className="flex items-center justify-between text-xs py-1.5 border-b border-muted last:border-0">
-                  <span className="text-muted-foreground">{formatCurrency(ex.sales, "NPR")} sales</span>
-                  <span className="text-muted-foreground">{ex.rate}% = {formatCurrency(comm, "NPR")}</span>
+                <div key={sales} className="flex items-center justify-between text-xs py-2 border-b border-muted last:border-0">
+                  <span className="text-muted-foreground tabular-nums">{formatCurrency(sales, "NPR")} sales</span>
+                  <span className="text-muted-foreground tabular-nums">{exRate}% = {formatCurrency(comm, "NPR")}</span>
                   <span className={`font-semibold tabular-nums ${capped ? "text-success" : ""}`}>
-                    {formatCurrency(pay, "NPR")} {capped && "✓"}
+                    {formatCurrency(pay, "NPR")} {capped && <Check className="size-3 text-success inline" />}
                   </span>
                 </div>
               );
             })}
           </div>
-          <p className="text-[10px] text-muted-foreground mt-2">✓ = cap applied, you save money</p>
-        </div>
+          <p className="text-[10px] text-muted-foreground mt-2"><Check className="size-2.5 text-success inline" /> = cap applied, you save money</p>
+        </section>
       </div>
 
-      {/* Bottom row: Invoices + Payments side by side */}
+      {/* Invoices + Payments */}
       <div className="grid lg:grid-cols-2 gap-3">
-        {/* Invoices */}
-        <div className="rounded-lg border">
+        <section className="rounded-lg border" aria-label="Invoices">
           <div className="flex items-center gap-2 p-4 border-b">
             <Receipt className="size-4 text-muted-foreground" />
             <p className="text-sm font-medium">Invoices</p>
           </div>
           {recentInvoices.length > 0 ? (
             <div className="divide-y">
-              {recentInvoices.map(inv => (
-                <div key={inv.id} className="flex items-center justify-between p-3">
-                  <div>
-                    <p className="text-sm font-medium">{new Date(inv.periodStart).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>
-                    <p className="text-[10px] text-muted-foreground">{inv.orderCount} orders · {formatCurrency(Number(inv.orderTotal), "NPR")}</p>
+              {recentInvoices.map(inv => {
+                const invSavings = Number(inv.commissionAmount) - Number(inv.finalAmount);
+                return (
+                  <div key={inv.id} className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{new Date(inv.periodStart).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</p>
+                        <p className="text-xs text-muted-foreground">{inv.orderCount} orders · {formatCurrency(Number(inv.orderTotal), "NPR")}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
+                        <span className={`text-[10px] ${inv.status === "paid" ? "text-success" : inv.status === "waived" ? "text-muted-foreground" : "text-warning"}`}>{inv.status}</span>
+                      </div>
+                    </div>
+                    {invSavings > 0 && <p className="text-[10px] text-success mt-1">Cap saved you {formatCurrency(invSavings, "NPR")}</p>}
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
-                    <span className={`text-[10px] ${inv.status === "paid" ? "text-success" : inv.status === "waived" ? "text-muted-foreground" : "text-warning"}`}>{inv.status}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <p className="p-6 text-xs text-muted-foreground text-center">No invoices yet</p>
           )}
-        </div>
+        </section>
 
-        {/* Payments */}
-        <div className="rounded-lg border">
+        <section className="rounded-lg border" aria-label="Payment history">
           <div className="flex items-center gap-2 p-4 border-b">
             <CreditCard className="size-4 text-muted-foreground" />
             <p className="text-sm font-medium">Payments</p>
@@ -248,16 +269,16 @@ export default async function MerchantBillingPage() {
                 <div key={p.id} className="flex items-center justify-between p-3">
                   <div>
                     <p className="text-sm font-medium tabular-nums">{formatCurrency(Number(p.amount), "NPR")}</p>
-                    <p className="text-[10px] text-muted-foreground">{p.method.replace("_", " ")}{p.reference && ` · ${p.reference}`}</p>
+                    <p className="text-xs text-muted-foreground">{p.method.replace("_", " ")}{p.reference && ` · ${p.reference}`}</p>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">{p.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
+                  <p className="text-xs text-muted-foreground">{p.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
                 </div>
               ))}
             </div>
           ) : (
             <p className="p-6 text-xs text-muted-foreground text-center">No payments yet</p>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );
