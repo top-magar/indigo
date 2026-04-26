@@ -30,7 +30,7 @@ export const getTenantPlanLimits = cache(async (tenantId: string): Promise<PlanL
     maxProducts: plans.maxProducts,
     maxStaff: plans.maxStaff,
     maxStorageMb: plans.maxStorageMb,
-    maxOrders: plans.maxOrders,
+    maxOrders: plans.maxOrdersPerMonth,
     status: subscriptions.status,
     periodEnd: subscriptions.currentPeriodEnd,
     gracePeriodEnd: subscriptions.gracePeriodEnd,

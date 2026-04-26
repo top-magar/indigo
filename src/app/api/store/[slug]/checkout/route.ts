@@ -99,6 +99,18 @@ export async function POST(
     if (!kyc || kyc.status !== "verified") return NextResponse.json({ error: { message: "This store is not yet verified" } }, { status: 403 })
     if ((tenant.settings as Record<string, unknown>)?.suspended) return NextResponse.json({ error: { message: "This store is currently unavailable" } }, { status: 403 })
 
+    // Check order limit
+    const { getTenantPlanLimits } = await import("@/lib/plan-limits")
+    const limits = await getTenantPlanLimits(tenant.id)
+    if (limits.maxOrders !== null) {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000)
+      const [{ value: monthlyOrders }] = await db.select({ value: sql<number>`COUNT(*)::int` })
+        .from(orders).where(and(eq(orders.tenantId, tenant.id), sql`${orders.createdAt} >= ${thirtyDaysAgo}`))
+      if (monthlyOrders >= limits.maxOrders) {
+        return NextResponse.json({ error: { message: "This store has reached its monthly order limit. Please contact the store owner." } }, { status: 403 })
+      }
+    }
+
     const settings = (tenant.settings ?? {}) as TenantSettings
 
     // Get cart

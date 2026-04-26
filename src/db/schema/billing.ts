@@ -19,13 +19,16 @@ export const plans = pgTable("plans", {
   maxProducts: integer("max_products").notNull().default(10),
   maxStaff: integer("max_staff").notNull().default(1),
   maxStorageMb: integer("max_storage_mb").notNull().default(100),
-  maxOrders: integer("max_orders"), // null = unlimited
+  maxOrders: integer("max_orders"), // null = unlimited (legacy, per year)
+  maxOrdersPerMonth: integer("max_orders_per_month"), // null = unlimited
 
   // Features
   features: jsonb("features").$type<string[]>().default([]),
   isDefault: boolean("is_default").notNull().default(false),
   isActive: boolean("is_active").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
+  loyaltyYear2Discount: integer("loyalty_year2_discount").default(0),
+  loyaltyYear3Discount: integer("loyalty_year3_discount").default(0),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
