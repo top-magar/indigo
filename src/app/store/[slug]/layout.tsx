@@ -168,6 +168,12 @@ export default async function StoreLayout({
       <StoreShell
         storeSlug={slug}
         header={<>
+          {!isVerified && (
+            <div className="bg-warning text-warning-foreground text-center py-2 text-xs font-medium">
+              Preview mode — not visible to customers.
+              <a href="/dashboard/settings/verification" className="underline ml-1">Complete verification →</a>
+            </div>
+          )}
           {announcementText && (
             <div className="text-center py-2 px-4 text-sm font-medium text-white" style={{ backgroundColor: primaryColor }}>{announcementText}</div>
           )}
@@ -175,12 +181,6 @@ export default async function StoreLayout({
         </>}
         footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
       >
-        {!isVerified && (
-          <div className="bg-warning text-warning-foreground text-center py-2 text-xs font-medium">
-            Preview mode — your store is not visible to customers until verified.
-            <a href="/dashboard/settings/verification" className="underline ml-1">Complete verification →</a>
-          </div>
-        )}
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
