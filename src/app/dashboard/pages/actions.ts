@@ -30,3 +30,19 @@ export async function deletePage(id: string) {
   await db.delete(editorPages).where(eq(editorPages.id, id));
   revalidatePath("/dashboard/pages");
 }
+
+export async function createPage(projectId: string): Promise<{ id?: string; error?: string }> {
+  const user = await requireUser();
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
+  if (!project) return { error: "Project not found" };
+
+  const name = "Untitled Page";
+  const slug = `untitled-${Date.now().toString(36)}`;
+  const [page] = await db.insert(editorPages).values({
+    projectId, tenantId: user.tenantId, name, slug, data: [], isHomepage: false,
+  }).returning({ id: editorPages.id });
+
+  revalidatePath("/dashboard/pages");
+  return { id: page.id };
+}

@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConfirmDelete } from "@/hooks/use-confirm-dialog";
-import { deletePage, renamePage } from "./actions";
+import { deletePage, renamePage, createPage } from "./actions";
 import type { EditorPage } from "@/db/schema/editor-pages";
 
 type Site = { id: string; name: string; published: boolean | null; slug: string | null };
@@ -76,10 +76,16 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
         </div>
-        <Button variant="outline" asChild>
-          <Link href={`/editor?project=${site.id}`} target="_blank">
-            <Plus className="size-3.5" /> New Page
-          </Link>
+        <Button variant="outline" onClick={() => {
+          startTransition(async () => {
+            const result = await createPage(site.id);
+            if (result.id) {
+              window.open(`/editor?project=${site.id}&page=${result.id}`, "_blank");
+              router.refresh();
+            }
+          });
+        }}>
+          <Plus className="size-3.5" /> New Page
         </Button>
       </div>
 
