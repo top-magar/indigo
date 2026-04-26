@@ -41,6 +41,7 @@ interface AnalyticsClientProps {
     currency: string;
     dateRange: DateRange;
     isFreeTier?: boolean;
+    isProTier?: boolean;
 }
 
 export interface AnalyticsDashboardViewProps {
@@ -48,13 +49,14 @@ export interface AnalyticsDashboardViewProps {
     currency: string;
     dateRange: DateRange;
     isFreeTier?: boolean;
+    isProTier?: boolean;
     isPending?: boolean;
     onRangeChange?: (range: string) => void;
     onExport?: () => void;
     onRefresh?: () => void;
 }
 
-export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
+export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false, isProTier = false }: AnalyticsClientProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
