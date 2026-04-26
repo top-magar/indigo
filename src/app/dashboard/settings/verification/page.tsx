@@ -4,6 +4,7 @@ import { tenantKyc } from "@/db/schema/tenant-kyc";
 import { eq } from "drizzle-orm";
 import { ShieldCheck, Clock, AlertCircle } from "lucide-react";
 import VerificationForm from "./verification-form";
+import { ECommerceActLink } from "./ecommerce-act-link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Verification | Settings" };
@@ -17,7 +18,7 @@ export default async function VerificationPage() {
       <div>
         <h2 className="text-lg font-semibold tracking-tight">Store Verification</h2>
         <p className="text-xs text-muted-foreground">
-          Required under Nepal's E-Commerce Act 2081 to publish your store.
+          Required under <ECommerceActLink />  to publish your store.
           {kyc?.status !== "verified" && " You can set up products and design your store while we review."}
         </p>
       </div>
@@ -89,7 +90,7 @@ export default async function VerificationPage() {
       {/* Fine print */}
       <p className="text-[10px] text-muted-foreground">
         Your PAN number is encrypted and only visible to platform administrators. 
-        All online sellers in Nepal must verify their identity under the E-Commerce Act 2081. 
+        All online sellers in Nepal must verify their identity under the <ECommerceActLink />. 
         Non-compliance may result in fines up to NPR 500,000.
       </p>
     </div>
