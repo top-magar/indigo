@@ -12,6 +12,7 @@ export const plans = pgTable("plans", {
   description: text("description"),
   priceMonthly: decimal("price_monthly", { precision: 10, scale: 2 }).notNull().default("0"),
   priceYearly: decimal("price_yearly", { precision: 10, scale: 2 }),
+  commissionRate: decimal("commission_rate", { precision: 4, scale: 2 }).default("0"),
   currency: varchar("currency", { length: 3 }).notNull().default("NPR"),
 
   // Limits

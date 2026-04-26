@@ -14,7 +14,12 @@ export default async function MerchantBillingPage() {
   const limits = await getTenantPlanLimits(user.tenantId);
 
   const [allPlans, recentPayments] = await Promise.all([
-    db.select().from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
+    db.select({
+      id: plans.id, name: plans.name, slug: plans.slug,
+      priceMonthly: plans.priceMonthly, priceYearly: plans.priceYearly,
+      commissionRate: plans.commissionRate, features: plans.features,
+      isDefault: plans.isDefault,
+    }).from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
     db.select({
       id: payments.id, amount: payments.amount, method: payments.method,
       reference: payments.reference, createdAt: payments.createdAt,
@@ -87,9 +92,17 @@ export default async function MerchantBillingPage() {
               <div key={plan.id} className={`rounded-lg border p-4 ${isCurrent ? "border-foreground" : ""}`}>
                 <p className="text-sm font-medium">{plan.name}</p>
                 <p className="text-xl font-semibold tabular-nums mt-1">
-                  {Number(plan.priceMonthly) === 0 ? "Free" : formatCurrency(Number(plan.priceMonthly), "NPR")}
-                  {Number(plan.priceMonthly) > 0 && <span className="text-xs text-muted-foreground font-normal">/mo</span>}
+                  {Number(plan.priceMonthly) === 0 ? "Free" : (
+                    <>
+                      {Number(plan.commissionRate) > 0 && <span className="text-sm text-muted-foreground font-normal">{plan.commissionRate}% or </span>}
+                      {formatCurrency(Number(plan.priceMonthly), "NPR")}
+                      <span className="text-xs text-muted-foreground font-normal">/mo cap</span>
+                    </>
+                  )}
                 </p>
+                {plan.priceYearly && Number(plan.priceYearly) > 0 && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{formatCurrency(Number(plan.priceYearly), "NPR")}/year (save 17%)</p>
+                )}
                 <ul className="mt-3 space-y-1.5">
                   {(plan.features as string[] || []).map((f, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">

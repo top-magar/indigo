@@ -113,7 +113,7 @@ export function Invoice({ order, storeName, taxRegistration }: InvoiceProps) {
       {/* Payment Method */}
       <div className="mb-8">
         <p>
-          <span className="font-bold">Payment:</span>{' '}
+          <span className="font-semibold">Payment:</span>{' '}
           {order.paymentStatus === 'paid' ? 'Paid' : order.paymentStatus}
         </p>
       </div>

@@ -37,7 +37,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <article className="container mx-auto max-w-3xl py-12 px-4">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">{post.title}</h1>
+        <h1 className="text-4xl font-semibold tracking-tight">{post.title}</h1>
         {post.description && (
           <p className="mt-2 text-xl text-muted-foreground">{post.description}</p>
         )}

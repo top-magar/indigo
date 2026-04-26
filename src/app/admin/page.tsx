@@ -96,7 +96,7 @@ export default async function AdminOverviewPage() {
                   style={{ height: `${Math.max((Number(d.revenue) / maxRevenue) * 100, 2)}%` }}
                   title={`${d.day}: ${formatCurrency(Number(d.revenue), "NPR")}`}
                 />
-                <span className="text-[8px] text-muted-foreground truncate w-full text-center">{d.day?.split(" ")[1]}</span>
+                <span className="text-[10px] text-muted-foreground truncate w-full text-center">{d.day?.split(" ")[1]}</span>
               </div>
             ))}
           </div>

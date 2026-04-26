@@ -11,7 +11,7 @@ export default async function BlogPage() {
 
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4">
-      <h1 className="text-4xl font-bold tracking-tight">Blog</h1>
+      <h1 className="text-4xl font-semibold tracking-tight">Blog</h1>
       <p className="mt-2 text-lg text-muted-foreground">
         Latest news, updates, and insights from our team.
       </p>

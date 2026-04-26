@@ -126,7 +126,7 @@ export default function MerchantsClient({ merchants, totalRevenue, deletedMercha
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium truncate">{m.name}</p>
-                      {m.suspended && <Badge variant="destructive" className="text-[9px] px-1.5 py-0">Suspended</Badge>}
+                      {m.suspended && <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Suspended</Badge>}
                     </div>
                     <p className="text-[11px] text-muted-foreground truncate flex items-center gap-1">
                       {m.slug}.indigo.store <ExternalLink className="size-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
