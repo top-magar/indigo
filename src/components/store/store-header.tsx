@@ -20,10 +20,11 @@ import { storeHref } from "@/features/store/url"
 interface StoreHeaderProps {
   tenant: Tenant
   categories: Pick<Category, "id" | "name" | "slug">[]
+  navPages?: { name: string; slug: string }[]
   customer?: { name: string; email: string } | null
 }
 
-export function StoreHeader({ tenant, categories, customer }: StoreHeaderProps) {
+export function StoreHeader({ tenant, categories, navPages = [], customer }: StoreHeaderProps) {
   const pathname = usePathname()
   const { itemCount } = useCart()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -55,6 +56,11 @@ export function StoreHeader({ tenant, categories, customer }: StoreHeaderProps) 
                 label: c.name,
                 href: `${baseUrl}/category/${c.slug}`,
                 active: pathname.includes(`/category/${c.slug}`),
+              })),
+              ...navPages.slice(0, 4).map(p => ({
+                label: p.name,
+                href: `/p/${tenant.slug}/${p.slug}`,
+                active: pathname.includes(`/p/${tenant.slug}/${p.slug}`),
               })),
             ].map(link => (
               <Link
@@ -162,6 +168,7 @@ export function StoreHeader({ tenant, categories, customer }: StoreHeaderProps) 
                     { label: "Products", href: `${baseUrl}/products` },
                     { label: "Search", href: `${baseUrl}/search` },
                     ...categories.map(c => ({ label: c.name, href: `${baseUrl}/category/${c.slug}` })),
+                    ...navPages.map(p => ({ label: p.name, href: `/p/${tenant.slug}/${p.slug}` })),
                   ].map(link => (
                     <Link
                       key={link.href}

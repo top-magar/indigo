@@ -4,6 +4,8 @@ import { db, withTenant } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
 import { categories } from "@/db/schema/products"
 import { storeLayouts } from "@/db/schema/store-layouts"
+import { editorPages } from "@/db/schema/editor-pages"
+import { editorProjects } from "@/db/schema/editor-projects"
 import { eq, asc, and } from "drizzle-orm"
 import { CartProvider } from "@/features/store/cart-provider"
 import { StoreHeader } from "@/components/store/store-header"
@@ -109,10 +111,19 @@ export default async function StoreLayout({
     // Owner can preview — show banner below
   }
 
-  const [cats, cart, homepageLayout] = await Promise.all([
+  const [cats, cart, homepageLayout, navPages] = await Promise.all([
     getCategories(tenant.id),
     retrieveCart(tenant.id),
     getHomepageLayout(tenant.id),
+    db.select({ name: editorPages.name, slug: editorPages.slug })
+      .from(editorPages)
+      .innerJoin(editorProjects, eq(editorProjects.id, editorPages.projectId))
+      .where(and(
+        eq(editorProjects.tenantId, tenant.id),
+        eq(editorPages.published, true),
+        eq(editorPages.isHomepage, false),
+      ))
+      .orderBy(editorPages.order),
   ])
 
   const tenantSettings = (tenant.settings as Record<string, any>) ?? {}
@@ -165,7 +176,7 @@ export default async function StoreLayout({
           {announcementText && (
             <div className="text-center py-2 px-4 text-sm font-medium text-white" style={{ backgroundColor: primaryColor }}>{announcementText}</div>
           )}
-          <StoreHeader tenant={{ ...tenant as any, logoUrl }} categories={cats} />
+          <StoreHeader tenant={{ ...tenant as any, logoUrl }} categories={cats} navPages={navPages} />
         </>}
         footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
       >
