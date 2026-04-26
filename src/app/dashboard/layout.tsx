@@ -7,6 +7,7 @@ import {
     SidebarInset,
 } from "@/components/ui/sidebar";
 import { SidebarClient, DashboardHeader } from "@/components/dashboard";
+import { VerificationBanner } from "@/components/dashboard/verification-banner";
 import { ConfirmDialogProvider } from "@/hooks";
 
 /**
@@ -94,6 +95,7 @@ export default async function DashboardLayout({
 
                 {/* Main Content */}
                 <main className="flex-1 p-3 md:p-4" id="main-content" aria-label="Dashboard content">
+                    <VerificationBanner tenantId={user.tenantId} />
                     {children}
                 </main>
             </SidebarInset>
