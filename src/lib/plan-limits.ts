@@ -93,6 +93,18 @@ export async function checkPlanLimit(
         return { allowed: false, reason: `Staff limit reached (${limits.maxStaff}). Upgrade your plan to invite more.` };
       }
       break;
+    case "storage": {
+      const { db } = await import("@/infrastructure/db");
+      const { sql } = await import("drizzle-orm");
+      const [{ value }] = await db.execute<{ value: string }>(
+        sql`SELECT COALESCE(SUM(file_size), 0) as value FROM media_assets WHERE tenant_id = ${tenantId}`
+      );
+      const usedMb = Number(value) / (1024 * 1024);
+      if (usedMb >= limits.maxStorageMb) {
+        return { allowed: false, reason: `Storage limit reached (${limits.maxStorageMb}MB). Upgrade your plan for more storage.` };
+      }
+      break;
+    }
   }
 
   return { allowed: true };

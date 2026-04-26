@@ -552,6 +552,11 @@ export async function duplicateProduct(productId: string) {
     const { tenantId } = await getAuthenticatedTenant();
     const supabase = await createClient();
 
+    // Check product limit before duplicating
+    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const limit = await checkPlanLimit(tenantId, "products");
+    if (!limit.allowed) return { success: false, error: limit.reason };
+
     // Fetch original
     const { data: original, error } = await supabase
         .from("products")

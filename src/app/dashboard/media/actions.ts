@@ -75,6 +75,11 @@ export async function uploadAsset(
   try {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
+    // Check storage limit based on plan
+    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const storageCheck = await checkPlanLimit(tenantId, "storage");
+    if (!storageCheck.allowed) return { success: false, error: storageCheck.reason };
+
     const file = formData.get("file") as File;
     const folderId = formData.get("folderId") as string | null;
 

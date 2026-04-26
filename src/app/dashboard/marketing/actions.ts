@@ -182,6 +182,10 @@ export async function createDiscount(input: CreateDiscountInput): Promise<{ succ
     const tenantId = await getTenantId();
     if (!tenantId) return { success: false, error: "Unauthorized" };
 
+    const { getTenantPlanLimits } = await import("@/lib/plan-limits");
+    const limits = await getTenantPlanLimits(tenantId);
+    if (limits.planName === "Free") return { success: false, error: "Discounts require a paid plan. Upgrade to Growth." };
+
     const code = validated.code.toUpperCase().trim();
     if (!/^[A-Z0-9_-]{3,20}$/.test(code)) {
         return { success: false, error: "Code must be 3-20 characters, uppercase letters, numbers, hyphens, and underscores only" };
