@@ -800,27 +800,32 @@
 /* =============================================================================
    STORE LIGHT MODE OVERRIDE
    Forces storefront to always render in light mode, even when dashboard is dark.
+   Uses hardcoded values — NOT css variables that change with dark mode.
    ============================================================================= */
 .store-light,
 .dark .store-light {
-  --background: var(--ds-background-100);
-  --foreground: var(--ds-gray-1000);
-  --card: var(--ds-background-100);
-  --card-foreground: var(--ds-gray-1000);
-  --popover: var(--ds-background-100);
-  --popover-foreground: var(--ds-gray-1000);
-  --primary: var(--ds-gray-1000);
-  --primary-foreground: var(--ds-background-100);
-  --secondary: var(--ds-gray-100);
-  --secondary-foreground: var(--ds-gray-900);
-  --muted: var(--ds-gray-100);
-  --muted-foreground: var(--ds-gray-800);
-  --accent: var(--ds-gray-200);
-  --accent-foreground: var(--ds-gray-1000);
-  --destructive: var(--ds-red-700);
-  --destructive-foreground: var(--ds-background-100);
-  --border: var(--ds-gray-200);
-  --input: var(--ds-gray-300);
-  --ring: var(--ds-gray-1000);
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 9%);
+  --primary: hsl(0 0% 9%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(0 0% 96%);
+  --secondary-foreground: hsl(0 0% 15%);
+  --muted: hsl(0 0% 96%);
+  --muted-foreground: hsl(0 0% 40%);
+  --accent: hsl(0 0% 93%);
+  --accent-foreground: hsl(0 0% 9%);
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(0 0% 90%);
+  --input: hsl(0 0% 85%);
+  --ring: hsl(0 0% 9%);
+  --success: hsl(142 71% 45%);
+  --warning: hsl(38 92% 50%);
+  color: hsl(0 0% 9%);
+  background-color: hsl(0 0% 100%);
   color-scheme: light;
 }
