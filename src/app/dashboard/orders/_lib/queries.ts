@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
+import { sanitizeSearch } from "@/shared/utils/sanitize";
 import type { OrderRow, OrderStats, ReturnRow, ReturnStats } from "./types";
 
 // ─── Auth ────────────────────────────────────────────────
@@ -47,7 +48,7 @@ export async function getOrders(tenantId: string, supabase: Awaited<ReturnType<t
     .range(page * perPage, (page + 1) * perPage - 1);
 
   if (params.search) {
-    query = query.or(`order_number.ilike.%${params.search}%,customer_name.ilike.%${params.search}%,customer_email.ilike.%${params.search}%`);
+    query = query.or(`order_number.ilike.%${sanitizeSearch(params.search)}%,customer_name.ilike.%${sanitizeSearch(params.search)}%,customer_email.ilike.%${sanitizeSearch(params.search)}%`);
   }
   if (params.status && params.status !== "all") {
     const s = params.status.split(",");
@@ -83,28 +84,25 @@ export async function getOrders(tenantId: string, supabase: Awaited<ReturnType<t
 }
 
 export async function getOrderStats(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>): Promise<OrderStats> {
-  const [
-    { count: total }, { count: pending }, { count: processing },
-    { count: shipped }, { count: completed }, { count: cancelled },
-    { count: unpaid }, { data: revenueData },
-  ] = await Promise.all([
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "pending"),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "processing"),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "shipped"),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "completed"),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "cancelled"),
-    supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("payment_status", "pending"),
-    supabase.from("orders").select("total").eq("tenant_id", tenantId).eq("payment_status", "paid"),
-  ]);
+  // Single query: count by status + revenue in one pass
+  const { data: rows } = await supabase
+    .from("orders")
+    .select("status, payment_status, total")
+    .eq("tenant_id", tenantId);
 
-  const revenue = (revenueData || []).reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
-  const t = total ?? 0;
+  const all = rows || [];
+  const total = all.length;
+  const pending = all.filter(r => r.status === "pending").length;
+  const processing = all.filter(r => r.status === "processing").length;
+  const shipped = all.filter(r => r.status === "shipped").length;
+  const completed = all.filter(r => r.status === "completed").length;
+  const cancelled = all.filter(r => r.status === "cancelled").length;
+  const unpaid = all.filter(r => r.payment_status === "pending").length;
+  const revenue = all.filter(r => r.payment_status === "paid").reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
 
   return {
-    total: t, pending: pending ?? 0, processing: processing ?? 0,
-    shipped: shipped ?? 0, completed: completed ?? 0, cancelled: cancelled ?? 0,
-    revenue, unpaid: unpaid ?? 0, avgOrderValue: t > 0 ? revenue / t : 0,
+    total, pending, processing, shipped, completed, cancelled,
+    revenue, unpaid, avgOrderValue: total > 0 ? revenue / total : 0,
     conversionRate: 0, repeatCustomerRate: 0,
   };
 }
@@ -158,7 +156,7 @@ export async function getReturns(tenantId: string, supabase: Awaited<ReturnType<
       .range(page * perPage, (page + 1) * perPage - 1);
 
     if (params.status && params.status !== "all") query = query.eq("status", params.status);
-    if (params.search) query = query.or(`reason.ilike.%${params.search}%`);
+    if (params.search) query = query.or(`reason.ilike.%${sanitizeSearch(params.search)}%`);
 
     const { data, count: c, error } = await query;
     if (!error) {

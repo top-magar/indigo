@@ -1,5 +1,6 @@
 "use server";
 
+import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:customers");
 
@@ -46,7 +47,7 @@ export async function getCustomersWithStats(
         .range(offset, offset + pageSize - 1);
 
     if (filters.search) {
-        query = query.or(`email.ilike.%${filters.search}%,first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`);
+        query = query.or(`email.ilike.%${sanitizeSearch(filters.search)}%,first_name.ilike.%${sanitizeSearch(filters.search)}%,last_name.ilike.%${sanitizeSearch(filters.search)}%,phone.ilike.%${sanitizeSearch(filters.search)}%`);
     }
     if (filters.marketing === "subscribed") query = query.eq("accepts_marketing", true);
     else if (filters.marketing === "unsubscribed") query = query.eq("accepts_marketing", false);

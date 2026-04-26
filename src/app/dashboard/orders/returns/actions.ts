@@ -1,6 +1,7 @@
 "use server"
 
 import { z } from "zod"
+import { sanitizeSearch } from "@/shared/utils/sanitize"
 import { getAuthenticatedClient } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import type { ReturnStatus, ItemCondition } from "@/infrastructure/supabase/types"
@@ -33,7 +34,7 @@ export async function getReturns(filters?: {
     .range(offset, offset + pageSize - 1)
 
   if (filters?.status) query = query.eq("status", filters.status)
-  if (filters?.search) query = query.or(`return_number.ilike.%${filters.search}%,customer_notes.ilike.%${filters.search}%`)
+  if (filters?.search) query = query.or(`return_number.ilike.%${sanitizeSearch(filters.search)}%,customer_notes.ilike.%${sanitizeSearch(filters.search)}%`)
 
   const { data, error, count } = await query
   if (error) return { error: error.message }

@@ -81,7 +81,13 @@ export async function proxy(request: NextRequest) {
 
   // CI-5: RBAC enforcement — gate routes by role
   if (user) {
-    const role = (user.user_metadata?.role as string | undefined) ?? "owner"; // Default: account creator is owner
+    // Read role from DB (not user_metadata which is client-writable)
+    const { data: dbUser } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    const role = dbUser?.role ?? "owner";
 
     // Admin-only routes require owner or admin role
     if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {

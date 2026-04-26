@@ -7,15 +7,17 @@ import { users } from "@/db/schema/users";
 import { eq, count, sql, desc, gte, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Store, Eye } from "lucide-react";
+import { ArrowLeft, ExternalLink, Store } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/shared/utils";
+import { requireAdmin } from "../../_lib/auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Merchant Detail | Admin" };
 
 export default async function MerchantDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const [tenant] = await db.select({
     id: tenants.id,
@@ -75,11 +77,6 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
             <Button variant="outline" size="sm" asChild>
               <Link href={`/store/${tenant.slug}`} target="_blank">
                 <ExternalLink className="size-3.5" /> View Store
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/dashboard?impersonate=${tenant.id}`}>
-                <Eye className="size-3.5" /> View as Merchant
               </Link>
             </Button>
           </div>

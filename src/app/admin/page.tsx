@@ -2,32 +2,42 @@ import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
 import { orders } from "@/db/schema/orders";
 import { products } from "@/db/schema/products";
+import { auditLogs } from "@/db/schema/audit-logs";
 import { count, sql, desc, gte } from "drizzle-orm";
 import { formatCurrency } from "@/shared/utils";
 import Link from "next/link";
+import { requireAdmin } from "./_lib/auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Overview | Admin" };
 
 export default async function AdminOverviewPage() {
+  await requireAdmin();
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
 
+  // Batch 1: counts
   const [
     [{ value: totalMerchants }],
     [{ value: totalOrders }],
-    [{ value: totalRevenue }],
     [{ value: totalProducts }],
     [{ value: newMerchants }],
+  ] = await Promise.all([
+    db.select({ value: count() }).from(tenants),
+    db.select({ value: count() }).from(orders),
+    db.select({ value: count() }).from(products),
+    db.select({ value: count() }).from(tenants).where(gte(tenants.createdAt, thirtyDaysAgo)),
+  ]);
+
+  // Batch 2: aggregates + lists
+  const [
+    [{ value: totalRevenue }],
     [{ value: recentRevenue }],
     recentTenants,
     recentOrders,
     dailyRevenue,
+    recentAuditLogs,
   ] = await Promise.all([
-    db.select({ value: count() }).from(tenants),
-    db.select({ value: count() }).from(orders),
     db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders),
-    db.select({ value: count() }).from(products),
-    db.select({ value: count() }).from(tenants).where(gte(tenants.createdAt, thirtyDaysAgo)),
     db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders).where(gte(orders.createdAt, thirtyDaysAgo)),
     db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug, createdAt: tenants.createdAt })
       .from(tenants).orderBy(desc(tenants.createdAt)).limit(5),
@@ -35,7 +45,6 @@ export default async function AdminOverviewPage() {
       id: orders.id, orderNumber: orders.orderNumber, total: orders.total,
       status: orders.status, createdAt: orders.createdAt,
     }).from(orders).orderBy(desc(orders.createdAt)).limit(6),
-    // Last 14 days revenue by day
     db.select({
       day: sql<string>`TO_CHAR(${orders.createdAt}, 'Mon DD')`,
       revenue: sql<string>`COALESCE(SUM(${orders.total}), 0)`,
@@ -43,6 +52,11 @@ export default async function AdminOverviewPage() {
       .where(gte(orders.createdAt, new Date(Date.now() - 14 * 86400000)))
       .groupBy(sql`DATE(${orders.createdAt}), TO_CHAR(${orders.createdAt}, 'Mon DD')`)
       .orderBy(sql`DATE(${orders.createdAt})`),
+    db.select({
+      id: auditLogs.id, action: auditLogs.action, userId: auditLogs.userId,
+      entityType: auditLogs.entityType, newValues: auditLogs.newValues,
+      metadata: auditLogs.metadata, createdAt: auditLogs.createdAt,
+    }).from(auditLogs).where(sql`${auditLogs.metadata}->>'source' = 'admin'`).orderBy(desc(auditLogs.createdAt)).limit(8),
   ]);
 
   // Build chart bars
@@ -149,6 +163,35 @@ export default async function AdminOverviewPage() {
           </div>
         </div>
       </div>
+
+      {/* Audit Log */}
+      {recentAuditLogs.length > 0 && (
+        <div className="rounded-lg border">
+          <div className="p-4 border-b">
+            <p className="text-sm font-medium">Recent Admin Activity</p>
+          </div>
+          <div className="divide-y">
+            {recentAuditLogs.map(log => {
+              const meta = log.metadata as Record<string, unknown> | null;
+              const vals = log.newValues as Record<string, unknown> | null;
+              return (
+                <div key={log.id} className="flex items-center justify-between p-3">
+                  <div>
+                    <p className="text-sm">
+                      <span className="font-medium">{((meta?.actorEmail as string) ?? "admin").split("@")[0]}</span>
+                      <span className="text-muted-foreground"> {(log.action ?? "").replace(".", " → ")}</span>
+                      {!!vals?.targetName && <span className="font-medium"> {String(vals.targetName)}</span>}
+                    </p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground shrink-0">
+                    {log.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

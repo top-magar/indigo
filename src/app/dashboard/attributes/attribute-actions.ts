@@ -1,5 +1,6 @@
 "use server";
 
+import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("attributes-attribute-actions");
 
@@ -55,7 +56,7 @@ export async function getAttributes(
 
         // Apply search filter
         if (filters.search) {
-            query = query.or(`name.ilike.%${filters.search}%,slug.ilike.%${filters.search}%`);
+            query = query.or(`name.ilike.%${sanitizeSearch(filters.search)}%,slug.ilike.%${sanitizeSearch(filters.search)}%`);
         }
 
         // Apply input type filter

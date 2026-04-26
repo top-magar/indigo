@@ -1,5 +1,6 @@
 "use server";
 
+import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("collections-collection-actions");
 
@@ -479,7 +480,7 @@ export async function getAvailableProducts(collectionId: string, search?: string
         }
 
         if (search) {
-            query = query.or(`name.ilike.%${search}%,sku.ilike.%${search}%`);
+            query = query.or(`name.ilike.%${sanitizeSearch(search)}%,sku.ilike.%${sanitizeSearch(search)}%`);
         }
 
         const { data: products, error } = await query;

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
+import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { productRepository } from "@/features/products/repositories";
 import { categoryRepository } from "@/features/categories/repositories";
 
@@ -46,7 +47,7 @@ export async function getProducts(tenantId: string, supabase: Awaited<ReturnType
     .order(params.sort || "created_at", { ascending: params.order === "asc" })
     .range(page * perPage, (page + 1) * perPage - 1);
 
-  if (params.search) query = query.or(`name.ilike.%${params.search}%,sku.ilike.%${params.search}%`);
+  if (params.search) query = query.or(`name.ilike.%${sanitizeSearch(params.search)}%,sku.ilike.%${sanitizeSearch(params.search)}%`);
   if (params.status && params.status !== "all") query = query.eq("status", params.status);
   if (params.category && params.category !== "all") query = query.eq("category_id", params.category);
   if (params.stock === "out") query = query.eq("quantity", 0);

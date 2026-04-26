@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, CreditCard, Settings, ArrowLeft, Shield } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield } from "lucide-react";
+import { createClient } from "@/infrastructure/supabase/client";
 import { cn } from "@/shared/utils";
 
 const NAV = [
@@ -14,6 +15,13 @@ const NAV = [
 
 export function AdminSidebar({ user }: { user: { fullName: string | null; email: string } }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   return (
     <aside className="w-56 border-r flex flex-col shrink-0">
@@ -51,9 +59,9 @@ export function AdminSidebar({ user }: { user: { fullName: string | null; email:
       </nav>
 
       <div className="p-3 border-t space-y-2">
-        <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted/50 transition-colors">
-          <ArrowLeft className="size-3.5" /> Merchant Dashboard
-        </Link>
+        <button onClick={handleSignOut} className="flex items-center gap-2 w-full px-3 py-2 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted/50 transition-colors">
+          <LogOut className="size-3.5" /> Sign out
+        </button>
         <div className="flex items-center gap-2.5 px-3">
           <div className="size-7 rounded-full bg-gradient-to-br from-violet-200 to-violet-300 flex items-center justify-center text-[10px] font-semibold text-violet-700">
             {(user.fullName?.[0] || user.email[0]).toUpperCase()}

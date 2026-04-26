@@ -16,6 +16,11 @@ export async function inviteTeamMember(formData: FormData): Promise<{ error?: st
     const { user, supabase } = await getAuthenticatedClient();
     if (user.role !== "owner") return { error: "Only store owners can invite team members" };
 
+    // Plan limit check
+    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const limit = await checkPlanLimit(user.tenantId, "staff");
+    if (!limit.allowed) return { error: limit.reason };
+
     const email = z.string().email().parse(formData.get("email"));
     const role = z.enum(["admin", "staff"]).parse(formData.get("role"));
 

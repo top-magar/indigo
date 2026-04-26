@@ -48,6 +48,11 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
     try {
         const { supabase, tenantId, userId } = await getAuthenticatedTenant();
 
+        // Plan limit check
+        const { checkPlanLimit } = await import("@/lib/plan-limits");
+        const limit = await checkPlanLimit(tenantId, "products");
+        if (!limit.allowed) return { error: limit.reason };
+
         const raw = Object.fromEntries(formData.entries());
         const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
 
@@ -124,6 +129,11 @@ function safeJsonParse<T>(str: string | null, fallback: T): T {
 export async function createProductWithDetails(formData: FormData): Promise<{ success?: boolean; error?: string; productId?: string }> {
     try {
         const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+
+        // Plan limit check
+        const { checkPlanLimit } = await import("@/lib/plan-limits");
+        const limit = await checkPlanLimit(tenantId, "products");
+        if (!limit.allowed) return { error: limit.reason };
 
         // Parse and validate all input
         const raw = {

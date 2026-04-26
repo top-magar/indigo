@@ -21,10 +21,10 @@ export function Invoice({ order, storeName, taxRegistration }: InvoiceProps) {
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <p className="text-2xl font-bold">{storeName}</p>
+          <p className="text-2xl font-semibold">{storeName}</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold tracking-wide">INVOICE</p>
+          <p className="text-2xl font-semibold tracking-wide">INVOICE</p>
           <p className="mt-1">#{order.orderNumber}</p>
           <p>{format(new Date(order.createdAt), 'MMMM d, yyyy')}</p>
         </div>
@@ -33,14 +33,14 @@ export function Invoice({ order, storeName, taxRegistration }: InvoiceProps) {
       {/* Bill To / Ship To */}
       <div className="flex gap-16 mb-8">
         <div>
-          <p className="font-bold mb-1">Bill To</p>
+          <p className="font-semibold mb-1">Bill To</p>
           <p>{customerName}</p>
           <p>{order.customer.email}</p>
           {order.customer.phone && <p>{order.customer.phone}</p>}
         </div>
         {addr && (
           <div>
-            <p className="font-bold mb-1">Ship To</p>
+            <p className="font-semibold mb-1">Ship To</p>
             {addr.addressLine1 && <p>{addr.addressLine1}</p>}
             {addr.addressLine2 && <p>{addr.addressLine2}</p>}
             <p>
@@ -101,7 +101,7 @@ export function Invoice({ order, storeName, taxRegistration }: InvoiceProps) {
             <span>{fc(order.taxTotal)}</span>
           </div>
           <div
-            className="flex justify-between py-2 font-bold text-base mt-1"
+            className="flex justify-between py-2 font-semibold text-base mt-1"
             style={{ borderTop: '2px solid black' }}
           >
             <span>Total</span>
