@@ -796,3 +796,31 @@
 }
 
 /* Focus indicators removed — using component-level focus styles instead */
+
+/* =============================================================================
+   STORE LIGHT MODE OVERRIDE
+   Forces storefront to always render in light mode, even when dashboard is dark.
+   ============================================================================= */
+.store-light,
+.dark .store-light {
+  --background: var(--ds-background-100);
+  --foreground: var(--ds-gray-1000);
+  --card: var(--ds-background-100);
+  --card-foreground: var(--ds-gray-1000);
+  --popover: var(--ds-background-100);
+  --popover-foreground: var(--ds-gray-1000);
+  --primary: var(--ds-gray-1000);
+  --primary-foreground: var(--ds-background-100);
+  --secondary: var(--ds-gray-100);
+  --secondary-foreground: var(--ds-gray-900);
+  --muted: var(--ds-gray-100);
+  --muted-foreground: var(--ds-gray-800);
+  --accent: var(--ds-gray-200);
+  --accent-foreground: var(--ds-gray-1000);
+  --destructive: var(--ds-red-700);
+  --destructive-foreground: var(--ds-background-100);
+  --border: var(--ds-gray-200);
+  --input: var(--ds-gray-300);
+  --ring: var(--ds-gray-1000);
+  color-scheme: light;
+}

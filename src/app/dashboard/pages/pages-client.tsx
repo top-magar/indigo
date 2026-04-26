@@ -45,18 +45,26 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const startRename = (page: EditorPage) => {
     setRenamingId(page.id);
     setRenameValue(page.name);
-    setTimeout(() => renameRef.current?.select(), 50);
+    setTimeout(() => {
+      renameRef.current?.focus();
+      renameRef.current?.select();
+    }, 100);
   };
 
+  const isCommitting = useRef(false);
   const commitRename = (id: string) => {
-    if (!renamingId) return;
+    if (isCommitting.current) return;
+    isCommitting.current = true;
     const trimmed = renameValue.trim();
-    const original = pages.find(p => p.id === id)?.name;
     setRenamingId(null);
-    if (!trimmed || trimmed === original) return;
+    if (!trimmed || trimmed === pages.find(p => p.id === id)?.name) {
+      isCommitting.current = false;
+      return;
+    }
     startTransition(async () => {
       await renamePage(id, trimmed);
       router.refresh();
+      isCommitting.current = false;
     });
   };
 

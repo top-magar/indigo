@@ -151,6 +151,8 @@ export default async function StoreLayout({
     <CartProvider tenantId={tenant.id} initialCart={cart}>
       {fontsUrl && <link rel="stylesheet" href={fontsUrl} />}
       {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
+      {/* Force light mode: override dark theme variables within store */}
+      <div className="store-light" data-theme="light" style={{ colorScheme: "light" }}>
       <StoreShell
         storeSlug={slug}
         header={<>
@@ -170,6 +172,7 @@ export default async function StoreLayout({
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
+      </div>
     </CartProvider>
   )
 }
