@@ -9,7 +9,7 @@ import { Resend } from "resend";
 const log = createLogger("actions:team");
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const FROM_EMAIL = process.env.EMAIL_FROM || "team@resend.dev";
+const FROM_EMAIL = process.env.EMAIL_FROM || "Indigo <noreply@indigo.store>";
 
 export async function inviteTeamMember(formData: FormData): Promise<{ error?: string }> {
   try {

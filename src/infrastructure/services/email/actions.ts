@@ -36,7 +36,7 @@ function getResendClient(): Resend | null {
 }
 
 // Default from email (can be overridden per tenant)
-const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'orders@resend.dev';
+const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'Indigo <noreply@indigo.store>';
 
 // Types
 export interface SendEmailInput {

@@ -48,14 +48,16 @@ export async function invitePlatformMember(input: z.infer<typeof inviteSchema>):
   try {
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: "Indigo Platform <noreply@indigo.store>",
+    const { error: emailError } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "Indigo Platform <noreply@indigo.store>",
       to: email,
       subject: "You've been invited to Indigo Admin",
       html: `<p>You've been invited to join the Indigo platform team as <strong>${role}</strong>.</p>
         <p><a href="${inviteUrl}">Accept Invite</a></p>
         <p>This link expires in 7 days.</p>`,
+      headers: { "X-Entity-Ref-ID": `platform-invite/${token}` },
     });
+    if (emailError) console.error("Invite email failed:", emailError.message);
   } catch {
     // Email failed but invite is created — admin can share link manually
   }

@@ -38,7 +38,7 @@ export async function deliverNotification(input: DeliverInput): Promise<{
           const { Resend } = await import("resend");
           const resend = new Resend(process.env.RESEND_API_KEY);
           const { error } = await resend.emails.send({
-            from: process.env.EMAIL_FROM || "notifications@resend.dev",
+            from: process.env.EMAIL_FROM || "Indigo <noreply@indigo.store>",
             to: input.recipientEmail,
             subject: input.subject,
             html: input.htmlBody || `<p>${input.body}</p>`,
