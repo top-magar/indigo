@@ -30,7 +30,7 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
     const plan = planConfig[planType] || planConfig.free;
 
     const avatar = (
-        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-[11px] size-8 overflow-hidden ring-1 ring-border/50">
+        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs size-8 overflow-hidden ring-1 ring-border/50">
             {storeLogo ? <Image src={storeLogo} alt={tenantName} fill className="object-cover" /> : tenantName.charAt(0).toUpperCase()}
         </div>
     );

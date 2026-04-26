@@ -121,10 +121,10 @@ export default async function AdminOverviewPage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium">{t.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{t.slug}.indigo.store</p>
+                    <p className="text-xs text-muted-foreground">{t.slug}.indigo.store</p>
                   </div>
                 </div>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {t.createdAt ? new Date(t.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
                 </p>
               </Link>
@@ -143,7 +143,7 @@ export default async function AdminOverviewPage() {
               <div key={o.id} className="flex items-center justify-between p-3">
                 <div>
                   <p className="text-sm font-medium">{o.orderNumber}</p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "—"}
                   </p>
                 </div>
@@ -177,7 +177,7 @@ export default async function AdminOverviewPage() {
                       {!!vals?.targetName && <span className="font-medium"> {String(vals.targetName)}</span>}
                     </p>
                   </div>
-                  <p className="text-[11px] text-muted-foreground shrink-0">
+                  <p className="text-xs text-muted-foreground shrink-0">
                     {log.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                   </p>
                 </div>

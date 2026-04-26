@@ -54,7 +54,7 @@ function SidebarContent({ user, permissions, pathname, onNavigate }: {
               href={item.href}
               onClick={onNavigate}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-md transition-colors",
+                "flex items-center gap-2.5 px-3 py-2 text-xs rounded-md transition-colors",
                 active ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >

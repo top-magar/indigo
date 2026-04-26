@@ -75,7 +75,7 @@ export default async function AdminSettingsPage() {
             ["NEXT_PUBLIC_APP_URL", !!process.env.NEXT_PUBLIC_APP_URL],
           ].map(([name, set]) => (
             <div key={name as string} className="flex items-center justify-between p-2 rounded-md bg-muted/50">
-              <span className="font-mono text-[11px]">{name as string}</span>
+              <span className="font-mono text-xs">{name as string}</span>
               <span className={`text-[10px] font-medium ${set ? "text-success" : "text-destructive"}`}>{set ? "Set" : "Missing"}</span>
             </div>
           ))}

@@ -116,7 +116,7 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
                   </div>
                   <div>
                     <p className="text-sm font-medium">{m.fullName || m.email}</p>
-                    <p className="text-[11px] text-muted-foreground">{m.email}</p>
+                    <p className="text-xs text-muted-foreground">{m.email}</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="text-[10px]">{m.role}</Badge>
@@ -134,7 +134,7 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
               <div key={o.id} className="flex items-center justify-between p-3">
                 <div>
                   <p className="text-sm font-medium">{o.orderNumber}</p>
-                  <p className="text-[11px] text-muted-foreground">{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : "—"}</p>
+                  <p className="text-xs text-muted-foreground">{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : "—"}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium tabular-nums">{formatCurrency(Number(o.total), currency)}</p>
@@ -154,7 +154,7 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
       <div className="rounded-lg border p-4">
         <p className="text-sm font-medium mb-3">Store Details</p>
         <div className="grid grid-cols-2 gap-y-2 text-xs">
-          <div><span className="text-muted-foreground">ID:</span> <span className="font-mono text-[11px]">{tenant.id}</span></div>
+          <div><span className="text-muted-foreground">ID:</span> <span className="font-mono text-xs">{tenant.id}</span></div>
           <div><span className="text-muted-foreground">Slug:</span> {tenant.slug}</div>
           <div><span className="text-muted-foreground">Currency:</span> {currency}</div>
           <div><span className="text-muted-foreground">Customers:</span> {totalCustomers}</div>

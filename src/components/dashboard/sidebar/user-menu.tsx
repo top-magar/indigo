@@ -41,7 +41,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
     const color = avatarColors[(userEmail?.charCodeAt(0) ?? 0) % avatarColors.length];
 
     const avatar = (
-        <div className={cn("flex shrink-0 items-center justify-center rounded-full text-white font-medium text-[11px] size-8 overflow-hidden", color)}>
+        <div className={cn("flex shrink-0 items-center justify-center rounded-full text-white font-medium text-xs size-8 overflow-hidden", color)}>
             {userAvatarUrl ? <Image src={userAvatarUrl} alt={name} fill className="object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );

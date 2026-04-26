@@ -24,7 +24,7 @@ export default async function VerificationPage() {
       {/* Status banner */}
       {kyc?.status === "verified" && (
         <div className="rounded-lg bg-success/10 p-4 flex items-start gap-3" role="status">
-          <ShieldCheck className="size-5 text-success shrink-0 mt-0.5" aria-hidden="true" />
+          <ShieldCheck className="size-4 text-success shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-success">Store Verified</p>
             <p className="text-xs text-success/80">Your store is verified and live. Verified on {kyc.verifiedAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.</p>
@@ -34,7 +34,7 @@ export default async function VerificationPage() {
 
       {kyc?.status === "pending" && (
         <div className="rounded-lg bg-warning/10 p-4 flex items-start gap-3" role="status">
-          <Clock className="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true" />
+          <Clock className="size-4 text-warning shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-warning">Verification Pending</p>
             <p className="text-xs text-warning/80">We're reviewing your submission. This usually takes 1-2 business days.</p>
@@ -44,7 +44,7 @@ export default async function VerificationPage() {
 
       {kyc?.status === "rejected" && (
         <div className="rounded-lg bg-destructive/10 p-4 flex items-start gap-3" role="alert">
-          <XCircle className="size-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
+          <XCircle className="size-4 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-destructive">Verification Rejected</p>
             <p className="text-xs text-destructive/80">{kyc.rejectionReason || "Please update your information and resubmit."}</p>
@@ -56,7 +56,7 @@ export default async function VerificationPage() {
       {/* Why verification */}
       {!kyc && (
         <div className="rounded-lg border border-dashed p-4 flex items-start gap-3">
-          <AlertTriangle className="size-5 text-muted-foreground shrink-0 mt-0.5" />
+          <AlertTriangle className="size-4 text-muted-foreground shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium">Why do I need to verify?</p>
             <ul className="text-xs text-muted-foreground mt-1 space-y-0.5">

@@ -99,7 +99,7 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
                     <p className="text-sm font-medium">{m.fullName || m.email.split("@")[0]}</p>
                     {m.id === currentUserId && <span className="text-[10px] text-muted-foreground">(you)</span>}
                   </div>
-                  <p className="text-[11px] text-muted-foreground">{m.email}</p>
+                  <p className="text-xs text-muted-foreground">{m.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -148,7 +148,7 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
                   </div>
                   <div>
                     <p className="text-sm">{inv.email}</p>
-                    <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <Clock className="size-2.5" /> Expires {new Date(inv.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </p>
                   </div>
@@ -173,10 +173,10 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
       <div className="rounded-lg border p-4">
         <p className="text-sm font-medium mb-3">Role Permissions</p>
         <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground">
-          <p><Shield className="size-3 inline mr-1" /><strong>Owner</strong> — Full access, manage team</p>
-          <p><Shield className="size-3 inline mr-1" /><strong>Admin</strong> — Merchants, billing, settings</p>
-          <p><Shield className="size-3 inline mr-1" /><strong>Support</strong> — View merchants (read-only)</p>
-          <p><Shield className="size-3 inline mr-1" /><strong>Finance</strong> — Billing and payments only</p>
+          <p className="flex items-center gap-1"><Shield className="size-3" /><span className="font-semibold">Owner</span> — Full access, manage team</p>
+          <p className="flex items-center gap-1"><Shield className="size-3" /><span className="font-semibold">Admin</span> — Merchants, billing, settings</p>
+          <p className="flex items-center gap-1"><Shield className="size-3" /><span className="font-semibold">Support</span> — View merchants (read-only)</p>
+          <p className="flex items-center gap-1"><Shield className="size-3" /><span className="font-semibold">Finance</span> — Billing and payments only</p>
         </div>
       </div>
     </div>

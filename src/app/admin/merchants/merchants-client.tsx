@@ -89,7 +89,7 @@ export default function MerchantsClient({ merchants, totalRevenue, deletedMercha
       {filtered.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {paginated.map(m => (
-            <div key={m.id} className="group relative rounded-lg border p-4 hover:shadow-sm transition-all hover:border-foreground/20">
+            <div key={m.id} className="group relative rounded-lg border p-4 hover:border-foreground/20 transition-colors">
               {/* Action menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -128,7 +128,7 @@ export default function MerchantsClient({ merchants, totalRevenue, deletedMercha
                       <p className="text-sm font-medium truncate">{m.name}</p>
                       {m.suspended && <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Suspended</Badge>}
                     </div>
-                    <p className="text-[11px] text-muted-foreground truncate flex items-center gap-1">
+                    <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
                       {m.slug}.indigo.store <ExternalLink className="size-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </p>
                   </div>

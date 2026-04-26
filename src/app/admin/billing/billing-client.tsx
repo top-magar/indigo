@@ -122,7 +122,7 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
               <div key={p.id} className="flex items-center justify-between p-3">
                 <div>
                   <p className="text-sm font-medium">{p.merchantName}</p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {p.method.replace("_", " ")} {p.reference && `· ${p.reference}`} · {new Date(p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </p>
                 </div>
@@ -149,7 +149,7 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
                 <div key={s.id} className="flex items-center justify-between p-3">
                   <div>
                     <p className="text-sm font-medium">{merchant?.name ?? "Unknown"}</p>
-                    <p className="text-[11px] text-muted-foreground">{plan?.name} · {s.billingCycle}</p>
+                    <p className="text-xs text-muted-foreground">{plan?.name} · {s.billingCycle}</p>
                   </div>
                   <Badge className={`text-[10px] ${statusColor[s.status] ?? ""}`}>{s.status}</Badge>
                 </div>
@@ -162,8 +162,8 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
       </div>
 
       {/* Invoice Generation */}
-      <div className="rounded-lg border p-4 space-y-3">
-        <div className="flex items-center justify-between">
+      <div className="rounded-lg border">
+        <div className="flex items-center justify-between p-4 border-b">
           <p className="text-sm font-medium">Monthly Invoices</p>
           <Button size="sm" onClick={() => {
             const now = new Date();
@@ -179,10 +179,10 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
         {invoiceList.length > 0 ? (
           <div className="divide-y">
             {invoiceList.map(inv => (
-              <div key={inv.id} className="flex items-center justify-between py-2.5">
+              <div key={inv.id} className="flex items-center justify-between p-3">
                 <div>
                   <p className="text-sm font-medium">{inv.merchantName}</p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(inv.periodStart).toLocaleDateString("en-US", { month: "short", year: "numeric" })} · {inv.commissionRate}% on {formatCurrency(Number(inv.orderTotal), "NPR")}
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
             ))}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground text-center py-4">No invoices generated yet. Click "Generate This Month" to calculate commissions.</p>
+          <p className="text-xs text-muted-foreground text-center p-4">No invoices generated yet. Click "Generate This Month" to calculate commissions.</p>
         )}
       </div>
     </div>
