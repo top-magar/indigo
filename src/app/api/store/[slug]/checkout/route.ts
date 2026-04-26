@@ -111,6 +111,11 @@ export async function POST(
       }
     }
 
+    // Free tier: COD only
+    if (paymentMethod !== 'cod' && limits.planName === 'Free') {
+      return NextResponse.json({ error: { message: "Online payments are available on paid plans. This store currently accepts Cash on Delivery only." } }, { status: 403 })
+    }
+
     const settings = (tenant.settings ?? {}) as TenantSettings
 
     // Get cart
