@@ -76,19 +76,37 @@ export default async function StoreLayout({
     )
   }
 
-  // Block unverified stores
+  // Block unverified stores (but allow owner to preview)
   const { tenantKyc } = await import("@/db/schema/tenant-kyc")
   const [kyc] = await db.select({ status: tenantKyc.status })
     .from(tenantKyc).where(eq(tenantKyc.tenantId, tenant.id)).limit(1)
-  if (!kyc || kyc.status !== "verified") {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center space-y-2">
-          <p className="text-lg font-semibold">Store Coming Soon</p>
-          <p className="text-sm text-muted-foreground">This store is being set up. Check back soon!</p>
+  const isVerified = kyc?.status === "verified"
+
+  if (!isVerified) {
+    // Check if visitor is the store owner
+    const { createClient } = await import("@/infrastructure/supabase/server")
+    const supabase = await createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+
+    let isOwner = false
+    if (authUser) {
+      const { users } = await import("@/db/schema/users")
+      const [u] = await db.select({ tenantId: users.tenantId })
+        .from(users).where(eq(users.id, authUser.id)).limit(1)
+      isOwner = u?.tenantId === tenant.id
+    }
+
+    if (!isOwner) {
+      return (
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center space-y-2">
+            <p className="text-lg font-semibold">Store Coming Soon</p>
+            <p className="text-sm text-muted-foreground">This store is being set up. Check back soon!</p>
+          </div>
         </div>
-      </div>
-    )
+      )
+    }
+    // Owner can preview — show banner below
   }
 
   const [cats, cart, homepageLayout] = await Promise.all([
@@ -157,6 +175,12 @@ export default async function StoreLayout({
         </>}
         footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
       >
+        {!isVerified && (
+          <div className="bg-warning text-warning-foreground text-center py-2 text-xs font-medium">
+            Preview mode — your store is not visible to customers until verified.
+            <a href="/dashboard/settings/verification" className="underline ml-1">Complete verification →</a>
+          </div>
+        )}
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
