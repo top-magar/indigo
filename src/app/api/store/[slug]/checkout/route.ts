@@ -93,6 +93,12 @@ export async function POST(
     const [tenant] = await db.select().from(tenants).where(eq(tenants.slug, slug)).limit(1)
     if (!tenant) return NextResponse.json({ error: { message: "Store not found" } }, { status: 404 })
 
+    // Block unverified and suspended stores
+    const { tenantKyc } = await import("@/db/schema/tenant-kyc")
+    const [kyc] = await db.select({ status: tenantKyc.status }).from(tenantKyc).where(eq(tenantKyc.tenantId, tenant.id)).limit(1)
+    if (!kyc || kyc.status !== "verified") return NextResponse.json({ error: { message: "This store is not yet verified" } }, { status: 403 })
+    if ((tenant.settings as Record<string, unknown>)?.suspended) return NextResponse.json({ error: { message: "This store is currently unavailable" } }, { status: 403 })
+
     const settings = (tenant.settings ?? {}) as TenantSettings
 
     // Get cart

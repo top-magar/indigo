@@ -68,7 +68,49 @@ export default async function VerificationPage() {
         </div>
       )}
 
-      {/* Form — show if not verified or rejected (allow resubmission) */}
+      {/* What you can/can't do before verification */}
+      {kyc?.status !== "verified" && (
+        <div className="rounded-lg border p-4">
+          <p className="text-sm font-medium mb-3">Before Verification</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs font-medium text-success mb-1.5">✓ You can</p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• Set up your store (name, logo, theme)</li>
+                <li>• Add products and categories</li>
+                <li>• Configure payment methods</li>
+                <li>• Build pages with the visual editor</li>
+                <li>• Invite team members</li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-destructive mb-1.5">✗ You cannot</p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• Publish your store (customers can't see it)</li>
+                <li>• Accept orders or payments</li>
+                <li>• Process COD, eSewa, or Khalti transactions</li>
+                <li>• Use a custom domain</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Nepal E-Commerce Act 2081 */}
+      <div className="rounded-lg bg-muted/50 p-4">
+        <p className="text-xs font-medium mb-2">Nepal E-Commerce Act 2081 (2025)</p>
+        <p className="text-xs text-muted-foreground">
+          Under the Electronic Commerce Act 2081, all online sellers in Nepal must register with the 
+          Department of Commerce, Supplies and Consumer Protection (DoCSCP) and display their business 
+          registration details, PAN/VAT number, and contact information on their platform. 
+          Non-compliance may result in fines of NPR 20,000 to NPR 500,000.
+        </p>
+        <div className="flex gap-3 mt-2">
+          <a href="https://shrigo.com/blogs/1175-e-commerce-registration-process-in-nepal-2025-everything-you-need-to-know" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Read the full guide →</a>
+          <a href="https://notarynepal.com/blog/e-commerce-act-nepal-2025" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Key rules & penalties →</a>
+        </div>
+      </div>
+
       {kyc?.status !== "verified" && kyc?.status !== "pending" && (
         <VerificationForm existing={kyc ? {
           fullName: kyc.fullName, phone: kyc.phone, businessType: kyc.businessType,
