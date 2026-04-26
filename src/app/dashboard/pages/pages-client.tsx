@@ -8,6 +8,7 @@ import {
   Pencil, Globe, Trash2, Type, ExternalLink, Plus,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,21 +41,16 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     router.refresh();
   };
 
+  const [newPageName, setNewPageName] = useState("");
+  const [showNewDialog, setShowNewDialog] = useState(false);
+
   const handleNewPage = () => {
+    if (!newPageName.trim()) return;
     startTransition(async () => {
-      const result = await createPage(site.id);
-      if (result.id) {
-        router.refresh();
-        // Auto-start rename on the new page after refresh
-        setTimeout(() => {
-          setRenamingId(result.id!);
-          setRenameValue("Untitled Page");
-          setTimeout(() => {
-            renameRef.current?.focus();
-            renameRef.current?.select();
-          }, 100);
-        }, 300);
-      }
+      await createPage(site.id, newPageName.trim());
+      setNewPageName("");
+      setShowNewDialog(false);
+      router.refresh();
     });
   };
 
@@ -92,9 +88,30 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
         </div>
-        <Button variant="outline" onClick={handleNewPage} disabled={!!renamingId}>
-          <Plus className="size-3.5" /> New Page
-        </Button>
+        <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Plus className="size-3.5" /> New Page
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Page</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={(e) => { e.preventDefault(); handleNewPage(); }} className="space-y-3">
+              <Input
+                placeholder="Page name"
+                value={newPageName}
+                onChange={e => setNewPageName(e.target.value)}
+                autoFocus
+              />
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowNewDialog(false)}>Cancel</Button>
+                <Button type="submit" size="sm" disabled={!newPageName.trim()}>Create Page</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Page list */}

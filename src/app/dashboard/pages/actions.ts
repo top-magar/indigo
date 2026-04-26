@@ -31,14 +31,14 @@ export async function deletePage(id: string) {
   revalidatePath("/dashboard/pages");
 }
 
-export async function createPage(projectId: string): Promise<{ id?: string; error?: string }> {
+export async function createPage(projectId: string, pageName?: string): Promise<{ id?: string; error?: string }> {
   const user = await requireUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return { error: "Project not found" };
 
-  const name = "Untitled Page";
-  const slug = `untitled-${Date.now().toString(36)}`;
+  const name = pageName?.trim() || "Untitled Page";
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `page-${Date.now().toString(36)}`;
   const [page] = await db.insert(editorPages).values({
     projectId, tenantId: user.tenantId, name, slug, data: [], isHomepage: false,
   }).returning({ id: editorPages.id });
