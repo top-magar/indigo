@@ -153,7 +153,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                       <Pencil className="size-3.5" /> Edit in Editor
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => startRename(page)}>
+                  <DropdownMenuItem onSelect={() => setTimeout(() => startRename(page), 0)}>
                     <Type className="size-3.5" /> Rename
                   </DropdownMenuItem>
                   {page.published && tenantSlug && (
