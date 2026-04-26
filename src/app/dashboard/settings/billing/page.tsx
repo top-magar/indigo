@@ -5,6 +5,7 @@ import { plans, payments, invoices as invoicesTable } from "@/db/schema/billing"
 import { eq, desc } from "drizzle-orm";
 import { formatCurrency } from "@/shared/utils";
 import { Check, Receipt, CreditCard, HelpCircle, TrendingUp, Package, Users } from "lucide-react";
+import { UpgradeDialog } from "./upgrade-dialog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Plan & Billing | Settings" };
@@ -164,13 +165,10 @@ export default async function MerchantBillingPage() {
                     </p>
                   ))}
                 </div>
+                <UpgradeDialog plan={plan} currentPlanName={limits.planName} />
               </div>
             );
           })}
-        </div>
-        <div className="mt-3 rounded-md bg-muted/50 p-3">
-          <p className="text-xs font-medium">Ready to upgrade?</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Pay via eSewa, Khalti, or bank transfer and message us on WhatsApp. We activate within 1 hour during business hours.</p>
         </div>
       </section>
 
