@@ -58,7 +58,7 @@ function MethodHeader({ icon, name, description, active, onToggle, badge }: {
 }
 
 // ─── Main ─────────────────────────────────────────────────
-export function PaymentsSettingsClient({ initialSettings }: { initialSettings: PaymentSettings }) {
+export function PaymentsSettingsClient({ initialSettings, isFreeTier = false }: { initialSettings: PaymentSettings; isFreeTier?: boolean }) {
   const [s, setS] = useState(initialSettings);
   const [isPending, startTransition] = useTransition();
   const set = <K extends keyof PaymentSettings>(k: K, v: PaymentSettings[K]) => setS(prev => ({ ...prev, [k]: v }));
@@ -114,7 +114,8 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
           badge="Recommended"
         />
 
-        {/* Bank Transfer */}
+        {/* Bank Transfer, eSewa, Khalti — paid plans only */}
+        {!isFreeTier && (<>
         <div>
           <MethodHeader
             icon={<Building2 className="size-5 text-info" />}
@@ -196,6 +197,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
             </div>
           )}
         </div>
+        </>)}
       </div>
 
       <p className="text-[10px] text-muted-foreground text-center">

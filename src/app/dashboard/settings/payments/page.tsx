@@ -1,8 +1,11 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/infrastructure/supabase/server";
+import { requireUser } from "@/lib/auth";
+import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { getPaymentSettings } from "./actions";
 import { PaymentsSettingsClient } from "./payments-settings-client";
+import { Lock } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Payment Settings | Dashboard",
@@ -10,12 +13,28 @@ export const metadata: Metadata = {
 };
 
 export default async function PaymentsSettingsPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const user = await requireUser();
+  const limits = await getTenantPlanLimits(user.tenantId);
 
   const { settings, error } = await getPaymentSettings();
   if (error === "Unauthorized" || error === "No tenant") redirect("/login");
 
-  return <PaymentsSettingsClient initialSettings={settings} />;
+  return (
+    <div className="space-y-6">
+      <PaymentsSettingsClient initialSettings={settings} isFreeTier={limits.planName === "Free"} />
+
+      {limits.planName === "Free" && (
+        <div className="rounded-lg border border-dashed p-4 flex items-start gap-3">
+          <Lock className="size-4 text-muted-foreground shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium">Online payments require a paid plan</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Upgrade to Growth to accept eSewa, Khalti, and bank transfers. Free plan supports Cash on Delivery only.
+            </p>
+            <Link href="/dashboard/settings/billing" className="text-xs font-medium underline hover:no-underline mt-1 inline-block">View plans →</Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
