@@ -32,7 +32,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const { default: Content } = await import(`@/content/blog/${slug}.mdx`)
+  let Content: React.ComponentType
+  try {
+    const mod = await import(`@/content/blog/${slug}.mdx`)
+    Content = mod.default
+  } catch {
+    notFound()
+  }
 
   return (
     <article className="container mx-auto max-w-3xl py-12 px-4">

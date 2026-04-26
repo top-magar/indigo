@@ -16,12 +16,10 @@ const log = createLogger("api:internal-tenant");
 
 // Internal secret to prevent unauthorized access
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET;
-if (!INTERNAL_SECRET) {
-  throw new Error("INTERNAL_API_SECRET env var is required");
-}
 
 export const GET = withRateLimit("dashboard", async function GET(request: Request) {
   const req = request as NextRequest;
+  if (!INTERNAL_SECRET) return NextResponse.json({ error: "Not configured" }, { status: 500 });
   // Verify internal request
   const authHeader = req.headers.get("x-internal-secret");
   if (authHeader !== INTERNAL_SECRET) {
