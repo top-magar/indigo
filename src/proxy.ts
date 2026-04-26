@@ -70,7 +70,7 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = isPublic ? { data: { user: null } } : await supabase.auth.getUser();
 
   // Redirect unauthenticated users away from dashboard/editor
   if (!isPublic && !user) {
