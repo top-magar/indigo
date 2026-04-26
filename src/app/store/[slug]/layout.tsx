@@ -139,21 +139,8 @@ export default async function StoreLayout({
   const logoUrl = (sf.logoUrl as string) || tenant.logoUrl || ""
   const announcementBar = (sf.announcementBar as string) || ""
 
-  const cssVars = `
-    :root {
-      --store-primary: ${primaryColor};
-      --store-secondary: ${secondaryColor};
-      --store-bg: ${backgroundColor};
-      --store-heading-font: '${headingFont}', sans-serif;
-      --store-body-font: '${bodyFont}', sans-serif;
-    }
-    body { font-family: var(--store-body-font); background-color: var(--store-bg); }
-    h1, h2, h3, h4, h5, h6 { font-family: var(--store-heading-font); }
-  `.trim()
-
-  // Google Fonts link for selected fonts
-  const fonts = new Set([headingFont, bodyFont])
-  const fontsUrl = `https://fonts.googleapis.com/css2?${[...fonts].map(f => `family=${encodeURIComponent(f)}:wght@400;500;600;700`).join("&")}&display=swap`
+  const cssVars = ""
+  const fontsUrl = ""
 
   // Read sections config for announcement bar
   const sections = (sf.sections as Array<{ type: string; content: Record<string, string>; visible: boolean; order: number }>) ?? []
