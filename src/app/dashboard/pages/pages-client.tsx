@@ -151,7 +151,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
               </div>
 
               {/* Actions */}
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm" aria-label="More actions" className="size-7 opacity-0 group-hover:opacity-100 transition-opacity">
                     <MoreHorizontal className="size-4" />
@@ -163,7 +163,9 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                       <Pencil className="size-3.5" /> Edit in Editor
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => setTimeout(() => startRename(page), 0)}>
+                  <DropdownMenuItem onSelect={() => {
+                    setTimeout(() => startRename(page), 150);
+                  }}>
                     <Type className="size-3.5" /> Rename
                   </DropdownMenuItem>
                   {page.published && tenantSlug && (
