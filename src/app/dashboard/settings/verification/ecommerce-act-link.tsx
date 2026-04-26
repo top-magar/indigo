@@ -21,7 +21,7 @@ export function ECommerceActLink() {
           Nepal's E-Commerce Act 2081
         </button>
       </DialogTrigger>
-      <DialogContent className="p-0 gap-0 border-0 max-w-[calc(100vw-2rem)] w-full h-[calc(100vh-2rem)] flex flex-col overflow-hidden rounded-xl">
+      <DialogContent className="p-0 gap-0 border-0 max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] w-full h-[calc(100vh-2rem)] flex flex-col overflow-hidden rounded-xl">
         <DialogTitle className="sr-only">{pdf.title}</DialogTitle>
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-background shrink-0">
