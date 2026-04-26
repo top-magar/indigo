@@ -70,7 +70,8 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = isPublic ? { data: { user: null } } : await supabase.auth.getUser();
+  // Always call getUser to refresh session cookies
+  const { data: { user } } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users away from dashboard/editor
   if (!isPublic && !user) {
@@ -80,7 +81,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // CI-5: RBAC enforcement — gate routes by role
-  if (user) {
+  if (user && !isPublic) {
     // Read role from DB (not user_metadata which is client-writable)
     const { data: dbUser } = await supabase
       .from("users")
