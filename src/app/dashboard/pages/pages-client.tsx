@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -26,6 +26,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const [renameValue, setRenameValue] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const [, startTransition] = useTransition();
   const confirmDelete = useConfirmDelete();
 
   const filtered = query
@@ -47,12 +48,14 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     setTimeout(() => renameRef.current?.select(), 0);
   };
 
-  const commitRename = async (id: string) => {
+  const commitRename = (id: string) => {
     const trimmed = renameValue.trim();
     setRenamingId(null);
     if (!trimmed) return;
-    await renamePage(id, trimmed);
-    router.refresh();
+    startTransition(async () => {
+      await renamePage(id, trimmed);
+      router.refresh();
+    });
   };
 
   return (
