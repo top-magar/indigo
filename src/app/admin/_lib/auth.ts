@@ -1,9 +1,6 @@
-import { requireUser } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { getPlatformUser } from "./permissions";
 
-/** Defense-in-depth: verify platform_admin on every admin page, not just layout */
+/** Defense-in-depth: verify platform_admin on every admin page */
 export async function requireAdmin() {
-  const user = await requireUser();
-  if (user.role !== "platform_admin") redirect("/dashboard");
-  return user;
+  return getPlatformUser();
 }

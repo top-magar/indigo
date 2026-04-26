@@ -2,18 +2,20 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield, UserCog } from "lucide-react";
 import { createClient } from "@/infrastructure/supabase/client";
 import { cn } from "@/shared/utils";
+import type { Permission } from "./_lib/types";
 
 const NAV = [
-  { href: "/admin", icon: LayoutDashboard, label: "Overview", exact: true },
-  { href: "/admin/merchants", icon: Users, label: "Merchants" },
-  { href: "/admin/billing", icon: CreditCard, label: "Billing" },
-  { href: "/admin/settings", icon: Settings, label: "Settings" },
+  { href: "/admin", icon: LayoutDashboard, label: "Overview", exact: true, permission: "view_overview" as Permission },
+  { href: "/admin/merchants", icon: Users, label: "Merchants", permission: "view_merchants" as Permission },
+  { href: "/admin/billing", icon: CreditCard, label: "Billing", permission: "view_billing" as Permission },
+  { href: "/admin/team", icon: UserCog, label: "Team", permission: "view_team" as Permission },
+  { href: "/admin/settings", icon: Settings, label: "Settings", permission: "view_settings" as Permission },
 ];
 
-export function AdminSidebar({ user }: { user: { fullName: string | null; email: string } }) {
+export function AdminSidebar({ user, permissions }: { user: { fullName: string | null; email: string }; permissions: Permission[] }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,7 +40,7 @@ export function AdminSidebar({ user }: { user: { fullName: string | null; email:
       </div>
 
       <nav className="flex-1 px-2 space-y-0.5">
-        {NAV.map(item => {
+        {NAV.filter(item => permissions.includes(item.permission)).map(item => {
           const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
           return (
             <Link

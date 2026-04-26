@@ -8,6 +8,7 @@ export const users = pgTable("users", {
     fullName: varchar("full_name", { length: 255 }),
     avatarUrl: text("avatar_url"),
     role: varchar("role", { length: 50 }).default("owner"),
+    platformRole: varchar("platform_role", { length: 30 }).$type<"super_admin" | "admin" | "support" | "finance">(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 }, (table) => ({

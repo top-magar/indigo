@@ -1,6 +1,6 @@
 "use server";
 
-import { requireUser } from "@/lib/auth";
+import { requirePermission } from "../_lib/permissions";
 import { db } from "@/infrastructure/db";
 import { plans, subscriptions, payments } from "@/db/schema/billing";
 import { eq, desc } from "drizzle-orm";
@@ -15,8 +15,7 @@ const assignPlanSchema = z.object({
 });
 
 export async function assignPlan(input: z.infer<typeof assignPlanSchema>): Promise<{ error?: string }> {
-  const user = await requireUser();
-  if (user.role !== "platform_admin") return { error: "Unauthorized" };
+  const user = await requirePermission("manage_billing");
 
   const parsed = assignPlanSchema.safeParse(input);
   if (!parsed.success) return { error: "Invalid input" };
@@ -63,8 +62,7 @@ const recordPaymentSchema = z.object({
 });
 
 export async function recordPayment(input: z.infer<typeof recordPaymentSchema>): Promise<{ error?: string }> {
-  const user = await requireUser();
-  if (user.role !== "platform_admin") return { error: "Unauthorized" };
+  const user = await requirePermission("manage_billing");
 
   const parsed = recordPaymentSchema.safeParse(input);
   if (!parsed.success) return { error: "Invalid input" };

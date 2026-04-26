@@ -3,13 +3,13 @@ import { tenants } from "@/db/schema/tenants";
 import { orders } from "@/db/schema/orders";
 import { count } from "drizzle-orm";
 import { Check, Circle } from "lucide-react";
-import { requireAdmin } from "../_lib/auth";
+import { requirePermission } from "../_lib/permissions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Platform Settings | Admin" };
 
 export default async function AdminSettingsPage() {
-  await requireAdmin();
+  await requirePermission("view_settings");
   const [[{ value: merchantCount }], [{ value: orderCount }]] = await Promise.all([
     db.select({ value: count() }).from(tenants),
     db.select({ value: count() }).from(orders),

@@ -1,18 +1,17 @@
 "use server";
 
-import { requireUser } from "@/lib/auth";
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { logAdminAction } from "../_lib/audit";
+import { requirePermission } from "../_lib/permissions";
 
 const uuidSchema = z.string().uuid();
 
 export async function toggleMerchantSuspension(tenantId: string, suspend: boolean): Promise<{ error?: string }> {
-  const user = await requireUser();
-  if (user.role !== "platform_admin") return { error: "Unauthorized" };
+  const user = await requirePermission("manage_merchants");
 
   const parsed = uuidSchema.safeParse(tenantId);
   if (!parsed.success) return { error: "Invalid merchant ID" };
@@ -41,8 +40,7 @@ export async function toggleMerchantSuspension(tenantId: string, suspend: boolea
 }
 
 export async function deleteMerchant(tenantId: string): Promise<{ error?: string }> {
-  const user = await requireUser();
-  if (user.role !== "platform_admin") return { error: "Unauthorized" };
+  const user = await requirePermission("delete_merchants");
 
   const parsed = uuidSchema.safeParse(tenantId);
   if (!parsed.success) return { error: "Invalid merchant ID" };

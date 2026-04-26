@@ -3,12 +3,13 @@ import { tenants } from "@/db/schema/tenants";
 import { sql, desc } from "drizzle-orm";
 import MerchantsClient from "./merchants-client";
 import { requireAdmin } from "../_lib/auth";
+import { requirePermission } from "../_lib/permissions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Merchants | Admin" };
 
 export default async function MerchantsPage() {
-  await requireAdmin();
+  await requirePermission("view_merchants");
 
   // Single query: all merchants with aggregated stats via LEFT JOIN
   const merchantList = await db.execute<{

@@ -11,13 +11,13 @@ import { ArrowLeft, ExternalLink, Store } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/shared/utils";
-import { requireAdmin } from "../../_lib/auth";
+import { requirePermission } from "../../_lib/permissions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Merchant Detail | Admin" };
 
 export default async function MerchantDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  await requirePermission("view_merchants");
   const { id } = await params;
   const [tenant] = await db.select({
     id: tenants.id,

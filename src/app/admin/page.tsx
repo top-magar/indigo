@@ -15,49 +15,43 @@ export default async function AdminOverviewPage() {
   await requireAdmin();
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
 
-  // Batch 1: counts
+  // Batch 1: simple counts
   const [
     [{ value: totalMerchants }],
     [{ value: totalOrders }],
     [{ value: totalProducts }],
-    [{ value: newMerchants }],
   ] = await Promise.all([
     db.select({ value: count() }).from(tenants),
     db.select({ value: count() }).from(orders),
     db.select({ value: count() }).from(products),
-    db.select({ value: count() }).from(tenants).where(gte(tenants.createdAt, thirtyDaysAgo)),
   ]);
 
-  // Batch 2: aggregates + lists
-  const [
-    [{ value: totalRevenue }],
-    [{ value: recentRevenue }],
-    recentTenants,
-    recentOrders,
-    dailyRevenue,
-    recentAuditLogs,
-  ] = await Promise.all([
-    db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders),
-    db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders).where(gte(orders.createdAt, thirtyDaysAgo)),
-    db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug, createdAt: tenants.createdAt })
-      .from(tenants).orderBy(desc(tenants.createdAt)).limit(5),
-    db.select({
-      id: orders.id, orderNumber: orders.orderNumber, total: orders.total,
-      status: orders.status, createdAt: orders.createdAt,
-    }).from(orders).orderBy(desc(orders.createdAt)).limit(6),
-    db.select({
-      day: sql<string>`TO_CHAR(${orders.createdAt}, 'Mon DD')`,
-      revenue: sql<string>`COALESCE(SUM(${orders.total}), 0)`,
-    }).from(orders)
-      .where(gte(orders.createdAt, new Date(Date.now() - 14 * 86400000)))
-      .groupBy(sql`DATE(${orders.createdAt}), TO_CHAR(${orders.createdAt}, 'Mon DD')`)
-      .orderBy(sql`DATE(${orders.createdAt})`),
-    db.select({
-      id: auditLogs.id, action: auditLogs.action, userId: auditLogs.userId,
-      entityType: auditLogs.entityType, newValues: auditLogs.newValues,
-      metadata: auditLogs.metadata, createdAt: auditLogs.createdAt,
-    }).from(auditLogs).where(sql`${auditLogs.metadata}->>'source' = 'admin'`).orderBy(desc(auditLogs.createdAt)).limit(8),
-  ]);
+  // Batch 2: aggregates + lists (sequential to avoid pool exhaustion)
+  const [{ value: newMerchants }] = await db.select({ value: count() }).from(tenants).where(gte(tenants.createdAt, thirtyDaysAgo));
+  const [{ value: totalRevenue }] = await db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders);
+  const [{ value: recentRevenue }] = await db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders).where(gte(orders.createdAt, thirtyDaysAgo));
+
+  const recentTenants = await db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug, createdAt: tenants.createdAt })
+    .from(tenants).orderBy(desc(tenants.createdAt)).limit(5);
+
+  const recentOrders = await db.select({
+    id: orders.id, orderNumber: orders.orderNumber, total: orders.total,
+    status: orders.status, createdAt: orders.createdAt,
+  }).from(orders).orderBy(desc(orders.createdAt)).limit(6);
+
+  const dailyRevenue = await db.select({
+    day: sql<string>`TO_CHAR(${orders.createdAt}, 'Mon DD')`,
+    revenue: sql<string>`COALESCE(SUM(${orders.total}), 0)`,
+  }).from(orders)
+    .where(gte(orders.createdAt, new Date(Date.now() - 14 * 86400000)))
+    .groupBy(sql`DATE(${orders.createdAt}), TO_CHAR(${orders.createdAt}, 'Mon DD')`)
+    .orderBy(sql`DATE(${orders.createdAt})`);
+
+  const recentAuditLogs = await db.select({
+    id: auditLogs.id, action: auditLogs.action, userId: auditLogs.userId,
+    entityType: auditLogs.entityType, newValues: auditLogs.newValues,
+    metadata: auditLogs.metadata, createdAt: auditLogs.createdAt,
+  }).from(auditLogs).where(sql`${auditLogs.metadata}->>'source' = 'admin'`).orderBy(desc(auditLogs.createdAt)).limit(8);
 
   // Build chart bars
   const maxRevenue = Math.max(...dailyRevenue.map(d => Number(d.revenue)), 1);

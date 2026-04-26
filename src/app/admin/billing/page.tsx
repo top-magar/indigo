@@ -2,7 +2,7 @@ import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
 import { plans, subscriptions, payments } from "@/db/schema/billing";
 import { eq, desc, sql, count } from "drizzle-orm";
-import { requireAdmin } from "../_lib/auth";
+import { requirePermission } from "../_lib/permissions";
 import { formatCurrency } from "@/shared/utils";
 import BillingClient from "./billing-client";
 import type { Metadata } from "next";
@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Billing | Admin" };
 
 export default async function BillingPage() {
-  await requireAdmin();
+  await requirePermission("view_billing");
 
   const [allPlans, allSubs, recentPayments, [{ value: totalRevenue }], merchantList] = await Promise.all([
     db.select().from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
