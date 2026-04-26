@@ -27,9 +27,9 @@ export default async function PaymentsSettingsPage() {
         <div className="rounded-lg border border-dashed p-4 flex items-start gap-3">
           <Lock className="size-4 text-muted-foreground shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium">Online payments require a paid plan</p>
+            <p className="text-sm font-medium">Online payment integrations require a paid plan</p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Upgrade to Growth to accept eSewa, Khalti, and bank transfers. Free plan supports Cash on Delivery only.
+              Upgrade to Growth to connect payment gateways and accept online payments. Free plan supports Cash on Delivery only.
             </p>
             <Link href="/dashboard/settings/billing" className="text-xs font-medium underline hover:no-underline mt-1 inline-block">View plans →</Link>
           </div>
