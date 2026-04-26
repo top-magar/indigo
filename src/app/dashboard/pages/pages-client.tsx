@@ -45,13 +45,15 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const startRename = (page: EditorPage) => {
     setRenamingId(page.id);
     setRenameValue(page.name);
-    setTimeout(() => renameRef.current?.select(), 0);
+    setTimeout(() => renameRef.current?.select(), 50);
   };
 
   const commitRename = (id: string) => {
+    if (!renamingId) return;
     const trimmed = renameValue.trim();
+    const original = pages.find(p => p.id === id)?.name;
     setRenamingId(null);
-    if (!trimmed) return;
+    if (!trimmed || trimmed === original) return;
     startTransition(async () => {
       await renamePage(id, trimmed);
       router.refresh();
@@ -108,8 +110,8 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                       onChange={e => setRenameValue(e.target.value)}
                       onBlur={() => commitRename(page.id)}
                       onKeyDown={e => {
-                        if (e.key === "Enter") commitRename(page.id);
-                        if (e.key === "Escape") setRenamingId(null);
+                        if (e.key === "Enter") { e.currentTarget.blur(); }
+                        if (e.key === "Escape") { setRenamingId(null); }
                       }}
                       className="h-6 text-sm font-medium px-1 py-0 w-48"
                       autoFocus

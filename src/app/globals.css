@@ -569,6 +569,146 @@
 }
 
 /* =============================================================================
+   STORE THEME — Force light mode inside .store-theme regardless of dark class
+   ============================================================================= */
+
+.dark .store-theme {
+  --ds-background-100: hsl(0 0% 100%);
+  --ds-background-200: hsl(0 0% 98%);
+  --ds-gray-100: hsl(0 0% 95%);
+  --ds-gray-200: hsl(0 0% 92%);
+  --ds-gray-300: hsl(0 0% 90%);
+  --ds-gray-400: hsl(0 0% 92%);
+  --ds-gray-500: hsl(0 0% 79%);
+  --ds-gray-600: hsl(0 0% 66%);
+  --ds-gray-700: hsl(0 0% 56%);
+  --ds-gray-800: hsl(0 0% 49%);
+  --ds-gray-900: hsl(0 0% 40%);
+  --ds-gray-1000: hsl(0 0% 9%);
+  --ds-gray-alpha-100: #0000000d;
+  --ds-gray-alpha-200: #00000015;
+  --ds-gray-alpha-300: #0000001a;
+  --ds-gray-alpha-400: #00000014;
+  --ds-gray-alpha-500: #00000036;
+  --ds-gray-alpha-600: #00000057;
+  --ds-gray-alpha-700: #00000070;
+  --ds-gray-alpha-800: #00000082;
+  --ds-gray-alpha-900: #0000009c;
+  --ds-gray-alpha-1000: #000000e8;
+  --ds-blue-100: hsl(212 100% 97%);
+  --ds-blue-200: hsl(210 100% 96%);
+  --ds-blue-300: hsl(210 100% 94%);
+  --ds-blue-400: hsl(209 100% 90%);
+  --ds-blue-500: hsl(209 100% 80%);
+  --ds-blue-600: hsl(208 100% 66%);
+  --ds-blue-700: hsl(212 100% 48%);
+  --ds-blue-800: hsl(212 100% 41%);
+  --ds-blue-900: hsl(211 100% 42%);
+  --ds-blue-1000: hsl(211 100% 15%);
+  --ds-red-100: hsl(0 100% 97%);
+  --ds-red-200: hsl(0 100% 96%);
+  --ds-red-300: hsl(0 100% 95%);
+  --ds-red-400: hsl(0 90% 92%);
+  --ds-red-500: hsl(0 82% 85%);
+  --ds-red-600: hsl(359 90% 71%);
+  --ds-red-700: hsl(358 75% 59%);
+  --ds-red-800: hsl(358 70% 52%);
+  --ds-red-900: hsl(358 66% 48%);
+  --ds-red-1000: hsl(355 49% 15%);
+  --ds-amber-100: hsl(39 100% 95%);
+  --ds-amber-200: hsl(44 100% 92%);
+  --ds-amber-300: hsl(43 96% 90%);
+  --ds-amber-400: hsl(42 100% 78%);
+  --ds-amber-500: hsl(38 100% 71%);
+  --ds-amber-600: hsl(36 90% 62%);
+  --ds-amber-700: hsl(39 100% 57%);
+  --ds-amber-800: hsl(35 100% 52%);
+  --ds-amber-900: hsl(30 100% 32%);
+  --ds-amber-1000: hsl(20 79% 17%);
+  --ds-green-100: hsl(120 60% 96%);
+  --ds-green-200: hsl(120 60% 95%);
+  --ds-green-300: hsl(120 60% 91%);
+  --ds-green-400: hsl(122 60% 86%);
+  --ds-green-500: hsl(124 60% 75%);
+  --ds-green-600: hsl(125 60% 64%);
+  --ds-green-700: hsl(131 41% 46%);
+  --ds-green-800: hsl(132 43% 39%);
+  --ds-green-900: hsl(133 50% 32%);
+  --ds-green-1000: hsl(128 29% 15%);
+  --ds-purple-100: hsl(276 100% 97%);
+  --ds-purple-200: hsl(277 87% 97%);
+  --ds-purple-300: hsl(274 78% 95%);
+  --ds-purple-400: hsl(276 71% 92%);
+  --ds-purple-500: hsl(274 70% 82%);
+  --ds-purple-600: hsl(273 72% 73%);
+  --ds-purple-700: hsl(272 51% 54%);
+  --ds-purple-800: hsl(272 47% 45%);
+  --ds-purple-900: hsl(274 71% 43%);
+  --ds-purple-1000: hsl(276 100% 15%);
+  --ds-pink-100: hsl(340 100% 97%);
+  --ds-pink-200: hsl(340 90% 96%);
+  --ds-pink-300: hsl(340 82% 94%);
+  --ds-pink-400: hsl(340 75% 91%);
+  --ds-pink-500: hsl(340 70% 82%);
+  --ds-pink-600: hsl(340 65% 73%);
+  --ds-pink-700: hsl(340 75% 57%);
+  --ds-pink-800: hsl(340 70% 47%);
+  --ds-pink-900: hsl(340 65% 52%);
+  --ds-pink-1000: hsl(340 50% 15%);
+  --ds-teal-100: hsl(170 60% 96%);
+  --ds-teal-200: hsl(170 60% 95%);
+  --ds-teal-300: hsl(170 55% 91%);
+  --ds-teal-400: hsl(170 55% 86%);
+  --ds-teal-500: hsl(170 50% 75%);
+  --ds-teal-600: hsl(170 55% 64%);
+  --ds-teal-700: hsl(170 50% 35%);
+  --ds-teal-800: hsl(170 55% 30%);
+  --ds-teal-900: hsl(170 100% 39%);
+  --ds-teal-1000: hsl(170 40% 15%);
+  --success: var(--ds-green-700);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: var(--ds-amber-700);
+  --warning-foreground: var(--ds-gray-900);
+  --info: var(--ds-blue-700);
+  --info-foreground: hsl(0 0% 100%);
+  --background: var(--ds-background-100);
+  --foreground: var(--ds-gray-1000);
+  --card: var(--ds-background-100);
+  --card-foreground: var(--ds-gray-1000);
+  --popover: var(--ds-background-100);
+  --popover-foreground: var(--ds-gray-1000);
+  --primary: var(--ds-gray-1000);
+  --primary-foreground: var(--ds-background-100);
+  --secondary: var(--ds-gray-100);
+  --secondary-foreground: var(--ds-gray-900);
+  --muted: var(--ds-gray-100);
+  --muted-foreground: var(--ds-gray-800);
+  --accent: var(--ds-gray-200);
+  --accent-foreground: var(--ds-gray-1000);
+  --destructive: var(--ds-red-700);
+  --destructive-foreground: var(--ds-background-100);
+  --border: var(--ds-gray-200);
+  --input: var(--ds-gray-300);
+  --ring: var(--ds-gray-1000);
+  --chart-1: oklch(0.65 0.18 25);
+  --chart-2: oklch(0.65 0.15 230);
+  --chart-3: oklch(0.65 0.15 155);
+  --chart-4: oklch(0.65 0.15 55);
+  --chart-5: oklch(0.65 0.12 300);
+  --sidebar: var(--ds-background-100);
+  --sidebar-foreground: var(--ds-gray-1000);
+  --sidebar-primary: var(--ds-gray-1000);
+  --sidebar-primary-foreground: var(--ds-background-100);
+  --sidebar-accent: var(--ds-gray-100);
+  --sidebar-accent-foreground: var(--ds-gray-1000);
+  --sidebar-border: var(--ds-gray-200);
+  --sidebar-ring: var(--ds-gray-1000);
+  --selection: var(--ds-gray-1000);
+  --selection-foreground: var(--ds-background-100);
+  color-scheme: light;
+}
+
+/* =============================================================================
    BASE STYLES
    ============================================================================= */
 
