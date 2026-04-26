@@ -10,8 +10,7 @@ export async function updateCheckoutSettings(formData: FormData): Promise<{ erro
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    const { data: membership } = await supabase.from('tenant_memberships').select('role').eq('user_id', user.id).single();
-    if (!membership || !['owner', 'admin'].includes(membership.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
 
     const { data: tenant } = await supabase
       .from("tenants")

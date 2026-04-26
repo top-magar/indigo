@@ -19,8 +19,7 @@ export async function updateStoreSettings(formData: FormData): Promise<{ error?:
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    const { data: membership } = await supabase.from('tenant_memberships').select('role').eq('user_id', user.id).single();
-    if (!membership || !['owner', 'admin'].includes(membership.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
 
     const { name, description, logoUrl } = storeSettingsSchema.parse(Object.fromEntries(formData.entries()));
 
@@ -49,8 +48,7 @@ export async function updateStoreSeoSettings(formData: FormData): Promise<{ erro
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    const { data: membership } = await supabase.from('tenant_memberships').select('role').eq('user_id', user.id).single();
-    if (!membership || !['owner', 'admin'].includes(membership.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
 
     const { data: tenant } = await supabase
       .from("tenants")
@@ -95,8 +93,7 @@ export async function updateCurrencySettings(
     const data = currencySettingsSchema.parse(input);
     const { user, supabase } = await getAuthenticatedClient();
 
-    const { data: membership } = await supabase.from('tenant_memberships').select('role').eq('user_id', user.id).single();
-    if (!membership || !['owner', 'admin'].includes(membership.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
 
     if (!isValidCurrency(data.currency)) return { error: `Invalid currency: ${data.currency}` };
     if (!isValidCurrency(data.displayCurrency)) return { error: `Invalid display currency: ${data.displayCurrency}` };
