@@ -4,7 +4,7 @@ import { db } from "@/infrastructure/db";
 import { plans, payments, invoices as invoicesTable } from "@/db/schema/billing";
 import { eq, desc } from "drizzle-orm";
 import { formatCurrency } from "@/shared/utils";
-import { Check } from "lucide-react";
+import { Check, ArrowRight, Receipt, CreditCard, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Plan & Billing | Settings" };
@@ -18,7 +18,7 @@ export default async function MerchantBillingPage() {
       id: plans.id, name: plans.name, slug: plans.slug,
       priceMonthly: plans.priceMonthly, priceYearly: plans.priceYearly,
       commissionRate: plans.commissionRate, features: plans.features,
-      isDefault: plans.isDefault,
+      isDefault: plans.isDefault, description: plans.description,
     }).from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
     db.select({
       id: payments.id, amount: payments.amount, method: payments.method,
@@ -26,59 +26,62 @@ export default async function MerchantBillingPage() {
     }).from(payments).where(eq(payments.tenantId, user.tenantId)).orderBy(desc(payments.createdAt)).limit(10),
     db.select({
       id: invoicesTable.id, periodStart: invoicesTable.periodStart,
-      orderTotal: invoicesTable.orderTotal, commissionRate: invoicesTable.commissionRate,
-      finalAmount: invoicesTable.finalAmount, status: invoicesTable.status,
-    }).from(invoicesTable).where(eq(invoicesTable.tenantId, user.tenantId)).orderBy(desc(invoicesTable.createdAt)).limit(6),
+      orderTotal: invoicesTable.orderTotal, orderCount: invoicesTable.orderCount,
+      commissionRate: invoicesTable.commissionRate, commissionAmount: invoicesTable.commissionAmount,
+      capAmount: invoicesTable.capAmount, finalAmount: invoicesTable.finalAmount,
+      status: invoicesTable.status,
+    }).from(invoicesTable).where(eq(invoicesTable.tenantId, user.tenantId)).orderBy(desc(invoicesTable.createdAt)).limit(12),
   ]);
 
   const usagePercent = (current: number, max: number) => Math.min((current / max) * 100, 100);
+  const currentPlan = allPlans.find(p => p.name === limits.planName);
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-8">
+      {/* Header */}
       <div>
         <h1 className="text-lg font-semibold tracking-tight">Plan & Billing</h1>
-        <p className="text-xs text-muted-foreground">Your current plan, usage, and payment history</p>
+        <p className="text-xs text-muted-foreground">Manage your subscription, view invoices, and understand pricing</p>
       </div>
 
-      {/* Current Plan */}
+      {/* Current Plan Card */}
       <div className="rounded-lg border p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium">Current Plan</p>
+            <p className="text-xs text-muted-foreground">Current Plan</p>
             <p className="text-2xl font-semibold tracking-tight mt-1">{limits.planName}</p>
-          </div>
-          <div className="text-right">
-            {limits.status === "none" ? (
-              <span className="text-[10px] bg-muted px-2 py-1 rounded">Free Tier</span>
-            ) : (
-              <span className={`text-[10px] px-2 py-1 rounded ${
-                limits.status === "active" ? "bg-success/10 text-success" :
-                limits.status === "grace" ? "bg-warning/10 text-warning" :
-                "bg-destructive/10 text-destructive"
-              }`}>{limits.status}</span>
-            )}
-            {limits.periodEnd && (
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Renews {new Date(limits.periodEnd).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </p>
+            {currentPlan?.description && (
+              <p className="text-xs text-muted-foreground mt-1">{currentPlan.description}</p>
             )}
           </div>
+          <span className={`text-[10px] px-2 py-1 rounded font-medium ${
+            limits.status === "active" ? "bg-success/10 text-success" :
+            limits.status === "grace" ? "bg-warning/10 text-warning" :
+            limits.status === "none" ? "bg-muted text-muted-foreground" :
+            "bg-destructive/10 text-destructive"
+          }`}>{limits.status === "none" ? "Free Tier" : limits.status}</span>
         </div>
 
-        {/* Usage bars */}
-        <div className="space-y-3">
+        {limits.periodEnd && (
+          <p className="text-[11px] text-muted-foreground mt-2">
+            Renews {new Date(limits.periodEnd).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          </p>
+        )}
+
+        {/* Usage */}
+        <div className="mt-5 space-y-3">
           {[
             { label: "Products", current: limits.currentProducts, max: limits.maxProducts },
             { label: "Staff members", current: limits.currentStaff, max: limits.maxStaff },
           ].map(u => (
             <div key={u.label}>
-              <div className="flex items-center justify-between text-xs mb-1">
+              <div className="flex items-center justify-between text-xs mb-1.5">
                 <span className="text-muted-foreground">{u.label}</span>
                 <span className="tabular-nums font-medium">{u.current} / {u.max}</span>
               </div>
               <div className="h-1.5 bg-muted rounded-full">
                 <div
-                  className={`h-1.5 rounded-full transition-all ${usagePercent(u.current, u.max) >= 90 ? "bg-destructive" : "bg-foreground"}`}
+                  className={`h-1.5 rounded-full transition-all ${usagePercent(u.current, u.max) >= 90 ? "bg-destructive" : usagePercent(u.current, u.max) >= 70 ? "bg-warning" : "bg-foreground"}`}
                   style={{ width: `${usagePercent(u.current, u.max)}%` }}
                 />
               </div>
@@ -87,62 +90,155 @@ export default async function MerchantBillingPage() {
         </div>
       </div>
 
+      {/* How Pricing Works */}
+      <div className="rounded-lg border p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <HelpCircle className="size-4 text-muted-foreground" />
+          <p className="text-sm font-medium">How Pricing Works</p>
+        </div>
+
+        <div className="space-y-4 text-sm">
+          <div className="flex gap-3">
+            <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">1</div>
+            <div>
+              <p className="font-medium">Pay only when you sell</p>
+              <p className="text-xs text-muted-foreground mt-0.5">We charge a small percentage of your paid orders each month. No sales = no charge.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">2</div>
+            <div>
+              <p className="font-medium">Monthly cap protects you</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Your bill is capped at a maximum amount. Even if you sell NPR 10 lakh, you never pay more than the cap.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">3</div>
+            <div>
+              <p className="font-medium">You pay whichever is lower</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Commission amount OR monthly cap — we always charge the smaller number.</p>
+            </div>
+          </div>
+
+          {/* Example */}
+          <div className="rounded-md bg-muted/50 p-3 mt-2">
+            <p className="text-xs font-medium mb-2">Example (Growth Plan)</p>
+            <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
+              <div>
+                <p>Monthly sales</p>
+                <p className="font-medium text-foreground tabular-nums">NPR 15,000</p>
+              </div>
+              <div>
+                <p>2% commission</p>
+                <p className="font-medium text-foreground tabular-nums">NPR 300</p>
+              </div>
+              <div>
+                <p>You pay</p>
+                <p className="font-semibold text-foreground tabular-nums">NPR 300</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mt-2 pt-2 border-t border-muted">
+              <div>
+                <p>Monthly sales</p>
+                <p className="font-medium text-foreground tabular-nums">NPR 50,000</p>
+              </div>
+              <div>
+                <p>2% commission</p>
+                <p className="font-medium text-foreground tabular-nums">NPR 1,000</p>
+              </div>
+              <div>
+                <p>You pay (capped)</p>
+                <p className="font-semibold text-success tabular-nums">NPR 499</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Available Plans */}
       <div>
         <p className="text-sm font-medium mb-3">Available Plans</p>
-        <div className="grid sm:grid-cols-3 gap-3">
+        <div className="grid gap-3">
           {allPlans.map(plan => {
             const isCurrent = plan.name === limits.planName;
+            const rate = Number(plan.commissionRate);
+            const cap = Number(plan.priceMonthly);
+            const yearly = Number(plan.priceYearly);
+
             return (
-              <div key={plan.id} className={`rounded-lg border p-4 ${isCurrent ? "border-foreground" : ""}`}>
-                <p className="text-sm font-medium">{plan.name}</p>
-                <p className="text-xl font-semibold tabular-nums mt-1">
-                  {Number(plan.priceMonthly) === 0 ? "Free" : (
-                    <>
-                      {Number(plan.commissionRate) > 0 && <span className="text-sm text-muted-foreground font-normal">{plan.commissionRate}% or </span>}
-                      {formatCurrency(Number(plan.priceMonthly), "NPR")}
-                      <span className="text-xs text-muted-foreground font-normal">/mo cap</span>
-                    </>
-                  )}
-                </p>
-                {plan.priceYearly && Number(plan.priceYearly) > 0 && (
-                  <p className="text-xs text-muted-foreground mt-0.5">{formatCurrency(Number(plan.priceYearly), "NPR")}/year (save 17%)</p>
-                )}
-                <ul className="mt-3 space-y-1.5">
+              <div key={plan.id} className={`rounded-lg border p-4 ${isCurrent ? "border-foreground ring-1 ring-foreground" : ""}`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold">{plan.name}</p>
+                      {isCurrent && <span className="text-[10px] bg-foreground text-background px-1.5 py-0.5 rounded">Current</span>}
+                    </div>
+                    {rate > 0 ? (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {rate}% commission · capped at {formatCurrency(cap, "NPR")}/mo
+                        {yearly > 0 && <span> · {formatCurrency(yearly, "NPR")}/yr (save 17%)</span>}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground mt-1">Free forever · no commission</p>
+                    )}
+                  </div>
+                  <p className="text-lg font-semibold tabular-nums">
+                    {cap === 0 ? "Free" : formatCurrency(cap, "NPR")}
+                    {cap > 0 && <span className="text-xs text-muted-foreground font-normal">/mo max</span>}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
                   {(plan.features as string[] || []).map((f, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Check className="size-3 text-foreground shrink-0" /> {f}
-                    </li>
+                    </span>
                   ))}
-                </ul>
-                {isCurrent && <p className="text-[10px] text-muted-foreground mt-3 font-medium">Current plan</p>}
+                </div>
               </div>
             );
           })}
         </div>
-        <p className="text-xs text-muted-foreground mt-3">To upgrade, contact us via eSewa/Khalti or bank transfer. We'll activate your plan within 24 hours.</p>
+        <p className="text-xs text-muted-foreground mt-3">
+          To upgrade, pay via eSewa, Khalti, or bank transfer and contact us. We'll activate your plan within 24 hours.
+        </p>
       </div>
 
       {/* Invoices */}
       {recentInvoices.length > 0 && (
         <div className="rounded-lg border">
-          <div className="p-4 border-b">
+          <div className="flex items-center gap-2 p-4 border-b">
+            <Receipt className="size-4 text-muted-foreground" />
             <p className="text-sm font-medium">Invoices</p>
           </div>
           <div className="divide-y">
             {recentInvoices.map(inv => (
-              <div key={inv.id} className="flex items-center justify-between p-3">
-                <div>
-                  <p className="text-sm font-medium tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {new Date(inv.periodStart).toLocaleDateString("en-US", { month: "long", year: "numeric" })} · {inv.commissionRate}% on {formatCurrency(Number(inv.orderTotal), "NPR")} sales
-                  </p>
+              <div key={inv.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">
+                      {new Date(inv.periodStart).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {inv.orderCount} orders · {formatCurrency(Number(inv.orderTotal), "NPR")} total sales · {inv.commissionRate}% rate
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold tabular-nums">{formatCurrency(Number(inv.finalAmount), "NPR")}</p>
+                    <span className={`text-[10px] ${
+                      inv.status === "paid" ? "text-success" :
+                      inv.status === "waived" ? "text-muted-foreground" :
+                      "text-warning"
+                    }`}>{inv.status}</span>
+                  </div>
                 </div>
-                <span className={`text-[10px] px-2 py-1 rounded ${
-                  inv.status === "paid" ? "bg-success/10 text-success" :
-                  inv.status === "waived" ? "bg-muted text-muted-foreground" :
-                  "bg-warning/10 text-warning"
-                }`}>{inv.status}</span>
+                {inv.status === "pending" && Number(inv.commissionAmount) > Number(inv.capAmount) && (
+                  <p className="text-[10px] text-success mt-1">
+                    Cap saved you {formatCurrency(Number(inv.commissionAmount) - Number(inv.finalAmount), "NPR")} this month
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -151,7 +247,8 @@ export default async function MerchantBillingPage() {
 
       {/* Payment History */}
       <div className="rounded-lg border">
-        <div className="p-4 border-b">
+        <div className="flex items-center gap-2 p-4 border-b">
+          <CreditCard className="size-4 text-muted-foreground" />
           <p className="text-sm font-medium">Payment History</p>
         </div>
         {recentPayments.length > 0 ? (
