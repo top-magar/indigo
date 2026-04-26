@@ -40,6 +40,24 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     router.refresh();
   };
 
+  const handleNewPage = () => {
+    startTransition(async () => {
+      const result = await createPage(site.id);
+      if (result.id) {
+        router.refresh();
+        // Auto-start rename on the new page after refresh
+        setTimeout(() => {
+          setRenamingId(result.id!);
+          setRenameValue("Untitled Page");
+          setTimeout(() => {
+            renameRef.current?.focus();
+            renameRef.current?.select();
+          }, 100);
+        }, 300);
+      }
+    });
+  };
+
   const startRename = (page: EditorPage) => {
     setRenamingId(page.id);
     setRenameValue(page.name);
@@ -74,13 +92,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
         </div>
-        <Button variant="outline" onClick={() => {
-          startTransition(async () => {
-            const result = await createPage(site.id);
-            if (result.error) return;
-            router.refresh();
-          });
-        }}>
+        <Button variant="outline" onClick={handleNewPage} disabled={!!renamingId}>
           <Plus className="size-3.5" /> New Page
         </Button>
       </div>
