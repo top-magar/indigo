@@ -2,14 +2,16 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Search, ExternalLink, MoreHorizontal, Ban, CheckCircle, Trash2, Download } from "lucide-react";
+import { Search, ExternalLink, MoreHorizontal, Ban, CheckCircle, Trash2, Download, RotateCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { formatCurrency } from "@/shared/utils";
-import { toggleMerchantSuspension, deleteMerchant } from "./actions";
+import { toggleMerchantSuspension, deleteMerchant, restoreMerchant } from "./actions";
+import { ConfirmDialog } from "../_components/confirm-dialog";
 
 type Merchant = {
   id: string;
@@ -22,10 +24,11 @@ type Merchant = {
   suspended?: boolean;
 };
 
-export default function MerchantsClient({ merchants, totalRevenue }: { merchants: Merchant[]; totalRevenue: string }) {
+export default function MerchantsClient({ merchants, totalRevenue, deletedMerchants }: { merchants: Merchant[]; totalRevenue: string; deletedMerchants: { id: string; name: string; slug: string; deletedAt: string }[] }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const filtered = merchants.filter(m => m.name.toLowerCase().includes(search.toLowerCase()) || m.slug.toLowerCase().includes(search.toLowerCase()));
   const perPage = 12;
   const totalPages = Math.ceil(filtered.length / perPage);
@@ -35,16 +38,23 @@ export default function MerchantsClient({ merchants, totalRevenue }: { merchants
     startTransition(async () => {
       const result = await toggleMerchantSuspension(id, !currentlySuspended);
       if (result.error) toast.error(result.error);
-      else toast.success(`${name} ${currentlySuspended ? "reactivated" : "suspended"}`);
+      else { toast.success(`${name} ${currentlySuspended ? "reactivated" : "suspended"}`); router.refresh(); }
     });
   };
 
   const handleDelete = (id: string, name: string) => {
-    if (!confirm(`Permanently delete "${name}" and all their data? This cannot be undone.`)) return;
     startTransition(async () => {
       const result = await deleteMerchant(id);
       if (result.error) toast.error(result.error);
-      else toast.success(`${name} deleted`);
+      else { toast.success(`${name} deleted`); router.refresh(); }
+    });
+  };
+
+  const handleRestore = (id: string, name: string) => {
+    startTransition(async () => {
+      const result = await restoreMerchant(id);
+      if (result.error) toast.error(result.error);
+      else { toast.success(`${name} restored`); router.refresh(); }
     });
   };
 
@@ -98,9 +108,13 @@ export default function MerchantsClient({ merchants, totalRevenue }: { merchants
                     {m.suspended ? <><CheckCircle className="size-3.5" /> Reactivate</> : <><Ban className="size-3.5" /> Suspend</>}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleDelete(m.id, m.name)} className="text-destructive">
-                    <Trash2 className="size-3.5" /> Delete
-                  </DropdownMenuItem>
+                  <ConfirmDialog
+                    trigger={<DropdownMenuItem onSelect={e => e.preventDefault()} className="text-destructive"><Trash2 className="size-3.5" /> Delete</DropdownMenuItem>}
+                    title={`Delete ${m.name}?`}
+                    description="This will permanently delete the merchant and all their data including products, orders, and customers. This cannot be undone."
+                    action="Delete merchant"
+                    onConfirm={() => handleDelete(m.id, m.name)}
+                  />
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -151,6 +165,25 @@ export default function MerchantsClient({ merchants, totalRevenue }: { merchants
           <div className="flex gap-1">
             <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous</Button>
             <Button variant="outline" size="sm" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>Next</Button>
+          </div>
+        </div>
+      )}
+
+      {deletedMerchants.length > 0 && (
+        <div className="rounded-lg border border-dashed p-4">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Recently Deleted (restorable for 30 days)</p>
+          <div className="space-y-2">
+            {deletedMerchants.map(d => (
+              <div key={d.id} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground line-through">{d.name}</p>
+                  <p className="text-[10px] text-muted-foreground">Deleted {new Date(d.deletedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => handleRestore(d.id, d.name)} disabled={isPending}>
+                  <RotateCcw className="size-3.5" /> Restore
+                </Button>
+              </div>
+            ))}
           </div>
         </div>
       )}

@@ -28,18 +28,20 @@ export async function assignPlan(input: z.infer<typeof assignPlanSchema>): Promi
   gracePeriodEnd.setDate(gracePeriodEnd.getDate() + 7);
 
   try {
-    // Deactivate existing subscriptions
-    await db.update(subscriptions)
-      .set({ status: "cancelled", updatedAt: now })
-      .where(eq(subscriptions.tenantId, tenantId));
+    await db.transaction(async (tx) => {
+      // Deactivate existing subscriptions
+      await tx.update(subscriptions)
+        .set({ status: "cancelled", updatedAt: now })
+        .where(eq(subscriptions.tenantId, tenantId));
 
-    // Create new subscription
-    await db.insert(subscriptions).values({
-      tenantId, planId, billingCycle,
-      status: "active",
-      currentPeriodStart: now,
-      currentPeriodEnd: periodEnd,
-      gracePeriodEnd,
+      // Create new subscription
+      await tx.insert(subscriptions).values({
+        tenantId, planId, billingCycle,
+        status: "active",
+        currentPeriodStart: now,
+        currentPeriodEnd: periodEnd,
+        gracePeriodEnd,
+      });
     });
 
     revalidatePath("/admin/billing");

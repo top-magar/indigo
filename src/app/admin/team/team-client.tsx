@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreHorizontal, Mail, Clock, UserPlus, Shield, X } from "lucide-react";
 import { toast } from "sonner";
 import { invitePlatformMember, removePlatformMember, changeRole, cancelInvite } from "./actions";
+import { ConfirmDialog } from "../_components/confirm-dialog";
 
 type Member = { id: string; email: string; fullName: string | null; platformRole: string | null; createdAt: string | null };
 type Invite = { id: string; email: string; platformRole: string; status: string; expiresAt: string; createdAt: string };
@@ -17,8 +18,8 @@ const ROLE_LABELS: Record<string, string> = {
   super_admin: "Owner", admin: "Admin", support: "Support", finance: "Finance",
 };
 const ROLE_COLORS: Record<string, string> = {
-  super_admin: "bg-foreground text-background", admin: "bg-blue-100 text-blue-700",
-  support: "bg-emerald-100 text-emerald-700", finance: "bg-amber-100 text-amber-700",
+  super_admin: "bg-foreground text-background", admin: "bg-accent-foreground/10 text-accent-foreground",
+  support: "bg-success/10 text-success", finance: "bg-warning/10 text-warning",
 };
 
 export default function TeamClient({ members, invites, canManage, currentUserId }: {
@@ -38,7 +39,6 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
   };
 
   const handleRemove = (id: string, name: string) => {
-    if (!confirm(`Remove ${name} from the platform team?`)) return;
     startTransition(async () => {
       const result = await removePlatformMember(id);
       if (result.error) toast.error(result.error);
@@ -117,9 +117,13 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
                           Change to {ROLE_LABELS[r]}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuItem onClick={() => handleRemove(m.id, m.fullName || m.email)} className="text-destructive">
-                        Remove
-                      </DropdownMenuItem>
+                      <ConfirmDialog
+                        trigger={<DropdownMenuItem onSelect={e => e.preventDefault()} className="text-destructive">Remove</DropdownMenuItem>}
+                        title={`Remove ${m.fullName || m.email.split("@")[0]}?`}
+                        description="They will lose access to the admin panel immediately."
+                        action="Remove member"
+                        onConfirm={() => handleRemove(m.id, m.fullName || m.email)}
+                      />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}

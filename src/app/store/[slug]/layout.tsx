@@ -64,6 +64,18 @@ export default async function StoreLayout({
   const tenant = await getTenant(slug)
   if (!tenant) notFound()
 
+  // Block suspended stores
+  if ((tenant.settings as Record<string, unknown> | null)?.suspended) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center space-y-2">
+          <p className="text-lg font-semibold">Store Unavailable</p>
+          <p className="text-sm text-muted-foreground">This store is temporarily unavailable.</p>
+        </div>
+      </div>
+    )
+  }
+
   const [cats, cart, homepageLayout] = await Promise.all([
     getCategories(tenant.id),
     retrieveCart(tenant.id),

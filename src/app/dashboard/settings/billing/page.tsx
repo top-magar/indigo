@@ -42,9 +42,9 @@ export default async function MerchantBillingPage() {
               <span className="text-[10px] bg-muted px-2 py-1 rounded">Free Tier</span>
             ) : (
               <span className={`text-[10px] px-2 py-1 rounded ${
-                limits.status === "active" ? "bg-emerald-100 text-emerald-700" :
-                limits.status === "grace" ? "bg-amber-100 text-amber-700" :
-                "bg-red-100 text-red-700"
+                limits.status === "active" ? "bg-success/10 text-success" :
+                limits.status === "grace" ? "bg-warning/10 text-warning" :
+                "bg-destructive/10 text-destructive"
               }`}>{limits.status}</span>
             )}
             {limits.periodEnd && (

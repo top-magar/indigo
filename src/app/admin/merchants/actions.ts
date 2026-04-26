@@ -50,7 +50,10 @@ export async function deleteMerchant(tenantId: string): Promise<{ error?: string
       .from(tenants).where(eq(tenants.id, parsed.data)).limit(1);
     if (!existing) return { error: "Merchant not found" };
 
-    await db.delete(tenants).where(eq(tenants.id, parsed.data));
+    // Soft delete — set deleted_at, can be restored within 30 days
+    await db.update(tenants)
+      .set({ deletedAt: new Date(), updatedAt: new Date() })
+      .where(eq(tenants.id, parsed.data));
 
     logAdminAction({
       actorId: user.id, actorEmail: user.email, action: "merchant.delete",
@@ -60,5 +63,27 @@ export async function deleteMerchant(tenantId: string): Promise<{ error?: string
     return {};
   } catch {
     return { error: "Failed to delete merchant" };
+  }
+}
+
+export async function restoreMerchant(tenantId: string): Promise<{ error?: string }> {
+  const user = await requirePermission("delete_merchants");
+
+  const parsed = uuidSchema.safeParse(tenantId);
+  if (!parsed.success) return { error: "Invalid merchant ID" };
+
+  try {
+    await db.update(tenants)
+      .set({ deletedAt: null, updatedAt: new Date() })
+      .where(eq(tenants.id, parsed.data));
+
+    logAdminAction({
+      actorId: user.id, actorEmail: user.email, action: "merchant.reactivate",
+      targetType: "tenant", targetId: parsed.data,
+    });
+    revalidatePath("/admin/merchants");
+    return {};
+  } catch {
+    return { error: "Failed to restore merchant" };
   }
 }

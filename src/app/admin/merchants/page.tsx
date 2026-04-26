@@ -32,8 +32,18 @@ export default async function MerchantsPage() {
       SELECT tenant_id, count(*) AS product_count
       FROM products GROUP BY tenant_id
     ) p ON p.tenant_id = t.id
+    WHERE t.deleted_at IS NULL
     ORDER BY t.created_at DESC
     LIMIT 100
+  `);
+
+  // Also get recently deleted (for restore)
+  const deletedMerchants = await db.execute<{
+    id: string; name: string; slug: string; deleted_at: string;
+  }>(sql`
+    SELECT id, name, slug, deleted_at FROM tenants
+    WHERE deleted_at IS NOT NULL AND deleted_at > NOW() - INTERVAL '30 days'
+    ORDER BY deleted_at DESC
   `);
 
   const totalRevenue = merchantList.reduce((sum, m) => sum + Number(m.revenue), 0).toString();
@@ -49,5 +59,5 @@ export default async function MerchantsPage() {
     suspended: !!m.settings?.suspended,
   }));
 
-  return <MerchantsClient merchants={serialized} totalRevenue={totalRevenue} />;
+  return <MerchantsClient merchants={serialized} totalRevenue={totalRevenue} deletedMerchants={deletedMerchants.map(d => ({ id: d.id, name: d.name, slug: d.slug, deletedAt: d.deleted_at }))} />;
 }

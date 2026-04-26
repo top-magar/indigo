@@ -58,7 +58,7 @@ export default async function BillingPage() {
         </div>
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">In Grace Period</p>
-          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1 text-amber-600">{graceSubs}</p>
+          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1 text-warning">{graceSubs}</p>
         </div>
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Expired</p>

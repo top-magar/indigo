@@ -94,6 +94,7 @@ export const tenants = pgTable("tenants", {
   // Timestamps
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 }, (table) => ({
   slugIdx: index("tenants_slug_idx").on(table.slug),
 }));

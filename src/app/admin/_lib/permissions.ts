@@ -39,10 +39,12 @@ export function getPermissions(role: PlatformRole): Permission[] {
 /** Get current platform user with role. Cached per request. */
 export const getPlatformUser = cache(async () => {
   const user = await requireUser();
-  if (user.role !== "platform_admin") redirect("/dashboard");
 
-  const [dbUser] = await db.select({ platformRole: users.platformRole })
+  const [dbUser] = await db.select({ platformRole: users.platformRole, role: users.role })
     .from(users).where(eq(users.id, user.id)).limit(1);
+
+  // Allow access if role is platform_admin OR if they have a platformRole
+  if (user.role !== "platform_admin" && !dbUser?.platformRole) redirect("/dashboard");
 
   const platformRole = (dbUser?.platformRole as PlatformRole) || "support";
   return { ...user, platformRole, permissions: getPermissions(platformRole) };

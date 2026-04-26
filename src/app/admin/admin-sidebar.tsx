@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield, UserCog } from "lucide-react";
+import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield, UserCog, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/infrastructure/supabase/client";
 import { cn } from "@/shared/utils";
 import type { Permission } from "./_lib/types";
@@ -15,10 +18,13 @@ const NAV = [
   { href: "/admin/settings", icon: Settings, label: "Settings", permission: "view_settings" as Permission },
 ];
 
-export function AdminSidebar({ user, permissions }: { user: { fullName: string | null; email: string }; permissions: Permission[] }) {
-  const pathname = usePathname();
+function SidebarContent({ user, permissions, pathname, onNavigate }: {
+  user: { fullName: string | null; email: string };
+  permissions: Permission[];
+  pathname: string;
+  onNavigate?: () => void;
+}) {
   const router = useRouter();
-
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -26,7 +32,7 @@ export function AdminSidebar({ user, permissions }: { user: { fullName: string |
   };
 
   return (
-    <aside className="w-56 border-r flex flex-col shrink-0">
+    <>
       <div className="p-4">
         <div className="flex items-center gap-2.5">
           <div className="size-8 rounded-lg bg-foreground text-background flex items-center justify-center">
@@ -46,11 +52,10 @@ export function AdminSidebar({ user, permissions }: { user: { fullName: string |
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 text-[13px] rounded-md transition-colors",
-                active
-                  ? "bg-muted font-medium text-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                active ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
               <item.icon className={cn("size-4", active && "text-foreground")} />
@@ -65,7 +70,7 @@ export function AdminSidebar({ user, permissions }: { user: { fullName: string |
           <LogOut className="size-3.5" /> Sign out
         </button>
         <div className="flex items-center gap-2.5 px-3">
-          <div className="size-7 rounded-full bg-gradient-to-br from-violet-200 to-violet-300 flex items-center justify-center text-[10px] font-semibold text-violet-700">
+          <div className="size-7 rounded-full bg-muted flex items-center justify-center text-[10px] font-semibold text-muted-foreground">
             {(user.fullName?.[0] || user.email[0]).toUpperCase()}
           </div>
           <div className="min-w-0">
@@ -74,6 +79,36 @@ export function AdminSidebar({ user, permissions }: { user: { fullName: string |
           </div>
         </div>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export function AdminSidebar({ user, permissions }: { user: { fullName: string | null; email: string }; permissions: Permission[] }) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex w-56 border-r flex-col shrink-0">
+        <SidebarContent user={user} permissions={permissions} pathname={pathname} />
+      </aside>
+
+      {/* Mobile header + sheet */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center gap-3 border-b bg-background px-4 py-3">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon-sm"><Menu className="size-4" /></Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-56 p-0 flex flex-col">
+            <SidebarContent user={user} permissions={permissions} pathname={pathname} onNavigate={() => setOpen(false)} />
+          </SheetContent>
+        </Sheet>
+        <div className="flex items-center gap-2">
+          <Shield className="size-4" />
+          <p className="text-sm font-semibold tracking-tight">Indigo Admin</p>
+        </div>
+      </div>
+    </>
   );
 }

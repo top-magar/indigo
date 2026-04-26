@@ -32,9 +32,19 @@ export default async function InviteAcceptPage({ searchParams }: { searchParams:
       .from(users).where(eq(users.id, user.id)).limit(1);
 
     if (existingUser) {
+      // Don't overwrite tenant_id — user may be a merchant too
       await db.update(users)
-        .set({ role: "platform_admin", platformRole: invite.platformRole, tenantId: null, updatedAt: new Date() })
+        .set({ platformRole: invite.platformRole, updatedAt: new Date() })
         .where(eq(users.id, user.id));
+
+      // Only set role to platform_admin if they don't have a tenant (pure platform user)
+      const [fullUser] = await db.select({ tenantId: users.tenantId })
+        .from(users).where(eq(users.id, user.id)).limit(1);
+      if (!fullUser?.tenantId) {
+        await db.update(users)
+          .set({ role: "platform_admin" })
+          .where(eq(users.id, user.id));
+      }
     }
 
     await db.update(platformInvites)

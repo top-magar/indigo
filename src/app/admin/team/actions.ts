@@ -77,9 +77,8 @@ export async function removePlatformMember(memberId: string): Promise<{ error?: 
   if (!member) return { error: "Member not found" };
   if (member.platformRole === "super_admin") return { error: "Cannot remove the owner" };
 
-  await db.update(users)
-    .set({ role: "owner", platformRole: null, tenantId: null })
-    .where(eq(users.id, memberId));
+  // Remove platform access — delete the user row entirely since they have no tenant
+  await db.delete(users).where(eq(users.id, memberId));
 
   logAdminAction({
     actorId: user.id, actorEmail: user.email, action: "settings.update",
@@ -90,17 +89,24 @@ export async function removePlatformMember(memberId: string): Promise<{ error?: 
   return {};
 }
 
-export async function changeRole(memberId: string, newRole: "admin" | "support" | "finance"): Promise<{ error?: string }> {
+const changeRoleSchema = z.object({
+  memberId: z.string().uuid(),
+  newRole: z.enum(["admin", "support", "finance"]),
+});
+
+export async function changeRole(memberId: string, newRole: string): Promise<{ error?: string }> {
   const user = await requirePermission("manage_team");
+  const parsed = changeRoleSchema.safeParse({ memberId, newRole });
+  if (!parsed.success) return { error: "Invalid input" };
 
   const [member] = await db.select({ id: users.id, platformRole: users.platformRole })
-    .from(users).where(eq(users.id, memberId)).limit(1);
+    .from(users).where(eq(users.id, parsed.data.memberId)).limit(1);
   if (!member) return { error: "Member not found" };
   if (member.platformRole === "super_admin") return { error: "Cannot change owner role" };
 
   await db.update(users)
-    .set({ platformRole: newRole, updatedAt: new Date() })
-    .where(eq(users.id, memberId));
+    .set({ platformRole: parsed.data.newRole, updatedAt: new Date() })
+    .where(eq(users.id, parsed.data.memberId));
 
   revalidatePath("/admin/team");
   return {};
@@ -108,7 +114,9 @@ export async function changeRole(memberId: string, newRole: "admin" | "support" 
 
 export async function cancelInvite(inviteId: string): Promise<{ error?: string }> {
   const user = await requirePermission("manage_team");
-  await db.delete(platformInvites).where(eq(platformInvites.id, inviteId));
+  const parsed = z.string().uuid().safeParse(inviteId);
+  if (!parsed.success) return { error: "Invalid invite ID" };
+  await db.delete(platformInvites).where(eq(platformInvites.id, parsed.data));
   revalidatePath("/admin/team");
   return {};
 }

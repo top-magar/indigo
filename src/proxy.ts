@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/callback", "/invite", "/api/health", "/api/revalidate", "/api/inngest"];
+const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/callback", "/invite", "/suspended", "/api/health", "/api/revalidate", "/api/inngest"];
 const STORE_PREFIX = "/store/";
 const API_STORE_PREFIX = "/api/store/";
 
@@ -84,10 +84,24 @@ export async function proxy(request: NextRequest) {
     // Read role from DB (not user_metadata which is client-writable)
     const { data: dbUser } = await supabase
       .from("users")
-      .select("role")
+      .select("role, tenant_id, platform_role")
       .eq("id", user.id)
       .single();
     const role = dbUser?.role ?? "owner";
+    const hasPlatformAccess = role === "platform_admin" || !!dbUser?.platform_role;
+
+    // Check if merchant is suspended (block dashboard access)
+    if (!hasPlatformAccess && dbUser?.tenant_id && pathname.startsWith("/dashboard")) {
+      const { data: tenant } = await supabase
+        .from("tenants")
+        .select("settings")
+        .eq("id", dbUser.tenant_id)
+        .single();
+      if ((tenant?.settings as Record<string, unknown>)?.suspended) {
+        const suspendedUrl = new URL("/suspended", request.url);
+        return NextResponse.redirect(suspendedUrl);
+      }
+    }
 
     // Admin-only routes require owner or admin role
     if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
@@ -96,16 +110,19 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // Platform admin routes require platform_admin role
+    // Platform admin routes require platform_admin role OR platform_role
     if (PLATFORM_ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
-      if (role !== "platform_admin") {
+      if (!hasPlatformAccess) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }
 
     // Redirect authenticated users away from auth pages (role-based routing)
     if (pathname === "/login" || pathname === "/signup") {
-      const destination = role === "platform_admin" ? "/admin" : "/dashboard";
+      // If user has platform access AND a tenant, default to admin (they can navigate to dashboard)
+      // If user has platform access but no tenant, go to admin
+      // If user has no platform access, go to dashboard
+      const destination = hasPlatformAccess ? "/admin" : "/dashboard";
       return NextResponse.redirect(new URL(destination, request.url));
     }
   }
