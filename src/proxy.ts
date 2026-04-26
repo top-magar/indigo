@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
   const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost";
 
   // Custom domain routing — resolve to store page
-  if (hostname !== platformDomain && hostname !== "localhost" && !hostname.endsWith(`.${platformDomain}`)) {
+  if (hostname !== platformDomain && hostname !== "localhost" && !hostname.endsWith(`.${platformDomain}`) && !hostname.endsWith(".vercel.app")) {
     const storeUrl = request.nextUrl.clone();
     // Rewrite custom domain requests to /store/_custom?domain=xxx&path=yyy
     storeUrl.pathname = `/store/_custom`;
