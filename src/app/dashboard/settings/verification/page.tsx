@@ -23,8 +23,8 @@ export default async function VerificationPage() {
 
       {/* Status banner */}
       {kyc?.status === "verified" && (
-        <div className="rounded-lg bg-success/10 p-4 flex items-start gap-3">
-          <ShieldCheck className="size-5 text-success shrink-0 mt-0.5" />
+        <div className="rounded-lg bg-success/10 p-4 flex items-start gap-3" role="status">
+          <ShieldCheck className="size-5 text-success shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-success">Store Verified</p>
             <p className="text-xs text-success/80">Your store is verified and live. Verified on {kyc.verifiedAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.</p>
@@ -33,8 +33,8 @@ export default async function VerificationPage() {
       )}
 
       {kyc?.status === "pending" && (
-        <div className="rounded-lg bg-warning/10 p-4 flex items-start gap-3">
-          <Clock className="size-5 text-warning shrink-0 mt-0.5" />
+        <div className="rounded-lg bg-warning/10 p-4 flex items-start gap-3" role="status">
+          <Clock className="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-warning">Verification Pending</p>
             <p className="text-xs text-warning/80">We're reviewing your submission. This usually takes 1-2 business days.</p>
@@ -43,11 +43,12 @@ export default async function VerificationPage() {
       )}
 
       {kyc?.status === "rejected" && (
-        <div className="rounded-lg bg-destructive/10 p-4 flex items-start gap-3">
-          <XCircle className="size-5 text-destructive shrink-0 mt-0.5" />
+        <div className="rounded-lg bg-destructive/10 p-4 flex items-start gap-3" role="alert">
+          <XCircle className="size-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-destructive">Verification Rejected</p>
             <p className="text-xs text-destructive/80">{kyc.rejectionReason || "Please update your information and resubmit."}</p>
+            <p className="text-xs text-muted-foreground mt-1">Most issues are quick to fix — check your details below and resubmit.</p>
           </div>
         </div>
       )}
@@ -96,7 +97,8 @@ export default async function VerificationPage() {
         </div>
       )}
 
-      {/* Nepal E-Commerce Act 2081 */}
+      {/* Nepal E-Commerce Act 2081 — hide when verified */}
+      {kyc?.status !== "verified" && (
       <div className="rounded-lg bg-muted/50 p-4">
         <p className="text-xs font-medium mb-2">Nepal E-Commerce Act 2081 (2025)</p>
         <p className="text-xs text-muted-foreground">
@@ -106,11 +108,12 @@ export default async function VerificationPage() {
           Non-compliance may result in fines of NPR 20,000 to NPR 500,000.
         </p>
         <div className="flex flex-wrap gap-3 mt-2">
-          <a href="https://giwmscdnone.gov.np/media/files/E-Commerce%20Act%2C%202081_yr7k9o5.pdf" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Official Act (PDF) →</a>
-          <a href="https://shrigo.com/blogs/1175-e-commerce-registration-process-in-nepal-2025-everything-you-need-to-know" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Registration guide →</a>
-          <a href="https://notarynepal.com/blog/e-commerce-act-nepal-2025" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Key rules & penalties →</a>
+          <a href="https://giwmscdnone.gov.np/media/files/E-Commerce%20Act%2C%202081_yr7k9o5.pdf" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Official Act (PDF) <span className="sr-only">(opens in new tab)</span>→</a>
+          <a href="https://shrigo.com/blogs/1175-e-commerce-registration-process-in-nepal-2025-everything-you-need-to-know" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Registration guide <span className="sr-only">(opens in new tab)</span>→</a>
+          <a href="https://notarynepal.com/blog/e-commerce-act-nepal-2025" target="_blank" rel="noopener noreferrer" className="text-xs text-foreground underline hover:no-underline">Key rules & penalties <span className="sr-only">(opens in new tab)</span>→</a>
         </div>
       </div>
+      )}
 
       {kyc?.status !== "verified" && kyc?.status !== "pending" && (
         <VerificationForm existing={kyc ? {
