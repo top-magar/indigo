@@ -199,8 +199,9 @@ export async function exportCustomers(filters: {
             .order("created_at", { ascending: false });
 
         if (filters.search) {
-            query = query.or(
-                `email.ilike.%${filters.search}%,first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%`
+            const s = filters.search.replace(/[%_'"\\,().!|&:*]/g, '');
+            if (s) query = query.or(
+                `email.ilike.%${s}%,first_name.ilike.%${s}%,last_name.ilike.%${s}%`
             );
         }
 

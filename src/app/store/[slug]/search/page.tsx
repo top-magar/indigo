@@ -128,13 +128,14 @@ export default function SearchPage() {
 
     // Apply search query — full-text search with ILIKE fallback for short queries
     if (filters.query.trim()) {
-      const q = filters.query.trim()
-      if (q.length <= 2) {
+      const q = filters.query.trim().replace(/[%_'"\\,().!|&:*]/g, '')
+      if (!q) { /* skip empty after sanitize */ }
+      else if (q.length <= 2) {
         query = query.or(
           `name.ilike.%${q}%,description.ilike.%${q}%`
         )
       } else {
-        const tsQuery = q.split(/\s+/).map((w) => `${w}:*`).join(" & ")
+        const tsQuery = q.split(/\s+/).filter(Boolean).map((w) => `${w}:*`).join(" & ")
         query = query.textSearch("search_vector", tsQuery)
       }
     }

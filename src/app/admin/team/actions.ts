@@ -73,6 +73,7 @@ export async function invitePlatformMember(input: z.infer<typeof inviteSchema>):
 
 export async function removePlatformMember(memberId: string): Promise<{ error?: string }> {
   const user = await requirePermission("manage_team");
+  if (memberId === user.id) return { error: "Cannot remove yourself" };
 
   const [member] = await db.select({ id: users.id, email: users.email, platformRole: users.platformRole })
     .from(users).where(eq(users.id, memberId)).limit(1);
@@ -100,6 +101,7 @@ export async function changeRole(memberId: string, newRole: string): Promise<{ e
   const user = await requirePermission("manage_team");
   const parsed = changeRoleSchema.safeParse({ memberId, newRole });
   if (!parsed.success) return { error: "Invalid input" };
+  if (parsed.data.memberId === user.id) return { error: "Cannot change your own role" };
 
   const [member] = await db.select({ id: users.id, platformRole: users.platformRole })
     .from(users).where(eq(users.id, parsed.data.memberId)).limit(1);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import DOMPurify from "isomorphic-dompurify";
 import { useRouter } from "next/navigation";
 import {
     Loader2,
@@ -572,7 +573,7 @@ You can use HTML for formatting. For example:
                                     <div className="rounded-lg border bg-card p-4 max-h-[200px] overflow-y-auto">
                                         <div 
                                             className="prose prose-sm max-w-none"
-                                            dangerouslySetInnerHTML={{ __html: formData.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/on\w+="[^"]*"/gi, '').replace(/on\w+='[^']*'/gi, '') }}
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formData.content) }}
                                         />
                                     </div>
                                 </div>

@@ -7,7 +7,8 @@ function esc(s: string): string {
 }
 
 function cssify(styles: Record<string, unknown>): string {
-  return Object.entries(styles).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${String(v).replace(/[;"<>]/g, '')}`).join(';');
+  const UNSAFE_CSS = /expression|javascript:|url\s*\(|behavior:|\\-moz\\-binding|@import|@charset/i;
+  return Object.entries(styles).filter(([, v]) => v !== undefined && v !== '').filter(([, v]) => !UNSAFE_CSS.test(String(v))).map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${String(v).replace(/[;"<>{}\\]/g, '')}`).join(';');
 }
 
 const LAYOUT_KEYS = new Set(['display', 'flexDirection', 'gap', 'rowGap', 'columnGap', 'flexWrap', 'alignItems', 'justifyContent', 'justifyItems', 'gridTemplateColumns', 'gridTemplateRows']);

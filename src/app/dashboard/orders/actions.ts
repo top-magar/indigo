@@ -129,8 +129,9 @@ export async function exportOrders(filters: {
 
         if (filters.status) query = query.eq("status", filters.status);
         if (filters.search) {
-            query = query.or(
-                `order_number.ilike.%${filters.search}%,customer_name.ilike.%${filters.search}%,customer_email.ilike.%${filters.search}%`
+            const s = filters.search.replace(/[%_'"\\,().!|&:*]/g, '');
+            if (s) query = query.or(
+                `order_number.ilike.%${s}%,customer_name.ilike.%${s}%,customer_email.ilike.%${s}%`
             );
         }
 

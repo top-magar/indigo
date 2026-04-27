@@ -5,6 +5,7 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get("code")
   const next = requestUrl.searchParams.get("next") ?? "/dashboard"
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard"
 
   if (code) {
     const supabase = await createClient()
@@ -35,11 +36,11 @@ export async function GET(request: Request) {
 
         // Dual-role users: respect the `next` param, default to admin
         if (hasPlatformAccess) {
-          return NextResponse.redirect(`${requestUrl.origin}${next === "/dashboard" ? "/admin" : next}`)
+          return NextResponse.redirect(`${requestUrl.origin}${safeNext === "/dashboard" ? "/admin" : safeNext}`)
         }
       }
 
-      return NextResponse.redirect(`${requestUrl.origin}${next}`)
+      return NextResponse.redirect(`${requestUrl.origin}${safeNext}`)
     }
   }
 

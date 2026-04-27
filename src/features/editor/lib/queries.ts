@@ -282,7 +282,7 @@ export async function setHomepage(projectId: string, pageId: string) {
   if (!project) return;
   // Unset all pages, then set the target
   await db.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
-  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(eq(editorPages.id, pageId));
+  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.projectId, projectId)));
   revalidatePath('/dashboard/pages');
 }
 

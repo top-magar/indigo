@@ -19,13 +19,14 @@ export const GET = withRateLimit("visualEditor", async function GET(request: Req
   const req = request as NextRequest;
   const searchParams = req.nextUrl.searchParams
   const redirectPath = searchParams.get("redirect")
+  const safePath = redirectPath?.startsWith("/") && !redirectPath.startsWith("//") ? redirectPath : "/"
 
   // Disable Draft Mode by removing the cookie
   const draft = await draftMode()
   draft.disable()
 
   // Redirect to the requested path or homepage
-  redirect(redirectPath || "/")
+  redirect(safePath)
 })
 
 /**
