@@ -354,9 +354,9 @@
   --ds-teal-1000: hsl(170 40% 15%);
 
   /* Semantic Colors — wired to Geist scales */
-  --success: var(--ds-green-700);
+  --success: var(--ds-green-900);
   --success-foreground: hsl(0 0% 100%);
-  --warning: var(--ds-amber-700);
+  --warning: var(--ds-amber-900);
   --warning-foreground: var(--ds-gray-900);
   --info: var(--ds-blue-700);
   --info-foreground: hsl(0 0% 100%);
@@ -373,10 +373,10 @@
   --secondary: var(--ds-gray-100);
   --secondary-foreground: var(--ds-gray-900);
   --muted: var(--ds-gray-100);
-  --muted-foreground: var(--ds-gray-800);
+  --muted-foreground: var(--ds-gray-900);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
-  --destructive: var(--ds-red-700);
+  --destructive: var(--ds-red-800);
   --destructive-foreground: var(--ds-background-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
@@ -522,9 +522,9 @@
   --ds-focus: var(--ds-blue-900);
 
   /* Semantic Colors — Dark mode */
-  --success: var(--ds-green-700);
+  --success: var(--ds-green-500);
   --success-foreground: var(--ds-gray-1000);
-  --warning: var(--ds-amber-700);
+  --warning: var(--ds-amber-500);
   --warning-foreground: var(--ds-gray-1000);
   --info: var(--ds-blue-700);
   --info-foreground: var(--ds-gray-1000);
@@ -541,7 +541,7 @@
   --secondary: var(--ds-gray-200);
   --secondary-foreground: var(--ds-gray-1000);
   --muted: var(--ds-gray-200);
-  --muted-foreground: var(--ds-gray-800);
+  --muted-foreground: var(--ds-gray-700);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-600);
@@ -665,9 +665,9 @@
   --ds-teal-800: hsl(170 55% 30%);
   --ds-teal-900: hsl(170 100% 39%);
   --ds-teal-1000: hsl(170 40% 15%);
-  --success: var(--ds-green-700);
+  --success: var(--ds-green-900);
   --success-foreground: hsl(0 0% 100%);
-  --warning: var(--ds-amber-700);
+  --warning: var(--ds-amber-900);
   --warning-foreground: var(--ds-gray-900);
   --info: var(--ds-blue-700);
   --info-foreground: hsl(0 0% 100%);
@@ -682,10 +682,10 @@
   --secondary: var(--ds-gray-100);
   --secondary-foreground: var(--ds-gray-900);
   --muted: var(--ds-gray-100);
-  --muted-foreground: var(--ds-gray-800);
+  --muted-foreground: var(--ds-gray-900);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
-  --destructive: var(--ds-red-700);
+  --destructive: var(--ds-red-800);
   --destructive-foreground: var(--ds-background-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
@@ -815,16 +815,16 @@
   --secondary: hsl(0 0% 96%);
   --secondary-foreground: hsl(0 0% 15%);
   --muted: hsl(0 0% 96%);
-  --muted-foreground: hsl(0 0% 40%);
+  --muted-foreground: hsl(0 0% 35%);
   --accent: hsl(0 0% 93%);
   --accent-foreground: hsl(0 0% 9%);
-  --destructive: hsl(0 72% 51%);
+  --destructive: hsl(0 72% 46%);
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(0 0% 90%);
   --input: hsl(0 0% 85%);
   --ring: hsl(0 0% 9%);
-  --success: hsl(142 71% 45%);
-  --warning: hsl(38 92% 50%);
+  --success: hsl(142 50% 32%);
+  --warning: hsl(30 100% 32%);
   color: hsl(0 0% 9%);
   background-color: hsl(0 0% 100%);
   color-scheme: light;

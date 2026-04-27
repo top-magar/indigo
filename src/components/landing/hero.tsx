@@ -86,7 +86,7 @@ export function Hero() {
                             </Button>
                         </motion.div>
 
-                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white/25">
+                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white/50">
                             <span>No credit card</span>
                             <span className="w-px h-3 bg-white/10" />
                             <span>Free forever plan</span>
@@ -112,13 +112,13 @@ export function Hero() {
                                 <div className="flex-1 flex justify-center">
                                     <div className="flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                        <span className="text-[10px] text-white/30 font-mono">yourstore.indigo.store</span>
+                                        <span className="text-[10px] text-white/55 font-mono">yourstore.indigo.store</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="p-5 space-y-4">
                                 <div>
-                                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Dashboard</p>
+                                    <p className="text-[10px] text-white/50 uppercase tracking-widest">Dashboard</p>
                                     <p className="text-sm font-medium text-white/70 mt-1">Good morning, Aarati ✨</p>
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
@@ -128,7 +128,7 @@ export function Hero() {
                                         { label: "Visitors", value: "1,247", change: "+23%", color: "text-emerald-400" },
                                     ].map((s) => (
                                         <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-                                            <p className="text-[9px] uppercase tracking-wider text-white/20">{s.label}</p>
+                                            <p className="text-[9px] uppercase tracking-wider text-white/50">{s.label}</p>
                                             <p className="text-base font-semibold text-white/80 mt-1 tabular-nums">{s.value}</p>
                                             <span className={`text-[10px] ${s.color}`}>{s.change}</span>
                                         </div>
@@ -136,8 +136,8 @@ export function Hero() {
                                 </div>
                                 <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
                                     <div className="flex items-center justify-between mb-3">
-                                        <p className="text-[10px] text-white/30 uppercase tracking-wider">Revenue this week</p>
-                                        <p className="text-[10px] text-white/20">Rs 329,400</p>
+                                        <p className="text-[10px] text-white/55 uppercase tracking-wider">Revenue this week</p>
+                                        <p className="text-[10px] text-white/50">Rs 329,400</p>
                                     </div>
                                     <div className="flex items-end gap-1 h-20">
                                         {[35, 55, 40, 70, 50, 85, 65, 78, 90, 68, 82, 95, 72, 88].map((h, i) => (
@@ -152,16 +152,16 @@ export function Hero() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <p className="text-[10px] text-white/20 uppercase tracking-wider">Recent orders</p>
+                                    <p className="text-[10px] text-white/50 uppercase tracking-wider">Recent orders</p>
                                     {[
                                         { name: "Aarati S.", amount: "Rs 2,450", method: "eSewa", status: "bg-emerald-500" },
                                         { name: "Bikash K.", amount: "Rs 890", method: "Khalti", status: "bg-amber-500" },
                                         { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
                                     ].map((o) => (
                                         <div key={o.name} className="flex items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
-                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white/30">{o.name.charAt(0)}</div>
+                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white/55">{o.name.charAt(0)}</div>
                                             <p className="text-[11px] font-medium text-white/50 flex-1">{o.name}</p>
-                                            <span className="text-[9px] text-white/20 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
+                                            <span className="text-[9px] text-white/50 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
                                             <p className="text-[11px] font-medium text-white/50 tabular-nums">{o.amount}</p>
                                             <div className={`w-1.5 h-1.5 rounded-full ${o.status}`} />
                                         </div>
@@ -181,7 +181,7 @@ export function Hero() {
                                 </div>
                                 <div>
                                     <p className="text-[11px] font-medium text-white/70">New order received</p>
-                                    <p className="text-[10px] text-white/30">Rs 3,200 via eSewa · just now</p>
+                                    <p className="text-[10px] text-white/55">Rs 3,200 via eSewa · just now</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -218,7 +218,7 @@ export function Hero() {
                                 <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums">
                                     {s.prefix}<NumberTicker value={s.value} decimalPlaces={s.decimals ?? 0} className="text-white/80" />{s.suffix}
                                 </p>
-                                <p className="text-xs text-white/25 mt-1">{s.label}</p>
+                                <p className="text-xs text-white/50 mt-1">{s.label}</p>
                             </div>
                         ))}
                     </div>

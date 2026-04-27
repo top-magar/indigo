@@ -57,7 +57,7 @@ export default async function MerchantBillingPage() {
           <p className="text-sm font-medium text-success">
             Your cap saved you {formatCurrency(savings, "NPR")} this month
           </p>
-          <p className="text-xs text-success/80 mt-0.5">
+          <p className="text-xs text-success mt-0.5">
             You processed {latestInvoice.orderCount} orders worth {formatCurrency(Number(latestInvoice.orderTotal), "NPR")} — commission would be {formatCurrency(Number(latestInvoice.commissionAmount), "NPR")} but you only pay {formatCurrency(Number(latestInvoice.finalAmount), "NPR")}.
           </p>
         </div>

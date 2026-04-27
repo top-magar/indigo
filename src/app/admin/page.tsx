@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
         ].map(m => (
           <div key={m.label} className="rounded-lg border p-4">
             <p className="text-xs text-muted-foreground">{m.label}</p>
-            <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1">{m.value}</p>
+            <p className="text-lg font-semibold tracking-tight tabular-nums mt-1">{m.value}</p>
             {m.sub && <p className="text-xs text-muted-foreground mt-1">{m.sub}</p>}
           </div>
         ))}

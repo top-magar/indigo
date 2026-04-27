@@ -29,7 +29,7 @@ export default async function VerificationPage() {
           <ShieldCheck className="size-4 text-success shrink-0" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-success">Verified</p>
-            <p className="text-xs text-success/80">
+            <p className="text-xs text-success">
               Your store is live. Verified {kyc.verifiedAt?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
             </p>
           </div>
@@ -41,7 +41,7 @@ export default async function VerificationPage() {
           <Clock className="size-4 text-warning shrink-0" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-warning">Under Review</p>
-            <p className="text-xs text-warning/80">We're reviewing your submission. This usually takes 1–2 business days.</p>
+            <p className="text-xs text-warning">We're reviewing your submission. This usually takes 1–2 business days.</p>
           </div>
         </div>
       )}
@@ -51,7 +51,7 @@ export default async function VerificationPage() {
           <AlertCircle className="size-4 text-destructive shrink-0" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-destructive">Changes Needed</p>
-            <p className="text-xs text-destructive/80">{kyc.rejectionReason || "Please update your details and resubmit."}</p>
+            <p className="text-xs text-destructive">{kyc.rejectionReason || "Please update your details and resubmit."}</p>
           </div>
         </div>
       )}
@@ -88,7 +88,7 @@ export default async function VerificationPage() {
       )}
 
       {/* Fine print */}
-      <p className="text-[10px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Your PAN number is encrypted and only visible to platform administrators. 
         All online sellers in Nepal must verify their identity under the <ECommerceActLink />. 
         Non-compliance may result in fines up to NPR 500,000.

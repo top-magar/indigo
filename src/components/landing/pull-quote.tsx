@@ -29,7 +29,7 @@ export function PullQuote() {
                     </div>
                     <div className="text-left">
                         <p className="text-sm font-medium text-white/70">Bikash Thapa</p>
-                        <p className="text-xs text-white/30">CEO, Kathmandu Bazaar</p>
+                        <p className="text-xs text-white/55">CEO, Kathmandu Bazaar</p>
                     </div>
                 </motion.div>
             </div>
