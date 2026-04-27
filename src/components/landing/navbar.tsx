@@ -108,7 +108,7 @@ export function Navbar() {
                                             "inline-flex items-center gap-1 text-xs px-3.5 py-1.5 rounded-full transition-colors",
                                             isScrolled
                                                 ? "text-muted-foreground hover:text-foreground hover:bg-background"
-                                                : "text-white/50 hover:text-white hover:bg-white/[0.08]"
+                                                : "text-white-500 hover:text-white hover:bg-white/[0.08]"
                                         )}
                                     >
                                         {label}
@@ -147,7 +147,7 @@ export function Navbar() {
                                         "text-xs px-3.5 py-1.5 rounded-full transition-colors",
                                         isScrolled
                                             ? "text-muted-foreground hover:text-foreground hover:bg-background"
-                                            : "text-white/50 hover:text-white hover:bg-white/[0.08]"
+                                            : "text-white-500 hover:text-white hover:bg-white/[0.08]"
                                     )}
                                 >
                                     {label}
@@ -164,7 +164,7 @@ export function Navbar() {
                                 "text-xs transition-colors",
                                 isScrolled
                                     ? "text-muted-foreground hover:text-foreground"
-                                    : "text-white/50 hover:text-white"
+                                    : "text-white-500 hover:text-white"
                             )}
                         >
                             Log in

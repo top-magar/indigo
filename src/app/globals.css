@@ -49,6 +49,30 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
 
+  /* White Opacity Scale (inspired by Wedges) */
+  --color-white-50: rgba(255, 255, 255, 0.05);
+  --color-white-100: rgba(255, 255, 255, 0.1);
+  --color-white-200: rgba(255, 255, 255, 0.2);
+  --color-white-300: rgba(255, 255, 255, 0.3);
+  --color-white-400: rgba(255, 255, 255, 0.4);
+  --color-white-500: rgba(255, 255, 255, 0.5);
+  --color-white-600: rgba(255, 255, 255, 0.6);
+  --color-white-700: rgba(255, 255, 255, 0.8);
+  --color-white-800: rgba(255, 255, 255, 0.9);
+  --color-white-900: #FFFFFF;
+
+  /* Black Opacity Scale */
+  --color-black-50: rgba(0, 0, 0, 0.05);
+  --color-black-100: rgba(0, 0, 0, 0.1);
+  --color-black-200: rgba(0, 0, 0, 0.2);
+  --color-black-300: rgba(0, 0, 0, 0.3);
+  --color-black-400: rgba(0, 0, 0, 0.4);
+  --color-black-500: rgba(0, 0, 0, 0.5);
+  --color-black-600: rgba(0, 0, 0, 0.6);
+  --color-black-700: rgba(0, 0, 0, 0.8);
+  --color-black-800: rgba(0, 0, 0, 0.9);
+  --color-black-900: #000000;
+
   /* Gray Scale */
   --color-ds-gray-100: var(--ds-gray-100);
   --color-ds-gray-200: var(--ds-gray-200);

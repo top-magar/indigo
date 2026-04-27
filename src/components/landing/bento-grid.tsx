@@ -55,13 +55,13 @@ export function BentoGrid() {
                     {cards.map((card) => (
                         <WobbleCard key={card.title} containerClassName={`${card.span} ${card.containerClassName}`}>
                             <div className="max-w-xs">
-                                <card.icon className="w-5 h-5 text-white/70 mb-4" />
+                                <card.icon className="w-5 h-5 text-white-700 mb-4" />
                                 <h3 className="text-lg font-semibold text-white mb-2">{card.title}</h3>
                                 <p className="text-sm text-neutral-200 leading-relaxed">{card.description}</p>
                                 {card.features && (
                                     <div className="flex flex-wrap gap-2 mt-4">
                                         {card.features.map((f) => (
-                                            <span key={f} className="px-3 py-1.5 rounded-full bg-white/10 text-xs font-medium text-white/80">
+                                            <span key={f} className="px-3 py-1.5 rounded-full bg-white-100 text-xs font-medium text-white-700">
                                                 {f}
                                             </span>
                                         ))}

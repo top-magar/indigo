@@ -15,7 +15,7 @@ export function PullQuote() {
             <div className="relative max-w-4xl mx-auto px-6 text-center">
                 <TextGenerateEffect
                     words="We went from zero to 200 orders a day in three months. Indigo made e-commerce possible for us in a market where no one else was building."
-                    className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-snug text-white/90"
+                    className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-snug text-white-800"
                 />
                 <motion.div
                     className="mt-8 flex items-center justify-center gap-3"
@@ -28,8 +28,8 @@ export function PullQuote() {
                         B
                     </div>
                     <div className="text-left">
-                        <p className="text-sm font-medium text-white/70">Bikash Thapa</p>
-                        <p className="text-xs text-white/55">CEO, Kathmandu Bazaar</p>
+                        <p className="text-sm font-medium text-white-700">Bikash Thapa</p>
+                        <p className="text-xs text-white-500">CEO, Kathmandu Bazaar</p>
                     </div>
                 </motion.div>
             </div>

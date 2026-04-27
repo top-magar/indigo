@@ -15,7 +15,7 @@ export function CTA() {
                 <h2 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-tight leading-[0.95] mb-6">
                     Your store. Your rules.
                     <br />
-                    <span className="text-white/55">Your success.</span>
+                    <span className="text-white-500">Your success.</span>
                 </h2>
                 <Link href="/signup">
                     <Button
@@ -25,7 +25,7 @@ export function CTA() {
                         Get Started <ArrowRight className="w-4 h-4" />
                     </Button>
                 </Link>
-                <p className="mt-6 text-xs text-white/50">
+                <p className="mt-6 text-xs text-white-500">
                     Start for free. No credit card required.
                 </p>
             </div>

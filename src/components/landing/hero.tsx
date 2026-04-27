@@ -56,12 +56,12 @@ export function Hero() {
             <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20 md:pt-40 md:pb-32">
                 <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
                     <motion.div className="max-w-xl" variants={stagger} initial="hidden" animate="show">
-                        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 mb-8">
+                        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white-50 px-3 py-1 mb-8">
                             <span className="relative flex h-2 w-2">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                             </span>
-                            <span className="text-xs text-white/60">12,000+ stores launched in Nepal</span>
+                            <span className="text-xs text-white-600">12,000+ stores launched in Nepal</span>
                         </motion.div>
 
                         <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white mb-6">
@@ -71,7 +71,7 @@ export function Hero() {
                             </span>
                         </motion.h1>
 
-                        <motion.p variants={fadeUp} className="text-lg text-white/40 leading-relaxed mb-10 max-w-md">
+                        <motion.p variants={fadeUp} className="text-lg text-white-400 leading-relaxed mb-10 max-w-md">
                             The e-commerce platform built for Nepal. Accept eSewa, Khalti, ship with Pathao — everything works out of the box.
                         </motion.p>
 
@@ -81,16 +81,16 @@ export function Hero() {
                                     Start for free <ArrowRight className="w-4 h-4" />
                                 </Button>
                             </Link>
-                            <Button variant="ghost" size="lg" className="h-12 px-6 text-sm rounded-full gap-2 text-white/60 hover:text-white hover:bg-white/5">
+                            <Button variant="ghost" size="lg" className="h-12 px-6 text-sm rounded-full gap-2 text-white-600 hover:text-white hover:bg-white-50">
                                 <Play className="w-3.5 h-3.5 fill-current" /> Watch demo
                             </Button>
                         </motion.div>
 
-                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white/50">
+                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white-500">
                             <span>No credit card</span>
-                            <span className="w-px h-3 bg-white/10" />
+                            <span className="w-px h-3 bg-white-100" />
                             <span>Free forever plan</span>
-                            <span className="w-px h-3 bg-white/10" />
+                            <span className="w-px h-3 bg-white-100" />
                             <span>Setup in 5 min</span>
                         </motion.div>
                     </motion.div>
@@ -105,21 +105,21 @@ export function Hero() {
                         <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm overflow-hidden shadow-2xl shadow-black/40">
                             <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
                                 <div className="flex gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
                                 </div>
                                 <div className="flex-1 flex justify-center">
                                     <div className="flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                        <span className="text-[10px] text-white/55 font-mono">yourstore.indigo.store</span>
+                                        <span className="text-[10px] text-white-500 font-mono">yourstore.indigo.store</span>
                                     </div>
                                 </div>
                             </div>
                             <div className="p-5 space-y-4">
                                 <div>
-                                    <p className="text-[10px] text-white/50 uppercase tracking-widest">Dashboard</p>
-                                    <p className="text-sm font-medium text-white/70 mt-1">Good morning, Aarati ✨</p>
+                                    <p className="text-[10px] text-white-500 uppercase tracking-widest">Dashboard</p>
+                                    <p className="text-sm font-medium text-white-700 mt-1">Good morning, Aarati ✨</p>
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
@@ -128,16 +128,16 @@ export function Hero() {
                                         { label: "Visitors", value: "1,247", change: "+23%", color: "text-emerald-400" },
                                     ].map((s) => (
                                         <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-                                            <p className="text-[9px] uppercase tracking-wider text-white/50">{s.label}</p>
-                                            <p className="text-base font-semibold text-white/80 mt-1 tabular-nums">{s.value}</p>
+                                            <p className="text-[9px] uppercase tracking-wider text-white-500">{s.label}</p>
+                                            <p className="text-base font-semibold text-white-700 mt-1 tabular-nums">{s.value}</p>
                                             <span className={`text-[10px] ${s.color}`}>{s.change}</span>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
                                     <div className="flex items-center justify-between mb-3">
-                                        <p className="text-[10px] text-white/55 uppercase tracking-wider">Revenue this week</p>
-                                        <p className="text-[10px] text-white/50">Rs 329,400</p>
+                                        <p className="text-[10px] text-white-500 uppercase tracking-wider">Revenue this week</p>
+                                        <p className="text-[10px] text-white-500">Rs 329,400</p>
                                     </div>
                                     <div className="flex items-end gap-1 h-20">
                                         {[35, 55, 40, 70, 50, 85, 65, 78, 90, 68, 82, 95, 72, 88].map((h, i) => (
@@ -152,17 +152,17 @@ export function Hero() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <p className="text-[10px] text-white/50 uppercase tracking-wider">Recent orders</p>
+                                    <p className="text-[10px] text-white-500 uppercase tracking-wider">Recent orders</p>
                                     {[
                                         { name: "Aarati S.", amount: "Rs 2,450", method: "eSewa", status: "bg-emerald-500" },
                                         { name: "Bikash K.", amount: "Rs 890", method: "Khalti", status: "bg-amber-500" },
                                         { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
                                     ].map((o) => (
                                         <div key={o.name} className="flex items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
-                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white/55">{o.name.charAt(0)}</div>
-                                            <p className="text-xs font-medium text-white/50 flex-1">{o.name}</p>
-                                            <span className="text-[9px] text-white/50 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
-                                            <p className="text-xs font-medium text-white/50 tabular-nums">{o.amount}</p>
+                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white-500">{o.name.charAt(0)}</div>
+                                            <p className="text-xs font-medium text-white-500 flex-1">{o.name}</p>
+                                            <span className="text-[9px] text-white-500 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
+                                            <p className="text-xs font-medium text-white-500 tabular-nums">{o.amount}</p>
                                             <div className={`w-1.5 h-1.5 rounded-full ${o.status}`} />
                                         </div>
                                     ))}
@@ -180,8 +180,8 @@ export function Hero() {
                                     <span className="text-emerald-400 text-xs">₹</span>
                                 </div>
                                 <div>
-                                    <p className="text-xs font-medium text-white/70">New order received</p>
-                                    <p className="text-[10px] text-white/55">Rs 3,200 via eSewa · just now</p>
+                                    <p className="text-xs font-medium text-white-700">New order received</p>
+                                    <p className="text-[10px] text-white-500">Rs 3,200 via eSewa · just now</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -197,7 +197,7 @@ export function Hero() {
                                         <div key={i} className={`w-4 h-4 rounded-full ${c} border border-[#09090b]`} />
                                     ))}
                                 </div>
-                                <span className="text-[10px] text-white/40">eSewa · Khalti · Cards</span>
+                                <span className="text-[10px] text-white-400">eSewa · Khalti · Cards</span>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -215,10 +215,10 @@ export function Hero() {
                             { value: 4.8, suffix: "★", label: "Average rating", decimals: 1 },
                         ].map((s) => (
                             <div key={s.label} className="text-center">
-                                <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums">
-                                    {s.prefix}<NumberTicker value={s.value} decimalPlaces={s.decimals ?? 0} className="text-white/80" />{s.suffix}
+                                <p className="text-xl md:text-2xl font-semibold text-white-700 tabular-nums">
+                                    {s.prefix}<NumberTicker value={s.value} decimalPlaces={s.decimals ?? 0} className="text-white-700" />{s.suffix}
                                 </p>
-                                <p className="text-xs text-white/50 mt-1">{s.label}</p>
+                                <p className="text-xs text-white-500 mt-1">{s.label}</p>
                             </div>
                         ))}
                     </div>
