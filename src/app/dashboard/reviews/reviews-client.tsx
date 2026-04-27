@@ -235,8 +235,8 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 {review.productName && (
                   <Link href={`/dashboard/products/${review.productId}`} className="text-xs text-primary hover:underline">{review.productName}</Link>
                 )}
-                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <Badge variant="secondary" className={`text-[11px] ${sentimentColor[review.sentiment || 'NEUTRAL']}`}>{sentimentLabel(review.sentiment)}</Badge>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Badge variant="secondary" className={`text-xs ${sentimentColor[review.sentiment || 'NEUTRAL']}`}>{sentimentLabel(review.sentiment)}</Badge>
                   <span>·</span>
                   <span>{review.isApproved ? 'Approved' : 'Pending'}</span>
                   <span>·</span>

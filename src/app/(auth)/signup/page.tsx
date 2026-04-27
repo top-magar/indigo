@@ -120,7 +120,7 @@ function SignupForm() {
       {/* Divider */}
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-        <div className="relative flex justify-center text-[11px] uppercase">
+        <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground/50">or</span>
         </div>
       </div>
@@ -194,7 +194,7 @@ function SignupForm() {
         </Link>
       </p>
 
-      <p className="text-[11px] text-muted-foreground/40 text-center mt-6 leading-relaxed">
+      <p className="text-xs text-muted-foreground/40 text-center mt-6 leading-relaxed">
         By creating an account you agree to our Terms and Privacy Policy.
       </p>
       </>

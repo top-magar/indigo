@@ -93,7 +93,7 @@ function LoginForm() {
       {/* Divider */}
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-        <div className="relative flex justify-center text-[11px] uppercase">
+        <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground/50">or</span>
         </div>
       </div>
@@ -118,7 +118,7 @@ function LoginForm() {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <label htmlFor="password" className="text-xs font-medium">Password</label>
-            <Link href="/forgot-password" className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
               Forgot?
             </Link>
           </div>

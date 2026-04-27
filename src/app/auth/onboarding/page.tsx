@@ -124,7 +124,7 @@ export default function OnboardingPage() {
             </label>
             <div>
               <p className="text-xs font-medium">Store logo</p>
-              <p className="text-[11px] text-muted-foreground/50">Optional · Square recommended</p>
+              <p className="text-xs text-muted-foreground/50">Optional · Square recommended</p>
             </div>
           </div>
 

@@ -28,7 +28,7 @@ export function AnnouncementBar() {
     return (
         <div
             id="announcement-bar"
-            className="sticky top-0 bg-foreground text-background text-center text-[13px] py-2.5 px-10 z-[60] transition-transform duration-300"
+            className="sticky top-0 bg-foreground text-background text-center text-xs py-2.5 px-10 z-[60] transition-transform duration-300"
             style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
         >            <span className="inline-flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />

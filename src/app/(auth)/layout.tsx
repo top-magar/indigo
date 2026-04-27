@@ -31,13 +31,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               </div>
               <div>
                 <p className="text-xs font-medium">Ramesh K.</p>
-                <p className="text-[11px] text-background/40">Handmade Nepal, Kathmandu</p>
+                <p className="text-xs text-background/40">Handmade Nepal, Kathmandu</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-6 text-[11px] text-background/25">
+        <div className="relative z-10 flex items-center gap-6 text-xs text-background/25">
           <span>© 2026 Indigo</span>
           <span>Terms</span>
           <span>Privacy</span>

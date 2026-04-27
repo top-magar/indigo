@@ -105,7 +105,7 @@ export function Navbar() {
                                     <Link
                                         href={href}
                                         className={cn(
-                                            "inline-flex items-center gap-1 text-[13px] px-3.5 py-1.5 rounded-full transition-colors",
+                                            "inline-flex items-center gap-1 text-xs px-3.5 py-1.5 rounded-full transition-colors",
                                             isScrolled
                                                 ? "text-muted-foreground hover:text-foreground hover:bg-background"
                                                 : "text-white/50 hover:text-white hover:bg-white/[0.08]"
@@ -144,7 +144,7 @@ export function Navbar() {
                                     key={href}
                                     href={href}
                                     className={cn(
-                                        "text-[13px] px-3.5 py-1.5 rounded-full transition-colors",
+                                        "text-xs px-3.5 py-1.5 rounded-full transition-colors",
                                         isScrolled
                                             ? "text-muted-foreground hover:text-foreground hover:bg-background"
                                             : "text-white/50 hover:text-white hover:bg-white/[0.08]"
@@ -161,7 +161,7 @@ export function Navbar() {
                         <Link
                             href="/login"
                             className={cn(
-                                "text-[13px] transition-colors",
+                                "text-xs transition-colors",
                                 isScrolled
                                     ? "text-muted-foreground hover:text-foreground"
                                     : "text-white/50 hover:text-white"
@@ -172,7 +172,7 @@ export function Navbar() {
                         <Link
                             href="/signup"
                             className={cn(
-                                "inline-flex items-center gap-1.5 text-[13px] font-medium px-4 py-1.5 rounded-full transition-all",
+                                "inline-flex items-center gap-1.5 text-xs font-medium px-4 py-1.5 rounded-full transition-all",
                                 isScrolled
                                     ? "bg-foreground text-background hover:bg-foreground/90"
                                     : "bg-white text-black hover:bg-white/90"
