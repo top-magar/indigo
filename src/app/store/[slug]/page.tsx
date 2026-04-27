@@ -12,6 +12,7 @@ import { AnalyticsScripts } from "@/features/store/analytics-scripts"
 import { DefaultHomepage } from "@/components/store/default-homepage"
 import { SectionRenderer } from "@/features/store/section-renderer"
 import { PasswordGate } from "@/features/store/password-gate"
+import DOMPurify from "isomorphic-dompurify"
 
 /** Extract content between <body> tags from full HTML document */
 function extractBodyContent(html: string): string {
@@ -92,7 +93,7 @@ export default async function StorePage({
     const homepage = pages.find(p => p.isHomepage) || pages[0];
     if (homepage?.publishedHtml) {
       // Extract body content from published HTML — render inside store layout, not raw <html>
-      const bodyContent = extractBodyContent(homepage.publishedHtml);
+      const bodyContent = DOMPurify.sanitize(extractBodyContent(homepage.publishedHtml), { ADD_TAGS: ['style'], ADD_ATTR: ['target'] });
       const headStyles = extractHeadStyles(homepage.publishedHtml);
       return (
         <>

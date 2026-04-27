@@ -27,7 +27,7 @@ export const GET = withRateLimit("visualEditor", async function GET(request: Req
   const secret = searchParams.get("secret")
   const slug = searchParams.get("slug")
   const redirectPath = searchParams.get("redirect")
-  const safeRedirect = redirectPath?.startsWith("/") && !redirectPath.startsWith("//") ? redirectPath : null
+  const safeRedirect = redirectPath && /^\/[a-zA-Z0-9\-_./~?#&=%@+]+$/.test(redirectPath) && !redirectPath.startsWith("//") ? redirectPath : null
 
   // Validate secret token
   const draftSecret = process.env.DRAFT_MODE_SECRET

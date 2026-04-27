@@ -9,6 +9,7 @@ import { draftMode } from "next/headers"
 import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
+import { safeRedirectPath } from "@/shared/utils/safe-redirect"
 
 /**
  * Disable draft mode
@@ -19,7 +20,7 @@ export const GET = withRateLimit("visualEditor", async function GET(request: Req
   const req = request as NextRequest;
   const searchParams = req.nextUrl.searchParams
   const redirectPath = searchParams.get("redirect")
-  const safePath = redirectPath?.startsWith("/") && !redirectPath.startsWith("//") ? redirectPath : "/"
+  const safePath = safeRedirectPath(redirectPath, "/")
 
   // Disable Draft Mode by removing the cookie
   const draft = await draftMode()

@@ -5,6 +5,7 @@ import { editorPages } from "@/db/schema/editor-pages"
 import { tenants } from "@/db/schema/tenants"
 import { eq, and, sql } from "drizzle-orm"
 import { redirect, notFound } from "next/navigation"
+import DOMPurify from "isomorphic-dompurify"
 
 export default async function CatchAllPage({
   params,
@@ -47,7 +48,7 @@ export default async function CatchAllPage({
 
       // Extract body content — render inside store layout, not raw <html>
       const bodyMatch = page.publishedHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i)
-      const bodyContent = bodyMatch ? bodyMatch[1] : page.publishedHtml
+      const bodyContent = DOMPurify.sanitize(bodyMatch ? bodyMatch[1] : page.publishedHtml, { ADD_TAGS: ['style'], ADD_ATTR: ['target'] })
       const headMatch = page.publishedHtml.match(/<head[^>]*>([\s\S]*?)<\/head>/i)
       const styles = headMatch ? headMatch[1].match(/<style[^>]*>[\s\S]*?<\/style>/gi) : null
       const headStyles = styles ? styles.map(s => s.replace(/<\/?style[^>]*>/gi, '')).join('\n') : null
