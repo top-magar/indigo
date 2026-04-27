@@ -27,6 +27,7 @@ export const GET = withRateLimit("visualEditor", async function GET(request: Req
   const secret = searchParams.get("secret")
   const slug = searchParams.get("slug")
   const redirectPath = searchParams.get("redirect")
+  const safeRedirect = redirectPath?.startsWith("/") && !redirectPath.startsWith("//") ? redirectPath : null
 
   // Validate secret token
   const draftSecret = process.env.DRAFT_MODE_SECRET
@@ -66,6 +67,6 @@ export const GET = withRateLimit("visualEditor", async function GET(request: Req
   draft.enable()
 
   // Redirect to the requested path or store homepage
-  const destination = redirectPath || (slug ? `/store/${slug}` : "/")
+  const destination = safeRedirect || (slug ? `/store/${slug}` : "/")
   redirect(destination)
 })

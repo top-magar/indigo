@@ -1,7 +1,8 @@
 import { createClient } from "@/infrastructure/supabase/server";
 import { NextResponse } from "next/server";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 
-export async function POST(request: Request) {
+export const POST = withRateLimit("storefront", async function POST(request: Request) {
   const formData = await request.formData();
   const productId = formData.get("productId") as string;
   const customerName = formData.get("customerName") as string;
@@ -44,4 +45,4 @@ export async function POST(request: Request) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
-}
+})
