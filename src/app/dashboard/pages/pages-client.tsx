@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -40,6 +41,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     startTransition(async () => {
       await deletePage(page.id);
       router.refresh();
+      toast.success(`"${page.name}" deleted`);
     });
   };
 
@@ -49,7 +51,9 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const handleNewPage = () => {
     if (!newPageName.trim()) return;
     startTransition(async () => {
-      await createPage(site.id, newPageName.trim());
+      const result = await createPage(site.id, newPageName.trim());
+      if (result.error) { toast.error(result.error); return; }
+      toast.success("Page created");
       setNewPageName("");
       setShowNewDialog(false);
       router.refresh();
@@ -78,6 +82,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     startTransition(async () => {
       await renamePage(id, trimmed);
       router.refresh();
+      toast.success("Page renamed");
       isCommitting.current = false;
     });
   };

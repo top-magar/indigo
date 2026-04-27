@@ -120,6 +120,7 @@ export function AttributesClient({
     };
 
     const handleBulkDelete = async () => {
+        if (!window.confirm(`Delete ${selectedIds.size} attribute(s)? This cannot be undone.`)) return;
         const ids = Array.from(selectedIds);
         const result = await bulkDeleteAttributes(ids);
         

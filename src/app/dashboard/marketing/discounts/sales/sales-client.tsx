@@ -88,6 +88,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     };
 
     const handleDelete = async (id: string) => {
+        if (!window.confirm("Delete this sale? This cannot be undone.")) return;
         startTransition(async () => {
             const result = await deleteDiscount(id);
             if (result.success) {
