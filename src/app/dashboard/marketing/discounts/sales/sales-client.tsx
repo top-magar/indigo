@@ -28,6 +28,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
     Percent,
     Search,
@@ -63,6 +64,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
     const sales = initialSales;
 
@@ -88,7 +90,6 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     };
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Delete this sale? This cannot be undone.")) return;
         startTransition(async () => {
             const result = await deleteDiscount(id);
             if (result.success) {
@@ -331,7 +332,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         className="text-destructive"
-                                                        onClick={() => handleDelete(sale.id)}
+                                                        onClick={() => setDeleteTarget(sale.id)}
                                                     >
                                                         <Trash2 className="size-3.5" />
                                                         Delete
@@ -352,6 +353,18 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                 onOpenChange={setCreateDialogOpen}
                 onSuccess={handleCreateSuccess}
             />
+            <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this sale?</AlertDialogTitle>
+                        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => { if (deleteTarget) handleDelete(deleteTarget); setDeleteTarget(null); }} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </EntityListPage>
     );
 }

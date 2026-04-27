@@ -28,6 +28,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { EntityListPage } from "@/components/dashboard/templates";
 import {
     Ticket,
@@ -65,6 +66,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
     const [typeFilter, setTypeFilter] = useState<string>("all");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
     const vouchers = initialVouchers;
 
@@ -91,7 +93,6 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
     };
 
     const handleDelete = async (id: string) => {
-        if (!window.confirm("Delete this voucher? This cannot be undone.")) return;
         startTransition(async () => {
             const result = await deleteDiscount(id);
             if (result.success) {
@@ -322,7 +323,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         className="text-destructive"
-                                                        onClick={() => handleDelete(voucher.id)}
+                                                        onClick={() => setDeleteTarget(voucher.id)}
                                                     >
                                                         <Trash2 className="size-3.5" />
                                                         Delete
@@ -343,6 +344,18 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 onOpenChange={setCreateDialogOpen}
                 onSuccess={handleCreateSuccess}
             />
+            <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this voucher?</AlertDialogTitle>
+                        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => { if (deleteTarget) handleDelete(deleteTarget); setDeleteTarget(null); }} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </EntityListPage>
     );
 }

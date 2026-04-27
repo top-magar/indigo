@@ -47,6 +47,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EmptyState } from "@/components/ui/empty-state";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { cn } from "@/shared/utils";
 import { CreateAttributeDialog } from "@/features/attributes/components";
@@ -120,7 +121,6 @@ export function AttributesClient({
     };
 
     const handleBulkDelete = async () => {
-        if (!window.confirm(`Delete ${selectedIds.size} attribute(s)? This cannot be undone.`)) return;
         const ids = Array.from(selectedIds);
         const result = await bulkDeleteAttributes(ids);
         
@@ -185,9 +185,23 @@ export function AttributesClient({
                         {selectedIds.size > 0 && (
                             <div className="flex items-center gap-2">
                                 <span className="text-xs text-muted-foreground">{selectedIds.size} selected</span>
-                                <Button variant="outline" size="sm" className="text-destructive" onClick={handleBulkDelete}>
-                                    <Trash2 className="size-3.5" /> Delete
-                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="outline" size="sm" className="text-destructive">
+                                            <Trash2 className="size-3.5" /> Delete
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete {selectedIds.size} attribute(s)?</AlertDialogTitle>
+                                            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         )}
                     </div>
