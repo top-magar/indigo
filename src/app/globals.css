@@ -38,6 +38,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -376,6 +378,8 @@
   --muted-foreground: var(--ds-gray-900);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
+  --surface: var(--ds-gray-50);
+  --surface-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-800);
   --destructive-foreground: var(--ds-background-100);
   --border: var(--ds-gray-200);
@@ -544,6 +548,8 @@
   --muted-foreground: var(--ds-gray-700);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
+  --surface: var(--ds-gray-200);
+  --surface-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-600);
   --destructive-foreground: var(--ds-gray-100);
   --border: var(--ds-gray-200);
@@ -818,6 +824,8 @@
   --muted-foreground: hsl(0 0% 35%);
   --accent: hsl(0 0% 93%);
   --accent-foreground: hsl(0 0% 9%);
+  --surface: hsl(0 0% 98%);
+  --surface-foreground: hsl(0 0% 9%);
   --destructive: hsl(0 72% 46%);
   --destructive-foreground: hsl(0 0% 100%);
   --border: hsl(0 0% 90%);
