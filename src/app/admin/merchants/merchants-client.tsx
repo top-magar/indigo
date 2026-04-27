@@ -70,7 +70,7 @@ export default function MerchantsClient({ merchants, totalRevenue, deletedMercha
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Merchants</h1>

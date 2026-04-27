@@ -83,16 +83,15 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   };
 
   return (
-    <div className="space-y-3">
-      {/* Toolbar */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Pages</h1>
+          <p className="text-xs text-muted-foreground">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
         </div>
         <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
           <DialogTrigger asChild>
-            <Button variant="outline">
+            <Button size="sm">
               <Plus className="size-3.5" /> New Page
             </Button>
           </DialogTrigger>
@@ -114,6 +113,11 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
       </div>
 
       {/* Page list */}

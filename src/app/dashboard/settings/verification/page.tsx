@@ -16,7 +16,7 @@ export default async function VerificationPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h2 className="text-lg font-semibold tracking-tight">Store Verification</h2>
+        <h1 className="text-lg font-semibold tracking-tight">Store Verification</h1>
         <p className="text-xs text-muted-foreground">
           Required under <ECommerceActLink />  to publish your store.
           {kyc?.status !== "verified" && " You can set up products and design your store while we review."}

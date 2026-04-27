@@ -47,7 +47,7 @@ export default async function MerchantBillingPage() {
     <div className="max-w-4xl space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold tracking-tight">Plan & Billing</h2>
+        <h1 className="text-lg font-semibold tracking-tight">Plan & Billing</h1>
         <p className="text-xs text-muted-foreground">Manage your subscription, view invoices, and understand pricing</p>
       </div>
 

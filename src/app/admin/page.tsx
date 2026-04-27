@@ -80,7 +80,7 @@ export default async function AdminOverviewPage() {
       </div>
 
       {/* Revenue chart */}
-      <div className="rounded-lg border p-5">
+      <div className="rounded-lg border p-4">
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-sm font-medium">Platform Revenue (14 days)</p>

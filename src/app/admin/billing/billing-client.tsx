@@ -59,6 +59,11 @@ export default function BillingClient({ merchants, plans, subscriptions, payment
 
   return (
     <div className="space-y-6">
+      <div>
+        <h1 className="text-lg font-semibold tracking-tight">Billing</h1>
+        <p className="text-xs text-muted-foreground">Manage plans, payments, and invoices</p>
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-3">
         {/* Assign Plan */}
         <div className="rounded-lg border p-4 space-y-3">
