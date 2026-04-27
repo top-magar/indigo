@@ -497,7 +497,7 @@ function PickerAssetCard({
       {/* Filename tooltip on hover */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <p className="text-xs text-white truncate">{asset.filename}</p>
-        <p className="text-xs text-white/70">{formatFileSize(asset.sizeBytes)}</p>
+        <p className="text-xs text-white-700">{formatFileSize(asset.sizeBytes)}</p>
       </div>
     </button>
   );

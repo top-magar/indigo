@@ -207,7 +207,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Preview</p>
             <div className="space-y-0.5">
               <p className="text-base text-blue-600 font-medium leading-tight truncate">{seoTitle || tenant.name}</p>
-              <p className="text-xs text-green-700">{tenant.slug}.indigo.com</p>
+              <p className="text-xs text-success">{tenant.slug}.indigo.com</p>
               <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{seoDescription || "No description set"}</p>
             </div>
           </div>

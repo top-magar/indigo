@@ -42,7 +42,7 @@ function getSentimentConfig(sentiment: string | null) {
         variant: "secondary" as const,
         icon: AlertCircle,
         label: "Mixed",
-        colorClass: "text-amber-500",
+        colorClass: "text-warning",
       };
     default:
       return {
@@ -192,7 +192,7 @@ export function ReviewCard({
 
         {/* Moderation status */}
         {!review.isApproved && (
-          <div className="flex items-center gap-2 pt-2 text-xs text-amber-500">
+          <div className="flex items-center gap-2 pt-2 text-xs text-warning">
             <AlertCircle className="size-3.5" />
             <span>Pending moderation</span>
           </div>

@@ -136,8 +136,8 @@ export default function ContactPage() {
             <CardContent>
               {isSubmitted ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-emerald-50">
-                    <Send className="size-6 text-emerald-600" />
+                  <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-success/10">
+                    <Send className="size-6 text-success" />
                   </div>
                   <h3 className="text-lg font-semibold">Message Sent!</h3>
                   <p className="mt-2 text-sm text-muted-foreground">

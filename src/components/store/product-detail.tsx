@@ -149,7 +149,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
 
               {/* Stock Status */}
               {product.track_quantity && (
-                <p className={`text-sm ${product.quantity > 0 ? "text-green-600" : "text-destructive"}`}>
+                <p className={`text-sm ${product.quantity > 0 ? "text-success" : "text-destructive"}`}>
                   {product.quantity > 0 ? `${product.quantity} in stock` : "Out of stock"}
                 </p>
               )}

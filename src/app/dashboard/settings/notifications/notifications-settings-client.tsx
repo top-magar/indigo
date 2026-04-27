@@ -16,7 +16,7 @@ import type { NotificationCategory, NotificationChannel, NotificationFrequency, 
 
 const CATEGORIES: { id: NotificationCategory; label: string; desc: string; icon: LucideIcon; color: string }[] = [
   { id: "orders", label: "Orders", desc: "New orders, status updates, cancellations", icon: ShoppingCart, color: "text-blue-500" },
-  { id: "inventory", label: "Inventory", desc: "Low stock alerts and restock reminders", icon: AlertCircle, color: "text-amber-500" },
+  { id: "inventory", label: "Inventory", desc: "Low stock alerts and restock reminders", icon: AlertCircle, color: "text-warning" },
   { id: "system", label: "System", desc: "Platform updates, security, and maintenance", icon: Settings, color: "text-muted-foreground" },
   { id: "mentions", label: "Mentions", desc: "When someone mentions you or assigns a task", icon: AtSign, color: "text-violet-500" },
 ];

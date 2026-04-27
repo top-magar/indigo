@@ -99,7 +99,7 @@ export function ProductCardWithSale({
           />
         </div>
         {sale && (
-          <p className="text-xs text-emerald-600 mt-1">
+          <p className="text-xs text-success mt-1">
             You save {formatPriceUtil(originalPrice - sale.salePrice, currency)}
           </p>
         )}

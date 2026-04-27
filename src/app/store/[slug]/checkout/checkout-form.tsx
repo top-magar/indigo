@@ -221,11 +221,11 @@ export function CheckoutForm({
             ))}
             <Separator />
             <div className="flex justify-between text-sm"><span>Subtotal</span><Price amount={subtotal} currency={currency} /></div>
-            {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount</span><span>-<Price amount={discount} currency={currency} /></span></div>}
-            {giftCardDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Gift Card</span><span>-<Price amount={giftCardDiscount} currency={currency} /></span></div>}
+            {discount > 0 && <div className="flex justify-between text-sm text-success"><span>Discount</span><span>-<Price amount={discount} currency={currency} /></span></div>}
+            {giftCardDiscount > 0 && <div className="flex justify-between text-sm text-success"><span>Gift Card</span><span>-<Price amount={giftCardDiscount} currency={currency} /></span></div>}
             <div className="flex justify-between text-sm">
               <span>Shipping</span>
-              {shippingTotal === 0 ? <span className="text-green-600">Free</span> : <Price amount={shippingTotal} currency={currency} />}
+              {shippingTotal === 0 ? <span className="text-success">Free</span> : <Price amount={shippingTotal} currency={currency} />}
             </div>
             {showTaxInCart && taxTotal > 0 && (
               <div className="flex justify-between text-sm">

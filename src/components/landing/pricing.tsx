@@ -79,7 +79,7 @@ export function Pricing() {
                             )}
                         >
                             {b === "monthly" ? "Monthly" : "Yearly"}{" "}
-                            {b === "yearly" && <span className="text-xs text-emerald-500">−20%</span>}
+                            {b === "yearly" && <span className="text-xs text-success">−20%</span>}
                         </button>
                     ))}
                 </div>
@@ -141,7 +141,7 @@ export function Pricing() {
                                         viewport={{ once: true }}
                                         transition={{ delay: 0.3 + fi * 0.05 }}
                                     >
-                                        <Check strokeWidth={1.5} className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                        <Check strokeWidth={1.5} className="w-4 h-4 text-success mt-0.5 shrink-0" />
                                         {f}
                                     </motion.li>
                                 ))}
@@ -182,7 +182,7 @@ export function Pricing() {
                                                 <td className="py-3 pr-4 text-muted-foreground">{label}</td>
                                                 {vals.map((v, i) => (
                                                     <td key={i} className="py-3 px-4 text-center">
-                                                        {v === true ? <Check className="w-4 h-4 text-emerald-500 mx-auto" /> :
+                                                        {v === true ? <Check className="w-4 h-4 text-success mx-auto" /> :
                                                          v === false ? <Minus className="w-4 h-4 text-muted-foreground/30 mx-auto" /> :
                                                          <span className="text-foreground/80">{v}</span>}
                                                     </td>

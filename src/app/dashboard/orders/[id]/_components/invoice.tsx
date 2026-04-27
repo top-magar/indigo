@@ -17,7 +17,7 @@ export function Invoice({ order, storeName, taxRegistration }: InvoiceProps) {
   const fc = (v: number) => formatCurrency(v, order.currency);
 
   return (
-    <div className="hidden print:block p-8 text-black text-sm" style={{ fontFamily: 'serif' }}>
+    <div className="hidden print:block p-8 text-foreground text-sm" style={{ fontFamily: 'serif' }}>
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>

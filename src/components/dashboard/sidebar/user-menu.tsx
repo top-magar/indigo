@@ -25,10 +25,10 @@ interface UserMenuProps {
 const roleLabel: Record<UserRole, string> = { owner: "Owner", admin: "Admin", staff: "Staff" };
 const roleStyle: Record<UserRole, string> = {
     owner: "text-primary bg-primary/10",
-    admin: "text-emerald-600 bg-emerald-500/10",
+    admin: "text-success bg-success/100/10",
     staff: "text-muted-foreground bg-muted",
 };
-const avatarColors = ["bg-blue-600", "bg-emerald-600", "bg-violet-600", "bg-amber-600", "bg-rose-600"];
+const avatarColors = ["bg-blue-600", "bg-success", "bg-violet-600", "bg-amber-600", "bg-rose-600"];
 
 const themes = [
     { value: "light", icon: Sun, label: "Light" },

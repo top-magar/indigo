@@ -113,7 +113,7 @@ export const UploadPanel = memo(function UploadPanel() {
               ) : stats.errorCount > 0 ? (
                 <AlertCircle className="size-4.5 text-destructive" />
               ) : (
-                <CheckCircle2 className="size-4.5 text-emerald-600" />
+                <CheckCircle2 className="size-4.5 text-success" />
               )}
             </div>
 
@@ -136,7 +136,7 @@ export const UploadPanel = memo(function UploadPanel() {
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                 {stats.completedCount > 0 && (
-                  <span className="flex items-center gap-1 text-emerald-600">
+                  <span className="flex items-center gap-1 text-success">
                     <CheckCircle2 className="size-3.5" />
                     {stats.completedCount}
                   </span>
@@ -241,7 +241,7 @@ export const UploadPanel = memo(function UploadPanel() {
                               className={cn(
                                 "size-4",
                                 upload.status === "error" ? "text-destructive" :
-                                upload.status === "complete" ? "text-emerald-600" : "text-muted-foreground"
+                                upload.status === "complete" ? "text-success" : "text-muted-foreground"
                               )} 
                             />
                           );
@@ -257,7 +257,7 @@ export const UploadPanel = memo(function UploadPanel() {
                           {upload.status === "error" ? (
                             <span className="text-xs text-destructive truncate">{upload.error}</span>
                           ) : upload.status === "complete" ? (
-                            <span className="text-xs text-emerald-600">Uploaded</span>
+                            <span className="text-xs text-success">Uploaded</span>
                           ) : (
                             <>
                               <span className="text-xs text-muted-foreground">
@@ -287,7 +287,7 @@ export const UploadPanel = memo(function UploadPanel() {
                           <div className="size-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                         )}
                         {upload.status === "complete" && (
-                          <CheckCircle2 className="size-4 text-emerald-600" />
+                          <CheckCircle2 className="size-4 text-success" />
                         )}
                         {upload.status === "error" && (
                           <Tooltip>

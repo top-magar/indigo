@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 const stores = [
     { name: "Himalayan Threads", category: "Fashion", color: "from-rose-500/20 to-pink-500/20", accent: "bg-rose-500" },
     { name: "Kathmandu Bazaar", category: "Marketplace", color: "from-amber-500/20 to-orange-500/20", accent: "bg-amber-500" },
-    { name: "Nepal Tea House", category: "Food & Drink", color: "from-emerald-500/20 to-green-500/20", accent: "bg-emerald-500" },
+    { name: "Nepal Tea House", category: "Food & Drink", color: "from-emerald-500/20 to-green-500/20", accent: "bg-success/100" },
     { name: "Yeti Electronics", category: "Electronics", color: "from-blue-500/20 to-indigo-500/20", accent: "bg-blue-500" },
     { name: "Pashmina Palace", category: "Luxury", color: "from-purple-500/20 to-violet-500/20", accent: "bg-purple-500" },
     { name: "Everest Outdoors", category: "Sports", color: "from-cyan-500/20 to-sky-500/20", accent: "bg-cyan-500" },

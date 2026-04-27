@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
             {sent ? (
               <div className="flex flex-col items-center gap-4 py-4">
                 <div className="flex size-12 items-center justify-center rounded-full bg-green-500/10">
-                  <Mail className="size-6 text-green-500" />
+                  <Mail className="size-6 text-success" />
                 </div>
                 <p className="text-center text-sm text-muted-foreground">
                   We sent a password reset link to <span className="font-medium text-foreground">{email}</span>.

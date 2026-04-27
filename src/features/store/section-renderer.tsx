@@ -91,8 +91,8 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
         <section className="relative overflow-hidden" style={imageUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : { backgroundColor: primaryColor }}>
           <div className="max-w-7xl mx-auto px-4 py-24 sm:py-36 text-white">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight max-w-2xl">{title}</h1>
-            {subtitle && <p className="mt-6 text-lg sm:text-xl text-white/80 max-w-xl">{subtitle}</p>}
-            <Button asChild size="lg" className="mt-10 bg-white text-black hover:bg-white/90">
+            {subtitle && <p className="mt-6 text-lg sm:text-xl text-white-700 max-w-xl">{subtitle}</p>}
+            <Button asChild size="lg" className="mt-10 bg-white text-foreground hover:bg-white/90">
               <Link href={href("/products")}>{cta} <ArrowRight className="ml-2 size-4" /></Link>
             </Button>
           </div>
@@ -157,7 +157,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
                     <h3 className="font-semibold text-lg">{cat.name}</h3>
-                    <p className="text-sm text-white/70">{cat.productCount} products</p>
+                    <p className="text-sm text-white-700">{cat.productCount} products</p>
                   </div>
                 </Link>
               ))}
@@ -215,9 +215,9 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
         <section className="py-12 sm:py-16" style={{ backgroundColor: primaryColor }}>
           <div className="max-w-3xl mx-auto px-4 text-center text-white">
             <h2 className="text-2xl sm:text-3xl font-semibold">{title}</h2>
-            {c.subtitle && <p className="mt-3 text-white/80">{c.subtitle}</p>}
+            {c.subtitle && <p className="mt-3 text-white-700">{c.subtitle}</p>}
             {c.cta && (
-              <Button asChild className="mt-6 bg-white text-black hover:bg-white/90">
+              <Button asChild className="mt-6 bg-white text-foreground hover:bg-white/90">
                 <Link href={c.ctaUrl || href("/products")}>{c.cta}</Link>
               </Button>
             )}

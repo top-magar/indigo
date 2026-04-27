@@ -46,7 +46,7 @@ const PriceFormat_Sale: React.FC<PriceFormat_SaleProps> = ({
             prefix={prefix}
             displayType="text"
             className={cn(
-              "font-medium text-gray-500 line-through",
+              "font-medium text-muted-foreground line-through",
               classNameOriginalPrice
             )}
           />

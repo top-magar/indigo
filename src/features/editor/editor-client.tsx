@@ -6,7 +6,7 @@ import type { EditorProps } from "@/features/editor/core/types";
 const Editor = dynamic(() => import("@/features/editor/editor"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-screen text-sm text-gray-400">
+    <div className="flex items-center justify-center h-screen text-sm text-muted-foreground">
       Loading editor...
     </div>
   ),

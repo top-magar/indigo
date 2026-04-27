@@ -51,10 +51,10 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <TrendingUp className="size-4 text-emerald-500" />
+                <TrendingUp className="size-4 text-success" />
                 <span className="text-muted-foreground">Positive</span>
               </div>
-              <span className="font-medium text-emerald-600">
+              <span className="font-medium text-success">
                 {positive} ({positivePercent}%)
               </span>
             </div>
@@ -79,10 +79,10 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="size-4 text-amber-500" />
+                <AlertTriangle className="size-4 text-warning" />
                 <span className="text-muted-foreground">Mixed</span>
               </div>
-              <span className="font-medium text-amber-500">
+              <span className="font-medium text-warning">
                 {mixed} ({mixedPercent}%)
               </span>
             </div>

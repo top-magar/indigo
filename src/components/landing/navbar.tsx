@@ -75,7 +75,7 @@ export function Navbar() {
                             "w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-semibold transition-colors",
                             isScrolled || isOpen
                                 ? "bg-foreground text-background"
-                                : "bg-white text-black"
+                                : "bg-white text-foreground"
                         )}>
                             I
                         </div>
@@ -175,7 +175,7 @@ export function Navbar() {
                                 "inline-flex items-center gap-1.5 text-xs font-medium px-4 py-1.5 rounded-full transition-all",
                                 isScrolled
                                     ? "bg-foreground text-background hover:bg-foreground/90"
-                                    : "bg-white text-black hover:bg-white/90"
+                                    : "bg-white text-foreground hover:bg-white/90"
                             )}
                         >
                             Start Free

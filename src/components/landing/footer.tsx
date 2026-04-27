@@ -66,7 +66,7 @@ export function Footer() {
                                 Stay updated
                             </p>
                             {subscribed ? (
-                                <p className="text-sm text-emerald-500">Thanks! You&apos;re subscribed ✓</p>
+                                <p className="text-sm text-success">Thanks! You&apos;re subscribed ✓</p>
                             ) : (
                                 <form
                                     onSubmit={(e) => { e.preventDefault(); if (email) setSubscribed(true); }}

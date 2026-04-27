@@ -462,7 +462,7 @@ export const FolderSidebar = memo(function FolderSidebar({
           {storageUsage.percentUsed >= 80 && (
             <p className={cn(
               "text-xs mt-2 font-medium",
-              storageUsage.percentUsed >= 90 ? "text-destructive" : "text-amber-500"
+              storageUsage.percentUsed >= 90 ? "text-destructive" : "text-warning"
             )}>
               {storageUsage.percentUsed >= 90 ? "Storage almost full!" : "Storage running low"}
             </p>

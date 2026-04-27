@@ -64,7 +64,7 @@ export function WhatsAppSettingsClient({ initialSettings }: { initialSettings: W
       <div className="rounded-lg border divide-y">
         <div className="flex items-center gap-3 p-4">
           <div className="size-10 rounded-lg border bg-background flex items-center justify-center shrink-0">
-            <MessageCircle className="size-5 text-green-600" />
+            <MessageCircle className="size-5 text-success" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">

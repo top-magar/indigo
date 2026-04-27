@@ -32,7 +32,7 @@ const features: Feature[] = [
             { label: "Card", value: "Rs 5,600", change: "+7%" },
         ],
         barHeights: [40, 65, 35, 80, 55, 70, 45, 90, 60, 75, 50, 85],
-        color: "bg-emerald-500",
+        color: "bg-success/100",
     },
     {
         icon: Truck, tab: "Shipping",
@@ -155,7 +155,7 @@ export function Features() {
                                     >
                                         <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">{p.label}</p>
                                         <p className="text-lg font-semibold text-foreground tracking-tight tabular-nums">{p.value}</p>
-                                        {p.change && <p className="text-xs text-emerald-500 mt-1 tabular-nums">{p.change}</p>}
+                                        {p.change && <p className="text-xs text-success mt-1 tabular-nums">{p.change}</p>}
                                     </motion.div>
                                 ))}
                             </div>

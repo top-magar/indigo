@@ -59,7 +59,7 @@ export function Hero() {
                         <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white-50 px-3 py-1 mb-8">
                             <span className="relative flex h-2 w-2">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-success/100" />
                             </span>
                             <span className="text-xs text-white-600">12,000+ stores launched in Nepal</span>
                         </motion.div>
@@ -77,7 +77,7 @@ export function Hero() {
 
                         <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start gap-3">
                             <Link href="/signup">
-                                <Button size="lg" className="h-12 px-8 text-sm rounded-full gap-2 bg-white text-black hover:bg-white/90 font-medium landing-btn">
+                                <Button size="lg" className="h-12 px-8 text-sm rounded-full gap-2 bg-white text-foreground hover:bg-white/90 font-medium landing-btn">
                                     Start for free <ArrowRight className="w-4 h-4" />
                                 </Button>
                             </Link>
@@ -111,7 +111,7 @@ export function Hero() {
                                 </div>
                                 <div className="flex-1 flex justify-center">
                                     <div className="flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-success/100" />
                                         <span className="text-[10px] text-white-500 font-mono">yourstore.indigo.store</span>
                                     </div>
                                 </div>
@@ -123,9 +123,9 @@ export function Hero() {
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
-                                        { label: "Revenue", value: "Rs 47,200", change: "+12%", color: "text-emerald-400" },
-                                        { label: "Orders", value: "84", change: "+8%", color: "text-emerald-400" },
-                                        { label: "Visitors", value: "1,247", change: "+23%", color: "text-emerald-400" },
+                                        { label: "Revenue", value: "Rs 47,200", change: "+12%", color: "text-success" },
+                                        { label: "Orders", value: "84", change: "+8%", color: "text-success" },
+                                        { label: "Visitors", value: "1,247", change: "+23%", color: "text-success" },
                                     ].map((s) => (
                                         <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
                                             <p className="text-[9px] uppercase tracking-wider text-white-500">{s.label}</p>
@@ -154,7 +154,7 @@ export function Hero() {
                                 <div className="space-y-2">
                                     <p className="text-[10px] text-white-500 uppercase tracking-wider">Recent orders</p>
                                     {[
-                                        { name: "Aarati S.", amount: "Rs 2,450", method: "eSewa", status: "bg-emerald-500" },
+                                        { name: "Aarati S.", amount: "Rs 2,450", method: "eSewa", status: "bg-success/100" },
                                         { name: "Bikash K.", amount: "Rs 890", method: "Khalti", status: "bg-amber-500" },
                                         { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
                                     ].map((o) => (
@@ -176,8 +176,8 @@ export function Hero() {
                             transition={{ delay: 1, duration: 0.5 }}
                         >
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                    <span className="text-emerald-400 text-xs">₹</span>
+                                <div className="w-8 h-8 rounded-full bg-success/100/20 flex items-center justify-center">
+                                    <span className="text-success text-xs">₹</span>
                                 </div>
                                 <div>
                                     <p className="text-xs font-medium text-white-700">New order received</p>

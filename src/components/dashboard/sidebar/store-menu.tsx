@@ -21,7 +21,7 @@ interface StoreMenuProps {
 }
 
 const planConfig: Record<PlanType, { dot: string; label: string }> = {
-    pro: { dot: "bg-emerald-500", label: "Pro" },
+    pro: { dot: "bg-success/100", label: "Pro" },
     trial: { dot: "bg-amber-500", label: "Trial" },
     free: { dot: "bg-muted-foreground/30", label: "Free" },
 };

@@ -82,12 +82,12 @@ export function VoucherInput({
     return (
       <div className="space-y-2">
         <Label className="text-sm font-medium">Voucher Applied</Label>
-        <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-success/10 border border-emerald-100 rounded-lg">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
+            <CheckCircle className="w-5 h-5 text-success" />
             <div>
-              <p className="font-medium text-emerald-800">{appliedVoucher.code}</p>
-              <p className="text-sm text-emerald-600">
+              <p className="font-medium text-success">{appliedVoucher.code}</p>
+              <p className="text-sm text-success">
                 {appliedVoucher.discountName} - Save ${appliedVoucher.discountAmount.toFixed(2)}
               </p>
             </div>
@@ -96,7 +96,7 @@ export function VoucherInput({
             variant="ghost"
            
             onClick={handleRemove}
-            className="text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100"
+            className="text-success hover:text-success hover:bg-success/10"
           >
             <X className="w-4 h-4" />
           </Button>

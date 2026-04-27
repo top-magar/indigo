@@ -20,7 +20,7 @@ export function CTA() {
                 <Link href="/signup">
                     <Button
                         size="lg"
-                        className="h-14 px-10 text-base rounded-full gap-2 bg-white text-black hover:bg-white/90"
+                        className="h-14 px-10 text-base rounded-full gap-2 bg-white text-foreground hover:bg-white/90"
                     >
                         Get Started <ArrowRight className="w-4 h-4" />
                     </Button>
