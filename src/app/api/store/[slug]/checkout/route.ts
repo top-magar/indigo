@@ -10,6 +10,7 @@ import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from "@/infras
 import { sendWhatsAppMessage, orderReceivedMessage } from "@/infrastructure/services/whatsapp"
 import { createLogger } from "@/lib/logger"
 import { NextResponse } from "next/server"
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
 const log = createLogger("api:checkout")
 
@@ -65,7 +66,7 @@ function calculateTax(settings: TenantSettings, subtotal: number, priceIncludesT
   return subtotal * (rate / 100)
 }
 
-export async function POST(
+export const POST = withRateLimit("checkout", async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
@@ -353,4 +354,4 @@ export async function POST(
     log.error("Checkout error:", error)
     return NextResponse.json({ error: { message: "Checkout failed. Please try again." } }, { status: 500 })
   }
-}
+})

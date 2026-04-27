@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
-  const tenantId = formData.get("tenantId") as string;
   const productId = formData.get("productId") as string;
   const customerName = formData.get("customerName") as string;
   const customerEmail = formData.get("customerEmail") as string;
@@ -11,7 +10,7 @@ export async function POST(request: Request) {
   const title = (formData.get("title") as string) || null;
   const content = formData.get("content") as string;
 
-  if (!tenantId || !productId || !customerName || !customerEmail || !content || !rating) {
+  if (!productId || !customerName || !customerEmail || !content || !rating) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
   if (rating < 1 || rating > 5) {
@@ -19,8 +18,20 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
+
+  // Derive tenantId from the product — never trust user input
+  const { data: product } = await supabase
+    .from("products")
+    .select("tenant_id")
+    .eq("id", productId)
+    .single();
+
+  if (!product) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
+
   const { error } = await supabase.from("reviews").insert({
-    tenant_id: tenantId,
+    tenant_id: product.tenant_id,
     product_id: productId,
     customer_name: customerName,
     customer_email: customerEmail,

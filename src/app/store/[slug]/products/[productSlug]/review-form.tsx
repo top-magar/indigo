@@ -9,10 +9,9 @@ import { cn } from "@/shared/utils";
 
 interface ReviewFormProps {
   productId: string;
-  tenantId: string;
 }
 
-export function ReviewForm({ productId, tenantId }: ReviewFormProps) {
+export function ReviewForm({ productId }: ReviewFormProps) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -35,7 +34,6 @@ export function ReviewForm({ productId, tenantId }: ReviewFormProps) {
         if (rating === 0) { setError("Please select a rating"); return; }
         formData.append("rating", String(rating));
         formData.append("productId", productId);
-        formData.append("tenantId", tenantId);
         startTransition(async () => {
           const res = await fetch("/api/store/reviews", { method: "POST", body: formData });
           if (res.ok) setSubmitted(true);

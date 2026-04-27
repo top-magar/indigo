@@ -45,7 +45,7 @@ export async function ProductReviews({ productId, tenantId }: { productId: strin
         </div>
       ))}
 
-      <ReviewForm productId={productId} tenantId={tenantId} />
+      <ReviewForm productId={productId} />
     </div>
   );
 }
