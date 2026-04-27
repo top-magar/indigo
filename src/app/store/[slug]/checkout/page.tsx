@@ -20,7 +20,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <ShoppingCart className="size-16 text-muted-foreground" />
-        <h1 className="text-2xl font-bold">Your cart is empty</h1>
+        <h1 className="text-2xl font-semibold">Your cart is empty</h1>
         <p className="text-muted-foreground">Add some products to checkout</p>
         <Button asChild>
           <Link href={`/store/${slug}/products`}>Continue Shopping</Link>
@@ -36,7 +36,7 @@ export default async function CheckoutPage({ params }: { params: Promise<{ slug:
   return (
     <div className="py-12">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold">Checkout</h1>
+        <h1 className="text-3xl font-semibold">Checkout</h1>
         <div className="mt-8">
           <CheckoutForm
             tenantId={tenant.id}

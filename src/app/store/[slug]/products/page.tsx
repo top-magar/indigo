@@ -87,7 +87,7 @@ export default async function ProductsPage({
         <div className="flex items-end justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Shop</p>
-            <h1 className="mt-1 text-3xl font-bold tracking-tight">All Products</h1>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight">All Products</h1>
           </div>
           <p className="text-sm text-muted-foreground tabular-nums">
             {count ? `${count} product${count !== 1 ? "s" : ""}` : "Browse our collection"}

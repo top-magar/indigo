@@ -55,19 +55,19 @@ export default async function BillingPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Total Revenue</p>
-          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1">{formatCurrency(Number(totalRevenue), "NPR")}</p>
+          <p className="text-lg font-semibold tracking-tight tabular-nums mt-1">{formatCurrency(Number(totalRevenue), "NPR")}</p>
         </div>
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Active Subscriptions</p>
-          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1">{activeSubs}</p>
+          <p className="text-lg font-semibold tracking-tight tabular-nums mt-1">{activeSubs}</p>
         </div>
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">In Grace Period</p>
-          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1 text-warning">{graceSubs}</p>
+          <p className="text-lg font-semibold tracking-tight tabular-nums mt-1 text-warning">{graceSubs}</p>
         </div>
         <div className="rounded-lg border p-4">
           <p className="text-xs text-muted-foreground">Expired</p>
-          <p className="text-2xl font-semibold tracking-tight tabular-nums mt-1 text-destructive">{expiredSubs}</p>
+          <p className="text-lg font-semibold tracking-tight tabular-nums mt-1 text-destructive">{expiredSubs}</p>
         </div>
       </div>
 

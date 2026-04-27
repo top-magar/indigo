@@ -22,7 +22,7 @@ export default function StoreError({
                 <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-destructive/10">
                     <AlertCircle className="size-7 text-destructive" />
                 </div>
-                <h2 className="mb-2 text-xl font-bold text-foreground">
+                <h2 className="mb-2 text-xl font-semibold text-foreground">
                     Something went wrong
                 </h2>
                 <p className="mb-6 text-sm text-muted-foreground">

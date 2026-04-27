@@ -139,7 +139,7 @@ export default async function OrderDetailPage({
               Back to Orders
             </Link>
           </Button>
-          <h1 className="text-2xl font-bold">Order {order.order_number}</h1>
+          <h1 className="text-2xl font-semibold">Order {order.order_number}</h1>
           <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="size-4" />
             {formattedDate}

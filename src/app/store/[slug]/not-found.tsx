@@ -9,7 +9,7 @@ export default function StoreNotFound() {
                 <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted">
                     <Store className="size-8 text-muted-foreground" />
                 </div>
-                <h1 className="mb-2 text-4xl font-bold text-foreground">404</h1>
+                <h1 className="mb-2 text-4xl font-semibold text-foreground">404</h1>
                 <h2 className="mb-2 text-xl font-semibold text-foreground">
                     Store not found
                 </h2>

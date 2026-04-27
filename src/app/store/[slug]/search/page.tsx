@@ -245,7 +245,7 @@ export default function SearchPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Search Products</h1>
+            <h1 className="text-3xl font-semibold">Search Products</h1>
             {filters.query && (
               <p className="mt-1 text-muted-foreground">
                 {isLoading ? "Searching..." : `${products.length} results for "${filters.query}"`}

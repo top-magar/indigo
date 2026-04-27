@@ -282,7 +282,7 @@ export default function WishlistPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">My Wishlist</h1>
+            <h1 className="text-3xl font-semibold">My Wishlist</h1>
             <p className="mt-1 text-muted-foreground">
               {isLoading
                 ? "Loading..."

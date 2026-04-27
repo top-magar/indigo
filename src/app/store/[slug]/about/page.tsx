@@ -64,7 +64,7 @@ export default async function AboutPage({ params }: PageProps) {
           <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10">
             <Store className="size-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight">
             About {tenant.name}
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">

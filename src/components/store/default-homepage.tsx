@@ -42,9 +42,9 @@ export async function DefaultHomepage({
         style={heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
       >
         {heroImageUrl && <div className="absolute inset-0 bg-black/40" />}
-        <div className={`relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 ${heroImageUrl ? "text-white" : ""}`}>
+        <div className={`relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-28 lg:px-8 ${heroImageUrl ? "text-white" : ""}`}>
           <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="text-lg font-semibold tracking-tight tracking-tight sm:text-5xl lg:text-6xl">
               {heroTitle || tenantName}
             </h1>
             {(heroSubtitle || tenantDescription) && (
@@ -97,7 +97,7 @@ export async function DefaultHomepage({
       {hasCategories && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">Shop by Category</h2>
+            <h2 className="text-lg font-semibold tracking-tight tracking-tight">Shop by Category</h2>
             <Link href={storeHref(storeSlug, "/products")} className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1">
               View all <ArrowRight className="size-3.5" />
             </Link>
@@ -121,11 +121,11 @@ export async function DefaultHomepage({
 
       {/* Featured Products */}
       {hasProducts && (
-        <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-8">
             <div>
               <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">New Arrivals</p>
-              <h2 className="mt-1 text-2xl font-bold tracking-tight">Featured Products</h2>
+              <h2 className="mt-1 text-lg font-semibold tracking-tight tracking-tight">Featured Products</h2>
             </div>
             <Link href={storeHref(storeSlug, "/products")} className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1">
               View all <ArrowRight className="size-3.5" />
@@ -141,7 +141,7 @@ export async function DefaultHomepage({
 
       {/* Empty state */}
       {!hasProducts && (
-        <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 text-center">
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 text-center">
           <p className="text-lg font-medium">Coming soon</p>
           <p className="mt-2 text-muted-foreground">We&apos;re adding products. Check back shortly!</p>
         </section>

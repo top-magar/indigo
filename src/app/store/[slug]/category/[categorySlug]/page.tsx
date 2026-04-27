@@ -90,7 +90,7 @@ export default async function CategoryPage({
 
       <div className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold">{category.name}</h1>
+          <h1 className="text-3xl font-semibold">{category.name}</h1>
           {category.description && (
             <p className="mt-2 text-muted-foreground">{category.description}</p>
           )}

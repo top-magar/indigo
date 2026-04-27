@@ -68,7 +68,7 @@ export function UpgradeDialog({ plan, currentPlanName }: { plan: Plan; currentPl
             </div>
 
             <div className="text-center py-2">
-              <p className="text-2xl font-semibold tabular-nums">{formatCurrency(amount, "NPR")}</p>
+              <p className="text-lg font-semibold tabular-nums">{formatCurrency(amount, "NPR")}</p>
               <p className="text-xs text-muted-foreground">{cycle === "yearly" ? "per year" : "per month (cap)"}</p>
             </div>
 
@@ -80,7 +80,7 @@ export function UpgradeDialog({ plan, currentPlanName }: { plan: Plan; currentPl
           <div className="space-y-4">
             <div className="rounded-lg bg-muted/50 p-4 text-center">
               <p className="text-xs text-muted-foreground">Amount to pay</p>
-              <p className="text-2xl font-semibold tabular-nums mt-1">{formatCurrency(Number(paymentInfo.amount), "NPR")}</p>
+              <p className="text-lg font-semibold tabular-nums mt-1">{formatCurrency(Number(paymentInfo.amount), "NPR")}</p>
               <p className="text-xs text-muted-foreground">{paymentInfo.planName} — {paymentInfo.cycle}</p>
             </div>
 

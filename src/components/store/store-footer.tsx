@@ -39,7 +39,7 @@ export function StoreFooter({ tenant, showBranding = false }: StoreFooterProps) 
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold">Shop</h3>
+            <h3 className="text-sm font-semibold">Shop</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-muted-foreground hover:text-foreground">
@@ -51,7 +51,7 @@ export function StoreFooter({ tenant, showBranding = false }: StoreFooterProps) 
 
           {/* Support */}
           <div>
-            <h3 className="font-semibold">Support</h3>
+            <h3 className="text-sm font-semibold">Support</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-muted-foreground hover:text-foreground">

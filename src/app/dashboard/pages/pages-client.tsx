@@ -186,7 +186,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
               {/* Actions */}
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" aria-label="More actions" className="size-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="ghost" size="icon-sm" aria-label="More actions" className="size-9 opacity-0 group-hover:opacity-100 transition-opacity">
                     <MoreHorizontal className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
