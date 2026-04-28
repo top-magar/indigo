@@ -91,6 +91,11 @@ export async function proxy(request: NextRequest) {
     const role = dbUser?.role ?? "owner";
     const hasPlatformAccess = role === "platform_admin" || !!dbUser?.platform_role;
 
+    // Platform-only users (no tenant) can't access merchant dashboard
+    if (!dbUser?.tenant_id && pathname.startsWith("/dashboard") && hasPlatformAccess) {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+
     // Check if merchant is suspended (block dashboard access — even if they have platform access)
     if (dbUser?.tenant_id && pathname.startsWith("/dashboard")) {
       const { data: tenant } = await supabase
