@@ -24,10 +24,10 @@ export default async function InventoryPage({
     searchParams: Promise<SearchParams>;
 }) {
     const params = await searchParams;
-    const { supabase, tenantId } = await auth();
+    const { tenantId } = await auth();
 
     const [currency, productsData, stats, movements, categories] = await Promise.all([
-        getTenantCurrency(supabase, tenantId),
+        getTenantCurrency(tenantId),
         getInventoryProducts(tenantId, params),
         getInventoryStats(tenantId),
         getRecentMovements(tenantId, 10),

@@ -5,10 +5,11 @@ import { validateId } from "@/shared/utils/validate-id";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("attributes-attribute-actions");
 
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { db } from "@/infrastructure/db";
+import { attributes, attributeValues } from "@/db/schema/attributes";
+import { eq, and, desc, asc, ilike, or, inArray, gt, ne, count, sql } from "drizzle-orm";
 import type {
     Attribute,
     AttributeValue,
@@ -25,8 +26,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const { user, supabase } = await getAuthenticatedClient();
-    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
+    const { user } = await getAuthenticatedClient();
+    return { tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -47,71 +48,75 @@ function generateSlug(name: string): string {
 export async function getAttributes(
     filters: AttributeFilters = {}
 ): Promise<{ attributes: AttributeListItem[]; stats: AttributeStats; total: number }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
-        let query = supabase
-            .from("attributes")
-            .select("*", { count: "exact" })
-            .eq("tenant_id", tenantId);
+        const conditions = [eq(attributes.tenantId, tenantId)];
 
         // Apply search filter
         if (filters.search) {
-            query = query.or(`name.ilike.%${sanitizeSearch(filters.search)}%,slug.ilike.%${sanitizeSearch(filters.search)}%`);
+            const search = `%${sanitizeSearch(filters.search)}%`;
+            conditions.push(or(ilike(attributes.name, search), ilike(attributes.slug, search))!);
         }
 
         // Apply input type filter
         if (filters.inputType && filters.inputType !== "all") {
-            query = query.eq("input_type", filters.inputType);
+            conditions.push(eq(attributes.inputType, filters.inputType));
         }
 
         // Apply filterable filter
         if (filters.filterableInStorefront !== undefined) {
-            query = query.eq("filterable_in_storefront", filters.filterableInStorefront);
+            conditions.push(eq(attributes.filterableInStorefront, filters.filterableInStorefront));
         }
+
+        // Get count
+        const [totalResult] = await db
+            .select({ value: count() })
+            .from(attributes)
+            .where(and(...conditions));
 
         // Apply sorting
         const sortBy = filters.sortBy || "created_at";
         const sortOrder = filters.sortOrder === "asc";
-        query = query.order(sortBy, { ascending: sortOrder });
+        const orderCol = sortBy === "name" ? attributes.name : attributes.createdAt;
+        const orderFn = sortOrder ? asc(orderCol) : desc(orderCol);
 
-        const { data: attributes, count, error } = await query;
-
-        if (error) {
-            log.error("Error fetching attributes:", error);
-            return { attributes: [], stats: getEmptyStats(), total: 0 };
-        }
+        const rows = await db
+            .select()
+            .from(attributes)
+            .where(and(...conditions))
+            .orderBy(orderFn);
 
         // Get value counts for each attribute
-        const attributeIds = attributes?.map(a => a.id) || [];
-        const { data: valueCounts } = await supabase
-            .from("attribute_values")
-            .select("attribute_id")
-            .in("attribute_id", attributeIds.length > 0 ? attributeIds : ["none"]);
-
-        const valueCountMap = new Map<string, number>();
-        valueCounts?.forEach(v => {
-            valueCountMap.set(v.attribute_id, (valueCountMap.get(v.attribute_id) || 0) + 1);
-        });
+        const attributeIds = rows.map(a => a.id);
+        let valueCountMap = new Map<string, number>();
+        if (attributeIds.length > 0) {
+            const valueCounts = await db
+                .select({ attributeId: attributeValues.attributeId, cnt: count() })
+                .from(attributeValues)
+                .where(inArray(attributeValues.attributeId, attributeIds))
+                .groupBy(attributeValues.attributeId);
+            valueCounts.forEach(v => valueCountMap.set(v.attributeId, v.cnt));
+        }
 
         // Transform to list items
-        const attributeList: AttributeListItem[] = (attributes || []).map(attr => ({
+        const attributeList: AttributeListItem[] = rows.map(attr => ({
             id: attr.id,
             name: attr.name,
             slug: attr.slug,
-            inputType: attr.input_type,
-            valueRequired: attr.value_required,
-            visibleInStorefront: attr.visible_in_storefront,
-            filterableInStorefront: attr.filterable_in_storefront,
+            inputType: attr.inputType,
+            valueRequired: attr.valueRequired ?? false,
+            visibleInStorefront: attr.visibleInStorefront ?? true,
+            filterableInStorefront: attr.filterableInStorefront ?? false,
             valuesCount: valueCountMap.get(attr.id) || 0,
-            usedInProductTypes: attr.used_in_product_types || 0,
-            createdAt: attr.created_at,
+            usedInProductTypes: attr.usedInProductTypes || 0,
+            createdAt: attr.createdAt.toISOString(),
         }));
 
         // Calculate stats
-        const stats = calculateStats(attributes || []);
+        const stats = calculateStats(rows.map(r => ({ input_type: r.inputType })));
 
-        return { attributes: attributeList, stats, total: count || 0 };
+        return { attributes: attributeList, stats, total: totalResult?.value || 0 };
     } catch (error) {
         log.error("Failed to fetch attributes:", error);
         return { attributes: [], stats: getEmptyStats(), total: 0 };
@@ -158,59 +163,58 @@ export async function getAttributeDetail(attributeId: string): Promise<{
     data?: Attribute;
     error?: string;
 }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(attributeId, "Attribute ID");
         // Fetch attribute
-        const { data: attribute, error: attrError } = await supabase
-            .from("attributes")
-            .select("*")
-            .eq("id", attributeId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [attribute] = await db
+            .select()
+            .from(attributes)
+            .where(and(eq(attributes.id, attributeId), eq(attributes.tenantId, tenantId)))
+            .limit(1);
 
-        if (attrError || !attribute) {
+        if (!attribute) {
             return { success: false, error: "Attribute not found" };
         }
 
         // Fetch values
-        const { data: values } = await supabase
-            .from("attribute_values")
-            .select("*")
-            .eq("attribute_id", attributeId)
-            .order("sort_order", { ascending: true });
+        const values = await db
+            .select()
+            .from(attributeValues)
+            .where(eq(attributeValues.attributeId, attributeId))
+            .orderBy(asc(attributeValues.sortOrder));
 
         // Transform to Attribute type
         const attributeData: Attribute = {
             id: attribute.id,
-            tenantId: attribute.tenant_id,
+            tenantId: attribute.tenantId,
             name: attribute.name,
             slug: attribute.slug,
-            inputType: attribute.input_type,
-            entityType: attribute.entity_type,
-            unit: attribute.unit,
-            valueRequired: attribute.value_required,
-            visibleInStorefront: attribute.visible_in_storefront,
-            filterableInStorefront: attribute.filterable_in_storefront,
-            filterableInDashboard: attribute.filterable_in_dashboard,
-            usedInProductTypes: attribute.used_in_product_types || 0,
-            values: (values || []).map(v => ({
+            inputType: attribute.inputType,
+            entityType: attribute.entityType as Attribute["entityType"],
+            unit: attribute.unit as Attribute["unit"],
+            valueRequired: attribute.valueRequired ?? false,
+            visibleInStorefront: attribute.visibleInStorefront ?? true,
+            filterableInStorefront: attribute.filterableInStorefront ?? false,
+            filterableInDashboard: attribute.filterableInDashboard ?? true,
+            usedInProductTypes: attribute.usedInProductTypes || 0,
+            values: values.map(v => ({
                 id: v.id,
-                attributeId: v.attribute_id,
+                attributeId: v.attributeId,
                 name: v.name,
                 slug: v.slug,
-                value: v.value,
-                richText: v.rich_text,
-                fileUrl: v.file_url,
-                swatchColor: v.swatch_color,
-                swatchImage: v.swatch_image,
-                sortOrder: v.sort_order,
-                createdAt: v.created_at,
+                value: v.value ?? undefined,
+                richText: v.richText ?? undefined,
+                fileUrl: v.fileUrl ?? undefined,
+                swatchColor: v.swatchColor ?? undefined,
+                swatchImage: v.swatchImage ?? undefined,
+                sortOrder: v.sortOrder ?? 0,
+                createdAt: v.createdAt.toISOString(),
             })),
-            metadata: attribute.metadata,
-            createdAt: attribute.created_at,
-            updatedAt: attribute.updated_at,
+            metadata: (attribute.metadata as Record<string, unknown>) ?? undefined,
+            createdAt: attribute.createdAt.toISOString(),
+            updatedAt: attribute.updatedAt.toISOString(),
         };
 
         return { success: true, data: attributeData };
@@ -229,61 +233,59 @@ export async function createAttribute(input: CreateAttributeInput): Promise<{
     data?: Attribute;
     error?: string;
 }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         const slug = input.slug || generateSlug(input.name);
 
         // Check for duplicate slug
-        const { data: existing } = await supabase
-            .from("attributes")
-            .select("id")
-            .eq("tenant_id", tenantId)
-            .eq("slug", slug)
-            .single();
+        const [existing] = await db
+            .select({ id: attributes.id })
+            .from(attributes)
+            .where(and(eq(attributes.tenantId, tenantId), eq(attributes.slug, slug)))
+            .limit(1);
 
         if (existing) {
             return { success: false, error: "An attribute with this slug already exists" };
         }
 
         // Create attribute
-        const { data: attribute, error: createError } = await supabase
-            .from("attributes")
-            .insert({
-                tenant_id: tenantId,
+        const [attribute] = await db
+            .insert(attributes)
+            .values({
+                tenantId,
                 name: input.name,
                 slug,
-                input_type: input.inputType,
-                entity_type: input.entityType || null,
+                inputType: input.inputType,
+                entityType: input.entityType || null,
                 unit: input.unit || null,
-                value_required: input.valueRequired ?? false,
-                visible_in_storefront: input.visibleInStorefront ?? true,
-                filterable_in_storefront: input.filterableInStorefront ?? false,
-                filterable_in_dashboard: input.filterableInDashboard ?? true,
+                valueRequired: input.valueRequired ?? false,
+                visibleInStorefront: input.visibleInStorefront ?? true,
+                filterableInStorefront: input.filterableInStorefront ?? false,
+                filterableInDashboard: input.filterableInDashboard ?? true,
             })
-            .select()
-            .single();
+            .returning();
 
-        if (createError || !attribute) {
+        if (!attribute) {
             return { success: false, error: "Failed to create attribute" };
         }
 
         // Create values if provided
         if (input.values && input.values.length > 0) {
             const valuesToInsert = input.values.map((v, index) => ({
-                tenant_id: tenantId,
-                attribute_id: attribute.id,
+                tenantId,
+                attributeId: attribute.id,
                 name: v.name,
                 slug: v.slug || generateSlug(v.name),
                 value: v.value || null,
-                rich_text: v.richText || null,
-                file_url: v.fileUrl || null,
-                swatch_color: v.swatchColor || null,
-                swatch_image: v.swatchImage || null,
-                sort_order: index,
+                richText: v.richText || null,
+                fileUrl: v.fileUrl || null,
+                swatchColor: v.swatchColor || null,
+                swatchImage: v.swatchImage || null,
+                sortOrder: index,
             }));
 
-            await supabase.from("attribute_values").insert(valuesToInsert);
+            await db.insert(attributeValues).values(valuesToInsert);
         }
 
         revalidatePath("/dashboard/attributes");
@@ -304,44 +306,41 @@ export async function updateAttribute(
     attributeId: string,
     input: UpdateAttributeInput
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         const updateData: Record<string, unknown> = {
-            updated_at: new Date().toISOString(),
+            updatedAt: new Date(),
         };
 
         if (input.name !== undefined) updateData.name = input.name;
         if (input.slug !== undefined) {
             // Check for duplicate slug
-            const { data: existing } = await supabase
-                .from("attributes")
-                .select("id")
-                .eq("tenant_id", tenantId)
-                .eq("slug", input.slug)
-                .neq("id", attributeId)
-                .single();
+            const [existing] = await db
+                .select({ id: attributes.id })
+                .from(attributes)
+                .where(and(
+                    eq(attributes.tenantId, tenantId),
+                    eq(attributes.slug, input.slug),
+                    ne(attributes.id, attributeId),
+                ))
+                .limit(1);
 
             if (existing) {
                 return { success: false, error: "An attribute with this slug already exists" };
             }
             updateData.slug = input.slug;
         }
-        if (input.valueRequired !== undefined) updateData.value_required = input.valueRequired;
-        if (input.visibleInStorefront !== undefined) updateData.visible_in_storefront = input.visibleInStorefront;
-        if (input.filterableInStorefront !== undefined) updateData.filterable_in_storefront = input.filterableInStorefront;
-        if (input.filterableInDashboard !== undefined) updateData.filterable_in_dashboard = input.filterableInDashboard;
+        if (input.valueRequired !== undefined) updateData.valueRequired = input.valueRequired;
+        if (input.visibleInStorefront !== undefined) updateData.visibleInStorefront = input.visibleInStorefront;
+        if (input.filterableInStorefront !== undefined) updateData.filterableInStorefront = input.filterableInStorefront;
+        if (input.filterableInDashboard !== undefined) updateData.filterableInDashboard = input.filterableInDashboard;
         if (input.unit !== undefined) updateData.unit = input.unit;
 
-        const { error } = await supabase
-            .from("attributes")
-            .update(updateData)
-            .eq("id", attributeId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to update attribute" };
-        }
+        await db
+            .update(attributes)
+            .set(updateData)
+            .where(and(eq(attributes.id, attributeId), eq(attributes.tenantId, tenantId)));
 
         revalidatePath("/dashboard/attributes");
         revalidatePath(`/dashboard/attributes/${attributeId}`);
@@ -360,19 +359,18 @@ export async function deleteAttribute(attributeId: string): Promise<{
     success: boolean;
     error?: string;
 }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(attributeId, "Attribute ID");
         // Check if attribute is used in product types
-        const { data: attribute } = await supabase
-            .from("attributes")
-            .select("used_in_product_types")
-            .eq("id", attributeId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [attribute] = await db
+            .select({ usedInProductTypes: attributes.usedInProductTypes })
+            .from(attributes)
+            .where(and(eq(attributes.id, attributeId), eq(attributes.tenantId, tenantId)))
+            .limit(1);
 
-        if (attribute?.used_in_product_types > 0) {
+        if (attribute && (attribute.usedInProductTypes || 0) > 0) {
             return { 
                 success: false, 
                 error: "Cannot delete attribute that is assigned to product types. Remove it from product types first." 
@@ -380,22 +378,14 @@ export async function deleteAttribute(attributeId: string): Promise<{
         }
 
         // Delete values first
-        await supabase
-            .from("attribute_values")
-            .delete()
-            .eq("attribute_id", attributeId)
-            .eq("tenant_id", tenantId);
+        await db
+            .delete(attributeValues)
+            .where(and(eq(attributeValues.attributeId, attributeId), eq(attributeValues.tenantId, tenantId)));
 
         // Delete attribute
-        const { error } = await supabase
-            .from("attributes")
-            .delete()
-            .eq("id", attributeId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to delete attribute" };
-        }
+        await db
+            .delete(attributes)
+            .where(and(eq(attributes.id, attributeId), eq(attributes.tenantId, tenantId)));
 
         revalidatePath("/dashboard/attributes");
         return { success: true };
@@ -413,39 +403,37 @@ export async function addAttributeValue(
     attributeId: string,
     input: AttributeValueInput
 ): Promise<{ success: boolean; data?: AttributeValue; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         // Get current max sort order
-        const { data: maxOrder } = await supabase
-            .from("attribute_values")
-            .select("sort_order")
-            .eq("attribute_id", attributeId)
-            .order("sort_order", { ascending: false })
-            .limit(1)
-            .single();
+        const [maxOrder] = await db
+            .select({ sortOrder: attributeValues.sortOrder })
+            .from(attributeValues)
+            .where(eq(attributeValues.attributeId, attributeId))
+            .orderBy(desc(attributeValues.sortOrder))
+            .limit(1);
 
-        const sortOrder = (maxOrder?.sort_order ?? -1) + 1;
+        const sortOrder = ((maxOrder?.sortOrder) ?? -1) + 1;
         const slug = input.slug || generateSlug(input.name);
 
-        const { data: value, error } = await supabase
-            .from("attribute_values")
-            .insert({
-                tenant_id: tenantId,
-                attribute_id: attributeId,
+        const [value] = await db
+            .insert(attributeValues)
+            .values({
+                tenantId,
+                attributeId,
                 name: input.name,
                 slug,
                 value: input.value || null,
-                rich_text: input.richText || null,
-                file_url: input.fileUrl || null,
-                swatch_color: input.swatchColor || null,
-                swatch_image: input.swatchImage || null,
-                sort_order: sortOrder,
+                richText: input.richText || null,
+                fileUrl: input.fileUrl || null,
+                swatchColor: input.swatchColor || null,
+                swatchImage: input.swatchImage || null,
+                sortOrder,
             })
-            .select()
-            .single();
+            .returning();
 
-        if (error || !value) {
+        if (!value) {
             return { success: false, error: "Failed to add value" };
         }
 
@@ -454,16 +442,16 @@ export async function addAttributeValue(
             success: true,
             data: {
                 id: value.id,
-                attributeId: value.attribute_id,
+                attributeId: value.attributeId,
                 name: value.name,
                 slug: value.slug,
-                value: value.value,
-                richText: value.rich_text,
-                fileUrl: value.file_url,
-                swatchColor: value.swatch_color,
-                swatchImage: value.swatch_image,
-                sortOrder: value.sort_order,
-                createdAt: value.created_at,
+                value: value.value ?? undefined,
+                richText: value.richText ?? undefined,
+                fileUrl: value.fileUrl ?? undefined,
+                swatchColor: value.swatchColor ?? undefined,
+                swatchImage: value.swatchImage ?? undefined,
+                sortOrder: value.sortOrder ?? 0,
+                createdAt: value.createdAt.toISOString(),
             },
         };
     } catch (error) {
@@ -476,31 +464,29 @@ export async function updateAttributeValue(
     valueId: string,
     input: Partial<AttributeValueInput>
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         const updateData: Record<string, unknown> = {};
         if (input.name !== undefined) updateData.name = input.name;
         if (input.slug !== undefined) updateData.slug = input.slug;
         if (input.value !== undefined) updateData.value = input.value;
-        if (input.richText !== undefined) updateData.rich_text = input.richText;
-        if (input.fileUrl !== undefined) updateData.file_url = input.fileUrl;
-        if (input.swatchColor !== undefined) updateData.swatch_color = input.swatchColor;
-        if (input.swatchImage !== undefined) updateData.swatch_image = input.swatchImage;
+        if (input.richText !== undefined) updateData.richText = input.richText;
+        if (input.fileUrl !== undefined) updateData.fileUrl = input.fileUrl;
+        if (input.swatchColor !== undefined) updateData.swatchColor = input.swatchColor;
+        if (input.swatchImage !== undefined) updateData.swatchImage = input.swatchImage;
 
-        const { data: value, error } = await supabase
-            .from("attribute_values")
-            .update(updateData)
-            .eq("id", valueId)
-            .eq("tenant_id", tenantId)
-            .select("attribute_id")
-            .single();
+        const [value] = await db
+            .update(attributeValues)
+            .set(updateData)
+            .where(and(eq(attributeValues.id, valueId), eq(attributeValues.tenantId, tenantId)))
+            .returning({ attributeId: attributeValues.attributeId });
 
-        if (error || !value) {
+        if (!value) {
             return { success: false, error: "Failed to update value" };
         }
 
-        revalidatePath(`/dashboard/attributes/${value.attribute_id}`);
+        revalidatePath(`/dashboard/attributes/${value.attributeId}`);
         return { success: true };
     } catch (error) {
         log.error("Failed to update value:", error);
@@ -512,32 +498,25 @@ export async function deleteAttributeValue(valueId: string): Promise<{
     success: boolean;
     error?: string;
 }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(valueId, "Value ID");
-        const { data: value, error: fetchError } = await supabase
-            .from("attribute_values")
-            .select("attribute_id")
-            .eq("id", valueId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [value] = await db
+            .select({ attributeId: attributeValues.attributeId })
+            .from(attributeValues)
+            .where(and(eq(attributeValues.id, valueId), eq(attributeValues.tenantId, tenantId)))
+            .limit(1);
 
-        if (fetchError || !value) {
+        if (!value) {
             return { success: false, error: "Value not found" };
         }
 
-        const { error } = await supabase
-            .from("attribute_values")
-            .delete()
-            .eq("id", valueId)
-            .eq("tenant_id", tenantId);
+        await db
+            .delete(attributeValues)
+            .where(and(eq(attributeValues.id, valueId), eq(attributeValues.tenantId, tenantId)));
 
-        if (error) {
-            return { success: false, error: "Failed to delete value" };
-        }
-
-        revalidatePath(`/dashboard/attributes/${value.attribute_id}`);
+        revalidatePath(`/dashboard/attributes/${value.attributeId}`);
         return { success: true };
     } catch (error) {
         log.error("Failed to delete value:", error);
@@ -549,16 +528,15 @@ export async function reorderAttributeValues(
     attributeId: string,
     valueIds: string[]
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         // Update sort order for each value
         const updates = valueIds.map((id, index) =>
-            supabase
-                .from("attribute_values")
-                .update({ sort_order: index })
-                .eq("id", id)
-                .eq("tenant_id", tenantId)
+            db
+                .update(attributeValues)
+                .set({ sortOrder: index })
+                .where(and(eq(attributeValues.id, id), eq(attributeValues.tenantId, tenantId)))
         );
 
         await Promise.all(updates);
@@ -580,18 +558,20 @@ export async function bulkDeleteAttributes(attributeIds: string[]): Promise<{
     deleted: number;
     error?: string;
 }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         // Check if any attributes are used in product types
-        const { data: usedAttributes } = await supabase
-            .from("attributes")
-            .select("id, name, used_in_product_types")
-            .in("id", attributeIds)
-            .eq("tenant_id", tenantId)
-            .gt("used_in_product_types", 0);
+        const usedAttributes = await db
+            .select({ id: attributes.id, name: attributes.name, usedInProductTypes: attributes.usedInProductTypes })
+            .from(attributes)
+            .where(and(
+                inArray(attributes.id, attributeIds),
+                eq(attributes.tenantId, tenantId),
+                gt(attributes.usedInProductTypes, 0),
+            ));
 
-        if (usedAttributes && usedAttributes.length > 0) {
+        if (usedAttributes.length > 0) {
             const names = usedAttributes.map(a => a.name).join(", ");
             return {
                 success: false,
@@ -601,25 +581,17 @@ export async function bulkDeleteAttributes(attributeIds: string[]): Promise<{
         }
 
         // Delete values first
-        await supabase
-            .from("attribute_values")
-            .delete()
-            .in("attribute_id", attributeIds)
-            .eq("tenant_id", tenantId);
+        await db
+            .delete(attributeValues)
+            .where(and(inArray(attributeValues.attributeId, attributeIds), eq(attributeValues.tenantId, tenantId)));
 
         // Delete attributes
-        const { error, count } = await supabase
-            .from("attributes")
-            .delete()
-            .in("id", attributeIds)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, deleted: 0, error: "Failed to delete attributes" };
-        }
+        await db
+            .delete(attributes)
+            .where(and(inArray(attributes.id, attributeIds), eq(attributes.tenantId, tenantId)));
 
         revalidatePath("/dashboard/attributes");
-        return { success: true, deleted: count || attributeIds.length };
+        return { success: true, deleted: attributeIds.length };
     } catch (error) {
         log.error("Failed to bulk delete:", error);
         return { success: false, deleted: 0, error: "Failed to delete attributes" };

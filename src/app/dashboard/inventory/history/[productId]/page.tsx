@@ -24,9 +24,9 @@ export const metadata: Metadata = {
 
 export default async function StockHistoryPage({ params }: { params: Promise<{ productId: string }> }) {
     const { productId } = await params;
-    const { supabase, tenantId } = await auth();
+    const { tenantId } = await auth();
 
-    const result = await getProductWithMovements(tenantId, supabase, productId);
+    const result = await getProductWithMovements(tenantId, productId);
     if (!result) notFound();
 
     const { product, movements } = result;
@@ -82,7 +82,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Total Added</p>
                         <p className="text-lg font-semibold tabular-nums mt-1 text-success">
-                            +{movements.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0)}
+                            +{movements.filter(m => m.quantityChange > 0).reduce((sum, m) => sum + m.quantityChange, 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -90,7 +90,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                     <CardContent className="p-4">
                         <p className="text-xs font-medium text-muted-foreground">Total Removed</p>
                         <p className="text-lg font-semibold tabular-nums mt-1 text-destructive">
-                            {movements.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0)}
+                            {movements.filter(m => m.quantityChange < 0).reduce((sum, m) => sum + m.quantityChange, 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -133,9 +133,9 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                 >
                                     <div className={cn(
                                         "size-8 rounded-full flex items-center justify-center shrink-0",
-                                        movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
+                                        movement.quantityChange > 0 ? "bg-success/10" : "bg-destructive/10"
                                     )}>
-                                        {movement.quantity_change > 0 ? (
+                                        {movement.quantityChange > 0 ? (
                                             <ChevronUp className={cn("size-4", "text-success")} />
                                         ) : (
                                             <ChevronDown className={cn("size-4", "text-destructive")} />
@@ -145,15 +145,15 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <span className={cn(
                                                 "text-lg font-semibold tabular-nums",
-                                                movement.quantity_change > 0 ? "text-success" : "text-destructive"
+                                                movement.quantityChange > 0 ? "text-success" : "text-destructive"
                                             )}>
-                                                {movement.quantity_change > 0 ? "+" : ""}{movement.quantity_change}
+                                                {movement.quantityChange > 0 ? "+" : ""}{movement.quantityChange}
                                             </span>
                                             <Badge variant="secondary" className="capitalize">
                                                 {movement.type}
                                             </Badge>
                                             <span className="text-sm text-muted-foreground">
-                                                {movement.quantity_before} → {movement.quantity_after}
+                                                {movement.quantityBefore} → {movement.quantityAfter}
                                             </span>
                                         </div>
                                         <p className="text-sm font-medium mt-1">{movement.reason}</p>
@@ -168,10 +168,10 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                                     </div>
                                     <div className="text-right shrink-0">
                                         <p className="text-sm text-muted-foreground">
-                                            {format(new Date(movement.created_at), "MMM d, yyyy")}
+                                            {format(new Date(movement.createdAt), "MMM d, yyyy")}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            {format(new Date(movement.created_at), "h:mm a")}
+                                            {format(new Date(movement.createdAt), "h:mm a")}
                                         </p>
                                     </div>
                                 </div>

@@ -1,19 +1,27 @@
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { inventoryRepository } from "@/features/inventory/repositories";
 import { categoryRepository } from "@/features/categories/repositories";
 import type { StockLevel } from "@/features/inventory/repositories";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { products } from "@/db/schema/products";
+import { stockMovements } from "@/db/schema/inventory";
+import { eq, and, desc } from "drizzle-orm";
 
 // ─── Auth ────────────────────────────────────────────────
 
 export async function auth() {
-  const { user, supabase } = await getAuthenticatedClient();
-  return { supabase, tenantId: user.tenantId, userId: user.id };
+  const { user } = await getAuthenticatedClient();
+  return { tenantId: user.tenantId, userId: user.id };
 }
 
-export async function getTenantCurrency(supabase: Awaited<ReturnType<typeof createClient>>, tenantId: string) {
-  const { data } = await supabase.from("tenants").select("currency").eq("id", tenantId).single();
-  return data?.currency || "USD";
+export async function getTenantCurrency(tenantId: string) {
+  const [result] = await db
+    .select({ currency: tenants.currency })
+    .from(tenants)
+    .where(eq(tenants.id, tenantId))
+    .limit(1);
+  return result?.currency || "USD";
 }
 
 // ─── Inventory ───────────────────────────────────────────
@@ -58,23 +66,27 @@ export async function getCategories(tenantId: string) {
 
 // ─── Stock History ───────────────────────────────────────
 
-export async function getProductWithMovements(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>, productId: string) {
-  const { data: product } = await supabase
-    .from("products")
-    .select("id, name, sku, quantity, images")
-    .eq("id", productId)
-    .eq("tenant_id", tenantId)
-    .single();
+export async function getProductWithMovements(tenantId: string, productId: string) {
+  const [product] = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      sku: products.sku,
+      quantity: products.quantity,
+      images: products.images,
+    })
+    .from(products)
+    .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)))
+    .limit(1);
 
   if (!product) return null;
 
-  const { data: movements } = await supabase
-    .from("stock_movements")
-    .select("*")
-    .eq("product_id", productId)
-    .eq("tenant_id", tenantId)
-    .order("created_at", { ascending: false })
+  const movements = await db
+    .select()
+    .from(stockMovements)
+    .where(and(eq(stockMovements.productId, productId), eq(stockMovements.tenantId, tenantId)))
+    .orderBy(desc(stockMovements.createdAt))
     .limit(100);
 
-  return { product, movements: movements || [] };
+  return { product, movements };
 }

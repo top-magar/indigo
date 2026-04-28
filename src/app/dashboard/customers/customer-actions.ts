@@ -4,10 +4,13 @@ import { createLogger } from "@/lib/logger";
 const log = createLogger("customers-customer-actions");
 
 import { validateId } from "@/shared/utils/validate-id";
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { db } from "@/infrastructure/db";
+import { customers, addresses } from "@/db/schema/customers";
+import { orders } from "@/db/schema/orders";
+import { tenants } from "@/db/schema/tenants";
+import { eq, and, desc, count } from "drizzle-orm";
 import type {
     Customer,
     CustomerAddress,
@@ -26,9 +29,13 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const { user, supabase } = await getAuthenticatedClient();
-    const { data: tenant } = await supabase.from("tenants").select("currency").eq("id", user.tenantId).single();
-    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName, currency: tenant?.currency || "USD" };
+    const { user } = await getAuthenticatedClient();
+    const [tenant] = await db
+        .select({ currency: tenants.currency })
+        .from(tenants)
+        .where(eq(tenants.id, user.tenantId))
+        .limit(1);
+    return { tenantId: user.tenantId, userId: user.id, userName: user.fullName, currency: tenant?.currency || "USD" };
 }
 
 // ============================================================================
@@ -40,79 +47,68 @@ export async function getCustomerDetail(customerId: string): Promise<{
     data?: Customer; 
     error?: string 
 }> {
-    const { supabase, tenantId, currency } = await getAuthenticatedTenant();
+    const { tenantId, currency } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
         // Fetch customer
-        const { data: customer, error: customerError } = await supabase
-            .from("customers")
-            .select("*")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [customer] = await db
+            .select()
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
-        if (customerError || !customer) {
+        if (!customer) {
             return { success: false, error: "Customer not found" };
         }
 
         // Fetch addresses
-        const { data: addresses } = await supabase
-            .from("addresses")
-            .select("*")
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId)
-            .order("is_default", { ascending: false });
+        const addressRows = await db
+            .select()
+            .from(addresses)
+            .where(and(eq(addresses.customerId, customerId), eq(addresses.tenantId, tenantId)))
+            .orderBy(desc(addresses.isDefault));
 
-        // Fetch recent orders
-        const { data: orders } = await supabase
-            .from("orders")
-            .select(`
-                id,
-                order_number,
-                status,
-                payment_status,
-                total,
-                currency,
-                created_at,
-                order_items (id)
-            `)
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false })
+        // Fetch recent orders (with item counts via subquery)
+        const orderRows = await db
+            .select()
+            .from(orders)
+            .where(and(eq(orders.customerId, customerId), eq(orders.tenantId, tenantId)))
+            .orderBy(desc(orders.createdAt))
             .limit(10);
 
-        // Calculate stats
-        const { data: allOrders } = await supabase
-            .from("orders")
-            .select("total, created_at, payment_status")
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId)
-            .eq("payment_status", "paid");
+        // Calculate stats from paid orders
+        const paidOrders = await db
+            .select({ total: orders.total, createdAt: orders.createdAt })
+            .from(orders)
+            .where(and(
+                eq(orders.customerId, customerId),
+                eq(orders.tenantId, tenantId),
+                eq(orders.paymentStatus, "paid"),
+            ));
 
-        const paidOrders = allOrders || [];
-        const totalSpent = paidOrders.reduce((sum: number, o: { total?: number }) => sum + (o.total || 0), 0);
-        const orderDates = paidOrders.map((o: { created_at: string }) => o.created_at).sort();
+        const totalSpent = paidOrders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+        const orderDates = paidOrders.map(o => o.createdAt.toISOString()).sort();
 
         // Transform addresses
-        const transformedAddresses: CustomerAddress[] = (addresses || []).map(addr => ({
+        const transformedAddresses: CustomerAddress[] = addressRows.map(addr => ({
             id: addr.id,
-            customerId: addr.customer_id,
-            type: addr.type,
-            firstName: addr.first_name,
-            lastName: addr.last_name,
+            customerId: addr.customerId,
+            type: (addr.type || "shipping") as "shipping" | "billing",
+            firstName: addr.firstName,
+            lastName: addr.lastName,
             company: addr.company,
-            addressLine1: addr.address_line1,
-            addressLine2: addr.address_line2,
+            addressLine1: addr.addressLine1,
+            addressLine2: addr.addressLine2,
             city: addr.city,
             state: addr.state,
-            postalCode: addr.postal_code,
+            postalCode: addr.postalCode,
             country: addr.country,
-            countryCode: addr.country_code || addr.country,
+            countryCode: addr.countryCode || addr.country,
             phone: addr.phone,
-            isDefault: addr.is_default,
-            createdAt: addr.created_at,
-            updatedAt: addr.updated_at,
+            isDefault: addr.isDefault ?? false,
+            createdAt: addr.createdAt.toISOString(),
+            updatedAt: addr.updatedAt.toISOString(),
         }));
 
         // Get default addresses
@@ -122,15 +118,15 @@ export async function getCustomerDetail(customerId: string): Promise<{
                                transformedAddresses.find(a => a.type === "shipping") || null;
 
         // Transform orders
-        const recentOrders: CustomerOrderSummary[] = (orders || []).map(order => ({
+        const recentOrders: CustomerOrderSummary[] = orderRows.map(order => ({
             id: order.id,
-            orderNumber: order.order_number,
+            orderNumber: order.orderNumber,
             status: order.status,
-            paymentStatus: order.payment_status,
-            total: order.total,
+            paymentStatus: order.paymentStatus || "pending",
+            total: Number(order.total),
             currency: order.currency || currency,
-            itemsCount: Array.isArray(order.order_items) ? order.order_items.length : 0,
-            createdAt: order.created_at,
+            itemsCount: order.itemsCount || 0,
+            createdAt: order.createdAt.toISOString(),
         }));
 
         // Parse metadata
@@ -146,21 +142,21 @@ export async function getCustomerDetail(customerId: string): Promise<{
         // Build customer object
         const customerData: Customer = {
             id: customer.id,
-            tenantId: customer.tenant_id,
+            tenantId: customer.tenantId,
             email: customer.email,
-            firstName: customer.first_name,
-            lastName: customer.last_name,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
             phone: customer.phone,
-            isActive: customer.is_active ?? true,
-            acceptsMarketing: customer.accepts_marketing ?? false,
-            dateJoined: customer.created_at,
-            lastLogin: customer.last_login || null,
-            updatedAt: customer.updated_at,
+            isActive: customer.isActive ?? true,
+            acceptsMarketing: customer.acceptsMarketing ?? false,
+            dateJoined: customer.createdAt.toISOString(),
+            lastLogin: customer.lastLogin?.toISOString() || null,
+            updatedAt: customer.updatedAt.toISOString(),
             note: (metadata.note as string) || null,
             notes,
             tags: (metadata.tags as string[]) || [],
             metadata: metadata,
-            privateMetadata: (customer.private_metadata as Record<string, unknown>) || {},
+            privateMetadata: (customer.privateMetadata as Record<string, unknown>) || {},
             defaultBillingAddress: defaultBilling,
             defaultShippingAddress: defaultShipping,
             addresses: transformedAddresses,
@@ -190,29 +186,28 @@ export async function updateCustomerDetails(
     customerId: string,
     input: UpdateCustomerInput
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId, userName } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
         // Get current customer data
-        const { data: current } = await supabase
-            .from("customers")
-            .select("metadata")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [current] = await db
+            .select({ metadata: customers.metadata })
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
         const currentMetadata = (current?.metadata as Record<string, unknown>) || {};
         
         const updateData: Record<string, unknown> = {
-            updated_at: new Date().toISOString(),
+            updatedAt: new Date(),
         };
 
-        if (input.firstName !== undefined) updateData.first_name = input.firstName;
-        if (input.lastName !== undefined) updateData.last_name = input.lastName;
+        if (input.firstName !== undefined) updateData.firstName = input.firstName;
+        if (input.lastName !== undefined) updateData.lastName = input.lastName;
         if (input.phone !== undefined) updateData.phone = input.phone;
-        if (input.isActive !== undefined) updateData.is_active = input.isActive;
-        if (input.acceptsMarketing !== undefined) updateData.accepts_marketing = input.acceptsMarketing;
+        if (input.isActive !== undefined) updateData.isActive = input.isActive;
+        if (input.acceptsMarketing !== undefined) updateData.acceptsMarketing = input.acceptsMarketing;
         if (input.note !== undefined) {
             updateData.metadata = { ...currentMetadata, note: input.note };
         }
@@ -220,15 +215,10 @@ export async function updateCustomerDetails(
             updateData.metadata = { ...currentMetadata, ...input.metadata };
         }
 
-        const { error } = await supabase
-            .from("customers")
-            .update(updateData)
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to update customer" };
-        }
+        await db
+            .update(customers)
+            .set(updateData)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
         revalidatePath(`/dashboard/customers/${customerId}`);
         revalidatePath("/dashboard/customers");
@@ -248,16 +238,15 @@ export async function addCustomerNoteAction(
     text: string,
     isPrivate: boolean = false
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId, userName } = await getAuthenticatedTenant();
+    const { tenantId, userName } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
-        const { data: customer } = await supabase
-            .from("customers")
-            .select("metadata")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [customer] = await db
+            .select({ metadata: customers.metadata })
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
         if (!customer) {
             return { success: false, error: "Customer not found" };
@@ -276,18 +265,13 @@ export async function addCustomerNoteAction(
 
         notes.unshift(newNote);
 
-        const { error } = await supabase
-            .from("customers")
-            .update({
+        await db
+            .update(customers)
+            .set({
                 metadata: { ...metadata, notes },
-                updated_at: new Date().toISOString(),
+                updatedAt: new Date(),
             })
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to add note" };
-        }
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
         revalidatePath(`/dashboard/customers/${customerId}`);
         return { success: true };
@@ -301,16 +285,15 @@ export async function deleteCustomerNote(
     customerId: string,
     noteId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
-        const { data: customer } = await supabase
-            .from("customers")
-            .select("metadata")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [customer] = await db
+            .select({ metadata: customers.metadata })
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
         if (!customer) {
             return { success: false, error: "Customer not found" };
@@ -320,18 +303,13 @@ export async function deleteCustomerNote(
         const notes = (metadata.notes as CustomerNote[]) || [];
         const filteredNotes = notes.filter(n => n.id !== noteId);
 
-        const { error } = await supabase
-            .from("customers")
-            .update({
+        await db
+            .update(customers)
+            .set({
                 metadata: { ...metadata, notes: filteredNotes },
-                updated_at: new Date().toISOString(),
+                updatedAt: new Date(),
             })
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to delete note" };
-        }
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
         revalidatePath(`/dashboard/customers/${customerId}`);
         return { success: true };
@@ -349,43 +327,44 @@ export async function addCustomerAddress(
     customerId: string,
     input: AddressInput
 ): Promise<{ success: boolean; data?: CustomerAddress; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
         // If setting as default, unset other defaults of same type
         if (input.isDefault) {
-            await supabase
-                .from("addresses")
-                .update({ is_default: false })
-                .eq("customer_id", customerId)
-                .eq("tenant_id", tenantId)
-                .eq("type", input.type);
+            await db
+                .update(addresses)
+                .set({ isDefault: false })
+                .where(and(
+                    eq(addresses.customerId, customerId),
+                    eq(addresses.tenantId, tenantId),
+                    eq(addresses.type, input.type),
+                ));
         }
 
-        const { data: address, error } = await supabase
-            .from("addresses")
-            .insert({
-                tenant_id: tenantId,
-                customer_id: customerId,
+        const [address] = await db
+            .insert(addresses)
+            .values({
+                tenantId,
+                customerId,
                 type: input.type,
-                first_name: input.firstName || null,
-                last_name: input.lastName || null,
+                firstName: input.firstName || null,
+                lastName: input.lastName || null,
                 company: input.company || null,
-                address_line1: input.addressLine1,
-                address_line2: input.addressLine2 || null,
+                addressLine1: input.addressLine1,
+                addressLine2: input.addressLine2 || null,
                 city: input.city,
                 state: input.state || null,
-                postal_code: input.postalCode || null,
+                postalCode: input.postalCode || null,
                 country: input.country,
-                country_code: input.countryCode || input.country,
+                countryCode: input.countryCode || input.country,
                 phone: input.phone || null,
-                is_default: input.isDefault ?? false,
+                isDefault: input.isDefault ?? false,
             })
-            .select()
-            .single();
+            .returning();
 
-        if (error || !address) {
+        if (!address) {
             return { success: false, error: "Failed to add address" };
         }
 
@@ -394,22 +373,22 @@ export async function addCustomerAddress(
             success: true, 
             data: {
                 id: address.id,
-                customerId: address.customer_id,
-                type: address.type,
-                firstName: address.first_name,
-                lastName: address.last_name,
+                customerId: address.customerId,
+                type: (address.type || "shipping") as "shipping" | "billing",
+                firstName: address.firstName,
+                lastName: address.lastName,
                 company: address.company,
-                addressLine1: address.address_line1,
-                addressLine2: address.address_line2,
+                addressLine1: address.addressLine1,
+                addressLine2: address.addressLine2,
                 city: address.city,
                 state: address.state,
-                postalCode: address.postal_code,
+                postalCode: address.postalCode,
                 country: address.country,
-                countryCode: address.country_code,
+                countryCode: address.countryCode || address.country,
                 phone: address.phone,
-                isDefault: address.is_default,
-                createdAt: address.created_at,
-                updatedAt: address.updated_at,
+                isDefault: address.isDefault ?? false,
+                createdAt: address.createdAt.toISOString(),
+                updatedAt: address.updatedAt.toISOString(),
             }
         };
     } catch (error) {
@@ -422,17 +401,16 @@ export async function updateCustomerAddress(
     addressId: string,
     input: Partial<AddressInput>
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(addressId, "Address ID");
         // Get address to find customer_id
-        const { data: existingAddress } = await supabase
-            .from("addresses")
-            .select("customer_id, type")
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [existingAddress] = await db
+            .select({ customerId: addresses.customerId, type: addresses.type })
+            .from(addresses)
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)))
+            .limit(1);
 
         if (!existingAddress) {
             return { success: false, error: "Address not found" };
@@ -440,41 +418,37 @@ export async function updateCustomerAddress(
 
         // If setting as default, unset other defaults of same type
         if (input.isDefault) {
-            await supabase
-                .from("addresses")
-                .update({ is_default: false })
-                .eq("customer_id", existingAddress.customer_id)
-                .eq("tenant_id", tenantId)
-                .eq("type", input.type || existingAddress.type)
-                .neq("id", addressId);
+            await db
+                .update(addresses)
+                .set({ isDefault: false })
+                .where(and(
+                    eq(addresses.customerId, existingAddress.customerId),
+                    eq(addresses.tenantId, tenantId),
+                    eq(addresses.type, input.type || existingAddress.type || "shipping"),
+                ));
         }
 
-        const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         if (input.type !== undefined) updateData.type = input.type;
-        if (input.firstName !== undefined) updateData.first_name = input.firstName;
-        if (input.lastName !== undefined) updateData.last_name = input.lastName;
+        if (input.firstName !== undefined) updateData.firstName = input.firstName;
+        if (input.lastName !== undefined) updateData.lastName = input.lastName;
         if (input.company !== undefined) updateData.company = input.company;
-        if (input.addressLine1 !== undefined) updateData.address_line1 = input.addressLine1;
-        if (input.addressLine2 !== undefined) updateData.address_line2 = input.addressLine2;
+        if (input.addressLine1 !== undefined) updateData.addressLine1 = input.addressLine1;
+        if (input.addressLine2 !== undefined) updateData.addressLine2 = input.addressLine2;
         if (input.city !== undefined) updateData.city = input.city;
         if (input.state !== undefined) updateData.state = input.state;
-        if (input.postalCode !== undefined) updateData.postal_code = input.postalCode;
+        if (input.postalCode !== undefined) updateData.postalCode = input.postalCode;
         if (input.country !== undefined) updateData.country = input.country;
-        if (input.countryCode !== undefined) updateData.country_code = input.countryCode;
+        if (input.countryCode !== undefined) updateData.countryCode = input.countryCode;
         if (input.phone !== undefined) updateData.phone = input.phone;
-        if (input.isDefault !== undefined) updateData.is_default = input.isDefault;
+        if (input.isDefault !== undefined) updateData.isDefault = input.isDefault;
 
-        const { error } = await supabase
-            .from("addresses")
-            .update(updateData)
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId);
+        await db
+            .update(addresses)
+            .set(updateData)
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)));
 
-        if (error) {
-            return { success: false, error: "Failed to update address" };
-        }
-
-        revalidatePath(`/dashboard/customers/${existingAddress.customer_id}`);
+        revalidatePath(`/dashboard/customers/${existingAddress.customerId}`);
         return { success: true };
     } catch (error) {
         log.error("Failed to update address:", error);
@@ -485,32 +459,25 @@ export async function updateCustomerAddress(
 export async function deleteCustomerAddress(
     addressId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(addressId, "Address ID");
-        const { data: address } = await supabase
-            .from("addresses")
-            .select("customer_id")
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [address] = await db
+            .select({ customerId: addresses.customerId })
+            .from(addresses)
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)))
+            .limit(1);
 
         if (!address) {
             return { success: false, error: "Address not found" };
         }
 
-        const { error } = await supabase
-            .from("addresses")
-            .delete()
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId);
+        await db
+            .delete(addresses)
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)));
 
-        if (error) {
-            return { success: false, error: "Failed to delete address" };
-        }
-
-        revalidatePath(`/dashboard/customers/${address.customer_id}`);
+        revalidatePath(`/dashboard/customers/${address.customerId}`);
         return { success: true };
     } catch (error) {
         log.error("Failed to delete address:", error);
@@ -522,41 +489,37 @@ export async function setDefaultAddress(
     addressId: string,
     type: "shipping" | "billing"
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(addressId, "Address ID");
-        const { data: address } = await supabase
-            .from("addresses")
-            .select("customer_id")
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [address] = await db
+            .select({ customerId: addresses.customerId })
+            .from(addresses)
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)))
+            .limit(1);
 
         if (!address) {
             return { success: false, error: "Address not found" };
         }
 
         // Unset all defaults of this type for this customer
-        await supabase
-            .from("addresses")
-            .update({ is_default: false })
-            .eq("customer_id", address.customer_id)
-            .eq("tenant_id", tenantId)
-            .eq("type", type);
+        await db
+            .update(addresses)
+            .set({ isDefault: false })
+            .where(and(
+                eq(addresses.customerId, address.customerId),
+                eq(addresses.tenantId, tenantId),
+                eq(addresses.type, type),
+            ));
 
         // Set this address as default
-        const { error } = await supabase
-            .from("addresses")
-            .update({ is_default: true, type, updated_at: new Date().toISOString() })
-            .eq("id", addressId)
-            .eq("tenant_id", tenantId);
+        await db
+            .update(addresses)
+            .set({ isDefault: true, type, updatedAt: new Date() })
+            .where(and(eq(addresses.id, addressId), eq(addresses.tenantId, tenantId)));
 
-        if (error) {
-            return { success: false, error: "Failed to set default address" };
-        }
-
-        revalidatePath(`/dashboard/customers/${address.customer_id}`);
+        revalidatePath(`/dashboard/customers/${address.customerId}`);
         return { success: true };
     } catch (error) {
         log.error("Failed to set default address:", error);
@@ -571,26 +534,25 @@ export async function setDefaultAddress(
 export async function getCustomerTimeline(
     customerId: string
 ): Promise<{ success: boolean; data?: TimelineEvent[]; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
         const events: TimelineEvent[] = [];
 
         // Get customer creation date
-        const { data: customer } = await supabase
-            .from("customers")
-            .select("created_at, metadata")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [customer] = await db
+            .select({ createdAt: customers.createdAt, metadata: customers.metadata })
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
         if (customer) {
             events.push({
                 id: `created-${customerId}`,
                 type: "customer_created",
                 message: "Customer account created",
-                date: customer.created_at,
+                date: customer.createdAt.toISOString(),
             });
 
             // Add notes as events
@@ -608,20 +570,26 @@ export async function getCustomerTimeline(
         }
 
         // Get orders
-        const { data: orders } = await supabase
-            .from("orders")
-            .select("id, order_number, status, created_at, total, currency")
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
+        const orderRows = await db
+            .select({
+                id: orders.id,
+                orderNumber: orders.orderNumber,
+                status: orders.status,
+                createdAt: orders.createdAt,
+                total: orders.total,
+                currency: orders.currency,
+            })
+            .from(orders)
+            .where(and(eq(orders.customerId, customerId), eq(orders.tenantId, tenantId)))
+            .orderBy(desc(orders.createdAt));
 
-        orders?.forEach(order => {
+        orderRows.forEach(order => {
             events.push({
                 id: `order-${order.id}`,
                 type: "order_placed",
-                message: `Placed order #${order.order_number}`,
-                date: order.created_at,
-                metadata: { orderId: order.id, total: order.total, currency: order.currency },
+                message: `Placed order #${order.orderNumber}`,
+                date: order.createdAt.toISOString(),
+                metadata: { orderId: order.id, total: Number(order.total), currency: order.currency },
             });
         });
 
@@ -642,18 +610,17 @@ export async function getCustomerTimeline(
 export async function deleteCustomerAction(
     customerId: string
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
         // Check if customer has orders
-        const { count } = await supabase
-            .from("orders")
-            .select("*", { count: "exact", head: true })
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId);
+        const [orderCount] = await db
+            .select({ value: count() })
+            .from(orders)
+            .where(and(eq(orders.customerId, customerId), eq(orders.tenantId, tenantId)));
 
-        if (count && count > 0) {
+        if (orderCount && orderCount.value > 0) {
             return { 
                 success: false, 
                 error: "Cannot delete customer with existing orders. Consider deactivating instead." 
@@ -661,22 +628,14 @@ export async function deleteCustomerAction(
         }
 
         // Delete addresses first
-        await supabase
-            .from("addresses")
-            .delete()
-            .eq("customer_id", customerId)
-            .eq("tenant_id", tenantId);
+        await db
+            .delete(addresses)
+            .where(and(eq(addresses.customerId, customerId), eq(addresses.tenantId, tenantId)));
 
         // Delete customer
-        const { error } = await supabase
-            .from("customers")
-            .delete()
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to delete customer" };
-        }
+        await db
+            .delete(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
         revalidatePath("/dashboard/customers");
         return { success: true };
@@ -694,22 +653,14 @@ export async function toggleCustomerStatus(
     customerId: string,
     isActive: boolean
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
 
     try {
         validateId(customerId, "Customer ID");
-        const { error } = await supabase
-            .from("customers")
-            .update({ 
-                is_active: isActive, 
-                updated_at: new Date().toISOString() 
-            })
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: "Failed to update customer status" };
-        }
+        await db
+            .update(customers)
+            .set({ isActive, updatedAt: new Date() })
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
         revalidatePath(`/dashboard/customers/${customerId}`);
         revalidatePath("/dashboard/customers");
@@ -724,26 +675,23 @@ export async function updateCustomerTags(
     customerId: string,
     tags: string[]
 ): Promise<{ success: boolean; error?: string }> {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId } = await getAuthenticatedTenant();
     try {
         validateId(customerId, "Customer ID");
-        const { data: customer } = await supabase
-            .from("customers")
-            .select("metadata")
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [customer] = await db
+            .select({ metadata: customers.metadata })
+            .from(customers)
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)))
+            .limit(1);
 
         if (!customer) return { success: false, error: "Customer not found" };
 
         const metadata = (customer.metadata as Record<string, unknown>) ?? {};
-        const { error } = await supabase
-            .from("customers")
-            .update({ metadata: { ...metadata, tags } })
-            .eq("id", customerId)
-            .eq("tenant_id", tenantId);
+        await db
+            .update(customers)
+            .set({ metadata: { ...metadata, tags } })
+            .where(and(eq(customers.id, customerId), eq(customers.tenantId, tenantId)));
 
-        if (error) return { success: false, error: error.message };
         return { success: true };
     } catch (error) {
         log.error("Failed to update tags:", error);

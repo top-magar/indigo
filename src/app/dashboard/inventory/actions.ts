@@ -4,16 +4,18 @@ import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:inventory");
 
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { inventoryRepository } from "@/features/inventory/repositories";
 import type { AdjustmentType } from "@/features/inventory/repositories";
+import { db } from "@/infrastructure/db";
+import { products } from "@/db/schema/products";
+import { stockMovements } from "@/db/schema/inventory";
+import { eq, and, inArray } from "drizzle-orm";
 
 async function getAuthenticatedTenant() {
-    const { user, supabase } = await getAuthenticatedClient();
-    return { supabase, tenantId: user.tenantId, userId: user.id };
+    const { user } = await getAuthenticatedClient();
+    return { tenantId: user.tenantId, userId: user.id };
 }
 
 import type { StockAdjustment, InventoryProduct, StockMovement } from "./types";
@@ -93,15 +95,14 @@ export async function updateReorderSettings(
         const validProductId = z.string().uuid().parse(productId);
         const validReorderPoint = z.number().int().min(0).parse(reorderPoint);
         const validReorderQuantity = z.number().int().min(1).parse(reorderQuantity);
-        const { supabase, tenantId } = await getAuthenticatedTenant();
+        const { tenantId } = await getAuthenticatedTenant();
 
         // Store in product metadata
-        const { data: product } = await supabase
-            .from("products")
-            .select("metadata")
-            .eq("id", validProductId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [product] = await db
+            .select({ metadata: products.metadata })
+            .from(products)
+            .where(and(eq(products.id, validProductId), eq(products.tenantId, tenantId)))
+            .limit(1);
 
         const metadata = (product?.metadata as Record<string, unknown>) || {};
         metadata.inventory = {
@@ -110,15 +111,10 @@ export async function updateReorderSettings(
             reorderQuantity: validReorderQuantity,
         };
 
-        const { error } = await supabase
-            .from("products")
-            .update({ metadata, updated_at: new Date().toISOString() })
-            .eq("id", validProductId)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { success: false, error: `Failed to update reorder settings: ${error.message}` };
-        }
+        await db
+            .update(products)
+            .set({ metadata, updatedAt: new Date() })
+            .where(and(eq(products.id, validProductId), eq(products.tenantId, tenantId)));
 
         revalidatePath("/dashboard/inventory");
         return { success: true };
@@ -168,36 +164,37 @@ export async function getStockMovements(
 // Export inventory to CSV
 export async function exportInventory(): Promise<{ success?: boolean; csv?: string; error?: string }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedTenant();
+        const { tenantId } = await getAuthenticatedTenant();
 
-        const { data: products, error } = await supabase
-            .from("products")
-            .select(`
-                id, name, sku, barcode, quantity, price, cost_price, status,
-                categories!products_category_id_fkey(name)
-            `)
-            .eq("tenant_id", tenantId)
-            .order("name");
+        const rows = await db
+            .select({
+                id: products.id,
+                name: products.name,
+                sku: products.sku,
+                barcode: products.barcode,
+                quantity: products.quantity,
+                price: products.price,
+                costPrice: products.costPrice,
+                status: products.status,
+                categoryId: products.categoryId,
+            })
+            .from(products)
+            .where(eq(products.tenantId, tenantId))
+            .orderBy(products.name);
 
-        if (error) {
-            return { success: false, error: error.message };
-        }
-
-        const headers = ["Name", "SKU", "Barcode", "Quantity", "Price", "Cost", "Value", "Status", "Category"];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const rows = (products || []).map((p: any) => [
+        const headers = ["Name", "SKU", "Barcode", "Quantity", "Price", "Cost", "Value", "Status"];
+        const csvRows = rows.map((p) => [
             `"${p.name.replace(/"/g, '""')}"`,
             p.sku || "",
             p.barcode || "",
             p.quantity,
             p.price,
-            p.cost_price || "",
-            p.quantity * (p.cost_price || p.price),
+            p.costPrice || "",
+            (p.quantity || 0) * Number(p.costPrice || p.price),
             p.status,
-            p.categories?.name || "Uncategorized",
         ]);
 
-        const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+        const csv = [headers.join(","), ...csvRows.map(r => r.join(","))].join("\n");
         return { csv };
     } catch (err) {
         log.error("Export inventory error:", err);
@@ -216,19 +213,18 @@ export async function importInventory(
 ): Promise<{ success?: boolean; error?: string; successCount: number; failedCount: number }> {
     try {
         const parsed = importSchema.parse(updates);
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
         let successCount = 0;
         let failedCount = 0;
 
         // Batch fetch all products by SKU
         const skus = parsed.map(u => u.sku);
-        const { data: products } = await supabase
-            .from("products")
-            .select("id, quantity, name, sku")
-            .eq("tenant_id", tenantId)
-            .in("sku", skus);
+        const matchedProducts = await db
+            .select({ id: products.id, quantity: products.quantity, name: products.name, sku: products.sku })
+            .from(products)
+            .where(and(eq(products.tenantId, tenantId), inArray(products.sku, skus)));
 
-        const productBySku = new Map((products || []).map(p => [p.sku, p]));
+        const productBySku = new Map(matchedProducts.map(p => [p.sku, p]));
 
         for (const update of parsed) {
             const product = productBySku.get(update.sku);
@@ -238,32 +234,31 @@ export async function importInventory(
                 continue;
             }
 
-            const quantityBefore = product.quantity;
+            const quantityBefore = product.quantity || 0;
             const quantityChange = update.quantity - quantityBefore;
 
-            const { error } = await supabase
-                .from("products")
-                .update({ quantity: update.quantity, updated_at: new Date().toISOString() })
-                .eq("id", product.id)
-                .eq("tenant_id", tenantId);
+            try {
+                await db
+                    .update(products)
+                    .set({ quantity: update.quantity, updatedAt: new Date() })
+                    .where(and(eq(products.id, product.id), eq(products.tenantId, tenantId)));
 
-            if (error) {
-                failedCount++;
-            } else {
                 successCount++;
-                
+
                 // Log movement
-                await supabase.from("stock_movements").insert({
-                    tenant_id: tenantId,
-                    product_id: product.id,
-                    product_name: product.name,
+                await db.insert(stockMovements).values({
+                    tenantId,
+                    productId: product.id,
+                    productName: product.name,
                     type: "adjustment",
-                    quantity_before: quantityBefore,
-                    quantity_change: quantityChange,
-                    quantity_after: update.quantity,
+                    quantityBefore,
+                    quantityChange,
+                    quantityAfter: update.quantity,
                     reason: "CSV Import",
-                    created_by: userId,
+                    createdBy: userId,
                 });
+            } catch {
+                failedCount++;
             }
         }
 
