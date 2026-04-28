@@ -9,3 +9,5 @@ export * from "./status";
 
 // Connection types
 export * from "./connection";
+
+export type { PageLayout, StoreBlock } from "./blocks";

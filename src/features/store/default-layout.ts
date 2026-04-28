@@ -1,4 +1,4 @@
-import type { PageLayout } from "@/types/blocks"
+import type { PageLayout } from "@/shared/types/blocks"
 
 /** Placeholder — will be rebuilt with Craft.js blocks */
 export function createDefaultHomepageLayout(_storeSlug: string): PageLayout {
