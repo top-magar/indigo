@@ -1,3 +1,5 @@
 export { getPaymentProvider, ManualPaymentProvider } from "./provider"
 export { EsewaPaymentProvider, KhaltiPaymentProvider } from "./nepal-providers"
 export type { PaymentProvider, PaymentMethod, CreateOrderPayment, PaymentResult, ConfirmPaymentResult } from "./provider"
+export { getProviderHandler, getProviderConfig, isOnlineProvider, getAllProviders, PROVIDER_CONFIGS } from "./registry"
+export type { PaymentProviderId, InitiatePaymentInput, InitiatePaymentResult, VerifyPaymentInput, VerifyPaymentResult, PaymentProviderHandler } from "./registry"
