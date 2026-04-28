@@ -64,6 +64,17 @@ export async function requireUser(): Promise<AuthUser> {
 }
 
 /**
+ * Require authenticated user WITH a valid tenant context.
+ * Use for all merchant dashboard pages and actions.
+ * Redirects platform-only admins to /admin.
+ */
+export async function requireTenantUser(): Promise<AuthUser & { tenantId: string }> {
+  const user = await requireUser()
+  if (!user.tenantId) redirect("/admin")
+  return user as AuthUser & { tenantId: string }
+}
+
+/**
  * Get the Supabase client for the current request.
  * Use when you need both auth user AND supabase client for queries.
  */
@@ -83,6 +94,7 @@ export async function authorizedAction<T>(
   callback: (tx: Transaction, tenantId: string) => Promise<T>
 ): Promise<T> {
   const user = await requireUser()
+  if (!user.tenantId) throw new Error("Tenant context required")
   return db.transaction(async (tx) => {
     await tx.execute(sql`SELECT set_config('app.current_tenant', ${user.tenantId}, true)`)
     return callback(tx, user.tenantId)

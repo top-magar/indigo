@@ -16,6 +16,7 @@ function safeJsonParse(str: string, fallback: unknown = []): unknown {
 
 async function getTenant() {
   const user = await requireUser();
+  if (!user.tenantId) throw new Error("Tenant context required");
   return user.tenantId;
 }
 

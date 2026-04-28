@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { AnalyticsClient } from "./analytics-client";
 import { getAnalyticsData } from "./actions";
@@ -18,7 +18,7 @@ interface AnalyticsPageProps {
 }
 
 export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps) {
-    const user = await requireUser();
+    const user = await requireTenantUser();
     const limits = await getTenantPlanLimits(user.tenantId);
     const params = await searchParams;
 

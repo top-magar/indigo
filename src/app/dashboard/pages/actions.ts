@@ -4,11 +4,11 @@ import { db } from "@/infrastructure/db";
 import { editorPages } from "@/db/schema/editor-pages";
 import { editorProjects } from "@/db/schema/editor-projects";
 import { eq, and, count } from "drizzle-orm";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function renamePage(id: string, name: string) {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const [page] = await db.select({ projectId: editorPages.projectId }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
   if (!page) return;
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
@@ -20,7 +20,7 @@ export async function renamePage(id: string, name: string) {
 }
 
 export async function deletePage(id: string) {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const [page] = await db.select({ projectId: editorPages.projectId, isHomepage: editorPages.isHomepage }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
   if (!page) return;
   if (page.isHomepage) return; // Cannot delete homepage
@@ -32,7 +32,7 @@ export async function deletePage(id: string) {
 }
 
 export async function createPage(projectId: string, pageName?: string): Promise<{ id?: string; error?: string }> {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return { error: "Project not found" };

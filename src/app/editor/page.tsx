@@ -5,11 +5,11 @@ import { editorProjects } from "@/db/schema/editor-projects";
 import { editorPages } from "@/db/schema/editor-pages";
 import { eq, asc } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { ensureTenantSite } from "@/features/editor/lib/site";
 
 export default async function EditorPage({ searchParams }: { searchParams: Promise<{ project?: string; page?: string }> }) {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const params = await searchParams;
 
   // Ensure tenant has a site, get its ID

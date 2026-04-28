@@ -1,5 +1,5 @@
 import { createClient } from "@/infrastructure/supabase/server";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import {
     SidebarProvider,
     Sidebar,
@@ -23,7 +23,7 @@ export default async function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const user = await requireUser();
+    const user = await requireTenantUser();
     const supabase = await createClient();
     const tenantId = user.tenantId;
 

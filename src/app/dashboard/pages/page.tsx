@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import Link from "next/link";
 import { ExternalLink, Globe, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { ensureTenantSite, getTenantSitePages } from "@/features/editor/lib/site
 import { PagesClient } from "./pages-client";
 
 export default async function PagesPage() {
-  await requireUser();
+  await requireTenantUser();
   await ensureTenantSite();
   const { site, pages, tenantSlug } = await getTenantSitePages();
 
