@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
 const MAX_FIELDS = 20
@@ -47,8 +47,16 @@ export const POST = withRateLimit("storefront", async function POST(request: Req
     return NextResponse.json({ error: "Invalid tenant" }, { status: 404 })
   }
 
-  // Log submission (form_submissions table doesn't exist yet)
-  console.log("[form-submit]", { tenantId, sectionId, fields: cleanFields })
+  // Persist submission
+  try {
+    await db.execute(
+      sql`INSERT INTO contact_submissions (tenant_id, source, data, created_at)
+          VALUES (${tenantId}, ${sectionId || 'form'}, ${JSON.stringify(cleanFields)}::jsonb, NOW())`
+    );
+  } catch {
+    // Table may not exist yet — log as fallback
+    console.log("[form-submit]", { tenantId, sectionId, fields: cleanFields })
+  }
 
   return NextResponse.json({ success: true })
 })
