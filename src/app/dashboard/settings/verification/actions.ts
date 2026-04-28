@@ -16,7 +16,7 @@ const kycSchema = z.object({
   registrationNumber: z.string().max(100).optional(),
 });
 
-export async function submitVerification(formData: FormData): Promise<{ error?: string }> {
+export async function submitVerification(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   const user = await requireUser();
 
   const parsed = kycSchema.safeParse({
@@ -30,7 +30,7 @@ export async function submitVerification(formData: FormData): Promise<{ error?: 
 
   if (!parsed.success) {
     const firstError = parsed.error.issues[0];
-    return { error: firstError?.message || "Please fill all required fields correctly" };
+    return { success: false, error: firstError?.message || "Please fill all required fields correctly" };
   }
 
   try {
@@ -38,12 +38,12 @@ export async function submitVerification(formData: FormData): Promise<{ error?: 
     const [existing] = await db.select({ id: tenantKyc.id, status: tenantKyc.status, updatedAt: tenantKyc.updatedAt })
       .from(tenantKyc).where(eq(tenantKyc.tenantId, user.tenantId)).limit(1);
 
-    if (existing?.status === "verified") return { error: "Your store is already verified" };
-    if (existing?.status === "pending") return { error: "Verification is already pending review" };
+    if (existing?.status === "verified") return { success: false, error: "Your store is already verified" };
+    if (existing?.status === "pending") return { success: false, error: "Verification is already pending review" };
 
     // Rate limit: 1 hour between submissions
     if (existing?.updatedAt && Date.now() - existing.updatedAt.getTime() < 3600000) {
-      return { error: "Please wait at least 1 hour before resubmitting" };
+      return { success: false, error: "Please wait at least 1 hour before resubmitting" };
     }
 
     if (existing) {
@@ -58,8 +58,8 @@ export async function submitVerification(formData: FormData): Promise<{ error?: 
     }
 
     revalidatePath("/dashboard/settings/verification");
-    return {};
+    return { success: true };
   } catch {
-    return { error: "Failed to submit verification" };
+    return { success: false, error: "Failed to submit verification" };
   }
 }

@@ -24,7 +24,7 @@ export async function getShippingZones() {
     .order("created_at")
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   return { data }
@@ -62,7 +62,7 @@ export async function createShippingZone(formData: FormData) {
     .single()
 
   if (zoneError) {
-    return { error: zoneError.message }
+    return { success: false, error: zoneError.message }
   }
 
   // Add countries if provided
@@ -83,7 +83,7 @@ export async function createShippingZone(formData: FormData) {
         if (countryError) {
           // Rollback zone creation
           await supabase.from("shipping_zones").delete().eq("id", zone.id)
-          return { error: countryError.message }
+          return { success: false, error: countryError.message }
         }
       }
     } catch {
@@ -127,7 +127,7 @@ export async function updateShippingZone(formData: FormData) {
     .eq("tenant_id", tenantId)
 
   if (zoneError) {
-    return { error: zoneError.message }
+    return { success: false, error: zoneError.message }
   }
 
   // Update countries if provided
@@ -173,7 +173,7 @@ export async function deleteShippingZone(zoneId: string) {
     .eq("tenant_id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/settings/shipping")
@@ -244,7 +244,7 @@ export async function createShippingRate(formData: FormData) {
     .single()
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/settings/shipping")
@@ -308,7 +308,7 @@ export async function updateShippingRate(formData: FormData) {
     .eq("tenant_id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/settings/shipping")
@@ -326,7 +326,7 @@ export async function deleteShippingRate(rateId: string) {
     .eq("tenant_id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/settings/shipping")
@@ -380,7 +380,7 @@ export async function updateShippingSettings(formData: FormData) {
     .eq("id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/settings/shipping")

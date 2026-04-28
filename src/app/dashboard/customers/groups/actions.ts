@@ -49,7 +49,7 @@ export async function createCustomerGroup(formData: FormData) {
     .single()
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/customers/groups")
@@ -80,7 +80,7 @@ export async function updateCustomerGroup(formData: FormData) {
     .eq("id", groupId).eq("tenant_id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/customers/groups")
@@ -98,7 +98,7 @@ export async function deleteCustomerGroup(groupId: string) {
     .eq("tenant_id", tenantId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/customers/groups")
@@ -121,7 +121,7 @@ export async function addCustomerToGroup(formData: FormData) {
     })
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/customers")
@@ -144,7 +144,7 @@ export async function removeCustomerFromGroup(formData: FormData) {
     .eq("group_id", groupId)
 
   if (error) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 
   revalidatePath("/dashboard/customers")

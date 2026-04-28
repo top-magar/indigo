@@ -51,7 +51,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
         // Plan limit check
         const { checkPlanLimit } = await import("@/lib/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
-        if (!limit.allowed) return { error: limit.reason };
+        if (!limit.allowed) return { success: false, error: limit.reason };
 
         const raw = Object.fromEntries(formData.entries());
         const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
@@ -64,7 +64,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
             .single();
 
         if (createErr || !product) {
-            return { error: createErr?.message || "Failed to create product" };
+            return { success: false, error: createErr?.message || "Failed to create product" };
         }
 
         // Audit log - non-blocking
@@ -85,7 +85,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
         return { success: true };
     } catch (error) {
         log.error("Product creation error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to create product" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to create product" };
     }
 }
 
@@ -133,7 +133,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         // Plan limit check
         const { checkPlanLimit } = await import("@/lib/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
-        if (!limit.allowed) return { error: limit.reason };
+        if (!limit.allowed) return { success: false, error: limit.reason };
 
         // Parse and validate all input
         const raw = {
@@ -165,7 +165,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         };
 
         // Reject NaN prices
-        if (isNaN(raw.price)) return { error: "Price must be a valid number" };
+        if (isNaN(raw.price)) return { success: false, error: "Price must be a valid number" };
 
         const validated = productDetailsSchema.parse(raw);
 
@@ -203,7 +203,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
             .single();
 
         if (createErr || !product) {
-            return { error: createErr?.message || "Failed to create product" };
+            return { success: false, error: createErr?.message || "Failed to create product" };
         }
 
         // Audit log - non-blocking
@@ -225,10 +225,10 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         return { success: true, productId: product.id };
     } catch (err) {
         if (err instanceof z.ZodError) {
-            return { error: err.issues[0].message };
+            return { success: false, error: err.issues[0].message };
         }
         log.error("Product creation error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to create product" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to create product" };
     }
 }
 
@@ -241,7 +241,7 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
         
         const productId = formData.get("productId") as string;
         if (!productId) {
-            return { error: "Product ID is required" };
+            return { success: false, error: "Product ID is required" };
         }
 
         // Fetch old values for audit log
@@ -273,7 +273,7 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
             .eq("tenant_id", tenantId);
 
         if (updateError) {
-            return { error: `Failed to update: ${updateError.message}` };
+            return { success: false, error: `Failed to update: ${updateError.message}` };
         }
 
         // Audit log - non-blocking
@@ -312,7 +312,7 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
         return { success: true };
     } catch (err) {
         log.error("Product update error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update product" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update product" };
     }
 }
 
@@ -333,7 +333,7 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
             .single();
 
         if (fetchError || !product) {
-            return { error: "Product not found" };
+            return { success: false, error: "Product not found" };
         }
 
         // Atomic stock update — no read-then-write race condition
@@ -360,14 +360,14 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
         }
 
         if (updateError) {
-            return { error: `Failed to update stock: ${updateError.message}` };
+            return { success: false, error: `Failed to update stock: ${updateError.message}` };
         }
 
         await expireProductCaches(tenantId, product.slug);
         return { success: true };
     } catch (error) {
         log.error("Update stock error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to update stock" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update stock" };
     }
 }
 
@@ -408,7 +408,7 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
         return { success: true };
     } catch (error) {
         log.error("Delete product error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to delete product" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to delete product" };
     }
 }
 
@@ -424,7 +424,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
             .eq("tenant_id", tenantId)
             .single();
 
-        const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { error: statusErr.message };
+        const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { success: false, error: statusErr.message };
 
         // Audit log - non-blocking
         try {
@@ -441,7 +441,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
         return { success: true };
     } catch (error) {
         log.error("Update product status error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to update product status" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update product status" };
     }
 }
 
@@ -492,13 +492,13 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
         await expireProductCaches(tenantId);
 
         if (errors.length > 0) {
-            return { error: `Failed to delete some products: ${errors.join(", ")}`, deletedCount };
+            return { success: false, error: `Failed to delete some products: ${errors.join(", ")}`, deletedCount };
         }
 
         return { success: true, deletedCount };
     } catch (error) {
         log.error("Bulk delete products error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to delete products", deletedCount: 0 };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to delete products", deletedCount: 0 };
     }
 }
 
@@ -523,7 +523,7 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         
         for (const productId of productIds) {
             try {
-                const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { error: statusErr.message, updatedCount };
+                const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { success: false, error: statusErr.message, updatedCount };
                 updatedCount++;
 
                 // Audit log each update - non-blocking
@@ -546,13 +546,13 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         await expireProductCaches(tenantId);
 
         if (errors.length > 0) {
-            return { error: `Failed to update some products: ${errors.join(", ")}`, updatedCount };
+            return { success: false, error: `Failed to update some products: ${errors.join(", ")}`, updatedCount };
         }
 
         return { success: true, updatedCount };
     } catch (error) {
         log.error("Bulk update product status error:", error);
-        return { error: error instanceof Error ? error.message : "Failed to update products", updatedCount: 0 };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update products", updatedCount: 0 };
     }
 }
 

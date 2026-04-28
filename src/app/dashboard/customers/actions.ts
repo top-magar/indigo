@@ -110,7 +110,7 @@ export async function getCustomersWithStats(
 
 
 // Get single customer with full details
-export async function deleteCustomer(customerId: string): Promise<{ error?: string }> {
+export async function deleteCustomer(customerId: string): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId, user } = await getAuthenticatedUser();
 
@@ -122,7 +122,7 @@ export async function deleteCustomer(customerId: string): Promise<{ error?: stri
             .eq("tenant_id", tenantId);
 
         if (count && count > 0) {
-            return { error: "Cannot delete customer with existing orders. Consider anonymizing instead." };
+            return { success: false, error: "Cannot delete customer with existing orders. Consider anonymizing instead." };
         }
 
         // Fetch old values for audit log before deletion
@@ -148,10 +148,10 @@ export async function deleteCustomer(customerId: string): Promise<{ error?: stri
         }
 
         revalidatePath("/dashboard/customers");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Delete customer error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to delete customer" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to delete customer" };
     }
 }
 
@@ -180,7 +180,7 @@ export async function bulkUpdateMarketing(
         return { updated: updatedCount };
     } catch (err) {
         log.error("Bulk update marketing error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update customers" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update customers" };
     }
 }
 
@@ -215,7 +215,7 @@ export async function exportCustomers(filters: {
         const { data: customers, error } = await query;
 
         if (error) {
-            return { error: `Failed to export customers: ${error.message}` };
+            return { success: false, error: `Failed to export customers: ${error.message}` };
         }
 
         // Get order stats
@@ -257,7 +257,7 @@ export async function exportCustomers(filters: {
         return { csv };
     } catch (err) {
         log.error("Export customers error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to export customers" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to export customers" };
     }
 }
 
@@ -272,7 +272,7 @@ export async function createCustomer(formData: FormData): Promise<{ id?: string;
         const lastName = formData.get("lastName") as string;
         const phone = formData.get("phone") as string;
 
-        if (!email) return { error: "Email is required" };
+        if (!email) return { success: false, error: "Email is required" };
 
         // Check for duplicate
         const { data: existing } = await supabase
@@ -282,7 +282,7 @@ export async function createCustomer(formData: FormData): Promise<{ id?: string;
             .eq("email", email.toLowerCase())
             .single();
 
-        if (existing) return { error: "A customer with this email already exists" };
+        if (existing) return { success: false, error: "A customer with this email already exists" };
 
         const { data, error } = await supabase
             .from("customers")
@@ -298,11 +298,11 @@ export async function createCustomer(formData: FormData): Promise<{ id?: string;
             .select("id")
             .single();
 
-        if (error) return { error: error.message };
+        if (error) return { success: false, error: error.message };
 
         revalidatePath("/dashboard/customers");
         return { id: data.id };
     } catch {
-        return { error: "Failed to create customer" };
+        return { success: false, error: "Failed to create customer" };
     }
 }

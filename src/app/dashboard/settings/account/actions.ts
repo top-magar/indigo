@@ -7,7 +7,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 const log = createLogger("actions:account");
 
-export async function updateUserProfile(formData: FormData): Promise<{ error?: string }> {
+export async function updateUserProfile(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
     const fullName = z.string().min(1).parse(formData.get("fullName"));
@@ -18,43 +18,43 @@ export async function updateUserProfile(formData: FormData): Promise<{ error?: s
       .update({ full_name: fullName, avatar_url: avatarUrl, updated_at: new Date().toISOString() })
       .eq("id", user.id);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings/account");
     revalidateTag("dashboard", "seconds");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update profile error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update profile" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update profile" };
   }
 }
 
-export async function updateUserEmail(formData: FormData): Promise<{ error?: string }> {
+export async function updateUserEmail(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { supabase } = await getAuthenticatedClient();
     const email = z.string().email().parse(formData.get("email"));
 
     const { error } = await supabase.auth.updateUser({ email });
-    if (error) return { error: error.message };
-    return {};
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   } catch (err) {
     log.error("Update email error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update email" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update email" };
   }
 }
 
-export async function updateUserPassword(formData: FormData): Promise<{ error?: string }> {
+export async function updateUserPassword(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { supabase } = await getAuthenticatedClient();
     const newPassword = z.string().min(8, "Password must be at least 8 characters").parse(formData.get("newPassword"));
     const confirmPassword = formData.get("confirmPassword") as string;
 
-    if (newPassword !== confirmPassword) return { error: "Passwords do not match" };
+    if (newPassword !== confirmPassword) return { success: false, error: "Passwords do not match" };
 
     const { error } = await supabase.auth.updateUser({ password: newPassword });
-    if (error) return { error: error.message };
-    return {};
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   } catch (err) {
     log.error("Update password error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update password" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update password" };
   }
 }

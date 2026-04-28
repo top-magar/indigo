@@ -11,15 +11,15 @@ const log = createLogger("actions:team");
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.EMAIL_FROM || "Indigo <noreply@indigo.store>";
 
-export async function inviteTeamMember(formData: FormData): Promise<{ error?: string }> {
+export async function inviteTeamMember(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
-    if (user.role !== "owner") return { error: "Only store owners can invite team members" };
+    if (user.role !== "owner") return { success: false, error: "Only store owners can invite team members" };
 
     // Plan limit check
     const { checkPlanLimit } = await import("@/lib/plan-limits");
     const limit = await checkPlanLimit(user.tenantId, "staff");
-    if (!limit.allowed) return { error: limit.reason };
+    if (!limit.allowed) return { success: false, error: limit.reason };
 
     const email = z.string().email().parse(formData.get("email"));
     const role = z.enum(["admin", "staff"]).parse(formData.get("role"));
@@ -31,7 +31,7 @@ export async function inviteTeamMember(formData: FormData): Promise<{ error?: st
       .eq("tenant_id", user.tenantId)
       .single();
 
-    if (existing) return { error: "User already exists in your team" };
+    if (existing) return { success: false, error: "User already exists in your team" };
 
     // Get tenant name for the email
     const { data: tenant } = await supabase
@@ -67,24 +67,24 @@ export async function inviteTeamMember(formData: FormData): Promise<{ error?: st
       });
       if (emailError) {
         log.error("Failed to send invitation email:", emailError);
-        return { error: "Failed to send invitation email. Please try again." };
+        return { success: false, error: "Failed to send invitation email. Please try again." };
       }
     } else {
       log.warn("RESEND_API_KEY not configured — invitation email not sent");
     }
 
     revalidatePath("/dashboard/settings/team");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Invite team member error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to send invitation" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to send invitation" };
   }
 }
 
-export async function updateTeamMemberRole(memberId: string, newRole: "admin" | "staff"): Promise<{ error?: string }> {
+export async function updateTeamMemberRole(memberId: string, newRole: "admin" | "staff"): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
-    if (user.role !== "owner") return { error: "Only store owners can change roles" };
+    if (user.role !== "owner") return { success: false, error: "Only store owners can change roles" };
 
     const id = z.string().uuid().parse(memberId);
     const { error } = await supabase
@@ -93,20 +93,20 @@ export async function updateTeamMemberRole(memberId: string, newRole: "admin" | 
       .eq("id", id)
       .eq("tenant_id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings/team");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update role error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update role" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update role" };
   }
 }
 
-export async function removeTeamMember(memberId: string): Promise<{ error?: string }> {
+export async function removeTeamMember(memberId: string): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
-    if (user.role !== "owner") return { error: "Only store owners can remove team members" };
-    if (memberId === user.id) return { error: "You cannot remove yourself" };
+    if (user.role !== "owner") return { success: false, error: "Only store owners can remove team members" };
+    if (memberId === user.id) return { success: false, error: "You cannot remove yourself" };
 
     const id = z.string().uuid().parse(memberId);
     const { error } = await supabase
@@ -115,11 +115,11 @@ export async function removeTeamMember(memberId: string): Promise<{ error?: stri
       .eq("id", id)
       .eq("tenant_id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings/team");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Remove team member error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to remove team member" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to remove team member" };
   }
 }

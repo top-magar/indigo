@@ -55,7 +55,7 @@ export async function getNotificationPreferences(): Promise<{
     return { data: preferences };
   } catch (err) {
     log.error("Get notification preferences error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to load preferences" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to load preferences" };
   }
 }
 
@@ -64,7 +64,7 @@ export async function getNotificationPreferences(): Promise<{
  */
 export async function updateNotificationPreferences(
   preferences: NotificationPreferenceInput[]
-): Promise<{ error?: string }> {
+): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, tenantId } = await getAuthenticatedUser();
 
@@ -75,10 +75,10 @@ export async function updateNotificationPreferences(
     );
 
     revalidatePath("/dashboard/settings/notifications");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update notification preferences error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update preferences" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update preferences" };
   }
 }
 
@@ -97,7 +97,7 @@ export async function updateSinglePreference(
   channel: NotificationChannel,
   enabled: boolean,
   frequency: NotificationFrequency
-): Promise<{ error?: string }> {
+): Promise<{ success?: boolean; error?: string }> {
   try {
     const parsed = singlePreferenceSchema.parse({ category, channel, enabled, frequency });
     const { user, tenantId } = await getAuthenticatedUser();
@@ -109,10 +109,10 @@ export async function updateSinglePreference(
     );
 
     revalidatePath("/dashboard/settings/notifications");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update single preference error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update preference" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update preference" };
   }
 }
 
@@ -121,7 +121,7 @@ export async function updateSinglePreference(
  */
 export async function updateQuietHours(
   input: QuietHoursInput
-): Promise<{ error?: string }> {
+): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, tenantId } = await getAuthenticatedUser();
 
@@ -132,17 +132,17 @@ export async function updateQuietHours(
     );
 
     revalidatePath("/dashboard/settings/notifications");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update quiet hours error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update quiet hours" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update quiet hours" };
   }
 }
 
 /**
  * Reset all notification preferences to defaults
  */
-export async function resetNotificationPreferences(): Promise<{ error?: string }> {
+export async function resetNotificationPreferences(): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, tenantId } = await getAuthenticatedUser();
 
@@ -153,9 +153,9 @@ export async function resetNotificationPreferences(): Promise<{ error?: string }
     await notificationPreferencesRepository.initializeDefaults(tenantId, user.id);
 
     revalidatePath("/dashboard/settings/notifications");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Reset notification preferences error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to reset preferences" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to reset preferences" };
   }
 }

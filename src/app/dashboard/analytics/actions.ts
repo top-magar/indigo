@@ -198,7 +198,7 @@ export async function exportAnalyticsReport(
         return { csv: lines.join("\n") };
     } catch (err) {
         log.error("Export analytics error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to export report" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to export report" };
     }
 }
 

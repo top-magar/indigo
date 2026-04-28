@@ -127,17 +127,17 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
 
         if (error) {
             log.error("Create category error:", error);
-            return { error: `Failed to create category: ${error.message}` };
+            return { success: false, error: `Failed to create category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return { category };
     } catch (err) {
         if (err instanceof z.ZodError) {
-            return { error: err.issues[0].message };
+            return { success: false, error: err.issues[0].message };
         }
         log.error("Create category error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to create category" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to create category" };
     }
 }
 
@@ -153,12 +153,12 @@ export async function updateCategory(formData: FormData): Promise<{ error?: stri
         const parentId = formData.get("parentId") as string;
 
         if (!name?.trim()) {
-            return { error: "Category name is required" };
+            return { success: false, error: "Category name is required" };
         }
 
         // Prevent setting self as parent
         if (parentId === id) {
-            return { error: "Category cannot be its own parent" };
+            return { success: false, error: "Category cannot be its own parent" };
         }
 
         // Check for duplicate slug (excluding current category)
@@ -192,18 +192,18 @@ export async function updateCategory(formData: FormData): Promise<{ error?: stri
 
         if (error) {
             log.error("Update category error:", error);
-            return { error: `Failed to update category: ${error.message}` };
+            return { success: false, error: `Failed to update category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return { category };
     } catch (err) {
         log.error("Update category error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update category" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update category" };
     }
 }
 
-export async function deleteCategory(id: string): Promise<{ error?: string }> {
+export async function deleteCategory(id: string): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -216,7 +216,7 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
             .limit(1);
 
         if (children && children.length > 0) {
-            return { error: "Cannot delete category with subcategories. Delete or move subcategories first." };
+            return { success: false, error: "Cannot delete category with subcategories. Delete or move subcategories first." };
         }
 
         // Unassign products from this category
@@ -235,14 +235,14 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
 
         if (error) {
             log.error("Delete category error:", error);
-            return { error: `Failed to delete category: ${error.message}` };
+            return { success: false, error: `Failed to delete category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Delete category error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to delete category" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to delete category" };
     }
 }
 
@@ -287,11 +287,11 @@ export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: str
         return { deletedCount };
     } catch (err) {
         log.error("Bulk delete categories error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to delete categories", deletedCount: 0 };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to delete categories", deletedCount: 0 };
     }
 }
 
-export async function updateCategoryOrder(updates: { id: string; sort_order: number; parent_id: string | null }[]): Promise<{ error?: string }> {
+export async function updateCategoryOrder(updates: { id: string; sort_order: number; parent_id: string | null }[]): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -308,19 +308,19 @@ export async function updateCategoryOrder(updates: { id: string; sort_order: num
 
             if (error) {
                 log.error("Update category order error:", error);
-                return { error: `Failed to update order: ${error.message}` };
+                return { success: false, error: `Failed to update order: ${error.message}` };
             }
         }
 
         await expireCategoryCaches(tenantId);
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Update category order error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update order" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update order" };
     }
 }
 
-export async function moveCategory(id: string, newParentId: string | null): Promise<{ error?: string }> {
+export async function moveCategory(id: string, newParentId: string | null): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -330,7 +330,7 @@ export async function moveCategory(id: string, newParentId: string | null): Prom
             let currentId: string | null = newParentId;
             while (currentId) {
                 if (currentId === id) {
-                    return { error: "Cannot move category to its own descendant" };
+                    return { success: false, error: "Cannot move category to its own descendant" };
                 }
                 const result = await supabase
                     .from("categories")
@@ -353,13 +353,13 @@ export async function moveCategory(id: string, newParentId: string | null): Prom
 
         if (error) {
             log.error("Move category error:", error);
-            return { error: `Failed to move category: ${error.message}` };
+            return { success: false, error: `Failed to move category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Move category error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to move category" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to move category" };
     }
 }

@@ -47,7 +47,7 @@ export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?
         return { newQuantity: updated.quantity || 0 };
     } catch (err) {
         log.error("Adjust stock error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to adjust stock" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to adjust stock" };
     }
 }
 
@@ -79,7 +79,7 @@ export async function bulkAdjustStock(
         return { successCount: results.length };
     } catch (err) {
         log.error("Bulk adjust stock error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to adjust stock", successCount: 0 };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to adjust stock", successCount: 0 };
     }
 }
 
@@ -88,7 +88,7 @@ export async function updateReorderSettings(
     productId: string,
     reorderPoint: number,
     reorderQuantity: number
-): Promise<{ error?: string }> {
+): Promise<{ success?: boolean; error?: string }> {
     try {
         const validProductId = z.string().uuid().parse(productId);
         const validReorderPoint = z.number().int().min(0).parse(reorderPoint);
@@ -117,14 +117,14 @@ export async function updateReorderSettings(
             .eq("tenant_id", tenantId);
 
         if (error) {
-            return { error: `Failed to update reorder settings: ${error.message}` };
+            return { success: false, error: `Failed to update reorder settings: ${error.message}` };
         }
 
         revalidatePath("/dashboard/inventory");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Update reorder settings error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update settings" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
 
@@ -180,7 +180,7 @@ export async function exportInventory(): Promise<{ csv?: string; error?: string 
             .order("name");
 
         if (error) {
-            return { error: error.message };
+            return { success: false, error: error.message };
         }
 
         const headers = ["Name", "SKU", "Barcode", "Quantity", "Price", "Cost", "Value", "Status", "Category"];
@@ -201,7 +201,7 @@ export async function exportInventory(): Promise<{ csv?: string; error?: string 
         return { csv };
     } catch (err) {
         log.error("Export inventory error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to export" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to export" };
     }
 }
 
@@ -272,6 +272,6 @@ export async function importInventory(
         return { successCount, failedCount };
     } catch (err) {
         log.error("Import inventory error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to import", successCount: 0, failedCount: 0 };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to import", successCount: 0, failedCount: 0 };
     }
 }

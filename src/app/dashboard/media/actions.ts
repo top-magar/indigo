@@ -292,7 +292,7 @@ export async function getAsset(
     .single();
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: error.message };
   }
 
   return { asset: transformAsset(asset) };
@@ -728,7 +728,7 @@ export async function getUploadUrl(
     3600
   );
 
-  if ("error" in result) return { error: result.error };
+  if ("error" in result) return { success: false, error: result.error };
   return { uploadUrl: result.url, key: result.key, cdnUrl: getCdnUrl(result.key) };
 }
 

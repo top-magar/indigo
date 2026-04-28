@@ -15,11 +15,11 @@ const storeSettingsSchema = z.object({
 
 // ── Store Info ──
 
-export async function updateStoreSettings(formData: FormData): Promise<{ error?: string }> {
+export async function updateStoreSettings(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { success: false, error: 'Unauthorized' };
 
     const { name, description, logoUrl } = storeSettingsSchema.parse(Object.fromEntries(formData.entries()));
 
@@ -33,22 +33,22 @@ export async function updateStoreSettings(formData: FormData): Promise<{ error?:
       })
       .eq("id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update store settings error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update settings" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update settings" };
   }
 }
 
 // ── SEO ──
 
-export async function updateStoreSeoSettings(formData: FormData): Promise<{ error?: string }> {
+export async function updateStoreSeoSettings(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { success: false, error: 'Unauthorized' };
 
     const { data: tenant } = await supabase
       .from("tenants")
@@ -67,12 +67,12 @@ export async function updateStoreSeoSettings(formData: FormData): Promise<{ erro
       .update({ settings, updated_at: new Date().toISOString() })
       .eq("id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update SEO settings error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update settings" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update settings" };
   }
 }
 
@@ -88,15 +88,15 @@ const currencySettingsSchema = z.object({
 
 export async function updateCurrencySettings(
   input: { currency: string; displayCurrency: string; priceIncludesTax: boolean }
-): Promise<{ error?: string }> {
+): Promise<{ success?: boolean; error?: string }> {
   try {
     const data = currencySettingsSchema.parse(input);
     const { user, supabase } = await getAuthenticatedClient();
 
-    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { success: false, error: 'Unauthorized' };
 
-    if (!isValidCurrency(data.currency)) return { error: `Invalid currency: ${data.currency}` };
-    if (!isValidCurrency(data.displayCurrency)) return { error: `Invalid display currency: ${data.displayCurrency}` };
+    if (!isValidCurrency(data.currency)) return { success: false, error: `Invalid currency: ${data.currency}` };
+    if (!isValidCurrency(data.displayCurrency)) return { success: false, error: `Invalid display currency: ${data.displayCurrency}` };
 
     const { error } = await supabase
       .from("tenants")
@@ -108,11 +108,11 @@ export async function updateCurrencySettings(
       })
       .eq("id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update currency settings error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update settings" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update settings" };
   }
 }

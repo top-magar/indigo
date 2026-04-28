@@ -6,11 +6,11 @@ import { revalidatePath } from "next/cache";
 
 const log = createLogger("actions:checkout-settings");
 
-export async function updateCheckoutSettings(formData: FormData): Promise<{ error?: string }> {
+export async function updateCheckoutSettings(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const { user, supabase } = await getAuthenticatedClient();
 
-    if (!['owner', 'admin'].includes(user.role)) return { error: 'Unauthorized' };
+    if (!['owner', 'admin'].includes(user.role)) return { success: false, error: 'Unauthorized' };
 
     const { data: tenant } = await supabase
       .from("tenants")
@@ -44,11 +44,11 @@ export async function updateCheckoutSettings(formData: FormData): Promise<{ erro
       .update({ settings, updated_at: new Date().toISOString() })
       .eq("id", user.tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings/checkout");
-    return {};
+    return { success: true };
   } catch (err) {
     log.error("Update checkout settings error:", err);
-    return { error: err instanceof Error ? err.message : "Failed to update settings" };
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update settings" };
   }
 }

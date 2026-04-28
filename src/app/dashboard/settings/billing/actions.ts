@@ -15,10 +15,10 @@ const requestSchema = z.object({
 export async function requestUpgrade(input: z.infer<typeof requestSchema>): Promise<{ error?: string; paymentInfo?: { planName: string; amount: string; cycle: string } }> {
   const user = await requireUser();
   const parsed = requestSchema.safeParse(input);
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) return { success: false, error: "Invalid input" };
 
   const [plan] = await db.select().from(plans).where(eq(plans.id, parsed.data.planId)).limit(1);
-  if (!plan) return { error: "Plan not found" };
+  if (!plan) return { success: false, error: "Plan not found" };
 
   const amount = parsed.data.billingCycle === "yearly" && plan.priceYearly
     ? plan.priceYearly

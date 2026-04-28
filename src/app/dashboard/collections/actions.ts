@@ -80,7 +80,7 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
 
         if (error) {
             log.error("Create collection error:", error);
-            return { error: `Failed to create collection: ${error.message}` };
+            return { success: false, error: `Failed to create collection: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
@@ -88,10 +88,10 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
         return { collection };
     } catch (err) {
         if (err instanceof z.ZodError) {
-            return { error: err.issues[0].message };
+            return { success: false, error: err.issues[0].message };
         }
         log.error("Create collection error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to create collection" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to create collection" };
     }
 }
 
@@ -108,7 +108,7 @@ export async function updateCollection(formData: FormData): Promise<{ error?: st
         const type = formData.get("type") as "manual" | "automatic";
 
         if (!name?.trim()) {
-            return { error: "Collection name is required" };
+            return { success: false, error: "Collection name is required" };
         }
 
         // Check for duplicate slug (excluding current collection)
@@ -143,7 +143,7 @@ export async function updateCollection(formData: FormData): Promise<{ error?: st
 
         if (error) {
             log.error("Update collection error:", error);
-            return { error: `Failed to update collection: ${error.message}` };
+            return { success: false, error: `Failed to update collection: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
@@ -151,11 +151,11 @@ export async function updateCollection(formData: FormData): Promise<{ error?: st
         return { collection };
     } catch (err) {
         log.error("Update collection error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update collection" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update collection" };
     }
 }
 
-export async function deleteCollection(id: string): Promise<{ error?: string }> {
+export async function deleteCollection(id: string): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -175,19 +175,19 @@ export async function deleteCollection(id: string): Promise<{ error?: string }> 
 
         if (error) {
             log.error("Delete collection error:", error);
-            return { error: `Failed to delete collection: ${error.message}` };
+            return { success: false, error: `Failed to delete collection: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
         revalidatePath("/dashboard/products/new");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Delete collection error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to delete collection" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to delete collection" };
     }
 }
 
-export async function toggleCollectionStatus(id: string, isActive: boolean): Promise<{ error?: string }> {
+export async function toggleCollectionStatus(id: string, isActive: boolean): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -199,18 +199,18 @@ export async function toggleCollectionStatus(id: string, isActive: boolean): Pro
 
         if (error) {
             log.error("Toggle collection status error:", error);
-            return { error: `Failed to update collection: ${error.message}` };
+            return { success: false, error: `Failed to update collection: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Toggle collection status error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update collection" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update collection" };
     }
 }
 
-export async function updateCollectionOrder(updates: { id: string; sort_order: number }[]): Promise<{ error?: string }> {
+export async function updateCollectionOrder(updates: { id: string; sort_order: number }[]): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -226,18 +226,18 @@ export async function updateCollectionOrder(updates: { id: string; sort_order: n
         const failed = results.find(r => r.error);
         if (failed?.error) {
             log.error("Update collection order error:", failed.error);
-            return { error: `Failed to update order: ${failed.error.message}` };
+            return { success: false, error: `Failed to update order: ${failed.error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Update collection order error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to update order" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to update order" };
     }
 }
 
-export async function addProductToCollection(collectionId: string, productId: string): Promise<{ error?: string }> {
+export async function addProductToCollection(collectionId: string, productId: string): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -265,19 +265,19 @@ export async function addProductToCollection(collectionId: string, productId: st
             // Ignore duplicate errors
             if (error.code !== "23505") {
                 log.error("Add product to collection error:", error);
-                return { error: `Failed to add product: ${error.message}` };
+                return { success: false, error: `Failed to add product: ${error.message}` };
             }
         }
 
         revalidatePath("/dashboard/collections");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Add product to collection error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to add product" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to add product" };
     }
 }
 
-export async function removeProductFromCollection(collectionId: string, productId: string): Promise<{ error?: string }> {
+export async function removeProductFromCollection(collectionId: string, productId: string): Promise<{ success?: boolean; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -290,13 +290,13 @@ export async function removeProductFromCollection(collectionId: string, productI
 
         if (error) {
             log.error("Remove product from collection error:", error);
-            return { error: `Failed to remove product: ${error.message}` };
+            return { success: false, error: `Failed to remove product: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
-        return {};
+        return { success: true };
     } catch (err) {
         log.error("Remove product from collection error:", err);
-        return { error: err instanceof Error ? err.message : "Failed to remove product" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to remove product" };
     }
 }

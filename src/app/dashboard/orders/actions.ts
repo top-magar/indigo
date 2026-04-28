@@ -64,7 +64,7 @@ export async function updateOrderStatus(formData: FormData) {
         revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        return { error: error instanceof Error ? error.message : "Failed to update order status" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update order status" };
     }
 }
 
@@ -89,7 +89,7 @@ export async function cancelOrder(formData: FormData) {
         revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        return { error: error instanceof Error ? error.message : "Failed to cancel order" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to cancel order" };
     }
 }
 
@@ -98,7 +98,7 @@ export async function updateOrderNotes(formData: FormData) {
     const notes = formData.get("notes") as string;
 
     if (!orderId) {
-        return { error: "Order ID is required" };
+        return { success: false, error: "Order ID is required" };
     }
 
     const { tenantId, userId, userName } = await getAuthenticatedTenant();
@@ -109,7 +109,7 @@ export async function updateOrderNotes(formData: FormData) {
         
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        return { error: error instanceof Error ? error.message : "Failed to update order notes" };
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update order notes" };
     }
 }
 
@@ -136,7 +136,7 @@ export async function exportOrders(filters: {
         }
 
         const { data: orders, error } = await query;
-        if (error) return { error: error.message };
+        if (error) return { success: false, error: error.message };
 
         const headers = ["Order #", "Customer", "Email", "Total", "Status", "Payment", "Date"];
         const rows = (orders || []).map(o => [
@@ -153,7 +153,7 @@ export async function exportOrders(filters: {
         return { csv };
     } catch (err) {
         log.error("Export orders error", err);
-        return { error: err instanceof Error ? err.message : "Failed to export orders" };
+        return { success: false, error: err instanceof Error ? err.message : "Failed to export orders" };
     }
 }
 
@@ -167,7 +167,7 @@ export async function updateOrderTags(orderId: string, tags: string[]) {
         .eq("id", orderId)
         .eq("tenant_id", tenantId);
 
-    if (error) return { error: error.message };
+    if (error) return { success: false, error: error.message };
     revalidatePath(`/dashboard/orders/${orderId}`);
 }
 

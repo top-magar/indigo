@@ -37,7 +37,7 @@ export async function getReturns(filters?: {
   if (filters?.search) query = query.or(`return_number.ilike.%${sanitizeSearch(filters.search)}%,customer_notes.ilike.%${sanitizeSearch(filters.search)}%`)
 
   const { data, error, count } = await query
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
   return { data, count }
 }
 
@@ -52,7 +52,7 @@ export async function getReturn(returnId: string) {
     .eq("tenant_id", tenantId)
     .single()
 
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
   return { data }
 }
 
@@ -89,7 +89,7 @@ export async function createReturn(formData: FormData) {
     .select()
     .single()
 
-  if (returnError) return { error: returnError.message }
+  if (returnError) return { success: false, error: returnError.message }
 
   if (itemsJson) {
     try {
@@ -100,7 +100,7 @@ export async function createReturn(formData: FormData) {
         })))
         if (itemsError) {
           await supabase.from("returns").delete().eq("id", returnData.id).eq("tenant_id", tenantId)
-          return { error: itemsError.message }
+          return { success: false, error: itemsError.message }
         }
       }
     } catch { /* Invalid JSON */ }
@@ -137,7 +137,7 @@ export async function updateReturnStatus(formData: FormData) {
   else if (status === "refunded" || status === "completed") updates.refunded_at = new Date().toISOString()
 
   const { error } = await supabase.from("returns").update(updates).eq("id", returnId).eq("tenant_id", tenantId)
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
 
   if (status === "refunded" && refundAmount) {
     const { data: returnData } = await supabase.from("returns").select("customer_id, refund_method").eq("id", returnId).eq("tenant_id", tenantId).single()
@@ -156,7 +156,7 @@ export async function deleteReturn(returnId: string) {
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { error } = await supabase.from("returns").delete().eq("id", validId).eq("tenant_id", tenantId)
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
 
   revalidatePath("/dashboard/orders/returns")
   return { success: true }
@@ -171,7 +171,7 @@ export async function getCustomerStoreCredits(customerId: string) {
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { data, error } = await supabase.from("store_credits").select(`*, transactions:store_credit_transactions (*)`).eq("customer_id", validId).eq("tenant_id", tenantId).gt("balance", 0).order("created_at", { ascending: false })
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
   return { data }
 }
 
@@ -195,7 +195,7 @@ export async function createStoreCredit(formData: FormData) {
   const { customerId, amount, reason, currencyCode, expiresAt } = parsed
 
   const { data, error } = await supabase.from("store_credits").insert({ tenant_id: tenantId, customer_id: customerId, amount, balance: amount, currency_code: currencyCode, reason, source_type: "manual", expires_at: expiresAt }).select().single()
-  if (error) return { error: error.message }
+  if (error) return { success: false, error: error.message }
 
   await supabase.from("store_credit_transactions").insert({ store_credit_id: data.id, type: "credit", amount, balance_after: amount, notes: `Initial credit: ${reason}` })
 
@@ -221,11 +221,11 @@ export async function useStoreCredit(formData: FormData) {
   const { storeCreditId, amount, orderId, notes } = parsed
 
   const { data: credit } = await supabase.from("store_credits").select("balance").eq("id", storeCreditId).eq("tenant_id", tenantId).single()
-  if (!credit || credit.balance < amount) return { error: "Insufficient store credit balance" }
+  if (!credit || credit.balance < amount) return { success: false, error: "Insufficient store credit balance" }
 
   const newBalance = credit.balance - amount
   const { error: updateError } = await supabase.from("store_credits").update({ balance: newBalance }).eq("id", storeCreditId).eq("tenant_id", tenantId)
-  if (updateError) return { error: updateError.message }
+  if (updateError) return { success: false, error: updateError.message }
 
   await supabase.from("store_credit_transactions").insert({ store_credit_id: storeCreditId, type: "debit", amount, balance_after: newBalance, order_id: orderId, notes })
 

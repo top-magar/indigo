@@ -35,7 +35,7 @@ export async function createPage(projectId: string, pageName?: string): Promise<
   const user = await requireTenantUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
-  if (!project) return { error: "Project not found" };
+  if (!project) return { success: false, error: "Project not found" };
 
   // Page limit: Free = 2, Growth = 10, Pro = unlimited
   const { getTenantPlanLimits } = await import("@/lib/plan-limits");
@@ -43,7 +43,7 @@ export async function createPage(projectId: string, pageName?: string): Promise<
   const maxPages = limits.planName === "Free" ? 2 : limits.planName === "Growth" ? 10 : 999;
   const [{ value: pageCount }] = await db.select({ value: count() }).from(editorPages).where(eq(editorPages.projectId, projectId));
   if (pageCount >= maxPages) {
-    return { error: `Page limit reached (${maxPages}). Upgrade your plan to create more pages.` };
+    return { success: false, error: `Page limit reached (${maxPages}). Upgrade your plan to create more pages.` };
   }
 
   const name = pageName?.trim() || "Untitled Page";
