@@ -4,6 +4,7 @@ import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:marketing-campaigns");
 
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import type {
     Campaign,
@@ -13,17 +14,8 @@ import type {
 } from "./types";
 
 async function getTenantId(): Promise<string | null> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    return userData?.tenant_id || null;
+    const { user } = await getAuthenticatedClient();
+    return user.tenantId;
 }
 
 

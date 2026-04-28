@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { sendWhatsAppMessage } from "@/infrastructure/services/whatsapp";
 
@@ -13,17 +13,14 @@ export interface WhatsAppSettings {
 }
 
 export async function getWhatsAppSettings(): Promise<{ settings: WhatsAppSettings; error?: string }> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { settings: defaultSettings(), error: "Unauthorized" };
-
-  const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
-  if (!userData?.tenant_id) return { settings: defaultSettings(), error: "No tenant" };
+  const { user, supabase } = await getAuthenticatedClient();
+  const tenantId = user.tenantId;
+  if (!tenantId) return { settings: defaultSettings(), error: "Unauthorized" };
 
   const { data: tenant } = await supabase
     .from("tenants")
     .select("settings")
-    .eq("id", userData.tenant_id)
+    .eq("id", tenantId)
     .single();
 
   if (!tenant) return { settings: defaultSettings(), error: "Tenant not found" };
@@ -48,15 +45,12 @@ const whatsappSettingsSchema = z.object({
 
 export async function updateWhatsAppSettings(input: WhatsAppSettings): Promise<{ success: boolean; error?: string }> {
   const data = whatsappSettingsSchema.parse(input);
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: "Unauthorized" };
+  const { user, supabase } = await getAuthenticatedClient();
+  const tenantId = user.tenantId;
+  if (!tenantId) return { success: false, error: "Unauthorized" };
+  if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
-  const { data: userData } = await supabase.from("users").select("tenant_id, role").eq("id", user.id).single();
-  if (!userData?.tenant_id) return { success: false, error: "No tenant" };
-  if (userData.role !== "owner" && userData.role !== "admin") return { success: false, error: "Insufficient permissions" };
-
-  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", userData.tenant_id).single();
+  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
   const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
 
   const { error } = await supabase
@@ -72,7 +66,7 @@ export async function updateWhatsAppSettings(input: WhatsAppSettings): Promise<{
         },
       },
     })
-    .eq("id", userData.tenant_id);
+    .eq("id", tenantId);
 
   if (error) return { success: false, error: error.message };
 

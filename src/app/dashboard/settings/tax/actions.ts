@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { createLogger } from "@/lib/logger";
-import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 const log = createLogger("settings:tax");
@@ -20,17 +20,14 @@ export interface TaxSettings {
 }
 
 export async function getTaxSettings(): Promise<{ settings: TaxSettings; error?: string }> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { settings: defaultTaxSettings(), error: "Unauthorized" };
-
-    const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
-    if (!userData?.tenant_id) return { settings: defaultTaxSettings(), error: "No tenant" };
+    const { user, supabase } = await getAuthenticatedClient();
+    const tenantId = user.tenantId;
+    if (!tenantId) return { settings: defaultTaxSettings(), error: "Unauthorized" };
 
     const { data: tenant } = await supabase
         .from("tenants")
         .select("price_includes_tax, settings")
-        .eq("id", userData.tenant_id)
+        .eq("id", tenantId)
         .single();
 
     if (!tenant) return { settings: defaultTaxSettings(), error: "Tenant not found" };
@@ -65,16 +62,13 @@ const taxSettingsSchema = z.object({
 
 export async function updateTaxSettings(input: TaxSettings): Promise<{ success: boolean; error?: string }> {
     const data = taxSettingsSchema.parse(input);
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { success: false, error: "Unauthorized" };
-
-    const { data: userData } = await supabase.from("users").select("tenant_id, role").eq("id", user.id).single();
-    if (!userData?.tenant_id) return { success: false, error: "No tenant" };
-    if (userData.role !== "owner" && userData.role !== "admin") return { success: false, error: "Insufficient permissions" };
+    const { user, supabase } = await getAuthenticatedClient();
+    const tenantId = user.tenantId;
+    if (!tenantId) return { success: false, error: "Unauthorized" };
+    if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
     // Get current settings to merge
-    const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", userData.tenant_id).single();
+    const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
     const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
 
     const { error } = await supabase
@@ -95,7 +89,7 @@ export async function updateTaxSettings(input: TaxSettings): Promise<{ success: 
                 },
             },
         })
-        .eq("id", userData.tenant_id);
+        .eq("id", tenantId);
 
     if (error) {
         log.error("Failed to update tax settings", { error: error.message });

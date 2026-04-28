@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export interface PaymentSettings {
@@ -19,17 +19,14 @@ export interface PaymentSettings {
 }
 
 export async function getPaymentSettings(): Promise<{ settings: PaymentSettings; error?: string }> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { settings: defaultPaymentSettings(), error: "Unauthorized" };
-
-  const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
-  if (!userData?.tenant_id) return { settings: defaultPaymentSettings(), error: "No tenant" };
+  const { user, supabase } = await getAuthenticatedClient();
+  const tenantId = user.tenantId;
+  if (!tenantId) return { settings: defaultPaymentSettings(), error: "Unauthorized" };
 
   const { data: tenant } = await supabase
     .from("tenants")
     .select("settings")
-    .eq("id", userData.tenant_id)
+    .eq("id", tenantId)
     .single();
 
   if (!tenant) return { settings: defaultPaymentSettings(), error: "Tenant not found" };
@@ -68,15 +65,12 @@ const paymentSettingsSchema = z.object({
 
 export async function updatePaymentSettings(input: PaymentSettings): Promise<{ success: boolean; error?: string }> {
   const data = paymentSettingsSchema.parse(input);
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: "Unauthorized" };
+  const { user, supabase } = await getAuthenticatedClient();
+  if (!user.tenantId) return { success: false, error: "Unauthorized" };
+  if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
-  const { data: userData } = await supabase.from("users").select("tenant_id, role").eq("id", user.id).single();
-  if (!userData?.tenant_id) return { success: false, error: "No tenant" };
-  if (userData.role !== "owner" && userData.role !== "admin") return { success: false, error: "Insufficient permissions" };
-
-  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", userData.tenant_id).single();
+  const tenantId = user.tenantId;
+  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
   const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
   const currentPayments = currentSettings.payments as Record<string, unknown> | undefined;
 
@@ -100,7 +94,7 @@ export async function updatePaymentSettings(input: PaymentSettings): Promise<{ s
         },
       },
     })
-    .eq("id", userData.tenant_id);
+    .eq("id", tenantId);
 
   if (error) return { success: false, error: error.message };
 

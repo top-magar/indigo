@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { productRepository } from "@/features/products/repositories";
 import { categoryRepository } from "@/features/categories/repositories";
@@ -7,14 +7,8 @@ import { categoryRepository } from "@/features/categories/repositories";
 // ─── Auth ────────────────────────────────────────────────
 
 export async function auth() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
-  if (!data?.tenant_id) redirect("/login");
-
-  return { supabase, tenantId: data.tenant_id, userId: user.id };
+  const { user, supabase } = await getAuthenticatedClient();
+  return { supabase, tenantId: user.tenantId, userId: user.id };
 }
 
 export async function getTenantCurrency(supabase: Awaited<ReturnType<typeof createClient>>, tenantId: string) {

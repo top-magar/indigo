@@ -4,10 +4,8 @@ import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:settings-notifications");
 
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { 
   notificationPreferencesRepository,
   type NotificationCategory,
