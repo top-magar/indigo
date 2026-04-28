@@ -274,19 +274,23 @@ export async function updateCartItem(
   quantity: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Get cart ID from item
-    const [item] = await db.select({ cartId: cartItems.cartId }).from(cartItems).where(eq(cartItems.id, itemId)).limit(1);
+    // Verify item belongs to a cart owned by this tenant
+    const [item] = await db.select({ cartId: cartItems.cartId })
+      .from(cartItems)
+      .innerJoin(carts, eq(carts.id, cartItems.cartId))
+      .where(and(eq(cartItems.id, itemId), eq(carts.tenantId, tenantId)))
+      .limit(1);
 
     if (!item) {
       return { success: false, error: "Item not found" }
     }
 
     if (quantity <= 0) {
-      await db.delete(cartItems).where(eq(cartItems.id, itemId));
+      await db.delete(cartItems).where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId)));
     } else {
       await db.update(cartItems)
         .set({ quantity, updatedAt: new Date() })
-        .where(eq(cartItems.id, itemId));
+        .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId)));
     }
 
     // Recalculate totals

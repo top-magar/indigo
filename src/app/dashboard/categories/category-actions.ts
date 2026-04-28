@@ -400,6 +400,7 @@ export async function deleteCategoryById(categoryId: string) {
             .from("categories")
             .select("id")
             .eq("parent_id", categoryId)
+            .eq("tenant_id", tenantId)
             .limit(1);
 
         if (children && children.length > 0) {
@@ -410,7 +411,8 @@ export async function deleteCategoryById(categoryId: string) {
         await supabase
             .from("products")
             .update({ category_id: null })
-            .eq("category_id", categoryId);
+            .eq("category_id", categoryId)
+            .eq("tenant_id", tenantId);
 
         // Delete category
         const { error } = await supabase

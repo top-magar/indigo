@@ -18,6 +18,12 @@ export async function updateCheckoutSettings(formData: FormData): Promise<{ erro
       .eq("id", user.tenantId)
       .single();
 
+    const safeUrl = (v: FormDataEntryValue | null) => {
+      const s = (v as string)?.trim();
+      if (!s) return null;
+      try { const u = new URL(s); return ['http:', 'https:'].includes(u.protocol) ? s : null; } catch { return null; }
+    };
+
     const settings = (tenant?.settings as Record<string, unknown>) || {};
     settings.checkout = {
       guestCheckout: formData.get("guestCheckout") === "true",

@@ -380,7 +380,8 @@ export async function deleteAttribute(attributeId: string): Promise<{
         await supabase
             .from("attribute_values")
             .delete()
-            .eq("attribute_id", attributeId);
+            .eq("attribute_id", attributeId)
+            .eq("tenant_id", tenantId);
 
         // Delete attribute
         const { error } = await supabase
@@ -599,7 +600,8 @@ export async function bulkDeleteAttributes(attributeIds: string[]): Promise<{
         await supabase
             .from("attribute_values")
             .delete()
-            .in("attribute_id", attributeIds);
+            .in("attribute_id", attributeIds)
+            .eq("tenant_id", tenantId);
 
         // Delete attributes
         const { error, count } = await supabase

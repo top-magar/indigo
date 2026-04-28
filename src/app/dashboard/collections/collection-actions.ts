@@ -399,7 +399,7 @@ export async function bulkUnassignProducts(collectionId: string, productIds: str
 }
 
 export async function reorderCollectionProducts(collectionId: string, productIds: string[]) {
-    const { supabase } = await getAuthenticatedTenant();
+    const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
         // Update positions
@@ -408,7 +408,8 @@ export async function reorderCollectionProducts(collectionId: string, productIds
                 .from("collection_products")
                 .update({ position: i })
                 .eq("collection_id", collectionId)
-                .eq("product_id", productIds[i]);
+                .eq("product_id", productIds[i])
+                .eq("tenant_id", tenantId);
         }
 
         revalidatePath(`/dashboard/collections/${collectionId}`);
@@ -431,7 +432,8 @@ export async function deleteCollectionById(collectionId: string) {
         await supabase
             .from("collection_products")
             .delete()
-            .eq("collection_id", collectionId);
+            .eq("collection_id", collectionId)
+            .eq("tenant_id", tenantId);
 
         // Delete collection
         const { error } = await supabase

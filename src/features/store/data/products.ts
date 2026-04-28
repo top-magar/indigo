@@ -63,9 +63,10 @@ export async function listProducts(
       const conditions = [eq(products.status, "active")]
       if (categoryId) conditions.push(eq(products.categoryId, categoryId))
       if (search) {
-        conditions.push(or(
-          ilike(products.name, `%${search}%`),
-          ilike(products.description, `%${search}%`),
+        const s = search.replace(/[%_\\]/g, '')
+        if (s) conditions.push(or(
+          ilike(products.name, `%${s}%`),
+          ilike(products.description, `%${s}%`),
         )!)
       }
 
