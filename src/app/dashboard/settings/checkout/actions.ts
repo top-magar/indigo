@@ -2,21 +2,21 @@
 
 import { createLogger } from "@/lib/logger";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 const log = createLogger("actions:checkout-settings");
 
 export async function updateCheckoutSettings(formData: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
-    const { user, supabase } = await getAuthenticatedClient();
+    const { user } = await getAuthenticatedClient();
 
     if (!['owner', 'admin'].includes(user.role)) return { success: false, error: 'Unauthorized' };
 
-    const { data: tenant } = await supabase
-      .from("tenants")
-      .select("settings")
-      .eq("id", user.tenantId)
-      .single();
+    const [tenant] = await db.select({ settings: tenants.settings })
+      .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
 
     const safeUrl = (v: FormDataEntryValue | null) => {
       const s = (v as string)?.trim();
@@ -39,12 +39,11 @@ export async function updateCheckoutSettings(formData: FormData): Promise<{ succ
       refundPolicy: (formData.get("refundPolicy") as string) || null,
     };
 
-    const { error } = await supabase
-      .from("tenants")
-      .update({ settings, updated_at: new Date().toISOString() })
-      .eq("id", user.tenantId);
+    await db.update(tenants).set({
+      settings,
+      updatedAt: new Date(),
+    }).where(eq(tenants.id, user.tenantId));
 
-    if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/settings/checkout");
     return { success: true };
   } catch (err) {

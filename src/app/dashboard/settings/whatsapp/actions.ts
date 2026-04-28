@@ -2,6 +2,9 @@
 
 import { z } from "zod";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { sendWhatsAppMessage } from "@/infrastructure/services/whatsapp";
 
@@ -13,15 +16,11 @@ export interface WhatsAppSettings {
 }
 
 export async function getWhatsAppSettings(): Promise<{ settings: WhatsAppSettings; error?: string }> {
-  const { user, supabase } = await getAuthenticatedClient();
-  const tenantId = user.tenantId;
-  if (!tenantId) return { settings: defaultSettings(), error: "Unauthorized" };
+  const { user } = await getAuthenticatedClient();
+  if (!user.tenantId) return { settings: defaultSettings(), error: "Unauthorized" };
 
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("settings")
-    .eq("id", tenantId)
-    .single();
+  const [tenant] = await db.select({ settings: tenants.settings })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
 
   if (!tenant) return { settings: defaultSettings(), error: "Tenant not found" };
 
@@ -45,17 +44,16 @@ const whatsappSettingsSchema = z.object({
 
 export async function updateWhatsAppSettings(input: WhatsAppSettings): Promise<{ success: boolean; error?: string }> {
   const data = whatsappSettingsSchema.parse(input);
-  const { user, supabase } = await getAuthenticatedClient();
-  const tenantId = user.tenantId;
-  if (!tenantId) return { success: false, error: "Unauthorized" };
+  const { user } = await getAuthenticatedClient();
+  if (!user.tenantId) return { success: false, error: "Unauthorized" };
   if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
-  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
+  const [tenant] = await db.select({ settings: tenants.settings })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
   const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
 
-  const { error } = await supabase
-    .from("tenants")
-    .update({
+  try {
+    await db.update(tenants).set({
       settings: {
         ...currentSettings,
         whatsapp: {
@@ -65,10 +63,10 @@ export async function updateWhatsAppSettings(input: WhatsAppSettings): Promise<{
           merchantPhone: data.merchantPhone,
         },
       },
-    })
-    .eq("id", tenantId);
-
-  if (error) return { success: false, error: error.message };
+    }).where(eq(tenants.id, user.tenantId));
+  } catch {
+    return { success: false, error: "Failed to update WhatsApp settings" };
+  }
 
   revalidatePath("/dashboard/settings/whatsapp");
   return { success: true };

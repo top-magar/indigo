@@ -2,6 +2,9 @@
 
 import { z } from "zod";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export interface PaymentSettings {
@@ -19,15 +22,11 @@ export interface PaymentSettings {
 }
 
 export async function getPaymentSettings(): Promise<{ settings: PaymentSettings; error?: string }> {
-  const { user, supabase } = await getAuthenticatedClient();
-  const tenantId = user.tenantId;
-  if (!tenantId) return { settings: defaultPaymentSettings(), error: "Unauthorized" };
+  const { user } = await getAuthenticatedClient();
+  if (!user.tenantId) return { settings: defaultPaymentSettings(), error: "Unauthorized" };
 
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("settings")
-    .eq("id", tenantId)
-    .single();
+  const [tenant] = await db.select({ settings: tenants.settings })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
 
   if (!tenant) return { settings: defaultPaymentSettings(), error: "Tenant not found" };
 
@@ -65,18 +64,17 @@ const paymentSettingsSchema = z.object({
 
 export async function updatePaymentSettings(input: PaymentSettings): Promise<{ success: boolean; error?: string }> {
   const data = paymentSettingsSchema.parse(input);
-  const { user, supabase } = await getAuthenticatedClient();
+  const { user } = await getAuthenticatedClient();
   if (!user.tenantId) return { success: false, error: "Unauthorized" };
   if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
-  const tenantId = user.tenantId;
-  const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
+  const [tenant] = await db.select({ settings: tenants.settings })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
   const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
   const currentPayments = currentSettings.payments as Record<string, unknown> | undefined;
 
-  const { error } = await supabase
-    .from("tenants")
-    .update({
+  try {
+    await db.update(tenants).set({
       settings: {
         ...currentSettings,
         payments: {
@@ -93,10 +91,10 @@ export async function updatePaymentSettings(input: PaymentSettings): Promise<{ s
           khaltiSecretKey: data.khaltiSecretKey.startsWith('••••••') ? (currentPayments?.khaltiSecretKey as string) ?? '' : data.khaltiSecretKey,
         },
       },
-    })
-    .eq("id", tenantId);
-
-  if (error) return { success: false, error: error.message };
+    }).where(eq(tenants.id, user.tenantId));
+  } catch {
+    return { success: false, error: "Failed to update payment settings" };
+  }
 
   revalidatePath("/dashboard/settings/payments");
   return { success: true };

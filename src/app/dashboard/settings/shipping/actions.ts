@@ -2,11 +2,14 @@
 
 import { z } from "zod"
 import { getAuthenticatedClient } from "@/lib/auth"
+import { db } from "@/infrastructure/db"
+import { tenants, type TenantSettings } from "@/db/schema/tenants"
+import { eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 async function getAuthenticatedTenant() {
   const { user, supabase } = await getAuthenticatedClient();
-  return { supabase, tenantId: user.tenantId };
+  return { supabase, tenantId: user.tenantId, user };
 }
 
 
@@ -334,7 +337,7 @@ export async function deleteShippingRate(rateId: string) {
 }
 
 // ============================================================================
-// SHIPPING SETTINGS
+// SHIPPING SETTINGS (tenant settings — uses Drizzle)
 // ============================================================================
 
 const shippingSettingsSchema = z.object({
@@ -344,10 +347,10 @@ const shippingSettingsSchema = z.object({
 })
 
 export async function updateShippingSettings(formData: FormData) {
-  const { supabase, tenantId } = await getAuthenticatedTenant()
+  const { user } = await getAuthenticatedClient()
+  if (!user.tenantId) return { success: false, error: "Unauthorized" }
   
   const parsed = shippingSettingsSchema.parse({
-    
     freeShippingEnabled: formData.get("freeShippingEnabled") === "true",
     freeShippingThreshold: formData.get("freeShippingThreshold") ? parseFloat(formData.get("freeShippingThreshold") as string) : null,
     defaultHandlingTime: parseInt(formData.get("defaultHandlingTime") as string) || 1,
@@ -356,18 +359,13 @@ export async function updateShippingSettings(formData: FormData) {
   const { freeShippingEnabled, freeShippingThreshold, defaultHandlingTime } = parsed
 
   // Get current settings
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("settings")
-    .eq("id", tenantId)
-    .single()
+  const [tenant] = await db.select({ settings: tenants.settings })
+    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1)
 
   const currentSettings = (tenant?.settings || {}) as Record<string, unknown>
 
-  // Update settings
-  const { error } = await supabase
-    .from("tenants")
-    .update({
+  try {
+    await db.update(tenants).set({
       settings: {
         ...currentSettings,
         shipping: {
@@ -375,12 +373,10 @@ export async function updateShippingSettings(formData: FormData) {
           free_shipping_threshold: freeShippingThreshold,
           default_handling_time: defaultHandlingTime,
         },
-      },
-    })
-    .eq("id", tenantId)
-
-  if (error) {
-    return { success: false, error: error.message }
+      } as unknown as TenantSettings,
+    }).where(eq(tenants.id, user.tenantId))
+  } catch {
+    return { success: false, error: "Failed to update shipping settings" }
   }
 
   revalidatePath("/dashboard/settings/shipping")

@@ -3,6 +3,9 @@
 import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 const log = createLogger("settings:tax");
@@ -20,22 +23,18 @@ export interface TaxSettings {
 }
 
 export async function getTaxSettings(): Promise<{ settings: TaxSettings; error?: string }> {
-    const { user, supabase } = await getAuthenticatedClient();
-    const tenantId = user.tenantId;
-    if (!tenantId) return { settings: defaultTaxSettings(), error: "Unauthorized" };
+    const { user } = await getAuthenticatedClient();
+    if (!user.tenantId) return { settings: defaultTaxSettings(), error: "Unauthorized" };
 
-    const { data: tenant } = await supabase
-        .from("tenants")
-        .select("price_includes_tax, settings")
-        .eq("id", tenantId)
-        .single();
+    const [tenant] = await db.select({ priceIncludesTax: tenants.priceIncludesTax, settings: tenants.settings })
+        .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
 
     if (!tenant) return { settings: defaultTaxSettings(), error: "Tenant not found" };
 
     const s = (tenant.settings as Record<string, unknown>)?.tax as Record<string, unknown> | undefined;
     return {
         settings: {
-            priceIncludesTax: tenant.price_includes_tax ?? false,
+            priceIncludesTax: tenant.priceIncludesTax ?? false,
             defaultRate: (s?.defaultRate as number) ?? 13,
             taxName: (s?.taxName as string) ?? "VAT",
             registrationNumber: (s?.registrationNumber as string) ?? "",
@@ -60,21 +59,19 @@ const taxSettingsSchema = z.object({
     nextInvoiceNumber: z.number().min(1),
 });
 
-export async function updateTaxSettings(input: TaxSettings): Promise<{ success: boolean; error?: string }> {
+export async function updateTaxSettings(input: TaxSettings): Promise<{ success?: boolean; error?: string }> {
     const data = taxSettingsSchema.parse(input);
-    const { user, supabase } = await getAuthenticatedClient();
-    const tenantId = user.tenantId;
-    if (!tenantId) return { success: false, error: "Unauthorized" };
+    const { user } = await getAuthenticatedClient();
+    if (!user.tenantId) return { success: false, error: "Unauthorized" };
     if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" };
 
-    // Get current settings to merge
-    const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
+    const [tenant] = await db.select({ settings: tenants.settings })
+        .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
     const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {};
 
-    const { error } = await supabase
-        .from("tenants")
-        .update({
-            price_includes_tax: data.priceIncludesTax,
+    try {
+        await db.update(tenants).set({
+            priceIncludesTax: data.priceIncludesTax,
             settings: {
                 ...currentSettings,
                 tax: {
@@ -87,13 +84,11 @@ export async function updateTaxSettings(input: TaxSettings): Promise<{ success: 
                     invoicePrefix: data.invoicePrefix,
                     nextInvoiceNumber: data.nextInvoiceNumber,
                 },
-            },
-        })
-        .eq("id", tenantId);
-
-    if (error) {
-        log.error("Failed to update tax settings", { error: error.message });
-        return { success: false, error: error.message };
+            } as Record<string, unknown>,
+        }).where(eq(tenants.id, user.tenantId));
+    } catch (err) {
+        log.error("Failed to update tax settings", err);
+        return { success: false, error: "Failed to update tax settings" };
     }
 
     revalidatePath("/dashboard/settings/tax");
