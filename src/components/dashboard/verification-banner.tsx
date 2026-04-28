@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ShieldAlert, ArrowRight } from "lucide-react";
 
 export async function VerificationBanner({ tenantId }: { tenantId: string }) {
+  if (!tenantId) return null;
+
   const [kyc] = await db.select({ status: tenantKyc.status })
     .from(tenantKyc).where(eq(tenantKyc.tenantId, tenantId)).limit(1);
 
