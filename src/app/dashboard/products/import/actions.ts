@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("products-import-actions");
-import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 import type { ImportProduct, ImportResult } from "./types";
@@ -32,24 +32,8 @@ function generateSlug(name: string): string {
 
 export async function importProducts(products: ImportProduct[]): Promise<ImportResult> {
     importProductsSchema.parse(products);
-    const supabase = await createClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        return { success: 0, failed: products.length, errors: ["Not authenticated"] };
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        return { success: 0, failed: products.length, errors: ["No tenant found"] };
-    }
-
-    const tenantId = userData.tenant_id;
+    const { user, supabase } = await getAuthenticatedClient();
+    const tenantId = user.tenantId;
 
     // Get existing categories for mapping
     const { data: categories } = await supabase
