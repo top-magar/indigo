@@ -191,10 +191,10 @@ export async function addToCart(
       .limit(1);
 
     if (existing) {
-      // Update quantity
+      // Atomic increment — no read-then-write race
       await db.update(cartItems)
         .set({
-          quantity: existing.quantity + quantity,
+          quantity: sql`${cartItems.quantity} + ${quantity}`,
           updatedAt: new Date()
         })
         .where(eq(cartItems.id, existing.id));

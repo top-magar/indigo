@@ -229,8 +229,11 @@ export const POST = withRateLimit("checkout", async function POST(
       const paySettings = (settings as Record<string, unknown>).payments as Record<string, unknown> | undefined;
       const merchantCode = paySettings?.esewamerchantCode as string;
       const merchantSecret = paySettings?.esewaSecret as string;
-      if (merchantCode && merchantSecret) {
-        const { initiateEsewaPayment } = await import("@/infrastructure/payments/esewa");
+      if (!merchantCode || !merchantSecret) {
+        await db.delete(orders).where(eq(orders.id, order.id));
+        return NextResponse.json({ error: { message: "eSewa is not configured for this store" } }, { status: 400 });
+      }
+      const { initiateEsewaPayment } = await import("@/infrastructure/payments/esewa");
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
         const result = initiateEsewaPayment({
           amount: total,
@@ -242,7 +245,6 @@ export const POST = withRateLimit("checkout", async function POST(
         });
         esewaFormData = result.formData
         esewaFormAction = result.redirectUrl
-      }
     }
 
     // Khalti: initiate and get redirect URL
@@ -251,8 +253,11 @@ export const POST = withRateLimit("checkout", async function POST(
     if (paymentMethod === "khalti") {
       const paySettings = (settings as Record<string, unknown>).payments as Record<string, unknown> | undefined;
       const secretKey = paySettings?.khaltiSecretKey as string;
-      if (secretKey) {
-        const { initiateKhaltiPayment } = await import("@/infrastructure/payments/khalti");
+      if (!secretKey) {
+        await db.delete(orders).where(eq(orders.id, order.id));
+        return NextResponse.json({ error: { message: "Khalti is not configured for this store" } }, { status: 400 });
+      }
+      const { initiateKhaltiPayment } = await import("@/infrastructure/payments/khalti");
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
         const result = await initiateKhaltiPayment({
           amount: Math.round(total * 100), // paisa
@@ -268,8 +273,10 @@ export const POST = withRateLimit("checkout", async function POST(
         if (result.success && result.paymentUrl) {
           paymentRedirectUrl = result.paymentUrl;
           await db.update(orders).set({ metadata: sql`COALESCE(${orders.metadata}, '{}'::jsonb) || ${JSON.stringify({ paymentMethod: "khalti", khaltiPidx: result.pidx })}::jsonb` }).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
+        } else {
+          await db.delete(orders).where(eq(orders.id, order.id));
+          return NextResponse.json({ error: { message: "Failed to initiate Khalti payment" } }, { status: 500 });
         }
-      }
     }
 
     // [Fix 6] Stripe: delete order on failure

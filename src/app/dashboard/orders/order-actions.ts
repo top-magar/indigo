@@ -598,13 +598,17 @@ export async function markAsPaid(orderId: string) {
     try {
         const { data: order } = await supabase
             .from("orders")
-            .select("total, currency")
+            .select("total, currency, payment_status")
             .eq("id", orderId)
             .eq("tenant_id", tenantId)
             .single();
 
         if (!order) {
             return { success: false, error: "Order not found" };
+        }
+
+        if (order.payment_status === "paid") {
+            return { success: false, error: "Order is already marked as paid" };
         }
 
         // Create manual payment transaction
@@ -781,7 +785,7 @@ export async function searchProductsForOrder(query: string) {
         .select("id, name, sku, price, compare_at_price, images, status")
         .eq("tenant_id", tenantId)
         .eq("status", "active")
-        .ilike("name", `%${query}%`)
+        .ilike("name", `%${query.replace(/[%_'"\\]/g, '')}%`)
         .limit(10);
     return data ?? [];
 }

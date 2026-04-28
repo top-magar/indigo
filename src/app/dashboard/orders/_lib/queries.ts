@@ -84,21 +84,32 @@ export async function getOrders(tenantId: string, supabase: Awaited<ReturnType<t
 }
 
 export async function getOrderStats(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>): Promise<OrderStats> {
-  // Single query: count by status + revenue in one pass
-  const { data: rows } = await supabase
-    .from("orders")
-    .select("status, payment_status, total")
-    .eq("tenant_id", tenantId);
+  // SQL GROUP BY — single query, no JS aggregation, no full table scan
+  const { db } = await import("@/infrastructure/db");
+  const { orders: ordersTable } = await import("@/db/schema/orders");
+  const { eq: drEq, sql: drSql, count: drCount } = await import("drizzle-orm");
 
-  const all = rows || [];
-  const total = all.length;
-  const pending = all.filter(r => r.status === "pending").length;
-  const processing = all.filter(r => r.status === "processing").length;
-  const shipped = all.filter(r => r.status === "shipped").length;
-  const completed = all.filter(r => r.status === "completed").length;
-  const cancelled = all.filter(r => r.status === "cancelled").length;
-  const unpaid = all.filter(r => r.payment_status === "pending").length;
-  const revenue = all.filter(r => r.payment_status === "paid").reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
+  const stats = await db.select({
+    status: ordersTable.status,
+    cnt: drCount(),
+    paidRevenue: drSql<string>`COALESCE(SUM(CASE WHEN ${ordersTable.paymentStatus} = 'paid' THEN ${ordersTable.total} ELSE 0 END), 0)`,
+    unpaidCnt: drSql<string>`SUM(CASE WHEN ${ordersTable.paymentStatus} = 'pending' THEN 1 ELSE 0 END)`,
+  }).from(ordersTable).where(drEq(ordersTable.tenantId, tenantId)).groupBy(ordersTable.status);
+
+  let total = 0, pending = 0, processing = 0, shipped = 0, completed = 0, cancelled = 0, revenue = 0, unpaid = 0;
+  for (const row of stats) {
+    const cnt = Number(row.cnt);
+    total += cnt;
+    revenue += parseFloat(row.paidRevenue);
+    unpaid += Number(row.unpaidCnt);
+    switch (row.status) {
+      case "pending": pending = cnt; break;
+      case "processing": processing = cnt; break;
+      case "shipped": shipped = cnt; break;
+      case "completed": completed = cnt; break;
+      case "cancelled": cancelled = cnt; break;
+    }
+  }
 
   return {
     total, pending, processing, shipped, completed, cancelled,

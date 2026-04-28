@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/infrastructure/db";
 import { orders } from "@/db/schema/orders";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("api:webhooks:stripe");
@@ -30,30 +30,34 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
+        const tenantId = pi.metadata?.tenantId;
+        if (!tenantId) { log.error(`No tenantId in PI metadata: ${pi.id}`); break; }
         const [existingPaid] = await db.select({ paymentStatus: orders.paymentStatus })
-          .from(orders).where(eq(orders.stripePaymentIntentId, pi.id)).limit(1);
+          .from(orders).where(and(eq(orders.stripePaymentIntentId, pi.id), eq(orders.tenantId, tenantId))).limit(1);
         if (existingPaid?.paymentStatus === "paid") {
           log.info(`Skipping duplicate payment_intent.succeeded: ${pi.id}`);
           break;
         }
         await db.update(orders)
           .set({ paymentStatus: "paid", status: "confirmed", updatedAt: new Date() })
-          .where(eq(orders.stripePaymentIntentId, pi.id));
+          .where(and(eq(orders.stripePaymentIntentId, pi.id), eq(orders.tenantId, tenantId)));
         log.info(`Payment succeeded: ${pi.id}`);
         break;
       }
 
       case "payment_intent.payment_failed": {
         const pi = event.data.object as Stripe.PaymentIntent;
+        const tenantId = pi.metadata?.tenantId;
+        if (!tenantId) { log.error(`No tenantId in PI metadata: ${pi.id}`); break; }
         const [existingFailed] = await db.select({ paymentStatus: orders.paymentStatus })
-          .from(orders).where(eq(orders.stripePaymentIntentId, pi.id)).limit(1);
+          .from(orders).where(and(eq(orders.stripePaymentIntentId, pi.id), eq(orders.tenantId, tenantId))).limit(1);
         if (existingFailed?.paymentStatus === "failed") {
           log.info(`Skipping duplicate payment_intent.payment_failed: ${pi.id}`);
           break;
         }
         await db.update(orders)
           .set({ paymentStatus: "failed", updatedAt: new Date() })
-          .where(eq(orders.stripePaymentIntentId, pi.id));
+          .where(and(eq(orders.stripePaymentIntentId, pi.id), eq(orders.tenantId, tenantId)));
         log.info(`Payment failed: ${pi.id}`);
         break;
       }
@@ -62,11 +66,13 @@ export async function POST(request: NextRequest) {
         const charge = event.data.object as Stripe.Charge;
         const piId = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
         if (piId) {
+          // Look up order to get tenantId
+          const [orderRow] = await db.select({ tenantId: orders.tenantId, paymentStatus: orders.paymentStatus })
+            .from(orders).where(eq(orders.stripePaymentIntentId, piId)).limit(1);
+          if (!orderRow) { log.error(`No order for refund PI: ${piId}`); break; }
           const isFullRefund = charge.amount_refunded === charge.amount;
           const targetStatus = isFullRefund ? "refunded" : "partially_refunded";
-          const [existingRefund] = await db.select({ paymentStatus: orders.paymentStatus })
-            .from(orders).where(eq(orders.stripePaymentIntentId, piId)).limit(1);
-          if (existingRefund?.paymentStatus === targetStatus) {
+          if (orderRow.paymentStatus === targetStatus) {
             log.info(`Skipping duplicate charge.refunded: ${piId}`);
             break;
           }
@@ -76,7 +82,7 @@ export async function POST(request: NextRequest) {
               ...(isFullRefund ? { status: 'refunded' as const } : {}),
               updatedAt: new Date(),
             })
-            .where(eq(orders.stripePaymentIntentId, piId));
+            .where(and(eq(orders.stripePaymentIntentId, piId), eq(orders.tenantId, orderRow.tenantId)));
           log.info(`Refund processed: ${piId}, full=${isFullRefund}`);
         }
         break;

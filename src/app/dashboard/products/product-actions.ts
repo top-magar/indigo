@@ -541,7 +541,8 @@ export async function updateProductOrganization(
             await supabase
                 .from("collection_products")
                 .delete()
-                .eq("product_id", productId);
+                .eq("product_id", productId)
+                .eq("tenant_id", tenantId);
 
             // Add new collection links
             if (data.collectionIds.length > 0) {

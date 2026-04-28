@@ -64,7 +64,7 @@ export async function updateOrderStatus(formData: FormData) {
         revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : "Failed to update order status");
+        return { error: error instanceof Error ? error.message : "Failed to update order status" };
     }
 }
 
@@ -89,7 +89,7 @@ export async function cancelOrder(formData: FormData) {
         revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : "Failed to cancel order");
+        return { error: error instanceof Error ? error.message : "Failed to cancel order" };
     }
 }
 
@@ -98,7 +98,7 @@ export async function updateOrderNotes(formData: FormData) {
     const notes = formData.get("notes") as string;
 
     if (!orderId) {
-        throw new Error("Order ID is required");
+        return { error: "Order ID is required" };
     }
 
     const { tenantId, userId, userName } = await getAuthenticatedTenant();
@@ -109,7 +109,7 @@ export async function updateOrderNotes(formData: FormData) {
         
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : "Failed to update order notes");
+        return { error: error instanceof Error ? error.message : "Failed to update order notes" };
     }
 }
 
@@ -167,7 +167,7 @@ export async function updateOrderTags(orderId: string, tags: string[]) {
         .eq("id", orderId)
         .eq("tenant_id", tenantId);
 
-    if (error) throw new Error(error.message);
+    if (error) return { error: error.message };
     revalidatePath(`/dashboard/orders/${orderId}`);
 }
 

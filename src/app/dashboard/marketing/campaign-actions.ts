@@ -209,7 +209,8 @@ export async function deleteCampaign(id: string): Promise<{ success: boolean; er
     await supabase
         .from("campaign_recipients")
         .delete()
-        .eq("campaign_id", id);
+        .eq("campaign_id", id)
+        .eq("tenant_id", tenantId);
 
     // Delete campaign
     const { error } = await supabase
@@ -360,12 +361,19 @@ export async function sendCampaign(id: string): Promise<{ success: boolean; erro
         return { success: false, error: "No recipients found for this segment" };
     }
 
-    // Mark campaign as sending
-    await supabase
+    // Atomically lock campaign — prevents double-send race condition
+    const { data: locked, error: lockErr } = await supabase
         .from("campaigns")
         .update({ status: "sending", recipients_count: recipients.length })
         .eq("id", id)
-        .eq("tenant_id", tenantId);
+        .eq("tenant_id", tenantId)
+        .in("status", ["draft", "scheduled"])
+        .select("id")
+        .maybeSingle();
+
+    if (lockErr || !locked) {
+        return { success: false, error: "Campaign is already being sent" };
+    }
 
     // Insert campaign_recipients rows
     const recipientRows = recipients.map((r) => ({

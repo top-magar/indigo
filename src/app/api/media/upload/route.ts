@@ -52,22 +52,7 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
     const isImage = MODERATABLE_TYPES.includes(file.type);
 
     // Moderate image before upload (if enabled and applicable)
-    let moderationResult = null;
-
-    if (ENABLE_MODERATION && isImage && !skipModeration) {
-      try {
-        
-        // Convert buffer to data URL for moderation
-        const base64 = buffer.toString('base64');
-        const dataUrl = `data:${file.type};base64,${base64}`;
-        
-        // AI image analysis removed — can be re-added with a different provider
-        const []: string[] = [];
-      } catch (moderationError) {
-        log.error('[Upload API] Moderation error (continuing):', moderationError);
-        // Continue with upload even if moderation fails
-      }
-    }
+    // TODO: Re-add image moderation with a content moderation provider
 
     const { uploadToS3 } = await import('@/infrastructure/aws/s3');
     const result = await uploadToS3(buffer, {

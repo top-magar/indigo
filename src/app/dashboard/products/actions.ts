@@ -324,10 +324,10 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
         const action = formData.get("action") as "add" | "remove" | "set";
         const adjustment = parseInt(formData.get("adjustment") as string) || 1;
 
-        // Get current product
+        // Get slug for cache invalidation
         const { data: product, error: fetchError } = await supabase
             .from("products")
-            .select("quantity, slug")
+            .select("slug")
             .eq("id", productId)
             .eq("tenant_id", tenantId)
             .single();
@@ -336,20 +336,28 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
             return { error: "Product not found" };
         }
 
-        let newQuantity: number;
+        // Atomic stock update — no read-then-write race condition
+        let updateError;
         if (action === "set") {
-            newQuantity = adjustment;
-        } else if (action === "add") {
-            newQuantity = product.quantity + adjustment;
+            ({ error: updateError } = await supabase
+                .from("products")
+                .update({ quantity: adjustment, updated_at: new Date().toISOString() })
+                .eq("id", productId)
+                .eq("tenant_id", tenantId));
         } else {
-            newQuantity = Math.max(0, product.quantity - adjustment);
+            const { db } = await import("@/infrastructure/db");
+            const { products } = await import("@/db/schema/products");
+            const { eq: drEq, and: drAnd, sql: drSql } = await import("drizzle-orm");
+            const expr = action === "add"
+                ? drSql`${products.quantity} + ${Math.abs(adjustment)}`
+                : drSql`GREATEST(0, ${products.quantity} - ${Math.abs(adjustment)})`;
+            try {
+                await db.update(products).set({ quantity: expr, updatedAt: new Date() })
+                    .where(drAnd(drEq(products.id, productId), drEq(products.tenantId, tenantId)));
+            } catch (e) {
+                updateError = e instanceof Error ? { message: e.message } : { message: "Update failed" };
+            }
         }
-
-        const { error: updateError } = await supabase
-            .from("products")
-            .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
-            .eq("id", productId)
-            .eq("tenant_id", tenantId);
 
         if (updateError) {
             return { error: `Failed to update stock: ${updateError.message}` };

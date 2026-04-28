@@ -351,14 +351,15 @@ export async function assignProductsToCollection(collectionId: string, productId
 }
 
 export async function unassignProductFromCollection(collectionId: string, productId: string) {
-    const { supabase } = await getAuthenticatedTenant();
+    const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
         const { error } = await supabase
             .from("collection_products")
             .delete()
             .eq("collection_id", collectionId)
-            .eq("product_id", productId);
+            .eq("product_id", productId)
+            .eq("tenant_id", tenantId);
 
         if (error) {
             return { success: false, error: "Failed to remove product" };
@@ -374,14 +375,15 @@ export async function unassignProductFromCollection(collectionId: string, produc
 }
 
 export async function bulkUnassignProducts(collectionId: string, productIds: string[]) {
-    const { supabase } = await getAuthenticatedTenant();
+    const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
         const { error } = await supabase
             .from("collection_products")
             .delete()
             .eq("collection_id", collectionId)
-            .in("product_id", productIds);
+            .in("product_id", productIds)
+            .eq("tenant_id", tenantId);
 
         if (error) {
             return { success: false, error: "Failed to remove products" };
