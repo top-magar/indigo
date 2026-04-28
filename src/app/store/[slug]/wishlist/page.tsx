@@ -177,9 +177,9 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <ShoppingCart className="mr-2 size-4" />
+                <ShoppingCart className="size-4" />
               )}
               {isAdding ? "Adding..." : "Add to Cart"}
             </Button>

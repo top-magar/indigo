@@ -114,7 +114,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
             onClick={retryAllFailed}
             className="text-xs"
           >
-            <RefreshCw className="size-3 mr-1" />
+            <RefreshCw className="size-3" />
             Retry failed ({failedCount})
           </Button>
         )}
@@ -128,12 +128,12 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
         >
           {isSyncing ? (
             <>
-              <RotateCw className="size-3 mr-1 animate-spin" />
+              <RotateCw className="size-3 animate-spin" />
               Syncing...
             </>
           ) : (
             <>
-              <RotateCw className="size-3 mr-1" />
+              <RotateCw className="size-3" />
               Sync now
             </>
           )}

@@ -104,7 +104,7 @@ export function CustomerAddressesCard({
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-base">Address Information</CardTitle>
                     <Button variant="outline" onClick={onAddAddress}>
-                        <Plus className="size-4 mr-1" />
+                        <Plus className="size-4" />
                         Add
                     </Button>
                 </CardHeader>

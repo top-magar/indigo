@@ -71,7 +71,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
                         disabled={isPending || !note.trim()}
                         className="w-full"
                     >
-                        <Send className="size-4 mr-1" />
+                        <Send className="size-4" />
                         {isPending ? "Adding..." : "Add Note"}
                     </Button>
                 </div>

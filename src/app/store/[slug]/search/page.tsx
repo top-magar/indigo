@@ -260,7 +260,7 @@ export default function SearchPage() {
             className="sm:hidden"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <Filter className="mr-2 size-4" />
+            <Filter className="size-4" />
             Filters
           </Button>
         </div>
@@ -344,7 +344,7 @@ export default function SearchPage() {
                 onValueChange={(value) => handleFilterChange({ sort: value as SortOption })}
               >
                 <SelectTrigger className="mt-2 w-full">
-                  <ArrowDownAZ className="mr-2 size-4" />
+                  <ArrowDownAZ className="size-4" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -361,7 +361,7 @@ export default function SearchPage() {
             {/* Clear Filters */}
             {hasActiveFilters && (
               <Button variant="outline" className="w-full" onClick={clearFilters}>
-                <X className="mr-2 size-4" />
+                <X className="size-4" />
                 Clear Filters
               </Button>
             )}

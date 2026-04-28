@@ -397,7 +397,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                            
                                                             onClick={() => setImageUrl("")}
                                                         >
-                                                            <X className="size-4 mr-1" />
+                                                            <X className="size-4" />
                                                             Remove
                                                         </Button>
                                                     </div>

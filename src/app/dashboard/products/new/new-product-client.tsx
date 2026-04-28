@@ -109,7 +109,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <TooltipContent>⌘S</TooltipContent>
                         </Tooltip>
                         <Button size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
-                            {isPending ? <><Loader2 className="size-3.5 mr-1.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
+                            {isPending ? <><Loader2 className="size-3.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
                         </Button>
                     </div>
                 </div>
@@ -243,7 +243,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                 </div>
                                             ))}
                                             {formData.options.length < 5 && (
-                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-4 mr-1.5" aria-hidden="true" />Add another option</Button>
+                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-4 " aria-hidden="true" />Add another option</Button>
                                             )}
                                             {formData.variants.length > 0 && (
                                                 <VariantTable variants={formData.variants} variantError={errors.variants} updateVariant={updateVariant} toggleAllVariants={toggleAllVariants} />

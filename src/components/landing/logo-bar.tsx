@@ -16,7 +16,7 @@ export function LogoBar() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16">
                     {stats.map((s) => (
                         <div key={s.label} className="text-center">
-                            <p className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+                            <p className="text-3xl md:text-4xl font-semibold text-foreground tracking-tight">
                                 {s.value}
                             </p>
                             <p className="text-xs text-muted-foreground mt-2 tracking-wide">

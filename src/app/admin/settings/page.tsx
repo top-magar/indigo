@@ -45,7 +45,7 @@ export default async function AdminSettingsPage() {
           <p className="text-xs text-muted-foreground">{completed}/{steps.length} complete</p>
         </div>
         <div className="w-full h-2 bg-muted rounded-full mb-6">
-          <div className="h-2 bg-foreground rounded-full transition-all" style={{ width: `${(completed / steps.length) * 100}%` }} />
+          <div className="h-2 bg-foreground rounded-full transition-[width]" style={{ width: `${(completed / steps.length) * 100}%` }} />
         </div>
         <div className="space-y-3">
           {steps.map(step => (

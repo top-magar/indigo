@@ -241,7 +241,7 @@ export function CheckoutForm({
         {error && <Alert variant="destructive"><AlertCircle className="size-4" /><AlertDescription>{error}</AlertDescription></Alert>}
 
         <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? <><Loader2 className="mr-2 size-4 animate-spin" />Placing Order...</> : `Place Order — ${currency} ${total.toFixed(2)}`}
+          {loading ? <><Loader2 className="size-4 animate-spin" />Placing Order...</> : `Place Order — ${currency} ${total.toFixed(2)}`}
         </Button>
 
         <p className="text-xs text-center text-muted-foreground">

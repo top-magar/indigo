@@ -522,7 +522,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                            
                                                             onClick={() => setImageUrl("")}
                                                         >
-                                                            <X className="size-4 mr-1" />
+                                                            <X className="size-4" />
                                                             Remove
                                                         </Button>
                                                     </div>

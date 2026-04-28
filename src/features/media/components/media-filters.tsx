@@ -339,7 +339,7 @@ export function MediaFilters({
           onClick={onClearAll}
           className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
         >
-          <X className="size-3.5 mr-1" />
+          <X className="size-3.5" />
           Clear
         </Button>
       )}

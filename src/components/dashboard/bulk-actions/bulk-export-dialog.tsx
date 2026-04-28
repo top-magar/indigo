@@ -341,7 +341,7 @@ export function BulkExportDialog({
             Cancel
           </Button>
           <Button onClick={handleExport} disabled={isExporting}>
-            <Download className="size-4 mr-1.5" />
+            <Download className="size-4" />
             {isExporting ? "Exporting..." : "Export"}
           </Button>
         </DialogFooter>

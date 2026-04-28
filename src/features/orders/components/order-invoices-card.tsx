@@ -73,7 +73,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
                         onClick={handleGenerate}
                         disabled={isPending}
                     >
-                        <Plus className="size-4 mr-1" />
+                        <Plus className="size-4" />
                         Generate
                     </Button>
                 </div>

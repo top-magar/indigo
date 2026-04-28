@@ -71,7 +71,7 @@ export function BulkActionsBar({
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
-          <X className="w-3.5 h-3.5 mr-1" />
+          <X className="size-3.5" />
           Clear
         </Button>
       </div>

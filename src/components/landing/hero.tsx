@@ -128,7 +128,7 @@ export function Hero() {
                                         { label: "Visitors", value: "1,247", change: "+23%", color: "text-success" },
                                     ].map((s) => (
                                         <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-                                            <p className="text-[9px] uppercase tracking-wider text-white-500">{s.label}</p>
+                                            <p className="text-[10px] uppercase tracking-wider text-white-500">{s.label}</p>
                                             <p className="text-base font-semibold text-white-700 mt-1 tabular-nums">{s.value}</p>
                                             <span className={`text-[10px] ${s.color}`}>{s.change}</span>
                                         </div>
@@ -159,9 +159,9 @@ export function Hero() {
                                         { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
                                     ].map((o) => (
                                         <div key={o.name} className="flex items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
-                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white-500">{o.name.charAt(0)}</div>
+                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[10px] font-medium text-white-500">{o.name.charAt(0)}</div>
                                             <p className="text-xs font-medium text-white-500 flex-1">{o.name}</p>
-                                            <span className="text-[9px] text-white-500 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
+                                            <span className="text-[10px] text-white-500 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
                                             <p className="text-xs font-medium text-white-500 tabular-nums">{o.amount}</p>
                                             <div className={`w-1.5 h-1.5 rounded-full ${o.status}`} />
                                         </div>

@@ -268,11 +268,11 @@ export function MediaPicker({
           <div className="px-6 border-b">
             <TabsList className="h-10">
               <TabsTrigger value="library" className="text-xs">
-                <Image className="size-4 mr-1.5" />
+                <Image className="size-4" />
                 Library
               </TabsTrigger>
               <TabsTrigger value="upload" className="text-xs">
-                <UploadCloud className="size-4 mr-1.5" />
+                <UploadCloud className="size-4" />
                 Upload
               </TabsTrigger>
             </TabsList>

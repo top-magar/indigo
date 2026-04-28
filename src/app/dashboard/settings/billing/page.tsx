@@ -122,7 +122,7 @@ export default async function MerchantBillingPage() {
                 </div>
                 <div className="h-2 bg-muted rounded-full" role="progressbar" aria-valuenow={u.current} aria-valuemax={u.max} aria-label={`${u.label}: ${u.current} of ${u.max}`}>
                   <div
-                    className={`h-2 rounded-full transition-all ${pct(u.current, u.max) >= 90 ? "bg-destructive" : pct(u.current, u.max) >= 70 ? "bg-warning" : "bg-foreground"}`}
+                    className={`h-2 rounded-full transition-[width] ${pct(u.current, u.max) >= 90 ? "bg-destructive" : pct(u.current, u.max) >= 70 ? "bg-warning" : "bg-foreground"}`}
                     style={{ width: `${Math.max(pct(u.current, u.max), 2)}%` }}
                   />
                 </div>

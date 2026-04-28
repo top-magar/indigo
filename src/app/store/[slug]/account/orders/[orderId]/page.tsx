@@ -135,7 +135,7 @@ export default async function OrderDetailPage({
         <div>
           <Button variant="ghost" className="mb-2 -ml-2" asChild>
             <Link href={`/store/${slug}/account/orders`}>
-              <ArrowLeft className="mr-1 size-4" />
+              <ArrowLeft className="size-4" />
               Back to Orders
             </Link>
           </Button>

@@ -239,7 +239,7 @@ export default function FAQPage() {
              
               onClick={() => setActiveCategory(category.id)}
             >
-              <category.icon className="mr-1.5 size-4" />
+              <category.icon className="size-4" />
               {category.name}
             </Button>
           ))}

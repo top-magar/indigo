@@ -84,7 +84,7 @@ export function MediaPickerTrigger({
                       variant="secondary"
                       onClick={() => setPickerOpen(true)}
                     >
-                      <Pencil className="size-4 mr-1" />
+                      <Pencil className="size-4" />
                       Change
                     </Button>
                     <Button

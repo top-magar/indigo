@@ -233,7 +233,7 @@ export function NotificationCenter({
                 onClick={handleMarkAllAsRead}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                <CheckCircle className="size-3.5 mr-1" />
+                <CheckCircle className="size-3.5" />
                 Mark all read
               </Button>
             )}

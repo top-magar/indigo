@@ -222,12 +222,12 @@ export default function ContactPage() {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 size-4 animate-spin" />
+                        <Loader2 className="size-4 animate-spin" />
                         Sending...
                       </>
                     ) : (
                       <>
-                        <Send className="mr-2 size-4" />
+                        <Send className="size-4" />
                         Send Message
                       </>
                     )}

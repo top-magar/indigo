@@ -521,7 +521,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                             </p>
                                                             {campaign.segment_name && (
                                                                 <Badge variant="outline" className="text-[10px] mt-1">
-                                                                    <Users className="size-2.5 mr-1" />
+                                                                    <Users className="size-2.5" />
                                                                     {campaign.segment_name}
                                                                 </Badge>
                                                             )}

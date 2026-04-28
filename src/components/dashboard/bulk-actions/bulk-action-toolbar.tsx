@@ -141,7 +141,7 @@ export function BulkActionToolbar({
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
-          <X className="w-3.5 h-3.5 mr-1" />
+          <X className="size-3.5" />
           Clear
         </Button>
       </div>
@@ -268,9 +268,9 @@ function ActionButton({
       disabled={action.disabled || disabled}
     >
       {isLoading ? (
-        <Spinner className="size-4 mr-1.5" />
+        <Spinner className="size-4" />
       ) : (
-        <Icon className="size-4 mr-1.5" />
+        <Icon className="size-4" />
       )}
       {action.label}
     </Button>

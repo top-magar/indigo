@@ -78,7 +78,7 @@ export default function EditorNavigation({
           </div>
 
           <input
-            className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-[12px] font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
+            className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-xs font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
             value={pageTitle}
             onChange={(e) => onPageTitleChange(e.target.value)}
             spellCheck={false}

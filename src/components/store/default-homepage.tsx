@@ -41,7 +41,7 @@ export async function DefaultHomepage({
         className="relative overflow-hidden"
         style={heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
       >
-        {heroImageUrl && <div className="absolute inset-0 bg-black/40" />}
+        {heroImageUrl && <div className="absolute inset-0 bg-foreground/40" />}
         <div className={`relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-28 lg:px-8 ${heroImageUrl ? "text-white" : ""}`}>
           <div className="max-w-2xl">
             <h1 className="text-lg font-semibold tracking-tight sm:text-5xl lg:text-6xl">

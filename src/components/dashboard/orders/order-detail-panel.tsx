@@ -430,7 +430,7 @@ export function OrderDetailPanel({
                 onClick={() => onUpdateStatus(order.id)}
                 className="flex-1"
               >
-                <CheckCircle className="size-4 mr-1.5" />
+                <CheckCircle className="size-4" />
                 Update Status
               </Button>
             )}
@@ -441,7 +441,7 @@ export function OrderDetailPanel({
                 onClick={() => onAddTracking(order.id)}
                 className="flex-1"
               >
-                <Truck className="size-4 mr-1.5" />
+                <Truck className="size-4" />
                 Add Tracking
               </Button>
             )}
@@ -461,7 +461,7 @@ export function OrderDetailPanel({
                 onClick={() => onRefund(order.id)}
                 className="text-destructive hover:text-destructive"
               >
-                <Undo2 className="size-4 mr-1.5" />
+                <Undo2 className="size-4" />
                 Refund
               </Button>
             )}
