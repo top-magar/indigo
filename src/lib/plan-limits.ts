@@ -4,7 +4,7 @@ import { db } from "@/infrastructure/db";
 import { plans, subscriptions } from "@/db/schema/billing";
 import { products } from "@/db/schema/products";
 import { users } from "@/db/schema/users";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, count, sql } from "drizzle-orm";
 
 export interface PlanLimits {
   planName: string;
@@ -55,7 +55,7 @@ export const getTenantPlanLimits = cache(async (tenantId: string): Promise<PlanL
       maxProducts: freePlan?.maxProducts ?? 10,
       maxStaff: freePlan?.maxStaff ?? 1,
       maxStorageMb: freePlan?.maxStorageMb ?? 100,
-      maxOrders: freePlan?.maxOrders ?? null,
+      maxOrders: freePlan?.maxOrdersPerMonth ?? null,
       currentProducts,
       currentStaff,
       status: "none",
@@ -94,8 +94,6 @@ export async function checkPlanLimit(
       }
       break;
     case "storage": {
-      const { db } = await import("@/infrastructure/db");
-      const { sql } = await import("drizzle-orm");
       const [{ value }] = await db.execute<{ value: string }>(
         sql`SELECT COALESCE(SUM(file_size), 0) as value FROM media_assets WHERE tenant_id = ${tenantId}`
       );

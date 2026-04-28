@@ -124,6 +124,7 @@ export async function updateShippingZone(formData: FormData) {
       is_active: isActive,
     })
     .eq("id", zoneId)
+    .eq("tenant_id", tenantId)
 
   if (zoneError) {
     return { error: zoneError.message }
@@ -169,6 +170,7 @@ export async function deleteShippingZone(zoneId: string) {
     .from("shipping_zones")
     .delete()
     .eq("id", validId)
+    .eq("tenant_id", tenantId)
 
   if (error) {
     return { error: error.message }
@@ -303,6 +305,7 @@ export async function updateShippingRate(formData: FormData) {
       position,
     })
     .eq("id", rateId)
+    .eq("tenant_id", tenantId)
 
   if (error) {
     return { error: error.message }
@@ -320,6 +323,7 @@ export async function deleteShippingRate(rateId: string) {
     .from("shipping_rates")
     .delete()
     .eq("id", validId)
+    .eq("tenant_id", tenantId)
 
   if (error) {
     return { error: error.message }
