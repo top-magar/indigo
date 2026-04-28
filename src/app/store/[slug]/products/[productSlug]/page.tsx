@@ -168,7 +168,7 @@ export default async function ProductPage({
         sku={product.sku || undefined}
         price={product.price}
         priceCurrency={tenant.currency || "USD"}
-        availability={product.stock_quantity > 0 ? "InStock" : "OutOfStock"}
+        availability={product.quantity > 0 ? "InStock" : "OutOfStock"}
         url={productUrl}
         category={product.category?.name}
       />

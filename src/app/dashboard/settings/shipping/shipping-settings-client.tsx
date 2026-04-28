@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Trash2, MoreHorizontal, MapPin, Clock, Package, Edit, Loader2, CheckCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { formatCurrency } from "@/shared/utils";
 import { toast } from "sonner";
 import { ZoneDialog, RateDialog } from "./_components/helpers";
+import { createShippingZone, updateShippingZone, deleteShippingZone, createShippingRate, updateShippingRate, deleteShippingRate } from "./actions";
 
 interface ShippingRate {
   id: string; name: string; price: number; min_days: number; max_days: number;
@@ -34,6 +36,8 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
   const [freeShipping, setFreeShipping] = useState(!!data.freeShippingThreshold);
   const [threshold, setThreshold] = useState(data.freeShippingThreshold?.toString() || "2500");
   const [handlingTime, setHandlingTime] = useState(data.defaultHandlingTime.toString());
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const [zoneDialogOpen, setZoneDialogOpen] = useState(false);
   const [selectedZone, setSelectedZone] = useState<ShippingZone | null>(null);
@@ -42,23 +46,49 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
   const [selectedZoneForRate, setSelectedZoneForRate] = useState<string | null>(null);
 
   const handleSaveZone = (zoneData: Partial<ShippingZone>) => {
-    if (selectedZone) {
-      setZones(zones.map(z => z.id === selectedZone.id ? { ...z, ...zoneData } : z));
-    } else {
-      setZones([...zones, { id: `zone-${Date.now()}`, name: zoneData.name || "", regions: zoneData.regions || [], rates: [] }]);
-    }
-    setSelectedZone(null);
+    startTransition(async () => {
+      const fd = new FormData();
+      fd.set("name", zoneData.name || "");
+      fd.set("description", "");
+      fd.set("isActive", "true");
+      if (selectedZone) {
+        fd.set("zoneId", selectedZone.id);
+        const res = await updateShippingZone(fd);
+        if (res.error) { toast.error(res.error); return; }
+        toast.success("Zone updated");
+      } else {
+        const res = await createShippingZone(fd);
+        if (res.error) { toast.error(res.error); return; }
+        toast.success("Zone created");
+      }
+      setSelectedZone(null);
+      router.refresh();
+    });
   };
 
   const handleSaveRate = (rateData: Partial<ShippingRate>) => {
     if (!selectedZoneForRate) return;
-    setZones(zones.map(zone => {
-      if (zone.id !== selectedZoneForRate) return zone;
-      if (selectedRate) return { ...zone, rates: zone.rates.map(r => r.id === selectedRate.id ? { ...r, ...rateData } : r) };
-      return { ...zone, rates: [...zone.rates, { id: `rate-${Date.now()}`, name: rateData.name || "", price: rateData.price || 0, min_days: rateData.min_days || 1, max_days: rateData.max_days || 3, ...rateData }] };
-    }));
-    setSelectedRate(null);
-    setSelectedZoneForRate(null);
+    startTransition(async () => {
+      const fd = new FormData();
+      fd.set("name", rateData.name || "");
+      fd.set("price", String(rateData.price || 0));
+      fd.set("isActive", "true");
+      fd.set("position", "0");
+      if (selectedRate) {
+        fd.set("rateId", selectedRate.id);
+        const res = await updateShippingRate(fd);
+        if (res.error) { toast.error(res.error); return; }
+        toast.success("Rate updated");
+      } else {
+        fd.set("zoneId", selectedZoneForRate);
+        const res = await createShippingRate(fd);
+        if (res.error) { toast.error(res.error); return; }
+        toast.success("Rate created");
+      }
+      setSelectedRate(null);
+      setSelectedZoneForRate(null);
+      router.refresh();
+    });
   };
 
   const totalRates = zones.reduce((sum, z) => sum + z.rates.length, 0);
@@ -146,7 +176,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                         <Plus className="size-3.5" /> Add Rate
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => { setZones(zones.filter(z => z.id !== zone.id)); toast.success("Zone deleted"); }} className="text-xs gap-2 text-destructive focus:text-destructive">
+                      <DropdownMenuItem onClick={() => { startTransition(async () => { const res = await deleteShippingZone(zone.id); if (res.error) toast.error(res.error); else { toast.success("Zone deleted"); router.refresh(); } }); }} className="text-xs gap-2 text-destructive focus:text-destructive">
                         <Trash2 className="size-3.5" /> Delete Zone
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -175,7 +205,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                             <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }} className="text-xs gap-2">
                               <Edit className="size-3.5" /> Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { setZones(zones.map(z => z.id === zone.id ? { ...z, rates: z.rates.filter(r => r.id !== rate.id) } : z)); toast.success("Rate deleted"); }} className="text-xs gap-2 text-destructive focus:text-destructive">
+                            <DropdownMenuItem onClick={() => { startTransition(async () => { const res = await deleteShippingRate(rate.id); if (res.error) toast.error(res.error); else { toast.success("Rate deleted"); router.refresh(); } }); }} className="text-xs gap-2 text-destructive focus:text-destructive">
                               <Trash2 className="size-3.5" /> Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>

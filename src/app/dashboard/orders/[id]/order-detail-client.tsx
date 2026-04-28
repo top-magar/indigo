@@ -382,6 +382,22 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
                 Create return
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              {order.status === "delivered" && (
+                <DropdownMenuItem onClick={() => {
+                  startSaving(async () => {
+                    const { updateOrderStatus } = await import("../actions");
+                    const fd = new FormData();
+                    fd.set("orderId", order.id);
+                    fd.set("status", "completed");
+                    const res = await updateOrderStatus(fd);
+                    if (res?.error) toast.error(res.error);
+                    else { toast.success("Order completed"); router.refresh(); }
+                  });
+                }}>
+                  <CheckCircle2 className="size-4" />
+                  Mark as completed
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem className="text-destructive" onClick={() => setCancelOpen(true)}>
                 <XCircle className="size-4" />
                 Cancel order

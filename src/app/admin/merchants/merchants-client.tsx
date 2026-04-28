@@ -35,6 +35,8 @@ export default function MerchantsClient({ merchants, totalRevenue, deletedMercha
   const paginated = filtered.slice(page * perPage, (page + 1) * perPage);
 
   const handleToggleSuspend = (id: string, name: string, currentlySuspended: boolean) => {
+    const action = currentlySuspended ? "reactivate" : "suspend";
+    if (!window.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} "${name}"? ${currentlySuspended ? "Their store will go back online." : "Their store will go offline immediately."}`)) return;
     startTransition(async () => {
       const result = await toggleMerchantSuspension(id, !currentlySuspended);
       if (result.error) toast.error(result.error);

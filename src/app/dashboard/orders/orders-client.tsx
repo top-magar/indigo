@@ -243,7 +243,7 @@ function OrderTableRow({
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                   Update status
                 </DropdownMenuLabel>
-                {["confirmed", "processing", "shipped", "delivered"].map((status) => (
+                {["confirmed", "processing", "shipped", "delivered", "completed"].map((status) => (
                   <DropdownMenuItem
                     key={status}
                     onClick={() => handleStatusChange(status)}

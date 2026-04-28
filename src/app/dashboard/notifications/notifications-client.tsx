@@ -56,7 +56,7 @@ export function NotificationsPageClient() {
             </Button>
           )}
           {filtered.length > 0 && (
-            <Button variant="outline" size="sm" onClick={clearAll} className="text-muted-foreground">
+            <Button variant="outline" size="sm" onClick={() => { if (window.confirm("Clear all notifications? This cannot be undone.")) clearAll(); }} className="text-muted-foreground">
               <Trash2 className="size-3.5" /> Clear all
             </Button>
           )}
