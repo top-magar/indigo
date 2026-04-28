@@ -196,7 +196,8 @@ export async function exportCustomers(filters: {
             .from("customers")
             .select("*")
             .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
+            .order("created_at", { ascending: false })
+            .limit(10000);
 
         if (filters.search) {
             const s = filters.search.replace(/[%_'"\\,().!|&:*]/g, '');

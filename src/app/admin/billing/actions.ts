@@ -115,7 +115,7 @@ export async function getPlans() {
 
 export async function getBillingOverview() {
   const [allSubs, allPayments, allPlans] = await Promise.all([
-    db.select().from(subscriptions).orderBy(desc(subscriptions.createdAt)),
+    db.select().from(subscriptions).orderBy(desc(subscriptions.createdAt)).limit(500),
     db.select().from(payments).orderBy(desc(payments.createdAt)).limit(50),
     db.select().from(plans).where(eq(plans.isActive, true)).orderBy(plans.sortOrder),
   ]);

@@ -47,7 +47,7 @@ export default async function MerchantDetailPage({ params }: { params: Promise<{
     db.select({ value: count() }).from(products).where(eq(products.tenantId, id)),
     db.select({ value: count() }).from(customers).where(eq(customers.tenantId, id)),
     db.select({ value: sql<string>`COALESCE(SUM(${orders.total}), 0)` }).from(orders).where(and(eq(orders.tenantId, id), gte(orders.createdAt, thirtyDaysAgo))),
-    db.select({ id: users.id, email: users.email, fullName: users.fullName, role: users.role }).from(users).where(eq(users.tenantId, id)),
+    db.select({ id: users.id, email: users.email, fullName: users.fullName, role: users.role }).from(users).where(eq(users.tenantId, id)).limit(100),
     db.select({ id: orders.id, orderNumber: orders.orderNumber, total: orders.total, status: orders.status, createdAt: orders.createdAt }).from(orders).where(eq(orders.tenantId, id)).orderBy(desc(orders.createdAt)).limit(5),
   ]);
 

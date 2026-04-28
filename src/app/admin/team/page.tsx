@@ -25,7 +25,7 @@ export default async function TeamPage() {
       platformRole: users.platformRole, createdAt: users.createdAt,
     }).from(users).where(eq(users.role, "platform_admin")).orderBy(users.createdAt),
     canManage
-      ? db.select().from(platformInvites).where(eq(platformInvites.status, "pending")).orderBy(desc(platformInvites.createdAt))
+      ? db.select().from(platformInvites).where(eq(platformInvites.status, "pending")).limit(100).orderBy(desc(platformInvites.createdAt))
       : Promise.resolve([]),
   ]);
 

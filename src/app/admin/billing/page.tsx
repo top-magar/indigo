@@ -31,7 +31,7 @@ export default async function BillingPage() {
       createdAt: payments.createdAt,
     }).from(payments).orderBy(desc(payments.createdAt)).limit(20),
     db.select({ value: sql<string>`COALESCE(SUM(${payments.amount}), 0)` }).from(payments),
-    db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug }).from(tenants).orderBy(tenants.name),
+    db.select({ id: tenants.id, name: tenants.name, slug: tenants.slug }).from(tenants).orderBy(tenants.name).limit(1000),
     db.select({
       id: invoices.id, tenantId: invoices.tenantId, periodStart: invoices.periodStart,
       orderTotal: invoices.orderTotal, commissionRate: invoices.commissionRate,

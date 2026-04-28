@@ -96,8 +96,8 @@ export async function getProductDetail(tenantId: string, supabase: Awaited<Retur
 
 export async function getNewProductData(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>) {
   const [{ data: categories }, { data: collections }] = await Promise.all([
-    supabase.from("categories").select("id, name, slug").eq("tenant_id", tenantId).order("sort_order", { ascending: true }),
-    supabase.from("collections").select("id, name, slug").eq("tenant_id", tenantId).eq("is_active", true).order("sort_order", { ascending: true }),
+    supabase.from("categories").select("id, name, slug").eq("tenant_id", tenantId).order("sort_order", { ascending: true }).limit(500),
+    supabase.from("collections").select("id, name, slug").eq("tenant_id", tenantId).eq("is_active", true).order("sort_order", { ascending: true }).limit(500),
   ]);
   return { categories: categories || [], collections: collections || [] };
 }

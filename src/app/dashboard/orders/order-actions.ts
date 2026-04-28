@@ -198,7 +198,7 @@ export async function getOrderStats(): Promise<OrderStats> {
         supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "completed"),
         supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "cancelled"),
         supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("payment_status", "pending"),
-        supabase.from("orders").select("total").eq("tenant_id", tenantId).eq("payment_status", "paid"),
+        supabase.from("orders").select("total").eq("tenant_id", tenantId).eq("payment_status", "paid").limit(5000),
     ]);
 
     const revenue = (revenueData || []).reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);

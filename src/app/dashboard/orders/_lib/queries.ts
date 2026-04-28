@@ -174,7 +174,7 @@ export async function getReturns(tenantId: string, supabase: Awaited<ReturnType<
       returns = data || [];
       count = c || 0;
 
-      const { data: sd } = await supabase.from("returns").select("status, refund_amount").eq("tenant_id", tenantId);
+      const { data: sd } = await supabase.from("returns").select("status, refund_amount").eq("tenant_id", tenantId).limit(5000);
       const statsData = sd || [];
       stats = {
         total: statsData.length,
