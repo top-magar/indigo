@@ -26,6 +26,7 @@ export async function getReturns(filters?: {
   const pageSize = filters?.pageSize || 20
   const offset = (page - 1) * pageSize
 
+  // TODO: migrate when schema added for returns, return_items
   let query = supabase
     .from("returns")
     .select(`*, order:orders (id, order_number, total, currency), customer:customers (id, email, first_name, last_name), return_items (*, order_item:order_items (id, product_name, product_image, quantity, unit_price))`, { count: "exact" })
@@ -45,6 +46,7 @@ export async function getReturn(returnId: string) {
   const validId = z.string().uuid().parse(returnId)
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
+  // TODO: migrate when schema added for returns, return_items
   const { data, error } = await supabase
     .from("returns")
     .select(`*, order:orders (*, items:order_items (*)), customer:customers (*), return_items (*, order_item:order_items (*))`)
@@ -80,9 +82,11 @@ export async function createReturn(formData: FormData) {
   const { orderId, customerId, reason, customerNotes, refundMethod, shippingPaidBy } = parsed
   const itemsJson = formData.get("items") as string
 
+  // TODO: migrate when schema added for returns
   const { count } = await supabase.from("returns").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId)
   const returnNumber = `RET-${String((count ?? 0) + 1).padStart(6, "0")}`
 
+  // TODO: migrate when schema added for returns
   const { data: returnData, error: returnError } = await supabase
     .from("returns")
     .insert({ tenant_id: tenantId, order_id: orderId, customer_id: customerId, return_number: returnNumber, status: "requested", reason, customer_notes: customerNotes, refund_method: refundMethod, shipping_paid_by: shippingPaidBy })
@@ -95,6 +99,7 @@ export async function createReturn(formData: FormData) {
     try {
       const items = JSON.parse(itemsJson) as { orderItemId: string; quantity: number; reason?: string; condition?: ItemCondition }[]
       if (items.length > 0) {
+        // TODO: migrate when schema added for return_items
         const { error: itemsError } = await supabase.from("return_items").insert(items.map(item => ({
           return_id: returnData.id, order_item_id: item.orderItemId, quantity: item.quantity, reason: item.reason || null, condition: item.condition || "unopened",
         })))
@@ -136,12 +141,15 @@ export async function updateReturnStatus(formData: FormData) {
   if (status === "received") updates.received_at = new Date().toISOString()
   else if (status === "refunded" || status === "completed") updates.refunded_at = new Date().toISOString()
 
+  // TODO: migrate when schema added for returns
   const { error } = await supabase.from("returns").update(updates).eq("id", returnId).eq("tenant_id", tenantId)
   if (error) return { success: false, error: error.message }
 
   if (status === "refunded" && refundAmount) {
+    // TODO: migrate when schema added for returns, store_credits
     const { data: returnData } = await supabase.from("returns").select("customer_id, refund_method").eq("id", returnId).eq("tenant_id", tenantId).single()
     if (returnData?.refund_method === "store_credit" && returnData.customer_id) {
+      // TODO: migrate when schema added for store_credits
       await supabase.from("store_credits").insert({ tenant_id: tenantId, customer_id: returnData.customer_id, amount: refundAmount, balance: refundAmount, reason: "return_refund", source_type: "return", source_id: returnId })
     }
   }
@@ -155,6 +163,7 @@ export async function deleteReturn(returnId: string) {
   const validId = z.string().uuid().parse(returnId)
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
+  // TODO: migrate when schema added for returns
   const { error } = await supabase.from("returns").delete().eq("id", validId).eq("tenant_id", tenantId)
   if (error) return { success: false, error: error.message }
 
@@ -170,6 +179,7 @@ export async function getCustomerStoreCredits(customerId: string) {
   const validId = z.string().uuid().parse(customerId)
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
+  // TODO: migrate when schema added for store_credits, store_credit_transactions
   const { data, error } = await supabase.from("store_credits").select(`*, transactions:store_credit_transactions (*)`).eq("customer_id", validId).eq("tenant_id", tenantId).gt("balance", 0).order("created_at", { ascending: false })
   if (error) return { success: false, error: error.message }
   return { data }
@@ -194,9 +204,11 @@ export async function createStoreCredit(formData: FormData) {
 
   const { customerId, amount, reason, currencyCode, expiresAt } = parsed
 
+  // TODO: migrate when schema added for store_credits
   const { data, error } = await supabase.from("store_credits").insert({ tenant_id: tenantId, customer_id: customerId, amount, balance: amount, currency_code: currencyCode, reason, source_type: "manual", expires_at: expiresAt }).select().single()
   if (error) return { success: false, error: error.message }
 
+  // TODO: migrate when schema added for store_credit_transactions
   await supabase.from("store_credit_transactions").insert({ store_credit_id: data.id, type: "credit", amount, balance_after: amount, notes: `Initial credit: ${reason}` })
 
   revalidatePath("/dashboard/customers")
@@ -220,13 +232,16 @@ export async function useStoreCredit(formData: FormData) {
 
   const { storeCreditId, amount, orderId, notes } = parsed
 
+  // TODO: migrate when schema added for store_credits
   const { data: credit } = await supabase.from("store_credits").select("balance").eq("id", storeCreditId).eq("tenant_id", tenantId).single()
   if (!credit || credit.balance < amount) return { success: false, error: "Insufficient store credit balance" }
 
   const newBalance = credit.balance - amount
+  // TODO: migrate when schema added for store_credits
   const { error: updateError } = await supabase.from("store_credits").update({ balance: newBalance }).eq("id", storeCreditId).eq("tenant_id", tenantId)
   if (updateError) return { success: false, error: updateError.message }
 
+  // TODO: migrate when schema added for store_credit_transactions
   await supabase.from("store_credit_transactions").insert({ store_credit_id: storeCreditId, type: "debit", amount, balance_after: newBalance, order_id: orderId, notes })
 
   revalidatePath("/dashboard/orders")

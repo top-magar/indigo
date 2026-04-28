@@ -1,5 +1,8 @@
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { tenants } from "@/db/schema/tenants";
+import { eq } from "drizzle-orm";
 
 // ─── Auth ────────────────────────────────────────────────
 
@@ -8,16 +11,19 @@ export async function auth() {
   return { supabase, tenantId: user.tenantId, userId: user.id };
 }
 
-export async function getTenantCurrency(supabase: Awaited<ReturnType<typeof createClient>>, tenantId: string) {
-  const { data } = await supabase.from("tenants").select("currency").eq("id", tenantId).single();
-  return data?.currency || "USD";
+export async function getTenantCurrency(_supabase: Awaited<ReturnType<typeof createClient>>, tenantId: string) {
+  const [row] = await db.select({ currency: tenants.currency }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  return row?.currency || "USD";
 }
 
 // ─── Customer Detail ─────────────────────────────────────
 
 export async function getCustomerCurrency(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data } = await supabase.from("users").select("tenants(currency)").eq("id", userId).single();
-  return (data?.tenants as { currency?: string } | null)?.currency || "USD";
+  const { users } = await import("@/db/schema/users");
+  const [user] = await db.select({ tenantId: users.tenantId }).from(users).where(eq(users.id, userId)).limit(1);
+  if (!user?.tenantId) return "USD";
+  const [row] = await db.select({ currency: tenants.currency }).from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
+  return row?.currency || "USD";
 }
 
 // ─── Customer Groups ─────────────────────────────────────
@@ -26,6 +32,7 @@ export async function getCustomerGroups(tenantId: string, supabase: Awaited<Retu
   let groups: unknown[] = [];
 
   try {
+    // TODO: migrate when schema added for customer_groups, customer_group_members
     const { data, error } = await supabase
       .from("customer_groups")
       .select("*")
@@ -35,6 +42,7 @@ export async function getCustomerGroups(tenantId: string, supabase: Awaited<Retu
     if (!error && data) {
       const groupIds = data.map(g => g.id);
       if (groupIds.length > 0) {
+        // TODO: migrate when schema added for customer_group_members
         const { data: memberCounts } = await supabase
           .from("customer_group_members")
           .select("group_id")

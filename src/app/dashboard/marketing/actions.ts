@@ -6,6 +6,14 @@ const log = createLogger("actions:marketing");
 import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { products } from "@/db/schema/products";
+import { collections, collectionProducts } from "@/db/schema/collections";
+import { categories } from "@/db/schema/products";
+import { discounts, discountUsages } from "@/db/schema/discounts";
+import { campaigns, customerSegments } from "@/db/schema/campaigns";
+import { customers } from "@/db/schema/customers";
+import { eq, and, asc, desc, count, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import type {
     Discount,
@@ -38,111 +46,83 @@ async function getTenantId(): Promise<string | null> {
 // ============================================================================
 
 export async function getProductsForDiscount(): Promise<{ products: ProductOption[]; error?: string }> {
-    const supabase = await createClient();
     const tenantId = await getTenantId();
-    
-    if (!tenantId) {
-        return { products: [], error: "Unauthorized" };
-    }
+    if (!tenantId) return { products: [], error: "Unauthorized" };
 
-    const { data, error } = await supabase
-        .from("products")
-        .select("id, name, sku, price, images")
-        .eq("tenant_id", tenantId)
-        .eq("status", "active")
-        .order("name", { ascending: true });
+    try {
+        const data = await db.select({
+            id: products.id, name: products.name, sku: products.sku,
+            price: products.price, images: products.images,
+        }).from(products)
+            .where(and(eq(products.tenantId, tenantId), eq(products.status, "active")))
+            .orderBy(asc(products.name));
 
-    if (error) {
+        const result: ProductOption[] = data.map(p => ({
+            id: p.id, name: p.name, sku: p.sku,
+            price: parseFloat(p.price || "0"),
+            image_url: (p.images as { url: string }[] | null)?.[0]?.url || null,
+        }));
+
+        return { products: result };
+    } catch (error) {
         log.error("Error fetching products:", error);
-        return { products: [], error: error.message };
+        return { products: [], error: "Failed to fetch products" };
     }
-
-    const products: ProductOption[] = (data || []).map((p: { id: string; name: string; sku: string | null; price: number; images: { url: string }[] | null }) => ({
-        id: p.id,
-        name: p.name,
-        sku: p.sku,
-        price: p.price,
-        image_url: p.images?.[0]?.url || null,
-    }));
-
-    return { products };
 }
 
 export async function getCollectionsForDiscount(): Promise<{ collections: CollectionOption[]; error?: string }> {
-    const supabase = await createClient();
     const tenantId = await getTenantId();
-    
-    if (!tenantId) {
-        return { collections: [], error: "Unauthorized" };
-    }
+    if (!tenantId) return { collections: [], error: "Unauthorized" };
 
-    // Get collections with product count
-    const { data, error } = await supabase
-        .from("collections")
-        .select(`
-            id,
-            name,
-            slug,
-            collection_products(count)
-        `)
-        .eq("tenant_id", tenantId)
-        .eq("is_active", true)
-        .order("name", { ascending: true });
+    try {
+        const data = await db.select({
+            id: collections.id, name: collections.name, slug: collections.slug,
+            productCount: count(collectionProducts.id),
+        }).from(collections)
+            .leftJoin(collectionProducts, eq(collections.id, collectionProducts.collectionId))
+            .where(and(eq(collections.tenantId, tenantId), eq(collections.isActive, true)))
+            .groupBy(collections.id)
+            .orderBy(asc(collections.name));
 
-    if (error) {
+        const result: CollectionOption[] = data.map(c => ({
+            id: c.id, name: c.name, slug: c.slug, product_count: c.productCount,
+        }));
+
+        return { collections: result };
+    } catch (error) {
         log.error("Error fetching collections:", error);
-        return { collections: [], error: error.message };
+        return { collections: [], error: error instanceof Error ? error.message : "Failed" };
     }
-
-    const collections: CollectionOption[] = (data || []).map((c: { id: string; name: string; slug: string; collection_products: { count: number }[] }) => ({
-        id: c.id,
-        name: c.name,
-        slug: c.slug,
-        product_count: c.collection_products?.[0]?.count || 0,
-    }));
-
-    return { collections };
 }
 
 export async function getCategoriesForDiscount(): Promise<{ categories: CategoryOption[]; error?: string }> {
-    const supabase = await createClient();
     const tenantId = await getTenantId();
-    
-    if (!tenantId) {
-        return { categories: [], error: "Unauthorized" };
-    }
+    if (!tenantId) return { categories: [], error: "Unauthorized" };
 
-    // Get categories with product count and parent info
-    const { data, error } = await supabase
-        .from("categories")
-        .select(`
-            id,
-            name,
-            parent_id,
-            products(count)
-        `)
-        .eq("tenant_id", tenantId)
-        .order("name", { ascending: true });
+    try {
+        const data = await db.select({
+            id: categories.id, name: categories.name, parentId: categories.parentId,
+            productCount: count(products.id),
+        }).from(categories)
+            .leftJoin(products, eq(categories.id, products.categoryId))
+            .where(eq(categories.tenantId, tenantId))
+            .groupBy(categories.id)
+            .orderBy(asc(categories.name));
 
-    if (error) {
+        const categoryMap = new Map<string, string>();
+        data.forEach(c => categoryMap.set(c.id, c.name));
+
+        const result: CategoryOption[] = data.map(c => ({
+            id: c.id, name: c.name,
+            parent_name: c.parentId ? categoryMap.get(c.parentId) || null : null,
+            product_count: c.productCount,
+        }));
+
+        return { categories: result };
+    } catch (error) {
         log.error("Error fetching categories:", error);
-        return { categories: [], error: error.message };
+        return { categories: [], error: error instanceof Error ? error.message : "Failed" };
     }
-
-    // Build a map for parent names
-    const categoryMap = new Map<string, string>();
-    (data || []).forEach((c: { id: string; name: string }) => {
-        categoryMap.set(c.id, c.name);
-    });
-
-    const categories: CategoryOption[] = (data || []).map((c: { id: string; name: string; parent_id: string | null; products: { count: number }[] }) => ({
-        id: c.id,
-        name: c.name,
-        parent_name: c.parent_id ? categoryMap.get(c.parent_id) || null : null,
-        product_count: c.products?.[0]?.count || 0,
-    }));
-
-    return { categories };
 }
 
 // ============================================================================
@@ -183,6 +163,7 @@ export async function createDiscount(input: CreateDiscountInput): Promise<{ succ
         return { success: false, error: "Code must be 3-20 characters, uppercase letters, numbers, hyphens, and underscores only" };
     }
 
+    // TODO: migrate discounts insert/update when column mapping is confirmed (discounts schema uses different column names: usageLimit vs max_uses, etc.)
     const { data: existing } = await supabase.from("discounts").select("id").eq("tenant_id", tenantId).eq("code", code).single();
     if (existing) return { success: false, error: "A discount with this code already exists" };
 
@@ -223,6 +204,7 @@ export async function updateDiscount(id: string, input: Partial<CreateDiscountIn
         input.code = code;
     }
 
+    // TODO: migrate discounts update when column mapping is confirmed
     const updateData: Record<string, unknown> = {};
     for (const [key, val] of Object.entries(input)) {
         if (val !== undefined) updateData[key] = val;
@@ -274,101 +256,70 @@ export async function recordDiscountUsage(
 // ============================================================================
 
 export async function getMarketingData(): Promise<MarketingData> {
-    const supabase = await createClient();
     const tenantId = await getTenantId();
 
+    const emptyStats: MarketingStats = {
+        totalDiscounts: 0, activeDiscounts: 0, totalRedemptions: 0,
+        discountRevenue: 0, avgDiscountValue: 0, totalCampaigns: 0,
+        activeCampaigns: 0, totalEmailsSent: 0, avgOpenRate: 0,
+        avgClickRate: 0, campaignRevenue: 0, totalAutomations: 0,
+        activeAutomations: 0, automationRevenue: 0, totalSubscribers: 0,
+        subscriberGrowth: 0,
+    };
+
     if (!tenantId) {
-        return {
-            discounts: [],
-            campaigns: [],
-            automations: [],
-            segments: [],
-            stats: {
-                totalDiscounts: 0,
-                activeDiscounts: 0,
-                totalRedemptions: 0,
-                discountRevenue: 0,
-                avgDiscountValue: 0,
-                totalCampaigns: 0,
-                activeCampaigns: 0,
-                totalEmailsSent: 0,
-                avgOpenRate: 0,
-                avgClickRate: 0,
-                campaignRevenue: 0,
-                totalAutomations: 0,
-                activeAutomations: 0,
-                automationRevenue: 0,
-                totalSubscribers: 0,
-                subscriberGrowth: 0,
-            },
-            recentActivity: [],
-        };
+        return { discounts: [], campaigns: [], automations: [], segments: [], stats: emptyStats, recentActivity: [] };
     }
 
     // Fetch real discounts from database
-    const { data: discounts } = await supabase
-        .from("discounts")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false });
+    const discountsData = await db.select().from(discounts)
+        .where(eq(discounts.tenantId, tenantId))
+        .orderBy(desc(discounts.createdAt));
 
     // Fetch real campaigns from database
-    const { data: campaignsData } = await supabase
-        .from("campaigns")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false });
+    const campaignsData = await db.select().from(campaigns)
+        .where(eq(campaigns.tenantId, tenantId))
+        .orderBy(desc(campaigns.createdAt));
 
     // Fetch segments
-    const { data: segmentsData } = await supabase
-        .from("customer_segments")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .eq("is_active", true);
+    const segmentsData = await db.select().from(customerSegments)
+        .where(and(eq(customerSegments.tenantId, tenantId), eq(customerSegments.isActive, true)));
 
     // Get subscriber count
-    const { count: subscriberCount } = await supabase
-        .from("customers")
-        .select("*", { count: "exact", head: true })
-        .eq("tenant_id", tenantId)
-        .eq("accepts_marketing", true);
+    const [subscriberRow] = await db.select({ value: count() }).from(customers)
+        .where(and(eq(customers.tenantId, tenantId), eq(customers.acceptsMarketing, true)));
+    const subscriberCount = subscriberRow?.value || 0;
 
     // Fetch discount usage stats
-    const { data: usageStats } = await supabase
-        .from("discount_usages")
-        .select("discount_amount")
-        .eq("tenant_id", tenantId);
+    const usageStats = await db.select({ discountAmount: discountUsages.discountAmount })
+        .from(discountUsages)
+        .where(eq(discountUsages.tenantId, tenantId));
 
-    const totalRedemptions = discounts?.reduce((sum, d) => sum + d.used_count, 0) || 0;
-    const discountRevenue = usageStats?.reduce((sum, u) => sum + Number(u.discount_amount), 0) || 0;
-    const activeDiscounts = discounts?.filter(d => {
-        if (!d.is_active) return false;
+    const totalRedemptions = discountsData.reduce((sum, d) => sum + d.usedCount, 0);
+    const discountRevenue = usageStats.reduce((sum, u) => sum + Number(u.discountAmount), 0);
+    const activeDiscountsCount = discountsData.filter(d => {
+        if (!d.isActive) return false;
         const now = new Date();
-        if (d.expires_at && new Date(d.expires_at) < now) return false;
-        if (d.starts_at && new Date(d.starts_at) > now) return false;
-        if (d.max_uses && d.used_count >= d.max_uses) return false;
+        if (d.endsAt && new Date(d.endsAt) < now) return false;
+        if (d.startsAt && new Date(d.startsAt) > now) return false;
+        if (d.usageLimit && d.usedCount >= d.usageLimit) return false;
         return true;
-    }).length || 0;
+    }).length;
 
     // Default segments
     const defaultSegments: CustomerSegment[] = [
-        { id: "all", name: "All Customers", description: "All subscribed customers", customer_count: subscriberCount || 0, conditions: {}, created_at: new Date().toISOString() },
+        { id: "all", name: "All Customers", description: "All subscribed customers", customer_count: subscriberCount, conditions: {}, created_at: new Date().toISOString() },
         { id: "new", name: "New Customers", description: "Customers from the last 30 days", customer_count: 0, conditions: {}, created_at: new Date().toISOString() },
         { id: "returning", name: "Returning Customers", description: "Customers with 2+ orders", customer_count: 0, conditions: {}, created_at: new Date().toISOString() },
     ];
 
-    // Mock automations (to be implemented later)
     const mockAutomations: Automation[] = [];
 
-    // Build recent activity from discount usages and campaign sends
+    // Build recent activity from discount usages
+    const supabase = await createClient();
     const { data: recentUsages } = await supabase
         .from("discount_usages")
-        .select(`
-            id,
-            discount_amount,
-            used_at,
-            discounts (code, name)
-        `)
+        .select(`id, discount_amount, used_at, discounts (code, name)`)
         .eq("tenant_id", tenantId)
         .order("used_at", { ascending: false })
         .limit(5);
@@ -382,61 +333,60 @@ export async function getMarketingData(): Promise<MarketingData> {
     }));
 
     // Add recent campaign sends to activity
-    const recentCampaigns = (campaignsData || [])
-        .filter(c => c.sent_at)
+    const recentCampaigns = campaignsData
+        .filter(c => c.sentAt)
         .slice(0, 3)
         .map(c => ({
             id: c.id,
             type: "campaign_sent" as const,
             title: `"${c.name}" sent`,
-            description: `Delivered to ${c.delivered_count.toLocaleString()} recipients`,
-            timestamp: c.sent_at!,
+            description: `Delivered to ${c.deliveredCount.toLocaleString()} recipients`,
+            timestamp: c.sentAt!.toISOString(),
         }));
 
     recentActivity.push(...recentCampaigns);
     recentActivity.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-
     const stats: MarketingStats = {
-        totalDiscounts: discounts?.length || 0,
-        activeDiscounts,
+        totalDiscounts: discountsData.length,
+        activeDiscounts: activeDiscountsCount,
         totalRedemptions,
         discountRevenue,
         avgDiscountValue: totalRedemptions > 0 ? discountRevenue / totalRedemptions : 0,
-        totalCampaigns: campaignsData?.length || 0,
-        activeCampaigns: campaignsData?.filter(c => c.status === "scheduled" || c.status === "sending").length || 0,
-        totalEmailsSent: campaignsData?.reduce((sum, c) => sum + c.delivered_count, 0) || 0,
-        avgOpenRate: calculateAvgOpenRate(campaignsData || []),
-        avgClickRate: calculateAvgClickRate(campaignsData || []),
-        campaignRevenue: campaignsData?.reduce((sum, c) => sum + Number(c.revenue_generated), 0) || 0,
+        totalCampaigns: campaignsData.length,
+        activeCampaigns: campaignsData.filter(c => c.status === "scheduled" || c.status === "sending").length,
+        totalEmailsSent: campaignsData.reduce((sum, c) => sum + c.deliveredCount, 0),
+        avgOpenRate: calculateAvgOpenRate(campaignsData),
+        avgClickRate: calculateAvgClickRate(campaignsData),
+        campaignRevenue: campaignsData.reduce((sum, c) => sum + Number(c.revenueGenerated), 0),
         totalAutomations: mockAutomations.length,
         activeAutomations: 0,
         automationRevenue: 0,
-        totalSubscribers: subscriberCount || 0,
+        totalSubscribers: subscriberCount,
         subscriberGrowth: 0,
     };
 
     return {
-        discounts: discounts || [],
-        campaigns: campaignsData || [],
+        discounts: discountsData as unknown as Discount[],
+        campaigns: campaignsData as unknown as Campaign[],
         automations: mockAutomations,
-        segments: segmentsData || defaultSegments,
+        segments: segmentsData.length > 0 ? segmentsData as unknown as CustomerSegment[] : defaultSegments,
         stats,
         recentActivity,
     };
 }
 
-function calculateAvgOpenRate(campaigns: Campaign[]): number {
-    const sentCampaigns = campaigns.filter(c => c.status === "sent" && c.delivered_count > 0);
+function calculateAvgOpenRate(campaignsArr: typeof campaigns.$inferSelect[]): number {
+    const sentCampaigns = campaignsArr.filter(c => c.status === "sent" && c.deliveredCount > 0);
     if (sentCampaigns.length === 0) return 0;
-    const totalRate = sentCampaigns.reduce((sum, c) => sum + (c.opened_count / c.delivered_count * 100), 0);
+    const totalRate = sentCampaigns.reduce((sum, c) => sum + (c.openedCount / c.deliveredCount * 100), 0);
     return totalRate / sentCampaigns.length;
 }
 
-function calculateAvgClickRate(campaigns: Campaign[]): number {
-    const sentCampaigns = campaigns.filter(c => c.status === "sent" && c.delivered_count > 0);
+function calculateAvgClickRate(campaignsArr: typeof campaigns.$inferSelect[]): number {
+    const sentCampaigns = campaignsArr.filter(c => c.status === "sent" && c.deliveredCount > 0);
     if (sentCampaigns.length === 0) return 0;
-    const totalRate = sentCampaigns.reduce((sum, c) => sum + (c.clicked_count / c.delivered_count * 100), 0);
+    const totalRate = sentCampaigns.reduce((sum, c) => sum + (c.clickedCount / c.deliveredCount * 100), 0);
     return totalRate / sentCampaigns.length;
 }
 

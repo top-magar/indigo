@@ -16,6 +16,7 @@ async function getAuthenticatedTenant() {
 export async function getShippingZones() {
   const { supabase, tenantId } = await getAuthenticatedTenant()
 
+  // TODO: migrate when schema added for shipping_zones, shipping_zone_countries, shipping_rates
   const { data, error } = await supabase
     .from("shipping_zones")
     .select(`
@@ -52,7 +53,7 @@ export async function createShippingZone(formData: FormData) {
   const { name, description, isActive } = parsed
   const countriesJson = formData.get("countries") as string
 
-  // Create zone
+  // TODO: migrate when schema added for shipping_zones
   const { data: zone, error: zoneError } = await supabase
     .from("shipping_zones")
     .insert({

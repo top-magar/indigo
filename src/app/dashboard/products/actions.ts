@@ -4,28 +4,24 @@ import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:products");
 
 import { z } from "zod";
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
+import { db } from "@/infrastructure/db";
+import { products, categories } from "@/db/schema/products";
+import { collectionProducts } from "@/db/schema/collections";
+import { eq, and, sql, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { expireProductsCache, expireProductCache } from "@/features/store/data";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
-    const { user, supabase } = await getAuthenticatedClient();
-    return { supabase, tenantId: user.tenantId, userId: user.id, tenantSlug: undefined as string | undefined };
+    const { user } = await getAuthenticatedClient();
+    return { tenantId: user.tenantId, userId: user.id, tenantSlug: undefined as string | undefined };
 }
 
-/**
- * Immediately expire both dashboard and storefront caches
- * Uses updateTag for read-your-own-writes consistency
- */
 async function expireProductCaches(tenantId: string, productSlug?: string) {
-    // Dashboard paths
     revalidatePath("/dashboard/products");
     revalidatePath("/dashboard/collections");
-    
-    // Storefront cache - immediate expiration
     if (productSlug) {
         await expireProductCache(tenantId, productSlug);
     } else {
@@ -41,14 +37,10 @@ const createProductSchema = z.object({
   sku: z.string().optional().default(""),
 });
 
-/**
- * Simple product creation (backward compatible)
- */
 export async function createProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Plan limit check
         const { checkPlanLimit } = await import("@/lib/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
         if (!limit.allowed) return { success: false, error: limit.reason };
@@ -57,25 +49,18 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
         const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
 
         const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        const { data: product, error: createErr } = await supabase
-            .from("products")
-            .insert({ tenant_id: tenantId, name, slug, price, description: description || null, quantity, sku: sku || null, status: "active" })
-            .select("id")
-            .single();
+        const [product] = await db.insert(products).values({
+            tenantId, name, slug, price: price.toString(),
+            description: description || null, quantity, sku: sku || null, status: "active",
+        }).returning({ id: products.id });
 
-        if (createErr || !product) {
-            return { success: false, error: createErr?.message || "Failed to create product" };
+        if (!product) {
+            return { success: false, error: "Failed to create product" };
         }
 
-        // Audit log - non-blocking
         try {
             await auditLogger.logCreate(tenantId, "product", product.id, {
-                name,
-                price,
-                description: description || undefined,
-                quantity,
-                sku: sku || undefined,
-                status: "active",
+                name, price, description: description || undefined, quantity, sku: sku || undefined, status: "active",
             }, { userId });
         } catch (auditError) {
             log.error("Audit logging failed:", auditError);
@@ -89,10 +74,6 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
     }
 }
 
-/**
- * Production-ready product creation with full details using workflow
- * Uses saga pattern with automatic rollback on failure
- */
 const productDetailsSchema = z.object({
     name: z.string().min(1, "Product name is required").max(255),
     slug: z.string().optional(),
@@ -128,14 +109,12 @@ function safeJsonParse<T>(str: string | null, fallback: T): T {
 
 export async function createProductWithDetails(formData: FormData): Promise<{ success?: boolean; error?: string; productId?: string }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Plan limit check
         const { checkPlanLimit } = await import("@/lib/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
         if (!limit.allowed) return { success: false, error: limit.reason };
 
-        // Parse and validate all input
         const raw = {
             name: formData.get("name") as string || "",
             slug: (formData.get("slug") as string) || undefined,
@@ -164,58 +143,46 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
             publishAt: (formData.get("publishAt") as string) || undefined,
         };
 
-        // Reject NaN prices
         if (isNaN(raw.price)) return { success: false, error: "Price must be a valid number" };
 
         const validated = productDetailsSchema.parse(raw);
 
         const slug = validated.slug || validated.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        const { data: product, error: createErr } = await supabase
-            .from("products")
-            .insert({
-                tenant_id: tenantId,
-                name: validated.name,
-                slug,
-                description: validated.description || null,
-                price: validated.price,
-                compare_at_price: validated.compareAtPrice || null,
-                cost_price: validated.costPrice || null,
-                sku: validated.sku || null,
-                barcode: validated.barcode || null,
-                quantity: validated.quantity,
-                track_quantity: validated.trackQuantity,
-                allow_backorder: validated.allowBackorder,
-                weight: validated.weight || null,
-                weight_unit: validated.weightUnit,
-                status: validated.status,
-                has_variants: validated.hasVariants,
-                category_id: validated.categoryId || null,
-                images: validated.images.length > 0 ? validated.images : [],
-                metadata: {
-                    brand: validated.brand || null,
-                    tags: validated.tags,
-                    seo: { metaTitle: validated.metaTitle || null, metaDescription: validated.metaDescription || null },
-                    shipping: { requiresShipping: validated.requiresShipping, weightUnit: validated.weightUnit },
-                    publishAt: validated.publishAt || null,
-                },
-            })
-            .select("id")
-            .single();
+        const [product] = await db.insert(products).values({
+            tenantId, name: validated.name, slug,
+            description: validated.description || null,
+            price: validated.price.toString(),
+            compareAtPrice: validated.compareAtPrice?.toString() || null,
+            costPrice: validated.costPrice?.toString() || null,
+            sku: validated.sku || null,
+            barcode: validated.barcode || null,
+            quantity: validated.quantity,
+            trackQuantity: validated.trackQuantity,
+            allowBackorder: validated.allowBackorder,
+            weight: validated.weight?.toString() || null,
+            weightUnit: validated.weightUnit,
+            status: validated.status,
+            hasVariants: validated.hasVariants,
+            categoryId: validated.categoryId || null,
+            images: validated.images.length > 0 ? validated.images : [],
+            metadata: {
+                brand: validated.brand || null,
+                tags: validated.tags,
+                seo: { metaTitle: validated.metaTitle || null, metaDescription: validated.metaDescription || null },
+                shipping: { requiresShipping: validated.requiresShipping, weightUnit: validated.weightUnit },
+                publishAt: validated.publishAt || null,
+            },
+        }).returning({ id: products.id });
 
-        if (createErr || !product) {
-            return { success: false, error: createErr?.message || "Failed to create product" };
+        if (!product) {
+            return { success: false, error: "Failed to create product" };
         }
 
-        // Audit log - non-blocking
         try {
             await auditLogger.logCreate(tenantId, "product", product.id, {
-                name: validated.name,
-                slug: validated.slug,
-                price: validated.price,
-                status: validated.status,
-                hasVariants: validated.hasVariants,
-                variantsCount: validated.variants.length,
-                imagesCount: validated.images.length,
+                name: validated.name, slug: validated.slug, price: validated.price,
+                status: validated.status, hasVariants: validated.hasVariants,
+                variantsCount: validated.variants.length, imagesCount: validated.images.length,
             }, { userId });
         } catch (auditError) {
             log.error("Audit logging failed:", auditError);
@@ -232,25 +199,15 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
     }
 }
 
-/**
- * Update product using workflow
- */
 export async function updateProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
         
         const productId = formData.get("productId") as string;
-        if (!productId) {
-            return { success: false, error: "Product ID is required" };
-        }
+        if (!productId) return { success: false, error: "Product ID is required" };
 
-        // Fetch old values for audit log
-        const { data: oldProduct } = await supabase
-            .from("products")
-            .select("name, price, description, status")
-            .eq("id", productId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [oldProduct] = await db.select({ name: products.name, price: products.price, description: products.description, status: products.status })
+            .from(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
         const name = formData.get("name") as string | undefined;
         const price = formData.get("price") ? parseFloat(formData.get("price") as string) : undefined;
@@ -259,50 +216,25 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
         const collectionIdsJson = formData.get("collectionIds") as string;
         const collectionIds = collectionIdsJson ? JSON.parse(collectionIdsJson) : undefined;
 
-        const updateData: Record<string, unknown> = {};
+        const updateData: Record<string, unknown> = { updatedAt: new Date() };
         if (name) updateData.name = name;
-        if (price !== undefined) updateData.price = price;
+        if (price !== undefined) updateData.price = price.toString();
         if (description !== undefined) updateData.description = description;
         if (status) updateData.status = status;
-        updateData.updated_at = new Date().toISOString();
 
-        const { error: updateError } = await supabase
-            .from("products")
-            .update(updateData)
-            .eq("id", productId)
-            .eq("tenant_id", tenantId);
+        await db.update(products).set(updateData)
+            .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
 
-        if (updateError) {
-            return { success: false, error: `Failed to update: ${updateError.message}` };
-        }
-
-        // Audit log - non-blocking
         try {
             const oldValues: Record<string, unknown> = {};
             const newValues: Record<string, unknown> = {};
-            
             if (oldProduct) {
-                if (name !== undefined) {
-                    oldValues.name = oldProduct.name;
-                    newValues.name = name;
-                }
-                if (price !== undefined) {
-                    oldValues.price = oldProduct.price;
-                    newValues.price = price;
-                }
-                if (description !== undefined) {
-                    oldValues.description = oldProduct.description;
-                    newValues.description = description;
-                }
-                if (status !== undefined) {
-                    oldValues.status = oldProduct.status;
-                    newValues.status = status;
-                }
-                if (collectionIds !== undefined) {
-                    newValues.collectionIds = collectionIds;
-                }
+                if (name !== undefined) { oldValues.name = oldProduct.name; newValues.name = name; }
+                if (price !== undefined) { oldValues.price = oldProduct.price; newValues.price = price; }
+                if (description !== undefined) { oldValues.description = oldProduct.description; newValues.description = description; }
+                if (status !== undefined) { oldValues.status = oldProduct.status; newValues.status = status; }
+                if (collectionIds !== undefined) { newValues.collectionIds = collectionIds; }
             }
-            
             await auditLogger.logUpdate(tenantId, "product", productId, oldValues, newValues, { userId });
         } catch (auditError) {
             log.error("Audit logging failed:", auditError);
@@ -318,49 +250,26 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
 
 export async function updateProductStock(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedTenant();
+        const { tenantId } = await getAuthenticatedTenant();
 
         const productId = formData.get("productId") as string;
         const action = formData.get("action") as "add" | "remove" | "set";
         const adjustment = parseInt(formData.get("adjustment") as string) || 1;
 
-        // Get slug for cache invalidation
-        const { data: product, error: fetchError } = await supabase
-            .from("products")
-            .select("slug")
-            .eq("id", productId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [product] = await db.select({ slug: products.slug })
+            .from(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
-        if (fetchError || !product) {
-            return { success: false, error: "Product not found" };
-        }
+        if (!product) return { success: false, error: "Product not found" };
 
-        // Atomic stock update — no read-then-write race condition
-        let updateError;
         if (action === "set") {
-            ({ error: updateError } = await supabase
-                .from("products")
-                .update({ quantity: adjustment, updated_at: new Date().toISOString() })
-                .eq("id", productId)
-                .eq("tenant_id", tenantId));
+            await db.update(products).set({ quantity: adjustment, updatedAt: new Date() })
+                .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
         } else {
-            const { db } = await import("@/infrastructure/db");
-            const { products } = await import("@/db/schema/products");
-            const { eq: drEq, and: drAnd, sql: drSql } = await import("drizzle-orm");
             const expr = action === "add"
-                ? drSql`${products.quantity} + ${Math.abs(adjustment)}`
-                : drSql`GREATEST(0, ${products.quantity} - ${Math.abs(adjustment)})`;
-            try {
-                await db.update(products).set({ quantity: expr, updatedAt: new Date() })
-                    .where(drAnd(drEq(products.id, productId), drEq(products.tenantId, tenantId)));
-            } catch (e) {
-                updateError = e instanceof Error ? { message: e.message } : { message: "Update failed" };
-            }
-        }
-
-        if (updateError) {
-            return { success: false, error: `Failed to update stock: ${updateError.message}` };
+                ? sql`${products.quantity} + ${Math.abs(adjustment)}`
+                : sql`GREATEST(0, ${products.quantity} - ${Math.abs(adjustment)})`;
+            await db.update(products).set({ quantity: expr, updatedAt: new Date() })
+                .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
         }
 
         await expireProductCaches(tenantId, product.slug);
@@ -371,34 +280,20 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
     }
 }
 
-/**
- * Delete product using workflow
- */
 export async function deleteProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
-
+        const { tenantId, userId } = await getAuthenticatedTenant();
         const productId = formData.get("productId") as string;
 
-        // Fetch old values for audit log before deletion
-        const { data: oldProduct } = await supabase
-            .from("products")
-            .select("name, slug, price, status, sku, quantity")
-            .eq("id", productId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [oldProduct] = await db.select({ name: products.name, slug: products.slug, price: products.price, status: products.status, sku: products.sku, quantity: products.quantity })
+            .from(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
-        const { error: delErr } = await supabase.from("products").delete().eq("id", productId).eq("tenant_id", tenantId); if (delErr) throw new Error(delErr.message);
+        await db.delete(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
 
-        // Audit log - non-blocking
         try {
             await auditLogger.logDelete(tenantId, "product", productId, {
-                name: oldProduct?.name,
-                slug: oldProduct?.slug,
-                price: oldProduct?.price,
-                status: oldProduct?.status,
-                sku: oldProduct?.sku,
-                quantity: oldProduct?.quantity,
+                name: oldProduct?.name, slug: oldProduct?.slug, price: oldProduct?.price,
+                status: oldProduct?.status, sku: oldProduct?.sku, quantity: oldProduct?.quantity,
             }, { userId });
         } catch (auditError) {
             log.error("Audit logging failed:", auditError);
@@ -414,21 +309,16 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
 
 export async function updateProductStatus(productId: string, status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Fetch old status for audit log
-        const { data: oldProduct } = await supabase
-            .from("products")
-            .select("status, name")
-            .eq("id", productId)
-            .eq("tenant_id", tenantId)
-            .single();
+        const [oldProduct] = await db.select({ status: products.status, name: products.name })
+            .from(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
-        const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { success: false, error: statusErr.message };
+        await db.update(products).set({ status, updatedAt: new Date() })
+            .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
 
-        // Audit log - non-blocking
         try {
-            await auditLogger.logUpdate(tenantId, "product", productId, 
+            await auditLogger.logUpdate(tenantId, "product", productId,
                 { status: oldProduct?.status, name: oldProduct?.name },
                 { status, name: oldProduct?.name },
                 { userId }
@@ -445,40 +335,26 @@ export async function updateProductStatus(productId: string, status: "draft" | "
     }
 }
 
-/**
- * Bulk delete products using workflow
- */
 export async function bulkDeleteProducts(productIds: string[]): Promise<{ success?: boolean; error?: string; deletedCount: number }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Fetch old values for audit log before deletion
-        const { data: oldProducts } = await supabase
-            .from("products")
-            .select("id, name, slug, price, status, sku, quantity")
-            .eq("tenant_id", tenantId)
-            .in("id", productIds);
+        const oldProducts = await db.select({ id: products.id, name: products.name, slug: products.slug, price: products.price, status: products.status, sku: products.sku, quantity: products.quantity })
+            .from(products).where(and(eq(products.tenantId, tenantId), inArray(products.id, productIds)));
 
-        const productMap = new Map(oldProducts?.map(p => [p.id, p]) || []);
-
+        const productMap = new Map(oldProducts.map(p => [p.id, p]));
         const errors: string[] = [];
         let deletedCount = 0;
         
         for (const productId of productIds) {
             try {
-                const { error: delErr } = await supabase.from("products").delete().eq("id", productId).eq("tenant_id", tenantId); if (delErr) throw new Error(delErr.message);
+                await db.delete(products).where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
                 deletedCount++;
-
-                // Audit log each deletion - non-blocking
                 try {
                     const oldProduct = productMap.get(productId);
                     await auditLogger.logDelete(tenantId, "product", productId, {
-                        name: oldProduct?.name,
-                        slug: oldProduct?.slug,
-                        price: oldProduct?.price,
-                        status: oldProduct?.status,
-                        sku: oldProduct?.sku,
-                        quantity: oldProduct?.quantity,
+                        name: oldProduct?.name, slug: oldProduct?.slug, price: oldProduct?.price,
+                        status: oldProduct?.status, sku: oldProduct?.sku, quantity: oldProduct?.quantity,
                     }, { userId });
                 } catch (auditError) {
                     log.error("Audit logging failed for product", auditError, { productId });
@@ -502,31 +378,22 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
     }
 }
 
-/**
- * Bulk update product status using workflow
- */
 export async function bulkUpdateProductStatus(productIds: string[], status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string; updatedCount: number }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Fetch old statuses for audit log
-        const { data: oldProducts } = await supabase
-            .from("products")
-            .select("id, name, status")
-            .eq("tenant_id", tenantId)
-            .in("id", productIds);
+        const oldProducts = await db.select({ id: products.id, name: products.name, status: products.status })
+            .from(products).where(and(eq(products.tenantId, tenantId), inArray(products.id, productIds)));
 
-        const productMap = new Map(oldProducts?.map(p => [p.id, p]) || []);
-
+        const productMap = new Map(oldProducts.map(p => [p.id, p]));
         const errors: string[] = [];
         let updatedCount = 0;
         
         for (const productId of productIds) {
             try {
-                const { error: statusErr } = await supabase.from("products").update({ status, updated_at: new Date().toISOString() }).eq("id", productId).eq("tenant_id", tenantId); if (statusErr) return { success: false, error: statusErr.message, updatedCount };
+                await db.update(products).set({ status, updatedAt: new Date() })
+                    .where(and(eq(products.id, productId), eq(products.tenantId, tenantId)));
                 updatedCount++;
-
-                // Audit log each update - non-blocking
                 try {
                     const oldProduct = productMap.get(productId);
                     await auditLogger.logUpdate(tenantId, "product", productId,
@@ -558,37 +425,29 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
 
 export async function duplicateProduct(productId: string) {
     const { tenantId } = await getAuthenticatedTenant();
-    const supabase = await createClient();
 
-    // Check product limit before duplicating
     const { checkPlanLimit } = await import("@/lib/plan-limits");
     const limit = await checkPlanLimit(tenantId, "products");
     if (!limit.allowed) return { success: false, error: limit.reason };
 
-    // Fetch original
-    const { data: original, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .eq("tenant_id", tenantId)
-        .single();
+    const [original] = await db.select().from(products)
+        .where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
-    if (error || !original) throw new Error("Product not found");
+    if (!original) throw new Error("Product not found");
 
-    // Create copy
-    const { id: _id, created_at: _ca, updated_at: _ua, ...fields } = original;
-    const { data: copy, error: insertError } = await supabase
-        .from("products")
-        .insert({
-            ...fields,
-            name: `${original.name} (Copy)`,
-            slug: `${original.slug}-copy-${Date.now().toString(36)}`,
-            status: "draft",
-        })
-        .select("id")
-        .single();
-
-    if (insertError) throw new Error(insertError.message);
+    const [copy] = await db.insert(products).values({
+        tenantId: original.tenantId, name: `${original.name} (Copy)`,
+        slug: `${original.slug}-copy-${Date.now().toString(36)}`,
+        description: original.description, price: original.price,
+        compareAtPrice: original.compareAtPrice, costPrice: original.costPrice,
+        sku: original.sku, barcode: original.barcode, quantity: original.quantity,
+        trackQuantity: original.trackQuantity, allowBackorder: original.allowBackorder,
+        weight: original.weight, weightUnit: original.weightUnit,
+        status: "draft", hasVariants: original.hasVariants,
+        categoryId: original.categoryId, images: original.images,
+        metadata: original.metadata, vendor: original.vendor,
+        productType: original.productType,
+    }).returning({ id: products.id });
 
     revalidatePath("/dashboard/products");
     return { id: copy.id };
@@ -596,21 +455,29 @@ export async function duplicateProduct(productId: string) {
 
 export async function exportAllProducts(): Promise<string> {
     const { tenantId } = await getAuthenticatedTenant();
-    const supabase = await createClient();
 
-    const { data } = await supabase
-        .from("products")
-        .select("name, sku, price, quantity, status, categories(name)")
-        .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false });
+    const data = await db.select({
+        name: products.name, sku: products.sku, price: products.price,
+        quantity: products.quantity, status: products.status,
+        categoryId: products.categoryId,
+    }).from(products).where(eq(products.tenantId, tenantId));
 
-    const rows = (data || []).map((p: Record<string, unknown>) => [
-        `"${(p.name as string || "").replace(/"/g, '""')}"`,
+    // Fetch category names for all products
+    const categoryIds = [...new Set(data.filter(p => p.categoryId).map(p => p.categoryId!))];
+    let categoryMap = new Map<string, string>();
+    if (categoryIds.length > 0) {
+        const cats = await db.select({ id: categories.id, name: categories.name })
+            .from(categories).where(inArray(categories.id, categoryIds));
+        categoryMap = new Map(cats.map(c => [c.id, c.name]));
+    }
+
+    const rows = data.map(p => [
+        `"${(p.name || "").replace(/"/g, '""')}"`,
         p.sku || "",
         p.price || "0",
         p.quantity || "0",
         p.status || "draft",
-        (p.categories as { name: string } | null)?.name || "Uncategorized",
+        p.categoryId ? categoryMap.get(p.categoryId) || "Uncategorized" : "Uncategorized",
     ].join(","));
 
     return ["Name,SKU,Price,Stock,Status,Category", ...rows].join("\n");

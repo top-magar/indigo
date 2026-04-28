@@ -24,7 +24,7 @@ interface ProductResult {
     sku: string | null;
     price: number;
     compare_at_price: number | null;
-    images: string[] | null;
+    images: { url: string; alt?: string }[] | string[] | null;
     status: string;
 }
 
@@ -72,7 +72,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                 productId: product.id,
                 productName: product.name,
                 productSku: product.sku ?? undefined,
-                productImage: product.images?.[0] ?? undefined,
+                productImage: (() => { const img = product.images?.[0]; return typeof img === 'string' ? img : img?.url; })() ?? undefined,
                 quantity: 1,
                 unitPrice: product.price,
             }]);
@@ -169,7 +169,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                     onClick={() => addProduct(p)}
                                                 >
                                                     {p.images?.[0] ? (
-                                                        <Image src={p.images[0]} alt="" width={32} height={32} className="size-8 rounded object-cover" />
+                                                        <Image src={typeof p.images![0] === 'string' ? p.images![0] : p.images![0].url} alt="" width={32} height={32} className="size-8 rounded object-cover" />
                                                     ) : (
                                                         <div className="size-8 rounded bg-muted" />
                                                     )}
