@@ -1,6 +1,7 @@
 "use server";
 
 import { sanitizeSearch } from "@/shared/utils/sanitize";
+import { validateId } from "@/shared/utils/validate-id";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("collections-collection-actions");
 
@@ -33,6 +34,7 @@ export async function getCollectionDetail(collectionId: string): Promise<{ succe
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         // Fetch collection
         const { data: collection, error: collectionError } = await supabase
             .from("collections")
@@ -172,6 +174,7 @@ export async function updateCollectionInfo(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (data.name !== undefined) updateData.name = data.name;
         if (data.description !== undefined) updateData.description = data.description;
@@ -199,6 +202,7 @@ export async function updateCollectionStatus(collectionId: string, isActive: boo
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         const { error } = await supabase
             .from("collections")
             .update({ is_active: isActive, updated_at: new Date().toISOString() })
@@ -230,6 +234,7 @@ export async function updateCollectionImage(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         const { error } = await supabase
             .from("collections")
             .update({
@@ -268,6 +273,7 @@ export async function updateCollectionSeo(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (seo.metaTitle !== undefined) updateData.meta_title = seo.metaTitle;
         if (seo.metaDescription !== undefined) updateData.meta_description = seo.metaDescription;
@@ -314,6 +320,7 @@ export async function assignProductsToCollection(collectionId: string, productId
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         // Get current max position
         const { data: maxPos } = await supabase
             .from("collection_products")
@@ -354,6 +361,8 @@ export async function unassignProductFromCollection(collectionId: string, produc
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
+        validateId(productId, "Product ID");
         const { error } = await supabase
             .from("collection_products")
             .delete()
@@ -378,6 +387,7 @@ export async function bulkUnassignProducts(collectionId: string, productIds: str
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         const { error } = await supabase
             .from("collection_products")
             .delete()
@@ -402,6 +412,7 @@ export async function reorderCollectionProducts(collectionId: string, productIds
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         // Update positions
         for (let i = 0; i < productIds.length; i++) {
             await supabase
@@ -428,6 +439,7 @@ export async function deleteCollectionById(collectionId: string) {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(collectionId, "Collection ID");
         // Delete product associations first
         await supabase
             .from("collection_products")

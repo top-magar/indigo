@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("customers-customer-actions");
 
+import { validateId } from "@/shared/utils/validate-id";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -42,6 +43,7 @@ export async function getCustomerDetail(customerId: string): Promise<{
     const { supabase, tenantId, currency } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         // Fetch customer
         const { data: customer, error: customerError } = await supabase
             .from("customers")
@@ -191,6 +193,7 @@ export async function updateCustomerDetails(
     const { supabase, tenantId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         // Get current customer data
         const { data: current } = await supabase
             .from("customers")
@@ -248,6 +251,7 @@ export async function addCustomerNoteAction(
     const { supabase, tenantId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         const { data: customer } = await supabase
             .from("customers")
             .select("metadata")
@@ -300,6 +304,7 @@ export async function deleteCustomerNote(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         const { data: customer } = await supabase
             .from("customers")
             .select("metadata")
@@ -347,6 +352,7 @@ export async function addCustomerAddress(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         // If setting as default, unset other defaults of same type
         if (input.isDefault) {
             await supabase
@@ -419,6 +425,7 @@ export async function updateCustomerAddress(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(addressId, "Address ID");
         // Get address to find customer_id
         const { data: existingAddress } = await supabase
             .from("addresses")
@@ -481,6 +488,7 @@ export async function deleteCustomerAddress(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(addressId, "Address ID");
         const { data: address } = await supabase
             .from("addresses")
             .select("customer_id")
@@ -517,6 +525,7 @@ export async function setDefaultAddress(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(addressId, "Address ID");
         const { data: address } = await supabase
             .from("addresses")
             .select("customer_id")
@@ -565,6 +574,7 @@ export async function getCustomerTimeline(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         const events: TimelineEvent[] = [];
 
         // Get customer creation date
@@ -635,6 +645,7 @@ export async function deleteCustomerAction(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         // Check if customer has orders
         const { count } = await supabase
             .from("orders")
@@ -686,6 +697,7 @@ export async function toggleCustomerStatus(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(customerId, "Customer ID");
         const { error } = await supabase
             .from("customers")
             .update({ 
@@ -714,6 +726,7 @@ export async function updateCustomerTags(
 ): Promise<{ success: boolean; error?: string }> {
     const { supabase, tenantId } = await getAuthenticatedTenant();
     try {
+        validateId(customerId, "Customer ID");
         const { data: customer } = await supabase
             .from("customers")
             .select("metadata")

@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("orders-order-actions");
 
+import { validateId } from "@/shared/utils/validate-id";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { sendOrderShipped, sendOrderDelivered } from "@/infrastructure/services/email/actions";
@@ -38,6 +39,7 @@ export async function getOrder(orderId: string): Promise<{ success: boolean; dat
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(orderId, "Order ID");
         // Fetch order
         const { data: order, error: orderError } = await supabase
             .from("orders")
@@ -309,6 +311,7 @@ export async function approveFulfillment(fulfillmentId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(fulfillmentId, "Fulfillment ID");
         const { data: fulfillment, error } = await supabase
             .from("fulfillments")
             .update({ status: "approved", updated_at: new Date().toISOString() })
@@ -335,6 +338,7 @@ export async function cancelFulfillment(fulfillmentId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(fulfillmentId, "Fulfillment ID");
         // Get fulfillment with lines
         const { data: fulfillment } = await supabase
             .from("fulfillments")
@@ -383,6 +387,7 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(fulfillmentId, "Fulfillment ID");
         const { data: fulfillment, error } = await supabase
             .from("fulfillments")
             .update({ status: "shipped", updated_at: new Date().toISOString() })
@@ -434,6 +439,7 @@ export async function markAsDelivered(fulfillmentId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(fulfillmentId, "Fulfillment ID");
         const { data: fulfillment, error } = await supabase
             .from("fulfillments")
             .update({ status: "delivered", updated_at: new Date().toISOString() })
@@ -497,6 +503,7 @@ export async function capturePayment(orderId: string, amount?: number) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(orderId, "Order ID");
         const { data: order } = await supabase
             .from("orders")
             .select("total, currency")
@@ -596,6 +603,7 @@ export async function markAsPaid(orderId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(orderId, "Order ID");
         const { data: order } = await supabase
             .from("orders")
             .select("total, currency, payment_status")
@@ -649,6 +657,7 @@ export async function generateInvoice(orderId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(orderId, "Order ID");
         // Generate invoice number
         const { data: invoiceNumber } = await supabase.rpc("generate_invoice_number", {
             p_tenant_id: tenantId,
@@ -683,6 +692,7 @@ export async function sendInvoice(invoiceId: string) {
     const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
+        validateId(invoiceId, "Invoice ID");
         const { data: invoice, error } = await supabase
             .from("order_invoices")
             .update({ status: "sent", sent_at: new Date().toISOString() })

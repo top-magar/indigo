@@ -1,6 +1,7 @@
 "use server";
 
 import { sanitizeSearch } from "@/shared/utils/sanitize";
+import { validateId } from "@/shared/utils/validate-id";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("attributes-attribute-actions");
 
@@ -160,6 +161,7 @@ export async function getAttributeDetail(attributeId: string): Promise<{
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(attributeId, "Attribute ID");
         // Fetch attribute
         const { data: attribute, error: attrError } = await supabase
             .from("attributes")
@@ -361,6 +363,7 @@ export async function deleteAttribute(attributeId: string): Promise<{
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(attributeId, "Attribute ID");
         // Check if attribute is used in product types
         const { data: attribute } = await supabase
             .from("attributes")
@@ -512,6 +515,7 @@ export async function deleteAttributeValue(valueId: string): Promise<{
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(valueId, "Value ID");
         const { data: value, error: fetchError } = await supabase
             .from("attribute_values")
             .select("attribute_id")

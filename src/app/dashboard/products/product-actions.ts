@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("products-product-actions");
 
+import { validateId } from "@/shared/utils/validate-id";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -34,6 +35,7 @@ export async function getProductDetail(productId: string): Promise<{ success: bo
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         // Fetch product
         const { data: product, error: productError } = await supabase
             .from("products")
@@ -268,6 +270,7 @@ export async function deleteVariant(variantId: string) {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(variantId, "Variant ID");
         // Get product ID first
         const { data: variant } = await supabase
             .from("product_variants")
@@ -314,6 +317,7 @@ export async function updateVariantStock(variantId: string, quantity: number, ac
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(variantId, "Variant ID");
         // Get current inventory
         const { data: inventory } = await supabase
             .from("inventory_levels")
@@ -393,6 +397,7 @@ export async function addProductMedia(productId: string, mediaUrl: string, alt?:
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         // Get current images
         const { data: product } = await supabase
             .from("products")
@@ -430,6 +435,7 @@ export async function removeProductMedia(productId: string, mediaUrl: string) {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         const { data: product } = await supabase
             .from("products")
             .select("images")
@@ -466,6 +472,7 @@ export async function reorderProductMedia(productId: string, mediaUrls: string[]
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         const { error } = await supabase
             .from("products")
             .update({ images: mediaUrls, updated_at: new Date().toISOString() })
@@ -492,6 +499,7 @@ export async function updateProductSeo(productId: string, seo: { metaTitle?: str
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (seo.metaTitle !== undefined) updateData.meta_title = seo.metaTitle;
         if (seo.metaDescription !== undefined) updateData.meta_description = seo.metaDescription;
@@ -526,6 +534,7 @@ export async function updateProductOrganization(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         // Update category
         if (data.categoryId !== undefined) {
             await supabase
@@ -574,6 +583,7 @@ export async function updateProductShipping(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (shipping.weight !== undefined) updateData.weight = shipping.weight.toString();
         if (shipping.weightUnit !== undefined) updateData.weight_unit = shipping.weightUnit;

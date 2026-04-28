@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("categories-category-actions");
 
+import { validateId } from "@/shared/utils/validate-id";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -32,6 +33,7 @@ export async function getCategoryDetail(categoryId: string): Promise<{ success: 
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(categoryId, "Category ID");
         // Fetch category
         const { data: category, error: categoryError } = await supabase
             .from("categories")
@@ -179,6 +181,7 @@ export async function getCategoryBreadcrumbs(categoryId: string): Promise<Catego
     const breadcrumbs: CategoryBreadcrumb[] = [];
 
     try {
+        validateId(categoryId, "Category ID");
         let currentId: string | null = categoryId;
         
         while (currentId) {
@@ -276,6 +279,7 @@ export async function updateCategoryInfo(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(categoryId, "Category ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (data.name !== undefined) updateData.name = data.name;
         if (data.description !== undefined) updateData.description = data.description;
@@ -311,6 +315,7 @@ export async function updateCategoryImage(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(categoryId, "Category ID");
         const { error } = await supabase
             .from("categories")
             .update({
@@ -349,6 +354,7 @@ export async function updateCategorySeo(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(categoryId, "Category ID");
         const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() };
         if (seo.metaTitle !== undefined) updateData.meta_title = seo.metaTitle;
         if (seo.metaDescription !== undefined) updateData.meta_description = seo.metaDescription;
@@ -395,6 +401,7 @@ export async function deleteCategoryById(categoryId: string) {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(categoryId, "Category ID");
         // Check if category has children
         const { data: children } = await supabase
             .from("categories")
@@ -444,6 +451,7 @@ export async function createSubcategory(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(parentId, "Parent ID");
         // Check for duplicate slug
         const { data: existing } = await supabase
             .from("categories")
@@ -549,6 +557,8 @@ export async function removeProductFromCategory(productId: string, categoryId: s
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     try {
+        validateId(productId, "Product ID");
+        validateId(categoryId, "Category ID");
         const { error } = await supabase
             .from("products")
             .update({ category_id: null, updated_at: new Date().toISOString() })
