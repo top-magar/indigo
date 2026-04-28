@@ -280,7 +280,7 @@ export async function getAssets(
  */
 export async function getAsset(
   assetId: string
-): Promise<{ asset?: MediaAsset; error?: string }> {
+): Promise<{ success?: boolean; asset?: MediaAsset; error?: string }> {
   const { supabase, tenantId } = await getAuthenticatedTenant();
 
   const { data: asset, error } = await supabase
@@ -719,7 +719,7 @@ export async function getUploadUrl(
   filename: string,
   contentType: string,
   folder?: string
-): Promise<{ uploadUrl: string; key: string; cdnUrl: string } | { error: string }> {
+): Promise<{ success?: boolean; uploadUrl?: string; key?: string; cdnUrl?: string; error?: string }> {
   const { tenantId } = await getAuthenticatedTenant();
 
   const { getPresignedUploadUrl, getCdnUrl } = await import("@/infrastructure/aws/s3");

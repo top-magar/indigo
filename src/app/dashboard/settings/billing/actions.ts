@@ -12,7 +12,7 @@ const requestSchema = z.object({
   billingCycle: z.enum(["monthly", "yearly"]),
 });
 
-export async function requestUpgrade(input: z.infer<typeof requestSchema>): Promise<{ error?: string; paymentInfo?: { planName: string; amount: string; cycle: string } }> {
+export async function requestUpgrade(input: z.infer<typeof requestSchema>): Promise<{ success?: boolean; error?: string; paymentInfo?: { planName: string; amount: string; cycle: string } }> {
   const user = await requireUser();
   const parsed = requestSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Invalid input" };

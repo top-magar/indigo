@@ -116,7 +116,7 @@ export async function updateOrderNotes(formData: FormData) {
 export async function exportOrders(filters: {
     status?: string;
     search?: string;
-} = {}): Promise<{ csv?: string; error?: string }> {
+} = {}): Promise<{ success?: boolean; csv?: string; error?: string }> {
     try {
         const { user, supabase } = await getAuthenticatedClient();
 

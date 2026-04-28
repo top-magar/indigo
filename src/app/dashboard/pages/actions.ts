@@ -31,7 +31,7 @@ export async function deletePage(id: string) {
   revalidatePath("/dashboard/pages");
 }
 
-export async function createPage(projectId: string, pageName?: string): Promise<{ id?: string; error?: string }> {
+export async function createPage(projectId: string, pageName?: string): Promise<{ success?: boolean; id?: string; error?: string }> {
   const user = await requireTenantUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);

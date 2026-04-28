@@ -31,6 +31,7 @@ async function getAuthenticatedUser() {
  * Get notification preferences for the current user
  */
 export async function getNotificationPreferences(): Promise<{
+  success?: boolean;
   data?: UserNotificationPreferences;
   error?: string;
 }> {

@@ -159,7 +159,7 @@ export async function deleteCustomer(customerId: string): Promise<{ success?: bo
 export async function bulkUpdateMarketing(
     customerIds: string[],
     acceptsMarketing: boolean
-): Promise<{ error?: string; updated?: number }> {
+): Promise<{ success?: boolean; error?: string; updated?: number }> {
     try {
         const { tenantId } = await getAuthenticatedUser();
 
@@ -188,7 +188,7 @@ export async function bulkUpdateMarketing(
 export async function exportCustomers(filters: {
     search?: string;
     marketing?: string;
-} = {}): Promise<{ csv?: string; error?: string }> {
+} = {}): Promise<{ success?: boolean; csv?: string; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedUser();
 
@@ -263,7 +263,7 @@ export async function exportCustomers(filters: {
 
 // Add note to customer
 
-export async function createCustomer(formData: FormData): Promise<{ id?: string; error?: string }> {
+export async function createCustomer(formData: FormData): Promise<{ success?: boolean; id?: string; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedUser();
 

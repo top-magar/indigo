@@ -169,7 +169,7 @@ export async function exportAnalyticsReport(
     range: DateRange = "30d",
     customFrom?: string,
     customTo?: string
-): Promise<{ csv?: string; error?: string }> {
+): Promise<{ success?: boolean; csv?: string; error?: string }> {
     try {
         const validRange = dateRangeSchema.parse(range);
         const validFrom = optionalDateString.parse(customFrom);

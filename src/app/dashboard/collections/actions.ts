@@ -24,7 +24,7 @@ const createCollectionSchema = z.object({
   type: z.enum(["manual", "automatic"]).default("manual"),
 });
 
-export async function createCollection(formData: FormData): Promise<{ error?: string; collection?: Collection }> {
+export async function createCollection(formData: FormData): Promise<{ success?: boolean; error?: string; collection?: Collection }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -95,7 +95,7 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
     }
 }
 
-export async function updateCollection(formData: FormData): Promise<{ error?: string; collection?: Collection }> {
+export async function updateCollection(formData: FormData): Promise<{ success?: boolean; error?: string; collection?: Collection }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 

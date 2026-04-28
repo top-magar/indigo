@@ -75,7 +75,7 @@ const createCategorySchema = z.object({
   parentId: z.string().optional().default(""),
 });
 
-export async function createCategory(formData: FormData): Promise<{ error?: string; category?: Category }> {
+export async function createCategory(formData: FormData): Promise<{ success?: boolean; error?: string; category?: Category }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -141,7 +141,7 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
     }
 }
 
-export async function updateCategory(formData: FormData): Promise<{ error?: string; category?: Category }> {
+export async function updateCategory(formData: FormData): Promise<{ success?: boolean; error?: string; category?: Category }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -246,7 +246,7 @@ export async function deleteCategory(id: string): Promise<{ success?: boolean; e
     }
 }
 
-export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: string; deletedCount: number }> {
+export async function bulkDeleteCategories(ids: string[]): Promise<{ success?: boolean; error?: string; deletedCount: number }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
         let deletedCount = 0;

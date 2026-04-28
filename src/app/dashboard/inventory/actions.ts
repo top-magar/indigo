@@ -26,7 +26,7 @@ const adjustStockSchema = z.object({
 });
 
 // Adjust stock for a single product
-export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?: string; newQuantity?: number }> {
+export async function adjustStock(adjustment: StockAdjustment): Promise<{ success?: boolean; error?: string; newQuantity?: number }> {
     try {
         const parsed = adjustStockSchema.parse(adjustment);
         const { tenantId } = await getAuthenticatedTenant();
@@ -62,7 +62,7 @@ export async function bulkAdjustStock(
     adjustments: { productId: string; quantity: number }[],
     type: "add" | "remove" | "set",
     reason: string
-): Promise<{ error?: string; successCount: number }> {
+): Promise<{ success?: boolean; error?: string; successCount: number }> {
     try {
         const parsed = bulkAdjustSchema.parse({ adjustments, type, reason });
         const { tenantId } = await getAuthenticatedTenant();
@@ -166,7 +166,7 @@ export async function getStockMovements(
 }
 
 // Export inventory to CSV
-export async function exportInventory(): Promise<{ csv?: string; error?: string }> {
+export async function exportInventory(): Promise<{ success?: boolean; csv?: string; error?: string }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -213,7 +213,7 @@ const importSchema = z.array(z.object({
 // Import inventory from CSV
 export async function importInventory(
     updates: { sku: string; quantity: number }[]
-): Promise<{ error?: string; successCount: number; failedCount: number }> {
+): Promise<{ success?: boolean; error?: string; successCount: number; failedCount: number }> {
     try {
         const parsed = importSchema.parse(updates);
         const { supabase, tenantId, userId } = await getAuthenticatedTenant();
