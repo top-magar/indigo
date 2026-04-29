@@ -52,7 +52,7 @@ export function ActionMenu({
 }: ActionMenuProps) {
   const defaultTrigger = (
     <Button variant={variant} size={size} className={cn(className)}>
-      <MoreHorizontal className="w-4 h-4" />
+      <MoreHorizontal className="size-4" />
       <span className="sr-only">Open menu</span>
     </Button>
   );
@@ -91,7 +91,7 @@ export function ActionMenu({
                         {Icon && (
                           <Icon
                             className={cn(
-                              "w-4 h-4",
+                              "size-4",
                               action.disabled && "opacity-50"
                             )}
                           />
@@ -103,7 +103,7 @@ export function ActionMenu({
                         {Icon && (
                           <Icon
                             className={cn(
-                              "w-4 h-4",
+                              "size-4",
                               action.disabled && "opacity-50"
                             )}
                           />

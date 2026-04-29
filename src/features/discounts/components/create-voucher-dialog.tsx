@@ -187,7 +187,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                     <Ticket className="size-4 text-primary" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Voucher</h2>
+                                    <h2 className="text-lg font-semibold tracking-tight">Create Voucher</h2>
                                     <p className="text-sm text-muted-foreground">
                                         Step {step} of {STEPS.length}: {STEPS[step - 1].description}
                                     </p>
@@ -293,7 +293,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex size-8 shrink-0 items-center justify-center rounded-sm",
+                                                "flex size-8 shrink-0 items-center justify-center rounded-md",
                                                 scope === "entire_order" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
                                                 <ShoppingCart className="size-4" />
@@ -315,7 +315,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex size-8 shrink-0 items-center justify-center rounded-sm",
+                                                "flex size-8 shrink-0 items-center justify-center rounded-md",
                                                 scope === "specific_products" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
                                                 <Ticket className="size-4" />

@@ -24,7 +24,7 @@ export const AnimatedCheckbox = forwardRef<HTMLButtonElement, AnimatedCheckboxPr
       <motion.div
         className={cn(
           "flex items-center justify-center",
-          "h-4 w-4 rounded-sm border",
+          "size-4 rounded-sm border",
           "transition-colors duration-150",
           checked
             ? "bg-primary border-primary"

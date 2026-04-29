@@ -534,7 +534,7 @@ export function ChartSkeleton({
 
           {type === "pie" && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Skeleton className="h-48 w-48 rounded-full" />
+              <Skeleton className="size-48 rounded-full" />
             </div>
           )}
 

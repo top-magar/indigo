@@ -104,17 +104,17 @@ export function AttributeValuesCard({
                                         <div className="shrink-0">
                                             {value.swatchColor ? (
                                                 <div
-                                                    className="size-8 rounded-sm border"
+                                                    className="size-8 rounded-md border"
                                                     style={{ backgroundColor: value.swatchColor }}
                                                 />
                                             ) : value.swatchImage ? (
                                                 <img
                                                     src={value.swatchImage}
                                                     alt={value.name}
-                                                    className="size-8 rounded-sm object-cover"
+                                                    className="size-8 rounded-md object-cover"
                                                 />
                                             ) : (
-                                                <div className="size-8 rounded-sm border bg-muted" />
+                                                <div className="size-8 rounded-md border bg-muted" />
                                             )}
                                         </div>
                                     )}

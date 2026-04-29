@@ -22,7 +22,7 @@ export function QuickActions() {
               <div className={`size-8 rounded-lg ${a.color} flex items-center justify-center mb-3`}>
                 <a.icon className="size-4" />
               </div>
-              <p className="text-sm font-medium tracking-[-0.28px]">{a.label}</p>
+              <p className="text-sm font-medium tracking-tight">{a.label}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{a.desc}</p>
             </Card>
           </CardSpotlight>

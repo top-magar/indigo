@@ -216,7 +216,7 @@ function CelebrationOverlay() {
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-success rounded-full animate-ping"
+              className="absolute size-2 bg-success rounded-full animate-ping"
               style={{
                 transform: `rotate(${i * 45}deg) translateY(-20px)`,
                 animationDelay: `${i * 0.1}s`,
@@ -281,7 +281,7 @@ export function InlineOnboardingProgress({
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <div className="relative h-2 w-24 bg-muted rounded-full overflow-hidden">
+      <div className="relative size-24 bg-muted rounded-full overflow-hidden">
         <div
           className={cn(
             "absolute inset-y-0 left-0 rounded-full transition-colors duration-500",

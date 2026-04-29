@@ -382,7 +382,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 <div className="space-y-3">
                                     <Label>Collection Image</Label>
                                     <div className="flex items-start gap-4">
-                                        <div className="h-32 w-32 rounded-lg border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
+                                        <div className="size-32 rounded-lg border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
                                             {imageUrl ? (
                                                 <div className="relative w-full h-full group">
                                                     <Image

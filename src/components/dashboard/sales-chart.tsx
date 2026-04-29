@@ -27,7 +27,7 @@ function CustomTooltip({ active, payload, label, currency }: { active?: boolean;
           <div key={index} className="flex items-center justify-between gap-4 text-xs">
             <div className="flex items-center gap-2">
               <div
-                className="w-2 h-2 rounded-full"
+                className="size-2 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-muted-foreground">
@@ -51,7 +51,7 @@ export function SalesChart({ data, currency }: SalesChartProps) {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
+            <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
               Revenue Overview
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -61,7 +61,7 @@ export function SalesChart({ data, currency }: SalesChartProps) {
           <Button variant="ghost" asChild>
             <Link href="/dashboard/analytics" className="text-muted-foreground hover:text-foreground">
               View Details
-              <ArrowRight className="w-4 h-4 ml-1" />
+              <ArrowRight className="size-4 ml-1" />
             </Link>
           </Button>
         </div>

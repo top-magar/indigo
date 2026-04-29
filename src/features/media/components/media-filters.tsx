@@ -425,7 +425,7 @@ export function MediaFilterChips({
         <Badge
           key={chip.key}
           variant="outline"
-          className="h-5 gap-1 pr-1 text-[10px] font-normal rounded-sm border-border bg-muted text-muted-foreground"
+          className="h-5 gap-1 pr-1 text-[10px] font-normal rounded-md border-border bg-muted text-muted-foreground"
           role="listitem"
         >
           {chip.label}

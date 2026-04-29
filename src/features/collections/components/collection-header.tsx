@@ -42,7 +42,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 </Button>
                 <div>
                     <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-semibold tracking-tight">
+                        <h1 className="text-lg font-semibold tracking-tight">
                             {collection.name}
                         </h1>
                         <Button

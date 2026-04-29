@@ -159,7 +159,7 @@ export function ChartToolbar({
       {/* Time Range Selector */}
       <Select value={timeRange} onValueChange={handleTimeRangeChange}>
         <SelectTrigger className="w-[160px]" aria-label="Filter by select range">
-          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+          <CalendarIcon className="size-4 text-muted-foreground" />
           <SelectValue placeholder="Select range">{currentRangeLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -169,7 +169,7 @@ export function ChartToolbar({
                 <span>{option.label}</span>
                 {timeRange === option.value && (
                   <Check
-                    className="w-4 h-4 text-primary ml-2"
+                    className="size-4 text-primary ml-2"
                   />
                 )}
               </div>
@@ -258,7 +258,7 @@ export function ChartToolbar({
           onClick={handleComparisonToggle}
           className="gap-1.5"
         >
-          <GitCompare className="w-4 h-4" />
+          <GitCompare className="size-4" />
           <span className="hidden sm:inline">Compare</span>
         </Button>
       )}
@@ -274,13 +274,13 @@ export function ChartToolbar({
               variant="ghost"
               size="icon-sm" aria-label={option.label}
               className={cn(
-                "rounded-sm",
+                "rounded-md",
                 chartType === option.value && "bg-background shadow-sm"
               )}
               onClick={() => onChartTypeChange(option.value)}
               title={option.label}
             >
-              <option.icon className="w-4 h-4" />
+              <option.icon className="size-4" />
             </Button>
           ))}
         </div>
@@ -293,7 +293,7 @@ export function ChartToolbar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-1.5">
-              <Download className="w-4 h-4" />
+              <Download className="size-4" />
               <span className="hidden sm:inline">Export</span>
             </Button>
           </DropdownMenuTrigger>
@@ -325,7 +325,7 @@ export function ChartToolbar({
           title="Refresh data"
         >
           <RefreshCw
-            className={cn("w-4 h-4", isRefreshing && "animate-spin")}
+            className={cn("size-4", isRefreshing && "animate-spin")}
           />
         </Button>
       )}

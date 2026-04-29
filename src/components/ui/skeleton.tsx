@@ -38,9 +38,9 @@ export function SkeletonText({ className, lines = 1 }: { className?: string; lin
 
 export function SkeletonAvatar({ className, size = "md" }: { className?: string; size?: "sm" | "md" | "lg" }) {
   const sizeClasses = {
-    sm: "h-8 w-8",
-    md: "h-10 w-10",
-    lg: "h-12 w-12",
+    sm: "size-8",
+    md: "size-10",
+    lg: "size-12",
   };
 
   return <Skeleton className={cn("rounded-full", sizeClasses[size], className)} />;
@@ -104,7 +104,7 @@ export function SkeletonStats({ count = 4 }: { count?: number }) {
               <Skeleton className="h-8 w-16" />
               <Skeleton className="h-3 w-24" />
             </div>
-            <Skeleton className="h-10 w-10 rounded-2xl" />
+            <Skeleton className="size-10 rounded-2xl" />
           </div>
         </div>
       ))}

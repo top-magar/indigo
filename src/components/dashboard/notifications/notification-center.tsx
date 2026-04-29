@@ -194,9 +194,9 @@ export function NotificationCenter({
             </Badge>
           )}
           {hasNewNotification && !hasUnread && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+            <span className="absolute -top-0.5 -right-0.5 flex size-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+              <span className="relative inline-flex rounded-full size-2 bg-primary" />
             </span>
           )}
         </Button>
@@ -205,7 +205,7 @@ export function NotificationCenter({
       <PopoverContent align="end" className="w-[calc(100vw-2rem)] sm:w-[380px] p-0" sideOffset={8}>
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold tracking-[-0.28px]">Notifications</h2>
+            <h2 className="text-sm font-semibold tracking-tight">Notifications</h2>
             {hasUnread && (
               <Badge variant="secondary" className="text-[10px] tabular-nums">
                 {unreadCount} new

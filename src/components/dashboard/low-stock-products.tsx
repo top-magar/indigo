@@ -45,7 +45,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
       <CardHeader className="py-3">
         <div className="flex items-center gap-2">
           <AlertTriangle className="size-4 text-warning" />
-          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-warning">
+          <CardTitle className="text-sm font-semibold tracking-tight text-warning">
             Low Stock Alert
           </CardTitle>
           <Badge

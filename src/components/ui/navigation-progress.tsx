@@ -118,7 +118,7 @@ export function NavigationProgress({
     >
       <div
         className={cn(
-          "h-full transition-all duration-300 ease-out",
+          "h-full transition-[width] duration-300 ease-out",
           progress === 100 && "opacity-0"
         )}
         style={{

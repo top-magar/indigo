@@ -1,7 +1,6 @@
 "use client";
 
 import { memo, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
   CheckCircle2,
@@ -81,13 +80,8 @@ export const UploadPanel = memo(function UploadPanel() {
   if (files.length === 0) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)]"
+    <div
+        className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] animate-in fade-in slide-in-from-bottom-2 duration-200"
       >
         <div className="bg-background border rounded-lg overflow-hidden">
           {/* Header */}
@@ -104,12 +98,9 @@ export const UploadPanel = memo(function UploadPanel() {
               stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-destructive/15" : "bg-success/15"
             )}>
               {stats.isUploading ? (
-                <motion.div
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                >
+                <div className="animate-bounce">
                   <UploadCloud className="size-4.5 text-primary" />
-                </motion.div>
+                </div>
               ) : stats.errorCount > 0 ? (
                 <AlertCircle className="size-4.5 text-destructive" />
               ) : (
@@ -197,33 +188,24 @@ export const UploadPanel = memo(function UploadPanel() {
           {/* Overall Progress Bar */}
           {stats.isUploading && (
             <div className="h-1 bg-muted">
-              <motion.div
-                className="h-full bg-primary"
+              <div
+                className="h-full bg-primary transition-[width] duration-300 ease-out"
                 style={{ width: `${stats.overallProgress}%` }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
               />
             </div>
           )}
 
           {/* File List */}
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="overflow-hidden"
+          {isExpanded && (
+              <div
+                className="overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200"
               >
                 <div className="max-h-64 overflow-auto">
-                  {files.map((upload, index) => (
-                    <motion.div
+                  {files.map((upload) => (
+                    <div
                       key={upload.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
                       className={cn(
-                        "flex items-center gap-3 px-4 py-2.5 border-t transition-colors",
+                        "flex items-center gap-3 px-4 py-2.5 border-t transition-colors animate-in fade-in slide-in-from-left-1 duration-200",
                         upload.status === "error" && "bg-destructive/10",
                         upload.status === "complete" && "bg-success/10"
                       )}
@@ -272,10 +254,9 @@ export const UploadPanel = memo(function UploadPanel() {
                         </div>
                         {(upload.status === "uploading" || upload.status === "pending") && (
                           <div className="mt-1.5 h-1 bg-muted rounded-full overflow-hidden">
-                            <motion.div
-                              className="h-full bg-primary rounded-full"
+                            <div
+                              className="h-full bg-primary rounded-full transition-[width] duration-300 ease-out"
                               style={{ width: `${upload.progress}%` }}
-                              transition={{ duration: 0.3, ease: "easeOut" }}
                             />
                           </div>
                         )}
@@ -335,14 +316,12 @@ export const UploadPanel = memo(function UploadPanel() {
                           </Tooltip>
                         )}
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
         </div>
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 });

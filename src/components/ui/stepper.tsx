@@ -214,16 +214,16 @@ function StepperIndicator({
         children
       ) : (
         <>
-          <span className="transition-all group-data-[state=completed]/step:scale-0 group-data-loading/step:scale-0 group-data-[state=completed]/step:opacity-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none">
+          <span className="transition-colors group-data-[state=completed]/step:scale-0 group-data-loading/step:scale-0 group-data-[state=completed]/step:opacity-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none">
             {step}
           </span>
           <Check
             aria-hidden="true"
-            className="absolute scale-0 opacity-0 transition-all group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100"
+            className="absolute scale-0 opacity-0 transition-colors group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100"
             size={16}
           />
           {isLoading && (
-            <span className="absolute transition-all">
+            <span className="absolute transition-colors">
               <Loader2
                 aria-hidden="true"
                 className="animate-spin"

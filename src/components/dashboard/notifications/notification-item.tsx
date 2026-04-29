@@ -181,9 +181,9 @@ export function NotificationItem({
       {/* Unread indicator */}
       {!notification.read && (
         <div className="absolute top-3 right-3">
-          <span className="flex h-2 w-2">
+          <span className="flex size-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-info opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-info" />
+            <span className="relative inline-flex rounded-full size-2 bg-info" />
           </span>
         </div>
       )}

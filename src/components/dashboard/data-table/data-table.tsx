@@ -363,7 +363,7 @@ export function DataTable<TData>({
                     <SelectItem key={opt.value} value={opt.value}>
                       <span className="flex items-center gap-2">
                         {opt.color && (
-                          <span className={cn("h-2 w-2 rounded-full", opt.color)} />
+                          <span className={cn("size-2 rounded-full", opt.color)} />
                         )}
                         {opt.label}
                         {opt.count !== undefined && (

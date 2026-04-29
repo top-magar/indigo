@@ -145,11 +145,11 @@ export function EditValueDialog({ attribute, value, open, onOpenChange }: EditVa
                                         <img
                                             src={swatchImage}
                                             alt="Swatch preview"
-                                            className="w-12 h-12 rounded-sm object-cover border"
+                                            className="size-12 rounded-md object-cover border"
                                         />
                                     ) : (
                                         <div
-                                            className="w-12 h-12 rounded-sm border"
+                                            className="size-12 rounded-md border"
                                             style={{ backgroundColor: swatchColor }}
                                         />
                                     )}

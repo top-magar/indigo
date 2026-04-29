@@ -71,7 +71,7 @@ export function MediaSection({
                                 <>
                                     <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/40 transition-colors" />
                                     <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <GripVertical className="size-4 text-white" aria-hidden="true" />
+                                        <GripVertical className="size-4 text-primary-foreground" aria-hidden="true" />
                                     </div>
                                     {index === 0 && (
                                         <Badge className="absolute top-2 right-10 bg-primary text-primary-foreground text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">

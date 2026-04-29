@@ -64,7 +64,7 @@ export function SettingsSidebar() {
       <nav className="hidden md:block w-52 shrink-0 space-y-5 sticky top-20">
         {sections.map((section) => (
           <div key={section.label}>
-            <p className="text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/60 mb-1.5 px-2">
+            <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/60 mb-1.5 px-2">
               {section.label}
             </p>
             <div className="space-y-0.5">

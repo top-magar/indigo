@@ -41,7 +41,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
     const color = avatarColors[(userEmail?.charCodeAt(0) ?? 0) % avatarColors.length];
 
     const avatar = (
-        <div className={cn("relative flex shrink-0 items-center justify-center rounded-full text-white font-medium text-xs size-8 overflow-hidden", color)}>
+        <div className={cn("relative flex shrink-0 items-center justify-center rounded-full text-primary-foreground font-medium text-xs size-8 overflow-hidden", color)}>
             {userAvatarUrl ? <Image src={userAvatarUrl} alt={name} fill sizes="32px" className="object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );
@@ -114,7 +114,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
                                 key={value}
                                 onClick={() => setTheme(value)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center h-7 rounded-md transition-all text-xs gap-1",
+                                    "flex-1 flex items-center justify-center h-7 rounded-md transition-colors text-xs gap-1",
                                     theme === value
                                         ? "bg-accent text-accent-foreground shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"

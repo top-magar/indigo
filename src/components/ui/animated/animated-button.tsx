@@ -122,7 +122,7 @@ export const AnimatedIconButton = forwardRef<HTMLButtonElement, AnimatedIconButt
         ref={ref}
         className={cn(
           "inline-flex items-center justify-center",
-          "h-9 w-9 rounded-md",
+          "size-9 rounded-md",
           "text-muted-foreground",
           "hover:bg-accent hover:text-accent-foreground",
           "focus-visible:outline-none focus-visible:ring-2",

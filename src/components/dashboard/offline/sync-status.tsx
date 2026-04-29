@@ -62,7 +62,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
     <div className={cn("flex flex-col", className)}>
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold tracking-[-0.28px]">Sync Status</h2>
+          <h2 className="text-sm font-semibold tracking-tight">Sync Status</h2>
           <StatusBadge isOnline={isOnline} isSyncing={isSyncing} />
         </div>
         {lastSyncAt && (

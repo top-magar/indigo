@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp,
   TrendingDown,
@@ -164,18 +163,14 @@ export function ForecastInsights({
             </p>
           </div>
         ) : (
-          <AnimatePresence mode="popLayout">
-            {displayedInsights.map((insight, index) => {
+          <>
+            {displayedInsights.map((insight) => {
               const Icon = typeIcons[insight.type];
               return (
-                <motion.div
+                <div
                   key={insight.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ delay: index * 0.05 }}
                   className={cn(
-                    'rounded-lg border p-3',
+                    'animate-in fade-in slide-in-from-bottom-1 duration-200 rounded-lg border p-3',
                     priorityColors[insight.priority]
                   )}
                 >
@@ -232,10 +227,10 @@ export function ForecastInsights({
                       ×
                     </Button>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </AnimatePresence>
+          </>
         )}
 
         {insights.length > maxInsights && (

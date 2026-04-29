@@ -124,7 +124,7 @@ export function MobileBottomNav({
                                     <item.icon
                                         strokeWidth={active ? 2 : 1.5}
                                         className={cn(
-                                            "w-6 h-6 transition-colors",
+                                            "size-6 transition-colors",
                                             active && "text-primary"
                                         )}
                                     />
@@ -149,7 +149,7 @@ export function MobileBottomNav({
                                 </span>
                                 {/* Active indicator */}
                                 {active && (
-                                    <div className="absolute bottom-1 w-1 h-1 rounded-full bg-primary" />
+                                    <div className="absolute bottom-1 size-1 rounded-full bg-primary" />
                                 )}
                             </Link>
                         );
@@ -172,7 +172,7 @@ export function MobileBottomNav({
                             <Menu
                                 strokeWidth={isMoreActive ? 2 : 1.5}
                                 className={cn(
-                                    "w-6 h-6 transition-colors",
+                                    "size-6 transition-colors",
                                     isMoreActive && "text-primary"
                                 )}
                             />
@@ -197,7 +197,7 @@ export function MobileBottomNav({
                             More
                         </span>
                         {isMoreActive && (
-                            <div className="absolute bottom-1 w-1 h-1 rounded-full bg-primary" />
+                            <div className="absolute bottom-1 size-1 rounded-full bg-primary" />
                         )}
                     </button>
                 </div>

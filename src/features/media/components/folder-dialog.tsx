@@ -52,7 +52,7 @@ export const FolderDialog = memo(function FolderDialog({
             <DialogDescription className="flex items-center gap-2 pt-1">
               <span className="text-muted-foreground">Location:</span>
               <span className={cn(
-                "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-xs font-medium",
+                "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium",
                 "bg-muted text-foreground"
               )}>
                 {isRoot ? (

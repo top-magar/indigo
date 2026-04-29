@@ -113,7 +113,7 @@ export default function AnalyticsLoading() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex justify-center mb-4">
-                            <Skeleton className="h-40 w-40 rounded-full" />
+                            <Skeleton className="size-40 rounded-full" />
                         </div>
                         <div className="space-y-3">
                             {Array.from({ length: 4 }).map((_, i) => (

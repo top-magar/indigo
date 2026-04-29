@@ -1,7 +1,6 @@
 "use client";
 
 import { memo, useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   FolderPlus,
   Image,
@@ -84,12 +83,7 @@ function FolderItem({
   const isDragOver = dragOverFolderId === folder.id && !isActive;
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.2 }}
-    >
+    <div className="animate-in fade-in slide-in-from-left-1 duration-200">
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <div className="flex items-center">
@@ -106,17 +100,12 @@ function FolderItem({
                       setIsOpen(!isOpen);
                     }}
                   >
-                    <motion.div
-                      animate={{ rotate: isOpen ? 90 : 0 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                    >
-                      <ChevronRight className="size-3.5 text-muted-foreground" />
-                    </motion.div>
+                    <ChevronRight className={cn("size-3.5 text-muted-foreground transition-transform duration-200", isOpen && "rotate-90")} />
                   </button>
                 </CollapsibleTrigger>
               </Collapsible>
             )}
-            <motion.button
+            <button
               onClick={() => onFolderClick(folder.id)}
               onDragOver={(e) => onFolderDragOver(e, folder.id)}
               onDragLeave={(e) => {
@@ -124,11 +113,6 @@ function FolderItem({
                 e.stopPropagation();
               }}
               onDrop={(e) => onFolderDrop(e, folder.id)}
-              animate={{
-                scale: isDragOver ? 1.02 : 1,
-                y: isDragOver ? -2 : 0,
-              }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
               className={cn(
                 "flex-1 text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
                 "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -140,14 +124,8 @@ function FolderItem({
               )}
               style={{ paddingLeft: hasChildren ? undefined : `${depth * 12 + 12}px` }}
             >
-              {/* Animated folder icon */}
-              <motion.div
-                animate={{
-                  scale: isDragOver ? 1.2 : 1,
-                  rotate: isDragOver ? -5 : 0,
-                }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
+              {/* Folder icon */}
+              <div className="transition-transform duration-200">
                 {isDragOver ? (
                   <FolderOpen
                     className={cn(
@@ -165,27 +143,21 @@ function FolderItem({
                     )}
                   />
                 )}
-              </motion.div>
+              </div>
               <span className="truncate flex-1">{folder.name}</span>
               
               {/* Drop indicator badge */}
-              <AnimatePresence>
-                {isDragOver && (
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary text-primary-foreground"
+              {isDragOver && (
+                  <span
+                    className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary text-primary-foreground animate-in fade-in zoom-in-95 duration-150"
                   >
                     Drop
-                  </motion.span>
-                )}
-              </AnimatePresence>
+                  </span>
+              )}
               
               {folder.assetCount !== undefined && folder.assetCount > 0 && !isDragOver && (
                 <span className={cn(
-                  "text-xs tabular-nums px-2 py-0.5 rounded-sm",
+                  "text-xs tabular-nums px-2 py-0.5 rounded-md",
                   isActive
                     ? "bg-primary/20 text-primary"
                     : "bg-muted text-muted-foreground group-hover:bg-border"
@@ -193,7 +165,7 @@ function FolderItem({
                   {folder.assetCount}
                 </span>
               )}
-            </motion.button>
+            </button>
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent>
@@ -211,15 +183,10 @@ function FolderItem({
         </ContextMenuContent>
       </ContextMenu>
 
-      {/* Child folders with animation */}
-      <AnimatePresence>
-        {hasChildren && isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="ml-3 border-l border-border/50 pl-1 mt-0.5 space-y-0.5 overflow-hidden"
+      {/* Child folders */}
+      {hasChildren && isOpen && (
+          <div
+            className="ml-3 border-l border-border/50 pl-1 mt-0.5 space-y-0.5 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200"
           >
             {childFolders.map((child) => (
               <FolderItem
@@ -236,10 +203,9 @@ function FolderItem({
                 onDeleteFolder={onDeleteFolder}
               />
             ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+          </div>
+      )}
+    </div>
   );
 }
 
@@ -337,8 +303,8 @@ export const FolderSidebar = memo(function FolderSidebar({
         </div>
 
         <div className="flex-1 overflow-auto p-3 space-y-1">
-          {/* All Files with drag animation */}
-          <motion.button
+          {/* All Files */}
+          <button
             onClick={() => handleFolderClick(null)}
             onDragOver={(e) => onFolderDragOver(e, null)}
             onDragLeave={(e) => {
@@ -346,11 +312,6 @@ export const FolderSidebar = memo(function FolderSidebar({
               e.stopPropagation();
             }}
             onDrop={(e) => onFolderDrop(e, null)}
-            animate={{
-              scale: dragOverFolderId === null && currentFolderId !== null ? 1.02 : 1,
-              y: dragOverFolderId === null && currentFolderId !== null ? -2 : 0,
-            }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
             className={cn(
               "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -360,34 +321,23 @@ export const FolderSidebar = memo(function FolderSidebar({
               dragOverFolderId === null && currentFolderId !== null && "bg-primary/15 ring-2 ring-primary/40"
             )}
           >
-            <motion.div
-              animate={{
-                scale: dragOverFolderId === null && currentFolderId !== null ? 1.2 : 1,
-              }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-            >
+            <div>
               <Image className="size-4 shrink-0" />
-            </motion.div>
+            </div>
             <span className="flex-1">All Files</span>
             
             {/* Drop indicator for All Files */}
-            <AnimatePresence>
-              {dragOverFolderId === null && currentFolderId !== null && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.15 }}
-                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary text-primary-foreground"
+            {dragOverFolderId === null && currentFolderId !== null && (
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary text-primary-foreground animate-in fade-in zoom-in-95 duration-150"
                 >
                   Drop
-                </motion.span>
-              )}
-            </AnimatePresence>
+                </span>
+            )}
             
             {totalAssetCount > 0 && !(dragOverFolderId === null && currentFolderId !== null) && (
               <span className={cn(
-                "text-xs tabular-nums px-2 py-0.5 rounded-sm",
+                "text-xs tabular-nums px-2 py-0.5 rounded-md",
                 currentFolderId === null
                   ? "bg-primary/20 text-primary"
                   : "bg-muted text-muted-foreground group-hover:bg-border"
@@ -395,7 +345,7 @@ export const FolderSidebar = memo(function FolderSidebar({
                 {totalAssetCount}
               </span>
             )}
-          </motion.button>
+          </button>
 
           {/* Folders section */}
           {folders.length > 0 && (

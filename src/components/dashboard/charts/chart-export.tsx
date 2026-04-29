@@ -262,9 +262,9 @@ export function ChartExport({
           {trigger || (
             <Button variant="outline" className={className} disabled={isExporting}>
               {isExporting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Download className="w-4 h-4" />
+                <Download className="size-4" />
               )}
               <span className="ml-1.5 hidden sm:inline">Export</span>
             </Button>
@@ -273,34 +273,34 @@ export function ChartExport({
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>Export Chart</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.PNG)}>
-            <Image className="w-4 h-4" />
+            <Image className="size-4" />
             Export as PNG
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.SVG)}>
-            <FileText className="w-4 h-4" />
+            <FileText className="size-4" />
             Export as SVG
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Export Data</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.CSV)}>
-            <File className="w-4 h-4" />
+            <File className="size-4" />
             Export as CSV
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.JSON)}>
-            <FileText className="w-4 h-4" />
+            <FileText className="size-4" />
             Export as JSON
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleCopy}>
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
             {copied ? "Copied!" : "Copy to clipboard"}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleExportWithFilename(ExportFormat.PNG)}>
-            <Download className="w-4 h-4" />
+            <Download className="size-4" />
             Export with custom name...
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -342,7 +342,7 @@ export function ChartExport({
             >
               {isExporting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Exporting...
                 </>
               ) : (

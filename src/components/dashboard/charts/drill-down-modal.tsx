@@ -115,12 +115,12 @@ function DrillDownBreadcrumb({ levels, currentLevel, onNavigate }: BreadcrumbPro
         className="h-7 px-2 shrink-0"
         onClick={() => onNavigate(0)}
       >
-        <Home className="w-4 h-4" />
+        <Home className="size-4" />
       </Button>
       {levels.slice(0, currentLevel + 1).map((level, index) => (
         <div key={level.id} className="flex items-center gap-1 shrink-0">
           <ChevronRight
-            className="w-3 h-3 text-muted-foreground"
+            className="size-3 text-muted-foreground"
           />
           <Button
             variant={index === currentLevel ? "secondary" : "ghost"}
@@ -312,7 +312,7 @@ function DrillDownDataTable({ data, onRowClick, formatValue }: DataTableProps) {
                 <TableCell>
                   {hasChildren && (
                     <ChevronRight
-                      className="w-4 h-4 text-muted-foreground"
+                      className="size-4 text-muted-foreground"
                     />
                   )}
                 </TableCell>
@@ -386,7 +386,7 @@ export function DrillDownModal({
                 onClick={onNavigateUp}
                 className="shrink-0"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="size-4" />
               </Button>
             )}
             <span>{currentLevelData.name} Breakdown</span>
@@ -437,11 +437,11 @@ export function DrillDownModal({
         <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "chart" | "table")}>
           <TabsList>
             <TabsTrigger value="chart" className="gap-1.5">
-              <LineChartIcon className="w-4 h-4" />
+              <LineChartIcon className="size-4" />
               Chart
             </TabsTrigger>
             <TabsTrigger value="table" className="gap-1.5">
-              <TableIcon className="w-4 h-4" />
+              <TableIcon className="size-4" />
               Table
             </TabsTrigger>
           </TabsList>

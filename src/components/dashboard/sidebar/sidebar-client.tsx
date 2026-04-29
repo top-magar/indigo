@@ -75,7 +75,7 @@ export function SidebarClient({
             {section.label && !isCollapsed && (
               <>
                 {idx > 0 && <Separator className="mb-2 -mx-2 w-[calc(100%+1rem)]" />}
-                <SidebarGroupLabel className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-[0.08em] px-2 mb-0.5 h-6">
+                <SidebarGroupLabel className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wide px-2 mb-0.5 h-6">
                   {section.label}
                 </SidebarGroupLabel>
               </>

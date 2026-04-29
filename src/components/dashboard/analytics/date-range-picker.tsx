@@ -78,7 +78,7 @@ export function DateRangePicker({
   if (isFreeTier) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border bg-muted text-muted-foreground">
-        <CalendarIcon className="w-4 h-4" />
+        <CalendarIcon className="size-4" />
         <span className="text-sm">Last 7 days</span>
       </div>
     );

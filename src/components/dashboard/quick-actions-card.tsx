@@ -40,7 +40,7 @@ export function QuickActionsCard({ storeSlug }: QuickActionsCardProps) {
   return (
     <Card>
       <CardHeader className="py-4">
-        <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
+        <CardTitle className="text-sm font-semibold tracking-tight text-foreground">
           Quick Actions
         </CardTitle>
       </CardHeader>

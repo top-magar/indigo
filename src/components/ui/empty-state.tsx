@@ -54,7 +54,7 @@ export function EmptyState({
             "text-muted-foreground",
             size === "sm" && "size-5",
             size === "md" && "size-6",
-            size === "lg" && "w-8 h-8"
+            size === "lg" && "size-8"
           )}
         />
       </div>
@@ -128,8 +128,8 @@ export function NoResults({
         className
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-        <Search className="h-6 w-6 text-muted-foreground" />
+      <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+        <Search className="size-6 text-muted-foreground" />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-center">
         <p className="text-sm font-medium">{title}</p>
@@ -172,8 +172,8 @@ export function NoRecords({
       )}
     >
       <div className="flex flex-col items-center gap-y-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full border bg-background">
-          <Icon className="h-5 w-5 text-muted-foreground" />
+        <div className="flex size-11 items-center justify-center rounded-full border bg-background">
+          <Icon className="size-5 text-muted-foreground" />
         </div>
         <div className="flex flex-col items-center gap-y-1 text-center">
           <p className="text-sm font-medium">{title}</p>

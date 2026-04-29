@@ -75,7 +75,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
                     !isCompleted && !isActive && "bg-muted text-muted-foreground"
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="size-5" />
                 </div>
                 <span
                   className={cn(

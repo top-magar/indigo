@@ -11,9 +11,9 @@ interface AnimatedToggleProps extends Omit<ComponentPropsWithoutRef<"button">, "
 }
 
 const sizes = {
-  sm: { track: "w-8 h-4", thumb: "h-3 w-3", translate: 16 },
-  md: { track: "w-11 h-6", thumb: "h-5 w-5", translate: 20 },
-  lg: { track: "w-14 h-7", thumb: "h-6 w-6", translate: 28 },
+  sm: { track: "w-8 h-4", thumb: "size-3", translate: 16 },
+  md: { track: "w-11 h-6", thumb: "size-5", translate: 20 },
+  lg: { track: "w-14 h-7", thumb: "size-6", translate: 28 },
 }
 
 export const AnimatedToggle = forwardRef<HTMLButtonElement, AnimatedToggleProps>(

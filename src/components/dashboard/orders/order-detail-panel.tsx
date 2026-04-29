@@ -240,7 +240,7 @@ export function OrderDetailPanel({
         <SheetHeader className="px-[26px] pt-[26px] pb-[13px] border-b shrink-0">
           <div className="flex items-start justify-between pr-8">
             <div>
-              <SheetTitle className="text-sm font-semibold tracking-[-0.28px]">
+              <SheetTitle className="text-sm font-semibold tracking-tight">
                 Order #{order.orderNumber}
               </SheetTitle>
               <SheetDescription className="mt-1">

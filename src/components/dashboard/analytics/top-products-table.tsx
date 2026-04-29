@@ -109,7 +109,7 @@ export function TopProductsTable({
                                     </p>
                                     <Progress
                                         value={product.revenueShare}
-                                        className="h-1 w-16"
+                                        className="size-16"
                                     />
                                     <span className="text-xs text-muted-foreground">
                                         {product.revenueShare.toFixed(1)}%

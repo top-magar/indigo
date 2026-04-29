@@ -64,12 +64,12 @@ export function OfflineFallback({
     >
       <div className="relative mb-6">
         <div className="absolute inset-0 bg-destructive/10 rounded-full blur-xl" />
-        <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10">
+        <div className="relative flex items-center justify-center size-16 rounded-full bg-destructive/10">
           <WifiOff className="size-8 text-destructive" />
         </div>
       </div>
 
-      <h2 className="text-sm font-semibold tracking-[-0.28px] mb-2">{title}</h2>
+      <h2 className="text-sm font-semibold tracking-tight mb-2">{title}</h2>
       <p className="text-sm text-muted-foreground max-w-md mb-6">
         {description}
       </p>

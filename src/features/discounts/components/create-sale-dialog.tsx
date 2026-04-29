@@ -140,7 +140,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     <Tag className="size-4 text-success" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Sale</h2>
+                                    <h2 className="text-lg font-semibold tracking-tight">Create Sale</h2>
                                     <p className="text-sm text-muted-foreground">
                                         Step {step} of {STEPS.length}: {STEPS[step - 1].description}
                                     </p>
@@ -233,7 +233,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="rounded-lg bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
-                                    <p className="text-2xl font-semibold tracking-tight text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
+                                    <p className="text-lg font-semibold tracking-tight text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
                             </div>
                         )}
@@ -250,7 +250,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                             {selectedType ? <selectedType.icon className="size-5 text-success" /> : <Percent className="size-5 text-success" />}
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-semibold tracking-tight text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
+                                            <p className="text-lg font-semibold tracking-tight text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
                                             <p className="text-sm text-muted-foreground">{selectedType?.label}</p>
                                         </div>
                                     </div>
