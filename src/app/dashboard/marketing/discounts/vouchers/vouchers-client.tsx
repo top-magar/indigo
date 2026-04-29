@@ -57,6 +57,7 @@ import { toast } from "sonner";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface VouchersClientProps {
     initialVouchers: Discount[];
@@ -84,14 +85,16 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
         return matchesSearch && matchesStatus && matchesType;
     }), [vouchers, searchQuery, statusFilter, typeFilter]);
 
-    const pageCount = Math.ceil(filteredVouchers.length / pageSize);
-    const paginatedVouchers = filteredVouchers.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    const { sorted: sortedVouchers, sort, dir, handleSort } = useClientSort(filteredVouchers);
+
+    const pageCount = Math.ceil(sortedVouchers.length / pageSize);
+    const paginatedVouchers = sortedVouchers.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
-        if (selectedIds.length === filteredVouchers.length) {
+        if (selectedIds.length === sortedVouchers.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(filteredVouchers.map((v) => v.id));
+            setSelectedIds(sortedVouchers.map((v) => v.id));
         }
     };
 
@@ -251,20 +254,20 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                         <TableRow>
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedIds.length === filteredVouchers.length && filteredVouchers.length > 0}
+                                    checked={selectedIds.length === sortedVouchers.length && sortedVouchers.length > 0}
                                     onCheckedChange={toggleSelectAll}
                                 />
                             </TableHead>
-                            <TableHead>Voucher</TableHead>
+                            <TableHead><SortableHeader label="Voucher" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead>Discount</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Usage</TableHead>
-                            <TableHead>Valid Period</TableHead>
+                            <TableHead><SortableHeader label="Usage" column="usedCount" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead><SortableHeader label="Valid Period" column="createdAt" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredVouchers.length === 0 ? (
+                        {sortedVouchers.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={7}>
                                     <EmptyState icon={Percent} title="No vouchers found" description="Try adjusting your search or filters." size="sm" />
@@ -351,7 +354,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
 
             {/* Mobile cards */}
             <div className="md:hidden space-y-2">
-                {filteredVouchers.length === 0 ? (
+                {sortedVouchers.length === 0 ? (
                     <EmptyState icon={Percent} title="No vouchers found" description="Try adjusting your search or filters." size="sm" />
                 ) : (
                     paginatedVouchers.map((voucher) => {
@@ -394,12 +397,12 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
             </div>
             </div>
 
-            {filteredVouchers.length > 0 && (
+            {sortedVouchers.length > 0 && (
                 <DataTablePagination
                     pageIndex={pageIndex}
                     pageSize={pageSize}
                     pageCount={pageCount}
-                    totalItems={filteredVouchers.length}
+                    totalItems={sortedVouchers.length}
                     onPageChange={setPageIndex}
                     onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
                 />

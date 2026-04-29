@@ -55,6 +55,7 @@ import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { EntityListPage } from "@/components/dashboard/templates";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface SalesClientProps {
     initialSales: Discount[];
@@ -80,14 +81,16 @@ export function SalesClient({ initialSales }: SalesClientProps) {
         return matchesSearch && matchesStatus;
     }), [sales, searchQuery, statusFilter]);
 
-    const pageCount = Math.ceil(filteredSales.length / pageSize);
-    const paginatedSales = filteredSales.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    const { sorted: sortedSales, sort, dir, handleSort } = useClientSort(filteredSales);
+
+    const pageCount = Math.ceil(sortedSales.length / pageSize);
+    const paginatedSales = sortedSales.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
-        if (selectedIds.length === filteredSales.length) {
+        if (selectedIds.length === sortedSales.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(filteredSales.map((s) => s.id));
+            setSelectedIds(sortedSales.map((s) => s.id));
         }
     };
 
@@ -245,20 +248,20 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         <TableRow>
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedIds.length === filteredSales.length && filteredSales.length > 0}
+                                    checked={selectedIds.length === sortedSales.length && sortedSales.length > 0}
                                     onCheckedChange={toggleSelectAll}
                                 />
                             </TableHead>
-                            <TableHead>Sale</TableHead>
+                            <TableHead><SortableHeader label="Sale" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead>Discount</TableHead>
                             <TableHead>Products</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Valid Period</TableHead>
+                            <TableHead><SortableHeader label="Valid Period" column="createdAt" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredSales.length === 0 ? (
+                        {sortedSales.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={7}>
                                     <EmptyState icon={Percent} title="No sales found" description="Try adjusting your search or filters." size="sm" />
@@ -359,7 +362,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
 
             {/* Mobile cards */}
             <div className="md:hidden space-y-2">
-                {filteredSales.length === 0 ? (
+                {sortedSales.length === 0 ? (
                     <EmptyState icon={Percent} title="No sales found" description="Try adjusting your search or filters." size="sm" />
                 ) : (
                     paginatedSales.map((sale) => {
@@ -404,12 +407,12 @@ export function SalesClient({ initialSales }: SalesClientProps) {
             </div>
             </div>
 
-            {filteredSales.length > 0 && (
+            {sortedSales.length > 0 && (
                 <DataTablePagination
                     pageIndex={pageIndex}
                     pageSize={pageSize}
                     pageCount={pageCount}
-                    totalItems={filteredSales.length}
+                    totalItems={sortedSales.length}
                     onPageChange={setPageIndex}
                     onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
                 />

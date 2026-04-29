@@ -25,6 +25,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency, cn } from "@/shared/utils";
 import { type GiftCard, type GiftCardStats, createGiftCard, toggleGiftCardStatus } from "./actions";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 type StatusFilter = "all" | "active" | "inactive" | "depleted";
 
@@ -85,8 +86,10 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
         return result;
     }, [cards, search, statusFilter]);
 
-    const pageCount = Math.ceil(filtered.length / pageSize);
-    const paged = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    const { sorted, sort, dir, handleSort } = useClientSort(filtered);
+
+    const pageCount = Math.ceil(sorted.length / pageSize);
+    const paged = sorted.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     // Reset to first page when filters change
     function handleSearchChange(value: string) {
@@ -208,7 +211,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
 
             {/* Table */}
             <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
-                    {filtered.length === 0 ? (
+                    {sorted.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-8">
                             {cards.length === 0
                                 ? 'No gift cards issued yet. Click "Issue gift card" to create one.'
@@ -220,9 +223,9 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Code</TableHead>
+                                    <TableHead><SortableHeader label="Code" column="code" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                                     <TableHead>Recipient</TableHead>
-                                    <TableHead>Balance</TableHead>
+                                    <TableHead><SortableHeader label="Balance" column="current_balance" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
@@ -320,12 +323,12 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             </div>
 
             {/* Pagination */}
-            {filtered.length > 0 && (
+            {sorted.length > 0 && (
                 <DataTablePagination
                     pageIndex={pageIndex}
                     pageSize={pageSize}
                     pageCount={pageCount}
-                    totalItems={filtered.length}
+                    totalItems={sorted.length}
                     onPageChange={setPageIndex}
                     onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
                 />

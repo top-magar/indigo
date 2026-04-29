@@ -79,6 +79,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { EntityListPage } from "@/components/dashboard/templates";
 import type { InventoryProduct, StockMovement } from "./types";
 import { StockLevelIndicator, StockBadge } from "./_components/helpers";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface Category {
     id: string;
@@ -156,12 +157,14 @@ export function InventoryClient({
         setLocalProducts(products);
     }, [products]);
 
+    const { sorted: sortedProducts, sort, dir, handleSort } = useClientSort(localProducts);
+
     // Handle bulk selection
     const toggleSelectAll = () => {
-        if (selectedProducts.size === localProducts.length) {
+        if (selectedProducts.size === sortedProducts.length) {
             setSelectedProducts(new Set());
         } else {
-            setSelectedProducts(new Set(localProducts.map(p => p.id)));
+            setSelectedProducts(new Set(sortedProducts.map(p => p.id)));
         }
     };
 
@@ -380,7 +383,7 @@ export function InventoryClient({
 
             {/* Mobile Cards */}
             <div className="md:hidden space-y-3">
-                {localProducts.length === 0 ? (
+                {sortedProducts.length === 0 ? (
                     <EmptyState
                         icon={Package}
                         title={filters.search || filters.stock || filters.category
@@ -398,7 +401,7 @@ export function InventoryClient({
                         }}
                     />
                 ) : (
-                    localProducts.map((product) => (
+                    sortedProducts.map((product) => (
                         <Card key={product.id}>
                             <CardContent className="flex items-center justify-between gap-4 p-4">
                                 <div className="min-w-0 space-y-1">
@@ -435,22 +438,22 @@ export function InventoryClient({
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedProducts.size === localProducts.length && localProducts.length > 0}
+                                    checked={selectedProducts.size === sortedProducts.length && sortedProducts.length > 0}
                                     onCheckedChange={toggleSelectAll}
                                     aria-label="Select all"
                                 />
                             </TableHead>
                             <TableHead className="w-14"></TableHead>
-                            <TableHead>Product</TableHead>
-                            <TableHead className="hidden lg:table-cell">SKU</TableHead>
-                            <TableHead className="text-center">Stock</TableHead>
+                            <TableHead><SortableHeader label="Product" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="hidden lg:table-cell"><SortableHeader label="SKU" column="sku" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="text-center"><SortableHeader label="Stock" column="quantity" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="hidden md:table-cell">Level</TableHead>
                             <TableHead className="hidden lg:table-cell text-right">Value</TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {localProducts.length === 0 ? (
+                        {sortedProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
                                     <EmptyState
@@ -472,7 +475,7 @@ export function InventoryClient({
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            localProducts.map((product) => {
+                            sortedProducts.map((product) => {
                                 const isSelected = selectedProducts.has(product.id);
                                 const hasImage = product.images && product.images.length > 0;
                                 const stockValue = product.quantity * (product.cost_price || product.price);

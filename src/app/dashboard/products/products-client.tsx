@@ -111,6 +111,7 @@ interface ProductsClientProps {
 
 import { ProductStatusBadge } from "@/components/dashboard/status-badge";
 import { StockBadge } from "./_components/helpers";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 export interface ProductsListViewProps {
     products: ProductRow[];
@@ -296,6 +297,8 @@ export function ProductsListView({
     importDialogOpen,
     onImportDialogChange,
 }: ProductsListViewProps) {
+
+    const { sorted: sortedProducts, sort, dir, handleSort } = useClientSort(products);
 
     // Filter options for inline selects
     const statusOptions: DataTableFilterOption[] = useMemo(() => [
@@ -535,16 +538,16 @@ export function ProductsListView({
                                 />
                             </TableHead>
                             <TableHead className="w-16 hidden sm:table-cell"></TableHead>
-                            <TableHead className="whitespace-nowrap">Product</TableHead>
+                            <TableHead className="whitespace-nowrap"><SortableHeader label="Product" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="hidden lg:table-cell whitespace-nowrap">Category</TableHead>
-                            <TableHead className="whitespace-nowrap">Status</TableHead>
-                            <TableHead className="hidden md:table-cell whitespace-nowrap">Stock</TableHead>
-                            <TableHead className="text-right whitespace-nowrap">Price</TableHead>
+                            <TableHead className="whitespace-nowrap"><SortableHeader label="Status" column="status" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="hidden md:table-cell whitespace-nowrap"><SortableHeader label="Stock" column="quantity" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="text-right whitespace-nowrap"><SortableHeader label="Price" column="price" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {products.length === 0 ? (
+                        {sortedProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
                                     <EmptyState
@@ -569,7 +572,7 @@ export function ProductsListView({
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            products.map((product) => {
+                            sortedProducts.map((product) => {
                                 const isSelected = bulkActions.isSelected(product.id);
                                 const hasImage = product.images?.length > 0 && product.images[0]?.url;
 
@@ -692,7 +695,7 @@ export function ProductsListView({
 
             {/* Mobile cards */}
             <div className="md:hidden space-y-2">
-              {products.length === 0 ? (
+              {sortedProducts.length === 0 ? (
                 <EmptyState
                   icon={Package}
                   title={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
@@ -710,7 +713,7 @@ export function ProductsListView({
                   }}
                 />
               ) : (
-                products.map((product) => {
+                sortedProducts.map((product) => {
                   return (
                     <div
                       key={product.id}

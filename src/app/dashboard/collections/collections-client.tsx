@@ -56,6 +56,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
 import type { Collection } from "@/infrastructure/supabase/types";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 function CollectionStatusBadge({ isActive }: { isActive: boolean }) {
     const config = isActive
@@ -88,9 +89,11 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
         c.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const { sorted: sortedCollections, sort, dir, handleSort } = useClientSort(filteredCollections);
+
     // Pagination
-    const pageCount = Math.ceil(filteredCollections.length / pageSize);
-    const paginatedCollections = filteredCollections.slice(
+    const pageCount = Math.ceil(sortedCollections.length / pageSize);
+    const paginatedCollections = sortedCollections.slice(
         pageIndex * pageSize,
         (pageIndex + 1) * pageSize
     );
@@ -101,10 +104,10 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
 
     // Selection helpers
     const toggleAll = () => {
-        if (selectedIds.size === filteredCollections.length && filteredCollections.length > 0) {
+        if (selectedIds.size === sortedCollections.length && sortedCollections.length > 0) {
             setSelectedIds(new Set());
         } else {
-            setSelectedIds(new Set(filteredCollections.map(c => c.id)));
+            setSelectedIds(new Set(sortedCollections.map(c => c.id)));
         }
     };
 
@@ -310,14 +313,14 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedIds.size === filteredCollections.length && filteredCollections.length > 0}
+                                    checked={selectedIds.size === sortedCollections.length && sortedCollections.length > 0}
                                     onCheckedChange={toggleAll}
                                     aria-label="Select all"
                                 />
                             </TableHead>
                             <TableHead className="w-12"></TableHead>
-                            <TableHead>Collection</TableHead>
-                            <TableHead className="hidden md:table-cell">Products</TableHead>
+                            <TableHead><SortableHeader label="Collection" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="hidden md:table-cell"><SortableHeader label="Products" column="products_count" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="hidden md:table-cell">Type</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="w-12"></TableHead>
@@ -538,12 +541,12 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             )}
 
             {/* Pagination */}
-            {filteredCollections.length > 0 && (
+            {sortedCollections.length > 0 && (
                 <DataTablePagination
                     pageIndex={pageIndex}
                     pageSize={pageSize}
                     pageCount={pageCount}
-                    totalItems={filteredCollections.length}
+                    totalItems={sortedCollections.length}
                     onPageChange={setPageIndex}
                     onPageSizeChange={(size) => {
                         setPageSize(size);

@@ -19,6 +19,7 @@ import { DataTablePagination } from '@/components/dashboard/data-table/paginatio
 import { formatRelativeTime, cn } from '@/shared/utils';
 import type { SentimentStats, ReviewWithProduct } from '@/features/reviews/repositories/reviews';
 import { approveReview, rejectReview, deleteReview, bulkApproveReviews, reanalyzeReview } from './actions';
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface ReviewsClientProps {
   initialReviews: ReviewWithProduct[];
@@ -124,8 +125,10 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
     return true;
   });
 
-  const pageCount = Math.ceil(filtered.length / pageSize);
-  const paginated = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+  const { sorted: sortedReviews, sort, dir, handleSort } = useClientSort(filtered);
+
+  const pageCount = Math.ceil(sortedReviews.length / pageSize);
+  const paginated = sortedReviews.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
   const setF = <T,>(setter: (v: T) => void) => (v: T) => { setter(v); setPageIndex(0); };
 
   return (
@@ -181,10 +184,10 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                   <TableHead><Checkbox checked={selectedIds.size === paginated.length && paginated.length > 0} onCheckedChange={() => selectedIds.size === paginated.length ? setSelectedIds(new Set()) : setSelectedIds(new Set(paginated.map((r) => r.id)))} aria-label="Select all" /></TableHead>
                   <TableHead>Review</TableHead>
                   <TableHead>Product</TableHead>
-                  <TableHead>Rating</TableHead>
+                  <TableHead><SortableHeader label="Rating" column="rating" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                   <TableHead>Sentiment</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead><SortableHeader label="Date" column="createdAt" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
               </TableHeader>
@@ -261,8 +264,8 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
       )}
 
       {/* Pagination */}
-      {filtered.length > 0 && (
-        <DataTablePagination pageIndex={pageIndex} pageSize={pageSize} pageCount={pageCount} totalItems={filtered.length} onPageChange={setPageIndex} onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }} selectedCount={selectedIds.size} />
+      {sortedReviews.length > 0 && (
+        <DataTablePagination pageIndex={pageIndex} pageSize={pageSize} pageCount={pageCount} totalItems={sortedReviews.length} onPageChange={setPageIndex} onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }} selectedCount={selectedIds.size} />
       )}
     </div>
   );

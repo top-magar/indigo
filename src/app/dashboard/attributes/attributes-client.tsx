@@ -54,6 +54,7 @@ import { CreateAttributeDialog } from "@/features/attributes/components";
 import { bulkDeleteAttributes } from "./attribute-actions";
 import { INPUT_TYPE_CONFIG } from "./types";
 import type { AttributeListItem, AttributeStats } from "./types";
+import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface AttributesClientProps {
     attributes: AttributeListItem[];
@@ -99,14 +100,16 @@ export function AttributesClient({
     const [pageIndex, setPageIndex] = useState(0);
     const [pageSize, setPageSize] = useState(20);
 
-    const pageCount = Math.ceil(attributes.length / pageSize);
-    const paginatedAttributes = attributes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
+    const { sorted: sortedAttributes, sort, dir, handleSort } = useClientSort(attributes);
+
+    const pageCount = Math.ceil(sortedAttributes.length / pageSize);
+    const paginatedAttributes = sortedAttributes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
-        if (selectedIds.size === attributes.length) {
+        if (selectedIds.size === sortedAttributes.length) {
             setSelectedIds(new Set());
         } else {
-            setSelectedIds(new Set(attributes.map(a => a.id)));
+            setSelectedIds(new Set(sortedAttributes.map(a => a.id)));
         }
     };
 
@@ -231,16 +234,16 @@ export function AttributesClient({
                                     <TableRow className="hover:bg-transparent">
                                         <TableHead className="w-12">
                                             <Checkbox
-                                                checked={selectedIds.size === attributes.length && attributes.length > 0}
+                                                checked={selectedIds.size === sortedAttributes.length && sortedAttributes.length > 0}
                                                 onCheckedChange={toggleSelectAll}
                                                 aria-label="Select all"
                                             />
                                         </TableHead>
-                                        <TableHead>Attribute</TableHead>
+                                        <TableHead><SortableHeader label="Attribute" column="name" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                                         <TableHead>Type</TableHead>
                                         <TableHead className="text-center">Values</TableHead>
                                         <TableHead className="hidden md:table-cell">Storefront</TableHead>
-                                        <TableHead className="hidden lg:table-cell">Created</TableHead>
+                                        <TableHead className="hidden lg:table-cell"><SortableHeader label="Created" column="createdAt" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                                         <TableHead className="w-12"></TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -383,12 +386,12 @@ export function AttributesClient({
                             </>
                         )}
                 </div>
-                {attributes.length > 0 && (
+                {sortedAttributes.length > 0 && (
                     <DataTablePagination
                         pageIndex={pageIndex}
                         pageSize={pageSize}
                         pageCount={pageCount}
-                        totalItems={attributes.length}
+                        totalItems={sortedAttributes.length}
                         onPageChange={setPageIndex}
                         onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
                         selectedCount={selectedIds.size}
