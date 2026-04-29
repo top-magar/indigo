@@ -57,11 +57,11 @@ export function UpgradeDialog({ plan, currentPlanName }: { plan: Plan; currentPl
           <div className="space-y-4">
             {/* Cycle selector */}
             <div className="flex rounded-md border overflow-hidden">
-              <button onClick={() => setCycle("monthly")} className={`flex-1 px-3 py-2 text-xs transition-colors ${cycle === "monthly" ? "bg-foreground text-background" : "hover:bg-muted"}`}>
+              <button type="button" onClick={() => setCycle("monthly")} className={`flex-1 px-3 py-2 text-xs transition-colors ${cycle === "monthly" ? "bg-foreground text-background" : "hover:bg-muted"}`}>
                 Monthly — {formatCurrency(Number(plan.priceMonthly), "NPR")}/mo cap
               </button>
               {plan.priceYearly && Number(plan.priceYearly) > 0 && (
-                <button onClick={() => setCycle("yearly")} className={`flex-1 px-3 py-2 text-xs transition-colors ${cycle === "yearly" ? "bg-foreground text-background" : "hover:bg-muted"}`}>
+                <button type="button" onClick={() => setCycle("yearly")} className={`flex-1 px-3 py-2 text-xs transition-colors ${cycle === "yearly" ? "bg-foreground text-background" : "hover:bg-muted"}`}>
                   Yearly — {formatCurrency(Number(plan.priceYearly), "NPR")}/yr (save 17%)
                 </button>
               )}

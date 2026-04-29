@@ -171,7 +171,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                     onClick={() => addProduct(p)}
                                                 >
                                                     {p.images?.[0] ? (
-                                                        <Image src={typeof p.images![0] === 'string' ? p.images![0] : p.images![0].url} alt="" width={32} height={32} className="size-8 rounded object-cover" />
+                                                        <Image src={typeof p.images![0] === 'string' ? p.images![0] : p.images![0].url} alt={p.name} width={32} height={32} className="size-8 rounded object-cover" />
                                                     ) : (
                                                         <div className="size-8 rounded bg-muted" />
                                                     )}
@@ -200,7 +200,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                     {lines.map((line) => (
                                         <div key={line.key} className="flex items-center gap-3 rounded-md border p-3">
                                             {line.productImage ? (
-                                                <Image src={line.productImage} alt="" width={40} height={40} className="size-10 rounded object-cover" />
+                                                <Image src={line.productImage} alt={line.productName} width={40} height={40} className="size-10 rounded object-cover" />
                                             ) : (
                                                 <div className="size-9 rounded-md bg-muted" />
                                             )}

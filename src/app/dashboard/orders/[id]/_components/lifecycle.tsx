@@ -198,7 +198,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
                 {fLines.map(line => (
                   <div key={line.id} className="flex items-center gap-3">
                     {line.productImage ? (
-                      <Image src={line.productImage} alt="" width={36} height={36} className="size-9 rounded-md object-cover border" />
+                      <Image src={line.productImage} alt={line.productName} width={36} height={36} className="size-9 rounded-md object-cover border" />
                     ) : (
                       <div className="size-9 rounded-md bg-muted flex items-center justify-center">
                         <Package className="size-4 text-muted-foreground" />
@@ -257,7 +257,7 @@ export function FulfillmentCard({ fulfillments, lines, currency, orderId }: {
             {unfulfilledLines.map(line => (
               <div key={line.id} className="flex items-center gap-3">
                 {line.productImage ? (
-                  <Image src={line.productImage} alt="" width={36} height={36} className="size-9 rounded-md object-cover border" />
+                  <Image src={line.productImage} alt={line.productName} width={36} height={36} className="size-9 rounded-md object-cover border" />
                 ) : (
                   <div className="size-9 rounded-md bg-muted flex items-center justify-center">
                     <Package className="size-4 text-muted-foreground" />

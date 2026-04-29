@@ -218,7 +218,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                 {/* Add rate shortcut */}
                 {zone.rates.length === 0 && (
                   <div className="border-t px-4 py-3 ml-[52px]">
-                    <button onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                    <button type="button" onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                       + Add a shipping rate
                     </button>
                   </div>
