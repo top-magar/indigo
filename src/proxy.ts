@@ -36,6 +36,18 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(storeUrl);
   }
 
+  // Tenant subdomain routing — e.g., mystore.indigo.com.np → /store/mystore
+  if (hostname.endsWith(`.${platformDomain}`) && hostname !== platformDomain) {
+    const subdomain = hostname.replace(`.${platformDomain}`, "");
+    // Skip platform subdomains (www, api, admin, etc.)
+    const reserved = ["www", "api", "admin", "app", "dashboard", "mail", "smtp", "ftp"];
+    if (!reserved.includes(subdomain)) {
+      const storeUrl = request.nextUrl.clone();
+      storeUrl.pathname = `/store/${subdomain}${pathname === "/" ? "" : pathname}`;
+      return NextResponse.rewrite(storeUrl);
+    }
+  }
+
   // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
     PUBLIC_ROUTES.some((r) => pathname === r) ||
