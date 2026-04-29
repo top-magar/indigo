@@ -26,7 +26,7 @@ const typeConfig: Record<TransactionType, { icon: LucideIcon; label: string; col
     authorization: { icon: Clock, label: "Authorization", color: "text-info" },
     charge: { icon: ChevronDown, label: "Charge", color: "text-success" },
     capture: { icon: ChevronDown, label: "Capture", color: "text-success" },
-    refund: { icon: ChevronUp, label: "Refund", color: "text-ds-blue-700" },
+    refund: { icon: ChevronUp, label: "Refund", color: "text-info" },
     void: { icon: X, label: "Void", color: "text-muted-foreground" },
     chargeback: { icon: X, label: "Chargeback", color: "text-destructive" },
 };
@@ -90,7 +90,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                         </div>
                         <div className="text-center">
                             <p className="text-xs text-muted-foreground">Refunded</p>
-                            <p className="font-semibold text-ds-blue-700">
+                            <p className="font-semibold text-info">
                                 {formatCurrency(totalRefunded, order.currency)}
                             </p>
                         </div>
@@ -160,7 +160,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
                     </p>
                 </div>
             </div>
-            <span className={cn("font-semibold", transaction.type === "refund" ? "text-ds-blue-700" : "")}>
+            <span className={cn("font-semibold", transaction.type === "refund" ? "text-info" : "")}>
                 {transaction.type === "refund" ? "-" : ""}
                 {new Intl.NumberFormat("en-US", {
                     style: "currency",

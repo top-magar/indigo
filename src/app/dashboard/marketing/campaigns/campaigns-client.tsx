@@ -737,7 +737,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <p className="text-xs text-muted-foreground">Click Rate</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <TrendingUp className="size-4 mx-auto mb-2 text-ds-teal-700" />
+                                    <TrendingUp className="size-4 mx-auto mb-2 text-shipping" />
                                     <p className="text-lg font-semibold tabular-nums">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>

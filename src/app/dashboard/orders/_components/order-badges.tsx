@@ -9,8 +9,8 @@ export const STATUS_CONFIG: Record<string, {
 }> = {
   pending: { label: "Pending", className: "bg-warning/10 text-warning border-warning/20", icon: Clock },
   confirmed: { label: "Confirmed", className: "bg-info/10 text-info border-info/20", icon: CheckCircle2 },
-  processing: { label: "Processing", className: "bg-ds-blue-700/10 text-ds-blue-700 border-ds-blue-700/20", icon: Package },
-  shipped: { label: "Shipped", className: "bg-ds-teal-700/10 text-ds-teal-700 border-ds-teal-700/20", icon: Truck },
+  processing: { label: "Processing", className: "bg-info/10 text-info border-info/20", icon: Package },
+  shipped: { label: "Shipped", className: "bg-shipping/10 text-shipping border-shipping/20", icon: Truck },
   delivered: { label: "Delivered", className: "bg-success/10 text-success border-success/20", icon: PackageCheck },
   completed: { label: "Completed", className: "bg-success/10 text-success border-success/20", icon: CheckCircle2 },
   cancelled: { label: "Cancelled", className: "bg-destructive/10 text-destructive border-destructive/20", icon: XCircle },
@@ -48,7 +48,7 @@ const FULFILLMENT_CONFIG: Record<string, { label: string; className: string }> =
   unfulfilled: { label: "Unfulfilled", className: "bg-warning/10 text-warning" },
   partially_fulfilled: { label: "Partial", className: "bg-info/10 text-info" },
   fulfilled: { label: "Fulfilled", className: "bg-success/10 text-success" },
-  shipped: { label: "Shipped", className: "bg-ds-teal-700/10 text-ds-teal-700" },
+  shipped: { label: "Shipped", className: "bg-shipping/10 text-shipping" },
   delivered: { label: "Delivered", className: "bg-success/10 text-success" },
 }
 

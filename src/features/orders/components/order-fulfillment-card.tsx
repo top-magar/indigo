@@ -36,7 +36,7 @@ interface OrderFulfillmentCardProps {
 const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Package; label: string }> = {
     pending: { color: "text-warning", bgColor: "bg-warning/10", icon: Package, label: "Pending" },
     approved: { color: "text-info", bgColor: "bg-info/10", icon: CheckCircle, label: "Approved" },
-    shipped: { color: "text-ds-teal-700", bgColor: "bg-ds-teal-700/10", icon: Truck, label: "Shipped" },
+    shipped: { color: "text-shipping", bgColor: "bg-shipping/10", icon: Truck, label: "Shipped" },
     delivered: { color: "text-success", bgColor: "bg-success/10", icon: CheckCircle, label: "Delivered" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", icon: XCircle, label: "Cancelled" },
 };

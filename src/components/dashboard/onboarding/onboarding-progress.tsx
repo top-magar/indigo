@@ -235,7 +235,7 @@ function ConfettiParticle({ index }: { index: number }) {
   const colors = [
     "bg-primary",
     "bg-success",
-    "bg-ds-teal-700",
+    "bg-shipping",
     "bg-warning",
     "bg-info",
     "bg-primary",

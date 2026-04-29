@@ -48,6 +48,8 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-shipping: var(--shipping);
+  --color-shipping-foreground: var(--shipping-foreground);
 
   /* White Opacity Scale (inspired by Wedges) */
   --color-white-50: rgba(255, 255, 255, 0.05);
@@ -386,8 +388,8 @@
   --warning-foreground: var(--ds-gray-900);
   --info: var(--ds-blue-700);
   --info-foreground: hsl(0 0% 100%);
-
-  /* Core Tokens — wired to Geist scales */
+  --shipping: var(--ds-teal-700);
+  --shipping-foreground: hsl(0 0% 100%);
   --background: var(--ds-background-100);
   --foreground: var(--ds-gray-1000);
   --card: var(--ds-background-100);
@@ -556,6 +558,8 @@
   --warning-foreground: var(--ds-gray-1000);
   --info: var(--ds-blue-700);
   --info-foreground: var(--ds-gray-1000);
+  --shipping: var(--ds-teal-700);
+  --shipping-foreground: var(--ds-gray-1000);
 
   /* Core Tokens */
   --background: var(--ds-background-100);

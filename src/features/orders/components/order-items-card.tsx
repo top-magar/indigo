@@ -149,7 +149,7 @@ function OrderLineRow({
                         className={cn(
                             "font-medium",
                             isFullyFulfilled && "text-success",
-                            isPartiallyFulfilled && "text-ds-blue-700",
+                            isPartiallyFulfilled && "text-info",
                             !isFullyFulfilled && !isPartiallyFulfilled && "text-muted-foreground"
                         )}
                     >
