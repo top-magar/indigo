@@ -224,6 +224,8 @@ export function AttributesClient({
                                 className="py-16"
                             />
                         ) : (
+                            <>
+                            <div className="hidden md:block">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="hover:bg-transparent">
@@ -326,6 +328,59 @@ export function AttributesClient({
                                     })}
                                 </TableBody>
                             </Table>
+                            </div>
+
+                            {/* Mobile cards */}
+                            <div className="md:hidden space-y-2 p-2">
+                                {paginatedAttributes.map((attribute) => {
+                                    const config = INPUT_TYPE_CONFIG[attribute.inputType];
+                                    const Icon = inputTypeIcons[attribute.inputType] || Type;
+                                    return (
+                                        <div
+                                            key={attribute.id}
+                                            className="rounded-lg border p-3 space-y-2 cursor-pointer"
+                                            onClick={() => router.push(`/dashboard/attributes/${attribute.id}`)}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Checkbox
+                                                    checked={selectedIds.has(attribute.id)}
+                                                    onCheckedChange={() => toggleSelect(attribute.id)}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium truncate">{attribute.name}</p>
+                                                </div>
+                                                <div onClick={(e) => e.stopPropagation()}>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end" className="w-48">
+                                                            <DropdownMenuItem asChild>
+                                                                <Link href={`/dashboard/attributes/${attribute.id}`}><Eye className="size-3.5" />View Details</Link>
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Icon className="size-3.5" />
+                                                    <span>{config.label}</span>
+                                                </div>
+                                                {config.hasValues && <Badge variant="secondary" className="text-[10px]">{attribute.valuesCount} values</Badge>}
+                                            </div>
+                                            {(attribute.visibleInStorefront || attribute.filterableInStorefront) && (
+                                                <div className="flex items-center gap-1.5">
+                                                    {attribute.visibleInStorefront && <Badge variant="outline" className="text-[10px]">Visible</Badge>}
+                                                    {attribute.filterableInStorefront && <Badge variant="outline" className="text-[10px]">Filterable</Badge>}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            </>
                         )}
                 </div>
                 {attributes.length > 0 && (

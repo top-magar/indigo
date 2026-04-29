@@ -215,6 +215,8 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                 : "No gift cards match your filters."}
                         </p>
                     ) : (
+                        <>
+                        <div className="hidden md:block">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -276,6 +278,44 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                 ))}
                             </TableBody>
                         </Table>
+                        </div>
+
+                        {/* Mobile cards */}
+                        <div className="md:hidden space-y-2 p-2">
+                            {paged.map((card) => (
+                                <div key={card.id} className="rounded-lg border p-3 space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <code className="text-sm font-mono font-medium">{card.code}</code>
+                                        <div className="flex items-center gap-1">
+                                            <GiftCardStatusBadge status={getCardStatus(card)} />
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem onClick={() => copyCode(card.code)}><Copy className="size-3.5" />Copy code</DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem onClick={() => handleToggle(card)} disabled={isPending} className={card.is_active ? "text-destructive" : ""}>
+                                                        {card.is_active ? <ToggleLeft className="size-3.5" /> : <ToggleRight className="size-3.5" />}
+                                                        {card.is_active ? "Deactivate" : "Activate"}
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </div>
+                                    {(card.customer_name || card.customer_email) && (
+                                        <p className="text-xs text-muted-foreground truncate">{card.customer_name || card.customer_email}</p>
+                                    )}
+                                    <div className="flex items-center justify-between text-xs">
+                                        <span className="font-medium">{formatCurrency(card.current_balance, currency)}</span>
+                                        {card.current_balance < card.initial_balance && (
+                                            <span className="text-muted-foreground">of {formatCurrency(card.initial_balance, currency)}</span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        </>
                     )}
             </div>
 

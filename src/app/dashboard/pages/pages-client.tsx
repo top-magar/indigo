@@ -135,18 +135,21 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
 
       {/* Page list */}
       <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
-        {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-2 border-b bg-muted/30 text-xs font-medium text-muted-foreground">
+        {/* Header - desktop */}
+        <div className="hidden sm:flex items-center gap-3 px-4 py-2 border-b bg-muted/30 text-xs font-medium text-muted-foreground">
           <span className="flex-1">Page</span>
-          <span className="w-20 text-center hidden sm:block">Status</span>
-          <span className="w-16 text-right hidden sm:block">Views</span>
+          <span className="w-20 text-center">Status</span>
+          <span className="w-16 text-right">Views</span>
           <span className="w-8" />
         </div>
 
         {filtered.length === 0 ? (
           <EmptyState icon={Globe} title={query ? "No pages match your search" : "No pages yet"} description={query ? "Try adjusting your search." : "Create your first page to get started."} size="sm" />
         ) : (
-          paginated.map(page => (
+          <>
+          {/* Desktop list */}
+          <div className="hidden sm:block">
+          {paginated.map(page => (
             <div key={page.id} className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0 hover:bg-accent/50 transition-colors group">
               {/* Icon */}
               <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
@@ -183,7 +186,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
               </div>
 
               {/* Status */}
-              <div className="w-20 text-center hidden sm:block">
+              <div className="w-20 text-center">
                 {page.published ? (
                   <Badge variant="outline" className="text-[10px] text-success border-success/30">Published</Badge>
                 ) : (
@@ -192,7 +195,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
               </div>
 
               {/* Views */}
-              <div className="w-16 text-right hidden sm:block">
+              <div className="w-16 text-right">
                 <span className="text-xs text-muted-foreground tabular-nums">
                   {page.views ? page.views.toLocaleString() : "—"}
                 </span>
@@ -248,7 +251,72 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          ))
+          ))}
+          </div>
+
+          {/* Mobile cards */}
+          <div className="sm:hidden space-y-2 p-2">
+            {paginated.map(page => (
+              <div key={page.id} className="rounded-lg border p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="size-7 rounded-md bg-muted flex items-center justify-center shrink-0">
+                    {page.isHomepage ? <Home className="size-3 text-success" /> : <FileText className="size-3 text-muted-foreground" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{page.name}</p>
+                    <p className="text-xs text-muted-foreground">/{page.slug}</p>
+                  </div>
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link href={`/editor?project=${site.id}&page=${page.id}`} target="_blank"><Pencil className="size-3.5" /> Edit in Editor</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => { setTimeout(() => startRename(page), 150); }}>
+                        <Type className="size-3.5" /> Rename
+                      </DropdownMenuItem>
+                      {page.published && tenantSlug && (
+                        <DropdownMenuItem asChild>
+                          <a href={`/store/${tenantSlug}/${page.isHomepage ? "" : page.slug}`} target="_blank" rel="noopener noreferrer"><Globe className="size-3.5" /> View Live</a>
+                        </DropdownMenuItem>
+                      )}
+                      {!page.isHomepage && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={e => e.preventDefault()}><Trash2 className="size-3.5" /> Delete</DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete "{page.name}"?</AlertDialogTitle>
+                                <AlertDialogDescription>This will permanently delete this page and its content. This cannot be undone.</AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => handleDelete(page)}>Delete</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  {page.published ? (
+                    <Badge variant="outline" className="text-[10px] text-success border-success/30">Published</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-[10px] text-muted-foreground">Draft</Badge>
+                  )}
+                  <span className="tabular-nums">{page.views ? `${page.views.toLocaleString()} views` : "—"}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          </>
         )}
       </div>
 

@@ -304,6 +304,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
         >
             {/* Collections Table */}
             <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
+            <div className="hidden md:block">
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -458,6 +459,60 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-2">
+                {paginatedCollections.length === 0 ? (
+                    <EmptyState
+                        icon={FolderOpen}
+                        title={searchQuery ? "No collections match your search" : "No collections yet"}
+                        description={searchQuery ? "Try adjusting your search" : "Create your first collection to organize products"}
+                        action={!searchQuery ? { label: "Create Collection", onClick: handleCreate } : undefined}
+                    />
+                ) : (
+                    paginatedCollections.map((collection) => (
+                        <div
+                            key={collection.id}
+                            className="rounded-lg border p-3 space-y-2 cursor-pointer"
+                            onClick={() => router.push(`/dashboard/collections/${collection.id}`)}
+                        >
+                            <div className="flex items-center gap-2">
+                                <Checkbox
+                                    checked={selectedIds.has(collection.id)}
+                                    onCheckedChange={() => toggleRow(collection.id)}
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium truncate">{collection.name}</p>
+                                </div>
+                                <CollectionStatusBadge isActive={collection.is_active} />
+                                <div onClick={(e) => e.stopPropagation()}>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem onClick={() => router.push(`/dashboard/collections/${collection.id}`)}><Pencil className="size-3.5" />Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleToggleStatus(collection)}>
+                                                {collection.is_active ? <><X className="size-3.5" />Deactivate</> : <><CheckCircle className="size-3.5" />Activate</>}
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => { setCollectionToDelete(collection); setDeleteDialogOpen(true); }}>
+                                                <Trash2 className="size-3.5" />Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                <span>{collection.products_count || 0} product{(collection.products_count || 0) !== 1 ? "s" : ""}</span>
+                                <Badge variant="secondary" className="capitalize text-[10px]">{collection.type}</Badge>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
             </div>
 
             {/* Bulk Actions */}

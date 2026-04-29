@@ -238,7 +238,8 @@ export function SalesClient({ initialSales }: SalesClientProps) {
             )}
 
             {/* Table */}
-            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity border rounded-lg")}>
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
+            <div className="hidden md:block border rounded-lg">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -354,6 +355,53 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-2">
+                {filteredSales.length === 0 ? (
+                    <EmptyState icon={Percent} title="No sales found" description="Try adjusting your search or filters." size="sm" />
+                ) : (
+                    paginatedSales.map((sale) => {
+                        const status = getDiscountStatus(sale);
+                        const counts = getAssignmentCount(sale);
+                        const totalAssigned = counts.products + counts.collections + counts.categories;
+                        return (
+                            <div key={sale.id} className="rounded-lg border p-3 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Checkbox
+                                        checked={selectedIds.includes(sale.id)}
+                                        onCheckedChange={() => toggleSelect(sale.id)}
+                                    />
+                                    <Link href={`/dashboard/marketing/discounts/sales/${sale.id}`} className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate">{sale.name}</p>
+                                    </Link>
+                                    <Badge variant={getStatusBadgeVariant(status)} className="shrink-0">{getStatusLabel(status)}</Badge>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem asChild>
+                                                <Link href={`/dashboard/marketing/discounts/sales/${sale.id}`}><Edit className="size-3.5" />Edit</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleDuplicate(sale.id)}><Copy className="size-3.5" />Duplicate</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleToggleStatus(sale.id, !sale.isActive)}>{sale.isActive ? "Deactivate" : "Activate"}</DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="text-destructive" onClick={() => setDeleteTarget(sale.id)}><Trash2 className="size-3.5" />Delete</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                    <span className="font-medium text-foreground">{formatDiscountValueWithLabel(sale.type, parseFloat(sale.value))}</span>
+                                    <span>{totalAssigned > 0 ? `${totalAssigned} item${totalAssigned !== 1 ? "s" : ""}` : "No products"}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">{formatDateRange(sale.startsAt, sale.endsAt)}</p>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
             </div>
 
             {filteredSales.length > 0 && (

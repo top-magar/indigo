@@ -244,7 +244,8 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 ) : undefined
             }
         >
-            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity border rounded-lg")}>
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
+            <div className="hidden md:block border rounded-lg">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -346,6 +347,51 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-2">
+                {filteredVouchers.length === 0 ? (
+                    <EmptyState icon={Percent} title="No vouchers found" description="Try adjusting your search or filters." size="sm" />
+                ) : (
+                    paginatedVouchers.map((voucher) => {
+                        const status = getDiscountStatus(voucher);
+                        return (
+                            <div key={voucher.id} className="rounded-lg border p-3 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Checkbox
+                                        checked={selectedIds.includes(voucher.id)}
+                                        onCheckedChange={() => toggleSelect(voucher.id)}
+                                    />
+                                    <Link href={`/dashboard/marketing/discounts/vouchers/${voucher.id}`} className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate">{voucher.name}</p>
+                                    </Link>
+                                    <Badge variant={getStatusBadgeVariant(status)} className="shrink-0">{getStatusLabel(status)}</Badge>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon-sm" aria-label="More actions"><MoreHorizontal className="size-4" /></Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem asChild>
+                                                <Link href={`/dashboard/marketing/discounts/vouchers/${voucher.id}`}><Edit className="size-3.5" />Edit</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleDuplicate(voucher.id)}><Copy className="size-3.5" />Duplicate</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleToggleStatus(voucher.id, !voucher.isActive)}>{voucher.isActive ? "Deactivate" : "Activate"}</DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="text-destructive" onClick={() => setDeleteTarget(voucher.id)}><Trash2 className="size-3.5" />Delete</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                    <span className="font-medium text-foreground">{formatDiscountValue(voucher.type, parseFloat(voucher.value))}</span>
+                                    <span>{formatUsage(voucher.usedCount, voucher.usageLimit)}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground">{formatDateRange(voucher.startsAt, voucher.endsAt)}</p>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
             </div>
 
             {filteredVouchers.length > 0 && (
