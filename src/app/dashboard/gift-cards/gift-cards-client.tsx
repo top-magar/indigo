@@ -23,10 +23,20 @@ import {
 } from "@/components/ui/select";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
-import { formatCurrency } from "@/shared/utils";
+import { formatCurrency, cn } from "@/shared/utils";
 import { type GiftCard, type GiftCardStats, createGiftCard, toggleGiftCardStatus } from "./actions";
 
 type StatusFilter = "all" | "active" | "inactive" | "depleted";
+
+function GiftCardStatusBadge({ status }: { status: string }) {
+    const config: Record<string, { color: string; bgColor: string; label: string }> = {
+        active: { color: "text-success", bgColor: "bg-success/10", label: "Active" },
+        depleted: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Depleted" },
+        inactive: { color: "text-warning", bgColor: "bg-warning/10", label: "Inactive" },
+    };
+    const c = config[status] || config.inactive;
+    return <Badge variant="outline" className={cn("border-transparent", c.bgColor, c.color)}>{c.label}</Badge>;
+}
 
 function getCardStatus(card: GiftCard): "active" | "inactive" | "depleted" {
     if (card.current_balance <= 0) return "depleted";
@@ -236,13 +246,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {getCardStatus(card) === "active" ? (
-                                                <Badge variant="outline" className="text-success">Active</Badge>
-                                            ) : getCardStatus(card) === "depleted" ? (
-                                                <Badge variant="outline" className="text-muted-foreground">Depleted</Badge>
-                                            ) : (
-                                                <Badge variant="outline" className="text-warning">Inactive</Badge>
-                                            )}
+                                            <GiftCardStatusBadge status={getCardStatus(card)} />
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <DropdownMenu>

@@ -57,6 +57,13 @@ import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
 import type { Collection } from "@/infrastructure/supabase/types";
 
+function CollectionStatusBadge({ isActive }: { isActive: boolean }) {
+    const config = isActive
+        ? { color: "text-success", bgColor: "bg-success/10", label: "Active" }
+        : { color: "text-muted-foreground", bgColor: "bg-muted", label: "Inactive" };
+    return <Badge className={cn("border-transparent", config.bgColor, config.color)}>{config.label}</Badge>;
+}
+
 
 interface CollectionsClientProps {
     collections: Collection[];
@@ -400,16 +407,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge
-                                            className={cn(
-                                                "border-0",
-                                                collection.is_active
-                                                    ? "bg-success/10 text-success"
-                                                    : "bg-muted text-muted-foreground"
-                                            )}
-                                        >
-                                            {collection.is_active ? "Active" : "Inactive"}
-                                        </Badge>
+                                        <CollectionStatusBadge isActive={collection.is_active} />
                                     </TableCell>
                                     <TableCell>
                                         <DropdownMenu>

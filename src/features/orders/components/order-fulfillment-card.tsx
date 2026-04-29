@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -27,19 +26,11 @@ import type { Order, Fulfillment } from "@/features/orders/types";
 import { approveFulfillment, cancelFulfillment, markFulfillmentShipped } from "@/app/dashboard/orders/order-actions";
 import { CreateFulfillmentDialog } from "./create-fulfillment-dialog";
 import { UpdateTrackingDialog } from "./update-tracking-dialog";
-import { cn } from "@/shared/utils";
+import { FulfillmentStatusBadge } from "@/components/dashboard/status-badge";
 
 interface OrderFulfillmentCardProps {
     order: Order;
 }
-
-const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Package; label: string }> = {
-    pending: { color: "text-warning", bgColor: "bg-warning/10", icon: Package, label: "Pending" },
-    approved: { color: "text-info", bgColor: "bg-info/10", icon: CheckCircle, label: "Approved" },
-    shipped: { color: "text-shipping", bgColor: "bg-shipping/10", icon: Truck, label: "Shipped" },
-    delivered: { color: "text-success", bgColor: "bg-success/10", icon: CheckCircle, label: "Delivered" },
-    cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", icon: XCircle, label: "Cancelled" },
-};
 
 export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
     const router = useRouter();
@@ -170,9 +161,6 @@ function FulfillmentItem({
     onMarkShipped: () => void;
     onEditTracking: () => void;
 }) {
-    const status = statusConfig[fulfillment.status] || statusConfig.pending;
-    const StatusIcon = status.icon;
-
     // Get line details
     const lineDetails = fulfillment.lines.map((fl) => {
         const orderLine = order.lines.find((l) => l.id === fl.orderLineId);
@@ -188,10 +176,7 @@ function FulfillmentItem({
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className={cn("border-0 gap-1", status.bgColor, status.color)}>
-                        <StatusIcon className="size-3.5" />
-                        {status.label}
-                    </Badge>
+                    <FulfillmentStatusBadge status={fulfillment.status} />
                     <span className="text-xs text-muted-foreground">
                         {format(new Date(fulfillment.createdAt), "MMM d, yyyy")}
                     </span>

@@ -25,7 +25,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
@@ -52,9 +51,10 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
-import { cn, formatCurrency } from "@/shared/utils"
+import { formatCurrency } from "@/shared/utils"
 import { updateReturnStatus } from "./actions"
 import type { ReturnStatus } from "@/infrastructure/supabase/types"
+import { OrderStatusBadge } from "@/components/dashboard/status-badge"
 
 interface ReturnRow {
   id: string
@@ -105,17 +105,6 @@ interface ReturnsClientProps {
   pageSize?: number
   currency: string
   tenantId: string
-}
-
-const statusConfig: Record<ReturnStatus, { color: string; bgColor: string; label: string }> = {
-  requested: { color: "text-warning", bgColor: "bg-warning/10", label: "Requested" },
-  approved: { color: "text-primary", bgColor: "bg-primary/10", label: "Approved" },
-  rejected: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Rejected" },
-  received: { color: "text-info", bgColor: "bg-info/10", label: "Received" },
-  processing: { color: "text-primary", bgColor: "bg-primary/10", label: "Processing" },
-  refunded: { color: "text-success", bgColor: "bg-success/10", label: "Refunded" },
-  completed: { color: "text-success", bgColor: "bg-success/10", label: "Completed" },
-  cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 }
 
 const reasonLabels: Record<string, string> = {
@@ -259,7 +248,6 @@ export function ReturnsClient({
               </TableRow>
             ) : (
               filteredReturns.map((returnItem) => {
-                const status = statusConfig[returnItem.status]
                 const customerName = returnItem.customer
                   ? `${returnItem.customer.first_name || ""} ${returnItem.customer.last_name || ""}`.trim() || returnItem.customer.email
                   : "Guest"
@@ -297,12 +285,7 @@ export function ReturnsClient({
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant="secondary"
-                        className={cn("border-0 font-medium", status.bgColor, status.color)}
-                      >
-                        {status.label}
-                      </Badge>
+                      <OrderStatusBadge status={returnItem.status} />
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="font-semibold">

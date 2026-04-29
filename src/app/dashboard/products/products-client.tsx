@@ -109,8 +109,7 @@ interface ProductsClientProps {
     };
 }
 
-// Import centralized status configuration
-import { productStatusConfig } from "@/config/status";
+import { ProductStatusBadge } from "@/components/dashboard/status-badge";
 import { StockBadge } from "./_components/helpers";
 
 export interface ProductsListViewProps {
@@ -570,7 +569,6 @@ export function ProductsListView({
                             </TableRow>
                         ) : (
                             products.map((product) => {
-                                const status = productStatusConfig[product.status];
                                 const isSelected = bulkActions.isSelected(product.id);
                                 const hasImage = product.images?.length > 0 && product.images[0]?.url;
 
@@ -621,12 +619,7 @@ export function ProductsListView({
                                             {product.category_name || "Uncategorized"}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge
-                                                variant="secondary"
-                                                className={cn("border-0 gap-1 font-medium", status.bgColor, status.color)}
-                                            >
-                                                {status.label}
-                                            </Badge>
+                                            <ProductStatusBadge status={product.status} />
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
                                             <StockBadge quantity={product.quantity} />
@@ -717,7 +710,6 @@ export function ProductsListView({
                 />
               ) : (
                 products.map((product) => {
-                  const status = productStatusConfig[product.status];
                   return (
                     <div
                       key={product.id}
@@ -736,9 +728,7 @@ export function ProductsListView({
                           <p className="text-sm font-medium truncate">{product.name}</p>
                           <p className="text-xs text-muted-foreground">{product.category_name || "Uncategorized"}</p>
                         </div>
-                        <Badge variant="secondary" className={cn("border-0 gap-1 text-[10px] shrink-0", status.bgColor, status.color)}>
-                          {status.label}
-                        </Badge>
+                        <ProductStatusBadge status={product.status} className="text-[10px] shrink-0" />
                       </div>
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>{formatCurrency(Number(product.price), currency)}</span>

@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { Package, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
     Table,
     TableBody,
@@ -14,31 +13,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { cn, formatCurrency } from "@/shared/utils";
+import { formatCurrency } from "@/shared/utils";
 import type { Customer } from "@/app/dashboard/customers/types";
+import { OrderStatusBadge } from "@/components/dashboard/status-badge";
 
 interface CustomerOrdersCardProps {
     customer: Customer;
     currency: string;
 }
-
-const orderStatusConfig: Record<string, { color: string; bgColor: string }> = {
-    pending: { color: "text-warning", bgColor: "bg-warning/10" },
-    confirmed: { color: "text-info", bgColor: "bg-info/10" },
-    processing: { color: "text-info", bgColor: "bg-info/10" },
-    shipped: { color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
-    delivered: { color: "text-success", bgColor: "bg-success/10" },
-    cancelled: { color: "text-destructive", bgColor: "bg-destructive/10" },
-    refunded: { color: "text-destructive", bgColor: "bg-destructive/10" },
-};
-
-const paymentStatusConfig: Record<string, { color: string; bgColor: string }> = {
-    pending: { color: "text-warning", bgColor: "bg-warning/10" },
-    paid: { color: "text-success", bgColor: "bg-success/10" },
-    partially_refunded: { color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
-    refunded: { color: "text-destructive", bgColor: "bg-destructive/10" },
-    failed: { color: "text-destructive", bgColor: "bg-destructive/10" },
-};
 
 export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardProps) {
     const { recentOrders } = customer;
@@ -79,7 +61,6 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                         </TableHeader>
                         <TableBody>
                             {recentOrders.map((order) => {
-                                const statusStyle = paymentStatusConfig[order.paymentStatus] || paymentStatusConfig.pending;
                                 return (
                                     <TableRow
                                         key={order.id}
@@ -93,16 +74,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                                             {format(new Date(order.createdAt), "MMM d, yyyy")}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge
-                                                variant="secondary"
-                                                className={cn(
-                                                    "border-0 capitalize",
-                                                    statusStyle.bgColor,
-                                                    statusStyle.color
-                                                )}
-                                            >
-                                                {order.paymentStatus.replace("_", " ")}
-                                            </Badge>
+                                            <OrderStatusBadge status={order.paymentStatus} />
                                         </TableCell>
                                         <TableCell className="text-right font-medium">
                                             {formatCurrency(order.total, order.currency || currency)}
