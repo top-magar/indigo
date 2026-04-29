@@ -137,3 +137,31 @@ Every agent commits after completing work. The `stop` hook in each agent config 
 3. Commits with `wip:` prefix (agents should make proper named commits before this fires)
 
 See `.kiro/steering/git-workflow.md` for commit conventions.
+
+## Common Bugs (examples for agent prompts)
+
+These are real bugs found and fixed. Use as few-shot examples when auditing.
+
+**Tenant isolation** — DELETE/UPDATE without tenant_id:
+- `shipping/actions.ts`: `.delete().eq("id", zoneId)` → add `.eq("tenant_id", tenantId)`
+- `collection-actions.ts`: `collection_products` DELETE by collection_id only
+- `cart.ts`: `updateCartItem` used `eq(cartItems.id, itemId)` with no tenant join
+
+**Null propagation** — empty tenantId flows into queries:
+- `getUser()` returns `tenantId: ""` for platform admins
+- Every dashboard page must use `requireTenantUser()`, not `requireUser()`
+- `authorizedAction()` must validate tenantId before setting RLS context
+
+**Race conditions** — read-then-write without locks:
+- Stock updates: read quantity in JS, compute, write back → use `sql\`quantity + N\``
+- Campaign send: no atomic lock → `UPDATE WHERE status IN ('draft') + .select()`
+- Cart addToCart: same read-then-write → use SQL increment
+
+**Silent failures** — actions that don't report errors:
+- `form-submit` API returned `{ success: true }` but only console.log'd data
+- `renamePage` returned `undefined` on failure (no error signal)
+- `addOrderEvent` had no error handling on insert
+
+**Orphaned data** — operations that create but don't clean up on failure:
+- Checkout created order but silently skipped payment when credentials missing
+- Khalti pidx stored outside transaction → callback can't find order
