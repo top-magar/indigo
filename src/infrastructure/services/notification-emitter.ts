@@ -69,6 +69,9 @@ const DEFAULT_OPTIONS: Required<NotificationEmitterOptions> = {
   connectionTimeout: 300000, // 5 minutes
 };
 
+const MAX_CONNECTIONS_PER_TENANT = 10;
+const MAX_CONNECTIONS_GLOBAL = 500;
+
 /**
  * NotificationEmitter class - singleton for managing SSE connections
  */
@@ -125,7 +128,17 @@ class NotificationEmitter {
     tenantId: string,
     controller: ReadableStreamDefaultController<Uint8Array>,
     userId?: string
-  ): string {
+  ): string | null {
+    // Enforce connection caps
+    if (this.connections.size >= MAX_CONNECTIONS_GLOBAL) {
+      log.warn(`[NotificationEmitter] Global connection limit reached (${MAX_CONNECTIONS_GLOBAL})`);
+      return null;
+    }
+    if (this.getConnectionCount(tenantId) >= MAX_CONNECTIONS_PER_TENANT) {
+      log.warn(`[NotificationEmitter] Tenant connection limit reached for ${tenantId} (${MAX_CONNECTIONS_PER_TENANT})`);
+      return null;
+    }
+
     const connectionId = this.generateConnectionId();
     const now = new Date();
 

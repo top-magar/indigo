@@ -7,6 +7,8 @@ import { eq, and } from "drizzle-orm";
 import { verifyEsewaPayment } from "@/infrastructure/payments/esewa";
 import { createLogger } from "@/lib/logger";
 
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
+
 const log = createLogger("api:payment:esewa-callback");
 
 /** Verify HMAC-SHA256 signature on eSewa callback data */
@@ -22,12 +24,12 @@ function verifySignature(decoded: Record<string, any>, secret: string): boolean 
 }
 
 /** eSewa redirects here after payment with base64-encoded data in query param */
-export async function GET(
-  request: NextRequest,
+export const GET = withRateLimit("webhook", async function GET(
+  request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const data = request.nextUrl.searchParams.get("data");
+  const data = (request as NextRequest).nextUrl.searchParams.get("data");
 
   if (!data) {
     return NextResponse.redirect(new URL(`/store/${slug}?payment=error&reason=missing_data`, request.url));
@@ -100,4 +102,4 @@ export async function GET(
     log.error("eSewa callback error:", err);
     return NextResponse.redirect(new URL(`/store/${slug}?payment=error`, request.url));
   }
-}
+});

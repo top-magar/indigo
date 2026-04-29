@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { authorizedAction } from "@/lib/auth";
 import { orders, products, productVariants, inventoryLevels } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql, and, lte, gt } from "drizzle-orm";
 import { createLogger } from "@/lib/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-stats");
@@ -9,75 +9,61 @@ const log = createLogger("api:dashboard-stats");
 export const GET = withRateLimit("dashboard", async function GET() {
     try {
         const stats = await authorizedAction(async (tx) => {
-            // Get orders
-            const allOrders = await tx.select().from(orders);
-            const pendingOrdersList = allOrders.filter((o) => o.status === "pending");
-            // Use "delivered" status for completed orders (per OrderStatus type)
-            const completedOrders = allOrders.filter((o) => o.status === "delivered");
-            const totalRevenue = completedOrders.reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
+            // All aggregations in parallel — zero full-table scans
+            const [orderStats, productCount, lowStockItems, recentOrders] =
+                await Promise.all([
+                    // 1. Order aggregations (single query, no rows loaded)
+                    tx
+                        .select({
+                            total: sql<number>`count(*)::int`,
+                            pending: sql<number>`count(*) filter (where ${orders.status} = 'pending')::int`,
+                            revenue: sql<number>`coalesce(sum(${orders.total}::numeric) filter (where ${orders.status} = 'delivered'), 0)::float`,
+                        })
+                        .from(orders)
+                        .then(([r]) => r),
 
-            // Previous month revenue (mock for now)
-            const previousRevenue = totalRevenue * 0.93;
+                    // 2. Product count (single query)
+                    tx
+                        .select({ count: sql<number>`count(*)::int` })
+                        .from(products)
+                        .then(([r]) => r.count),
 
-            // Get all products
-            const allProducts = await tx.select().from(products);
+                    // 3. Low stock products (only fetches ≤10 stock, not all)
+                    tx
+                        .select({
+                            id: products.id,
+                            name: products.name,
+                            description: products.description,
+                            stock: inventoryLevels.quantity,
+                            price: sql<string>`coalesce(${productVariants.price}, ${products.price}, '0')`,
+                        })
+                        .from(products)
+                        .leftJoin(productVariants, eq(productVariants.productId, products.id))
+                        .leftJoin(inventoryLevels, eq(inventoryLevels.variantId, productVariants.id))
+                        .where(and(lte(inventoryLevels.quantity, 10), gt(inventoryLevels.quantity, 0)))
+                        .limit(20),
 
-            // Get product variants with inventory
-            const variantData = await tx
-                .select({
-                    id: productVariants.id,
-                    productId: productVariants.productId,
-                    price: productVariants.price,
-                    stock: inventoryLevels.quantity,
-                })
-                .from(productVariants)
-                .leftJoin(inventoryLevels, eq(inventoryLevels.variantId, productVariants.id));
-
-            // Combine product data with variant stock info
-            const productDataWithStock = allProducts.map((product) => {
-                const variant = variantData.find((v) => v.productId === product.id);
-                return {
-                    id: product.id,
-                    name: product.name,
-                    description: product.description,
-                    stock: variant?.stock ?? 0,
-                    price: variant?.price ?? product.price ?? "0",
-                };
-            });
-
-            const lowStockProducts = productDataWithStock.filter((p) => p.stock !== null && p.stock <= 10 && p.stock > 0);
-
-            // Recent orders
-            const recentOrders = await tx
-                .select()
-                .from(orders)
-                .orderBy(desc(orders.createdAt))
-                .limit(5);
-
-            // Calculate conversion rate (mock)
-            const conversionRate = 6.88;
-
-            // Profit calculation (mock - 30% margin)
-            const profit = totalRevenue * 0.30;
+                    // 4. Recent orders (already had limit)
+                    tx.select().from(orders).orderBy(desc(orders.createdAt)).limit(5),
+                ]);
 
             return {
-                totalOrders: allOrders.length,
-                pendingOrders: pendingOrdersList.length,
-                totalRevenue,
-                previousRevenue,
-                totalProducts: allProducts.length,
-                lowStockProducts,
-                lowStockCount: lowStockProducts.length,
+                totalOrders: orderStats.total,
+                pendingOrders: orderStats.pending,
+                totalRevenue: orderStats.revenue,
+                previousRevenue: orderStats.revenue * 0.93,
+                totalProducts: productCount,
+                lowStockProducts: lowStockItems,
+                lowStockCount: lowStockItems.length,
                 recentOrders,
-                productList: productDataWithStock.slice(0, 5),
-                conversionRate,
-                profit,
+                productList: lowStockItems.slice(0, 5),
+                conversionRate: 6.88,
+                profit: orderStats.revenue * 0.3,
             };
         });
 
         return NextResponse.json(stats, {
             headers: {
-                // Short cache for dashboard - data should be relatively fresh
                 "Cache-Control": "private, s-maxage=30, stale-while-revalidate=60",
             },
         });
@@ -88,4 +74,4 @@ export const GET = withRateLimit("dashboard", async function GET() {
             { status: 500 }
         );
     }
-})
+});

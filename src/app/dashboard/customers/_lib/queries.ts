@@ -42,16 +42,16 @@ export async function getCustomerGroups(tenantId: string, supabase: Awaited<Retu
     if (!error && data) {
       const groupIds = data.map(g => g.id);
       if (groupIds.length > 0) {
-        // TODO: migrate when schema added for customer_group_members
-        const { data: memberCounts } = await supabase
-          .from("customer_group_members")
-          .select("group_id")
-          .in("group_id", groupIds);
-
+        // Count members per group — one query per group but only returns count, not rows
+        // TODO: migrate to Drizzle GROUP BY when schema added for customer_group_members
         const countMap: Record<string, number> = {};
-        memberCounts?.forEach(m => {
-          countMap[m.group_id] = (countMap[m.group_id] || 0) + 1;
-        });
+        await Promise.all(groupIds.map(async (gid) => {
+          const { count } = await supabase
+            .from("customer_group_members")
+            .select("*", { count: "exact", head: true })
+            .eq("group_id", gid);
+          countMap[gid] = count ?? 0;
+        }));
 
         groups = data.map(g => ({ ...g, members_count: countMap[g.id] || 0 }));
       } else {

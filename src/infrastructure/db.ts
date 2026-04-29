@@ -26,14 +26,14 @@ const hasDatabaseUrl = !!process.env.DATABASE_URL;
 // CI-8: Use POOLER_DATABASE_URL (Supabase connection pooler) for serverless;
 // falls back to DATABASE_URL for local dev
 const client = hasDatabaseUrl ? postgres(process.env.POOLER_DATABASE_URL || process.env.DATABASE_URL!, {
-  max: 5,
+  max: 25,
   idle_timeout: 20,
   connect_timeout: 10,
 }) : null;
 
 // Superuser DB client (Bypasses RLS) - Use ONLY for Auth or Admin tasks
 const sudoClient = hasDatabaseUrl ? postgres(process.env.SUDO_DATABASE_URL || process.env.DATABASE_URL!, {
-  max: 2,
+  max: 5,
   idle_timeout: 20,
   connect_timeout: 10,
 }) : null;

@@ -6,17 +6,20 @@ import { eq, and, sql } from "drizzle-orm";
 import { verifyKhaltiPayment } from "@/infrastructure/payments/khalti";
 import { createLogger } from "@/lib/logger";
 
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
+
 const log = createLogger("api:payment:khalti-callback");
 
 /** Khalti redirects here with pidx, transaction_id, amount, purchase_order_id in query */
-export async function GET(
-  request: NextRequest,
+export const GET = withRateLimit("webhook", async function GET(
+  request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const pidx = request.nextUrl.searchParams.get("pidx");
-  const purchaseOrderId = request.nextUrl.searchParams.get("purchase_order_id");
-  const status = request.nextUrl.searchParams.get("status");
+  const url = new URL(request.url);
+  const pidx = url.searchParams.get("pidx");
+  const purchaseOrderId = url.searchParams.get("purchase_order_id");
+  const status = url.searchParams.get("status");
 
   if (!pidx) {
     return NextResponse.redirect(new URL(`/store/${slug}?payment=error&reason=missing_params`, request.url));
@@ -87,4 +90,4 @@ export async function GET(
     log.error("Khalti callback error:", err);
     return NextResponse.redirect(new URL(`/store/${slug}?payment=error`, request.url));
   }
-}
+});

@@ -3,10 +3,10 @@
  * Provides a streaming connection for real-time notification updates
  */
 
-import { NextRequest } from "next/server";
 import { notificationEmitter } from "@/infrastructure/services/notification-emitter";
 import { createLogger } from "@/lib/logger";
 import { createClient } from "@/infrastructure/supabase/server";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:notifications-stream");
 
 /**
@@ -15,7 +15,7 @@ const log = createLogger("api:notifications-stream");
  * Establishes an SSE connection for real-time notifications.
  * Requires authentication — tenantId is derived from the session, not query params.
  */
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit("dashboard", async function GET() {
   // Auth check — derive tenantId from session, not query params
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -35,17 +35,22 @@ export async function GET(request: NextRequest) {
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
-      // Register the connection with the notification emitter
       connectionId = notificationEmitter.registerConnection(
         tenantId,
         controller,
         userId
       );
 
+      if (!connectionId) {
+        // Connection limit reached — close stream
+        controller.enqueue(new TextEncoder().encode("event: error\ndata: {\"error\":\"Too many connections\"}\n\n"));
+        controller.close();
+        return;
+      }
+
       log.info(`[SSE] New connection established: ${connectionId}`);
     },
     cancel() {
-      // Clean up when the client disconnects
       if (connectionId) {
         notificationEmitter.removeConnection(connectionId);
         log.info(`[SSE] Connection closed: ${connectionId}`);
@@ -53,19 +58,18 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  // Return the SSE response
   return new Response(stream, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
       "Connection": "keep-alive",
-      "X-Accel-Buffering": "no", // Disable nginx buffering
+      "X-Accel-Buffering": "no",
       "Access-Control-Allow-Origin": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
       "Access-Control-Allow-Methods": "GET",
       "Access-Control-Allow-Headers": "Content-Type",
     },
   });
-}
+});
 
 /**
  * OPTIONS handler for CORS preflight

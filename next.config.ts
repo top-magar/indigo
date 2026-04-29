@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
   // Add additional patterns as needed for CDN or storage providers
   images: {
     formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2678400, // 31 days — reduce re-optimization at scale
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
     remotePatterns: [
       // Allow images from any subdomain of the platform domain
       // This enables tenant-specific image hosting
