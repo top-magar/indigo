@@ -739,35 +739,46 @@ export async function recordDiscountUsage(
     }
 
     try {
-        // Record usage
-        await db.insert(discountUsages).values({
-            tenantId,
-            discountId,
-            voucherCodeId: voucherCodeId || null,
-            orderId,
-            customerId: customerId || null,
-            discountAmount: discountAmount.toString(),
-        });
+        await db.transaction(async (tx) => {
+            // Lock the discount row to prevent concurrent usage exceeding limits
+            const [locked] = await tx.execute(
+                sql`SELECT id, used_count, usage_limit FROM discounts WHERE id = ${discountId} AND tenant_id = ${tenantId} FOR UPDATE`
+            ) as unknown as [{ id: string; used_count: number; usage_limit: number | null }];
+            if (!locked) throw new Error("Discount not found");
+            if (locked.usage_limit && locked.used_count >= locked.usage_limit) {
+                throw new Error("Discount usage limit reached");
+            }
 
-        // Increment discount usage count
-        await db
-            .update(discounts)
-            .set({
-                usedCount: sql`${discounts.usedCount} + 1`,
-                updatedAt: new Date(),
-            })
-            .where(eq(discounts.id, discountId));
+            // Record usage
+            await tx.insert(discountUsages).values({
+                tenantId,
+                discountId,
+                voucherCodeId: voucherCodeId || null,
+                orderId,
+                customerId: customerId || null,
+                discountAmount: discountAmount.toString(),
+            });
 
-        // Increment voucher code usage count if applicable
-        if (voucherCodeId) {
-            await db
-                .update(voucherCodes)
+            // Increment discount usage count
+            await tx
+                .update(discounts)
                 .set({
-                    usedCount: sql`${voucherCodes.usedCount} + 1`,
-                    usedAt: new Date(),
+                    usedCount: sql`${discounts.usedCount} + 1`,
+                    updatedAt: new Date(),
                 })
-                .where(eq(voucherCodes.id, voucherCodeId));
-        }
+                .where(eq(discounts.id, discountId));
+
+            // Increment voucher code usage count if applicable
+            if (voucherCodeId) {
+                await tx
+                    .update(voucherCodes)
+                    .set({
+                        usedCount: sql`${voucherCodes.usedCount} + 1`,
+                        usedAt: new Date(),
+                    })
+                    .where(eq(voucherCodes.id, voucherCodeId));
+            }
+        });
 
         return { success: true };
     } catch (error) {

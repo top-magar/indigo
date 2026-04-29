@@ -113,6 +113,13 @@ export async function addCustomerToGroup(formData: FormData) {
     groupId: formData.get("groupId"),
   })
 
+  // Verify both belong to this tenant
+  const [{ data: customer }, { data: group }] = await Promise.all([
+    supabase.from("customers").select("id").eq("id", customerId).eq("tenant_id", tenantId).single(),
+    supabase.from("customer_groups").select("id").eq("id", groupId).eq("tenant_id", tenantId).single(),
+  ])
+  if (!customer || !group) return { success: false, error: "Customer or group not found" }
+
   const { error } = await supabase
     .from("customer_group_members")
     .insert({
@@ -136,6 +143,13 @@ export async function removeCustomerFromGroup(formData: FormData) {
     customerId: formData.get("customerId"),
     groupId: formData.get("groupId"),
   })
+
+  // Verify both belong to this tenant
+  const [{ data: customer }, { data: group }] = await Promise.all([
+    supabase.from("customers").select("id").eq("id", customerId).eq("tenant_id", tenantId).single(),
+    supabase.from("customer_groups").select("id").eq("id", groupId).eq("tenant_id", tenantId).single(),
+  ])
+  if (!customer || !group) return { success: false, error: "Customer or group not found" }
 
   const { error } = await supabase
     .from("customer_group_members")
