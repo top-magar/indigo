@@ -35,9 +35,13 @@ export function ReviewForm({ productId }: ReviewFormProps) {
         formData.append("rating", String(rating));
         formData.append("productId", productId);
         startTransition(async () => {
+          try {
           const res = await fetch("/api/store/reviews", { method: "POST", body: formData });
           if (res.ok) setSubmitted(true);
           else setError("Failed to submit. Please try again.");
+          } catch {
+            setError("Failed to submit. Please try again.");
+          }
         });
       }}
     >

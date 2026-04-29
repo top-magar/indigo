@@ -116,6 +116,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
     // Bulk actions
     const handleBulkActivate = () => {
         startTransition(async () => {
+            try {
             const ids = Array.from(selectedIds);
             const results = await Promise.all(ids.map(id => toggleCollectionStatus(id, true)));
             const failed = results.filter(r => r.error);
@@ -126,11 +127,15 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                 toast.success(`${ids.length} collection(s) activated`);
             }
             setSelectedIds(new Set());
+            } catch {
+                toast.error("Failed to activate collections");
+            }
         });
     };
 
     const handleBulkDeactivate = () => {
         startTransition(async () => {
+            try {
             const ids = Array.from(selectedIds);
             const results = await Promise.all(ids.map(id => toggleCollectionStatus(id, false)));
             const failed = results.filter(r => r.error);
@@ -141,11 +146,15 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                 toast.success(`${ids.length} collection(s) deactivated`);
             }
             setSelectedIds(new Set());
+            } catch {
+                toast.error("Failed to deactivate collections");
+            }
         });
     };
 
     const handleBulkDelete = () => {
         startTransition(async () => {
+            try {
             const ids = Array.from(selectedIds);
             const results = await Promise.all(ids.map(id => deleteCollection(id)));
             const failed = results.filter(r => r.error);
@@ -156,6 +165,9 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                 toast.success(`${ids.length} collection(s) deleted`);
             }
             setSelectedIds(new Set());
+            } catch {
+                toast.error("Failed to delete collections");
+            }
         });
     };
 

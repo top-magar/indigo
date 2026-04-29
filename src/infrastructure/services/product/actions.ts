@@ -63,6 +63,7 @@ const updateStockSchema = z.object({
  * Create a new product
  */
 export async function createProduct(input: CreateProductInput) {
+    try {
     const parsed = createProductSchema.parse(input);
     const { name, price, description, sku, initialStock } = parsed;
 
@@ -86,11 +87,14 @@ export async function createProduct(input: CreateProductInput) {
         .single();
 
     if (error) {
-        throw new Error(`Failed to create product: ${error.message}`);
+        return { success: false, error: `Failed to create product: ${error.message}` };
     }
 
     revalidatePath("/dashboard/products");
-    return { product };
+    return { success: true, product };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "Failed to create product" };
+    }
 }
 
 
@@ -98,6 +102,7 @@ export async function createProduct(input: CreateProductInput) {
  * Update stock for a product
  */
 export async function updateStock(input: UpdateStockInput) {
+    try {
     const parsed = updateStockSchema.parse(input);
     const { productId, adjustment, action } = parsed;
 
@@ -111,7 +116,7 @@ export async function updateStock(input: UpdateStockInput) {
         .single();
 
     if (fetchError || !current) {
-        throw new Error("Product not found");
+        return { success: false, error: "Product not found" };
     }
 
     let newQuantity: number;
@@ -139,16 +144,21 @@ export async function updateStock(input: UpdateStockInput) {
         .eq("tenant_id", tenantId);
 
     if (updateError) {
-        throw new Error(`Failed to update stock: ${updateError.message}`);
+        return { success: false, error: `Failed to update stock: ${updateError.message}` };
     }
 
     revalidatePath("/dashboard/products");
+    return { success: true };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update stock" };
+    }
 }
 
 /**
  * Delete a product
  */
 export async function deleteProduct(productId: string) {
+    try {
     const validId = z.string().uuid().parse(productId);
 
     const { supabase, tenantId } = await getAuthenticatedTenant();
@@ -160,10 +170,14 @@ export async function deleteProduct(productId: string) {
         .eq("tenant_id", tenantId);
 
     if (error) {
-        throw new Error(`Failed to delete product: ${error.message}`);
+        return { success: false, error: `Failed to delete product: ${error.message}` };
     }
 
     revalidatePath("/dashboard/products");
+    return { success: true };
+    } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : "Failed to delete product" };
+    }
 }
 
 /**

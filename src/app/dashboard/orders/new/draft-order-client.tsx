@@ -57,6 +57,8 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
         try {
             const results = await searchProductsForOrder(query);
             setSearchResults(results);
+        } catch {
+            setSearchResults([]);
         } finally {
             setIsSearching(false);
         }

@@ -221,6 +221,7 @@ export function InventoryClient({
     // Export inventory
     const handleExport = async () => {
         startTransition(async () => {
+            try {
             const result = await exportInventory();
             
             if (result.error) {
@@ -228,7 +229,7 @@ export function InventoryClient({
                 return;
             }
 
-            const blob = new Blob([result.csv!], { type: "text/csv" });
+            const blob = new Blob([result.csv || ""], { type: "text/csv" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -236,6 +237,9 @@ export function InventoryClient({
             a.click();
             URL.revokeObjectURL(url);
             toast.success("Inventory exported successfully");
+            } catch {
+                toast.error("Failed to export inventory");
+            }
         });
     };
 

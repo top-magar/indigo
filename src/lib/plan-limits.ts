@@ -41,7 +41,6 @@ export const getTenantPlanLimits = cache(async (tenantId: string): Promise<PlanL
     .orderBy(subscriptions.createdAt)
     .limit(1);
 
-  // Get current usage
   const [[{ value: currentProducts }], [{ value: currentStaff }]] = await Promise.all([
     db.select({ value: count() }).from(products).where(eq(products.tenantId, tenantId)),
     db.select({ value: count() }).from(users).where(eq(users.tenantId, tenantId)),
@@ -94,9 +93,10 @@ export async function checkPlanLimit(
       }
       break;
     case "storage": {
-      const [{ value }] = await db.execute<{ value: string }>(
+      const result = await db.execute<{ value: string }>(
         sql`SELECT COALESCE(SUM(file_size), 0) as value FROM media_assets WHERE tenant_id = ${tenantId}`
       );
+      const value = result[0]?.value ?? "0";
       const usedMb = Number(value) / (1024 * 1024);
       if (usedMb >= limits.maxStorageMb) {
         return { allowed: false, reason: `Storage limit reached (${limits.maxStorageMb}MB). Upgrade your plan for more storage.` };

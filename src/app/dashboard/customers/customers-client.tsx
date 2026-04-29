@@ -146,6 +146,7 @@ export function CustomersClient({
 
     // Export
     const handleExport = async () => {
+        try {
         const result = await exportCustomers(filters);
         
         if (result.error) {
@@ -162,6 +163,9 @@ export function CustomersClient({
             a.click();
             URL.revokeObjectURL(url);
             toast.success("Customers exported");
+        }
+        } catch {
+            toast.error("Failed to export customers");
         }
     };
 

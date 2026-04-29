@@ -34,8 +34,8 @@ export default async function InventoryPage({
         getCategories(tenantId),
     ]);
 
-    const page = parseInt(params.page || "1") - 1;
-    const perPage = parseInt(params.per_page || "25");
+    const page = (parseInt(params.page || "1") || 1) - 1;
+    const perPage = parseInt(params.per_page || "25") || 25;
 
     const inventoryProducts: InventoryProduct[] = productsData.map((p) => ({
         id: p.id,

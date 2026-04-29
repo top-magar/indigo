@@ -26,12 +26,13 @@ export class EsewaPaymentProvider implements PaymentProvider {
     const cfg = await getTenantPaymentConfig(input.tenantId)
     const merchantCode = (cfg.esewamerchantCode as string) || process.env.ESEWA_MERCHANT_CODE || "EPAYTEST"
     const secret = (cfg.esewaSecret as string) || process.env.ESEWA_SECRET;
-    if (!secret) throw new Error("eSewa secret key not configured. Set ESEWA_SECRET env var or configure in payment settings.");
+    if (!secret) return { success: false, paymentId: null, status: "failed" as const, error: "eSewa not configured" };
 
     const { orderId, amount } = input
     const storeSlug = input.metadata?.storeSlug ?? "default"
-    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${storeSlug}/checkout/callback?gateway=esewa`
-    const failureUrl = `${process.env.NEXT_PUBLIC_APP_URL}/store/${storeSlug}/checkout?error=payment_failed`
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+    const successUrl = `${appUrl}/api/store/${storeSlug}/checkout/callback?gateway=esewa`
+    const failureUrl = `${appUrl}/store/${storeSlug}/checkout?error=payment_failed`
 
     const message = `total_amount=${amount},transaction_uuid=${orderId},product_code=${merchantCode}`
     const signature = crypto.createHmac("sha256", secret).update(message).digest("base64")
@@ -96,9 +97,10 @@ export class KhaltiPaymentProvider implements PaymentProvider {
   async createPayment(input: CreateOrderPayment): Promise<PaymentResult> {
     const cfg = await getTenantPaymentConfig(input.tenantId)
     const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY;
-    if (!secretKey) throw new Error("Khalti secret key not configured.");
+    if (!secretKey) return { success: false, paymentId: null, status: "failed" as const, error: "Khalti not configured" };
     const storeSlug = input.metadata?.storeSlug ?? "default"
-    const returnUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${storeSlug}/checkout/callback?gateway=khalti`
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+    const returnUrl = `${appUrl}/api/store/${storeSlug}/checkout/callback?gateway=khalti`
 
     try {
       const res = await fetch(KHALTI_INITIATE_URL, {
@@ -106,7 +108,7 @@ export class KhaltiPaymentProvider implements PaymentProvider {
         headers: { Authorization: `Key ${secretKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           return_url: returnUrl,
-          website_url: process.env.NEXT_PUBLIC_APP_URL,
+          website_url: appUrl,
           amount: Math.round(input.amount * 100),
           purchase_order_id: input.orderId,
           purchase_order_name: `Order ${input.orderId.slice(0, 8)}`,
@@ -134,7 +136,7 @@ export class KhaltiPaymentProvider implements PaymentProvider {
   async getStatus(paymentId: string, tenantId: string): Promise<PaymentStatus> {
     const cfg = await getTenantPaymentConfig(tenantId)
     const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY;
-    if (!secretKey) throw new Error("Khalti secret key not configured.");
+    if (!secretKey) { console.warn("Khalti secret key not configured"); return "pending"; }
     const pidx = paymentId.replace("khalti_", "")
 
     try {

@@ -22,7 +22,7 @@ export default async function ProductsPage({
 }) {
   const { slug } = await params
   const { page: pageStr, q, category } = await searchParams
-  const currentPage = Math.max(1, parseInt(pageStr || "1", 10))
+  const currentPage = Math.max(1, parseInt(pageStr || "1", 10) || 1)
   const offset = (currentPage - 1) * PAGE_SIZE
 
   const supabase = await createClient()

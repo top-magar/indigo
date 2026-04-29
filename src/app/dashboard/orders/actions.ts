@@ -63,6 +63,7 @@ export async function updateOrderStatus(formData: FormData) {
         revalidatePath(`/dashboard/orders`);
         revalidateTag("dashboard", "seconds");
         revalidatePath(`/dashboard/orders/${orderId}`);
+        return { success: true };
     } catch (error) {
         return { success: false, error: error instanceof Error ? error.message : "Failed to update order status" };
     }
@@ -108,6 +109,7 @@ export async function updateOrderNotes(formData: FormData) {
         await OrderService.updateNotes(tenantId, orderId, notes);
         
         revalidatePath(`/dashboard/orders/${orderId}`);
+        return { success: true };
     } catch (error) {
         return { success: false, error: error instanceof Error ? error.message : "Failed to update order notes" };
     }
@@ -169,5 +171,6 @@ export async function updateOrderTags(orderId: string, tags: string[]) {
 
     if (error) return { success: false, error: error.message };
     revalidatePath(`/dashboard/orders/${orderId}`);
+    return { success: true };
 }
 

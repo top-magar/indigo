@@ -225,6 +225,7 @@ export default function WishlistPage() {
       return
     }
 
+    try {
     const supabase = createClient()
 
     const { data } = await supabase
@@ -240,7 +241,11 @@ export default function WishlistPage() {
       .filter((p): p is Product => p !== undefined)
 
     setProducts(orderedProducts)
-    setIsLoading(false)
+    } catch (err) {
+      console.error("Failed to fetch wishlist:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }, [slug])
 
   // Initial fetch

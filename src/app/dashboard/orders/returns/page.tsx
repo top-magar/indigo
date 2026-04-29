@@ -20,8 +20,8 @@ export default async function ReturnsPage({ searchParams }: { searchParams: Prom
       returns={returns as never[]}
       stats={stats}
       totalCount={totalCount}
-      currentPage={parseInt(params.page || "1")}
-      pageSize={parseInt(params.pageSize || "20")}
+      currentPage={parseInt(params.page || "1") || 1}
+      pageSize={parseInt(params.pageSize || "20") || 20}
       currency={currency}
       tenantId={tenantId}
     />

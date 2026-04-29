@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 
 export const POST = withRateLimit("storefront", async function POST(request: Request) {
+  try {
   const formData = await request.formData();
   const productId = formData.get("productId") as string;
   const customerName = formData.get("customerName") as string;
@@ -14,7 +15,7 @@ export const POST = withRateLimit("storefront", async function POST(request: Req
   if (!productId || !customerName || !customerEmail || !content || !rating) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
-  if (rating < 1 || rating > 5) {
+  if (isNaN(rating) || rating < 1 || rating > 5) {
     return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
   }
 
@@ -45,4 +46,7 @@ export const POST = withRateLimit("storefront", async function POST(request: Req
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 })

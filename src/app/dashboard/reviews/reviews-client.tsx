@@ -101,9 +101,13 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
     if (!ids.length) return;
     if (!(await confirmDelete(`${ids.length} reviews`, 'review'))) return;
     startTransition(async () => {
+      try {
       const results = await Promise.all(ids.map((id) => deleteReview(id)));
       const failed = results.filter((r) => !r.success).length;
       toast[failed === 0 ? 'success' : 'error'](failed === 0 ? `${ids.length} reviews deleted` : `${failed} of ${ids.length} deletions failed`);
+      } catch {
+        toast.error("Failed to delete reviews");
+      }
       setSelectedIds(new Set());
       router.refresh();
     });

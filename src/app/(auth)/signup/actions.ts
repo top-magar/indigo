@@ -45,9 +45,10 @@ export async function signupAction(_prevState: unknown, formData: FormData) {
     return { error: "User creation failed" }
   }
 
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return { error: "Server configuration error" }
   const supabaseAdmin = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   )
 
   const { data: tenant, error: tenantError } = await supabaseAdmin

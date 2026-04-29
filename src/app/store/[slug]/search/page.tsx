@@ -69,6 +69,7 @@ export default function SearchPage() {
   // Fetch tenant and categories on mount
   useEffect(() => {
     async function fetchInitialData() {
+      try {
       const supabase = createClient()
 
       // Fetch tenant
@@ -108,6 +109,9 @@ export default function SearchPage() {
           setFilters((prev) => ({ ...prev, maxPrice }))
         }
       }
+      } catch (err) {
+        console.error("Failed to fetch initial data:", err)
+      }
     }
 
     fetchInitialData()
@@ -118,6 +122,7 @@ export default function SearchPage() {
     if (!tenantId) return
 
     setIsLoading(true)
+    try {
     const supabase = createClient()
 
     let query = supabase
@@ -178,7 +183,11 @@ export default function SearchPage() {
     const { data } = await query
 
     setProducts(data || [])
-    setIsLoading(false)
+    } catch (err) {
+      console.error("Search failed:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }, [tenantId, filters, maxProductPrice])
 
   // Trigger search when filters or tenantId changes

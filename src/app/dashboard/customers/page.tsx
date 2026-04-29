@@ -24,8 +24,8 @@ export default async function CustomersPage({ searchParams }: CustomersPageProps
     const { supabase, tenantId } = await auth();
     const currency = await getTenantCurrency(supabase, tenantId);
 
-    const page = parseInt(params.page || "1");
-    const pageSize = parseInt(params.pageSize || "20");
+    const page = parseInt(params.page || "1") || 1;
+    const pageSize = parseInt(params.pageSize || "20") || 20;
 
     const { customers, stats, totalCount } = await getCustomersWithStats(
         page, pageSize, {

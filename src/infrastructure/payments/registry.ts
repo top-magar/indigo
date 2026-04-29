@@ -92,8 +92,8 @@ const HANDLER_FACTORIES: Record<PaymentProviderId, (() => Promise<PaymentProvide
           transactionUuid: input.orderId,
           merchantCode: input.credentials.merchantCode,
           merchantSecret: input.credentials.merchantSecret,
-          successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${input.tenantSlug}/payment/esewa`,
-          failureUrl: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}?payment=failed`,
+          successUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/store/${input.tenantSlug}/payment/esewa`,
+          failureUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/store/${input.tenantSlug}?payment=failed`,
         });
         return { success: true, formData: result.formData, redirectUrl: result.redirectUrl };
       },
@@ -117,8 +117,8 @@ const HANDLER_FACTORIES: Record<PaymentProviderId, (() => Promise<PaymentProvide
           amount: Math.round(input.amount * 100),
           purchaseOrderId: input.orderId,
           purchaseOrderName: `Order ${input.orderNumber}`,
-          returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${input.tenantSlug}/payment/khalti`,
-          websiteUrl: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}`,
+          returnUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/store/${input.tenantSlug}/payment/khalti`,
+          websiteUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/store/${input.tenantSlug}`,
           secretKey: input.credentials.secretKey,
           customerName: input.customerName,
           customerEmail: input.customerEmail,

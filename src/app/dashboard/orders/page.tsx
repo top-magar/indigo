@@ -21,8 +21,8 @@ export default async function OrdersPage({
         getOrderStats(tenantId, supabase),
     ]);
 
-    const page = parseInt(params.page || "1");
-    const pageSize = parseInt(params.pageSize || "20");
+    const page = parseInt(params.page || "1") || 1;
+    const pageSize = parseInt(params.pageSize || "20") || 20;
 
     return (
         <OrdersClient

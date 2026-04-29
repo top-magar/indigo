@@ -50,9 +50,10 @@ export async function signupAction(_prevState: unknown, formData: FormData) {
   }
 
   // 2. Perform DB operations using Admin client (Service Role) to bypass RLS
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return { error: "Server configuration error" }
   const supabaseAdmin = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   )
 
   // Create tenant

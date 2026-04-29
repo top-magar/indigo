@@ -117,7 +117,7 @@ export async function publishPage(page: {
   const { getTenantPlanLimits } = await import("@/lib/plan-limits");
   const limits = await getTenantPlanLimits(tenantId);
   if (limits.planName === "Free") {
-    throw new Error("Publishing requires a paid plan. Upgrade to Growth to publish your store.");
+    return { error: "Publishing requires a paid plan" };
   }
 
   const [project] = await db.select().from(editorProjects)

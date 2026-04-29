@@ -433,7 +433,7 @@ export async function duplicateProduct(productId: string) {
     const [original] = await db.select().from(products)
         .where(and(eq(products.id, productId), eq(products.tenantId, tenantId))).limit(1);
 
-    if (!original) throw new Error("Product not found");
+    if (!original) return { success: false, error: "Product not found" };
 
     const [copy] = await db.insert(products).values({
         tenantId: original.tenantId, name: `${original.name} (Copy)`,
