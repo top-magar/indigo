@@ -5,14 +5,14 @@ import {
     Users,
     Tag,
     Megaphone,
-    BarChart3,
+    TrendingUp,
     Star,
     Percent,
     Image,
     Globe,
     ExternalLink,
     Gift,
-    Warehouse,
+    Boxes,
 } from "lucide-react";
 import type { NavGroup, NavItem } from "./types";
 
@@ -58,7 +58,7 @@ export function createNavigation(counts: {
                     id: "inventory",
                     title: "Inventory",
                     href: "/dashboard/inventory",
-                    icon: Warehouse,
+                    icon: Boxes,
                     keywords: ["stock", "inventory", "warehouse", "attributes"],
                     children: [
                         { id: "inventory-list", title: "Stock Levels", href: "/dashboard/inventory" },
@@ -141,7 +141,7 @@ export function createNavigation(counts: {
                     id: "analytics",
                     title: "Analytics",
                     href: "/dashboard/analytics",
-                    icon: BarChart3,
+                    icon: TrendingUp,
                     keywords: ["reports", "stats", "metrics", "revenue"],
                 },
                 {
