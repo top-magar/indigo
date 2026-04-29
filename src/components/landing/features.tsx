@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { cn } from "@/shared/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import {
     Wallet, Truck, BarChart3, Smartphone, Globe, type LucideIcon,
 } from "lucide-react";

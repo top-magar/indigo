@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, type Variants, type Transition } from "framer-motion"
+import { motion, type Variants, type Transition } from "motion/react"
 import { forwardRef } from "react"
 import { cn } from "@/shared/utils"
 

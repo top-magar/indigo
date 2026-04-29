@@ -7,7 +7,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Check, Minus, ChevronDown } from "lucide-react";
 

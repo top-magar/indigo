@@ -3,10 +3,7 @@ import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { createClient } from "@/infrastructure/supabase/server"
-import { db } from "@/infrastructure/db"
-import { users } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { requireTenantUser } from "@/lib/auth"
 import { formatCurrency } from "@/shared/utils"
 
 import { HeroSection } from "@/components/dashboard/hero-section"
@@ -32,15 +29,9 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/login")
+  const user = await requireTenantUser()
 
-  const userRow = await db.select({ tenantId: users.tenantId })
-    .from(users).where(eq(users.id, user.id)).limit(1).then(r => r[0])
-  if (!userRow?.tenantId) redirect("/login")
-
-  const d = await fetchDashboardData(user.id, userRow.tenantId)
+  const d = await fetchDashboardData(user.id, user.tenantId)
   if (!d.tenant) redirect("/login")
 
   const currency = d.tenant.currency || "NPR"

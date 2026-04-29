@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { cn } from "@/shared/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { ArrowRight, ChevronRight, Store, CreditCard, Truck, Megaphone, BarChart3, type LucideIcon } from "lucide-react";
 

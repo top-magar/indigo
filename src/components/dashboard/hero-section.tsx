@@ -1,5 +1,3 @@
-"use client";
-
 import { formatCurrency } from "@/shared/utils";
 
 interface HeroSectionProps {

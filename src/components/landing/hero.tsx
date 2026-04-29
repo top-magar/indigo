@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Spotlight } from "@/components/ui/aceternity/spotlight";
 import { FlipWords } from "@/components/ui/aceternity/flip-words";
 import { NumberTicker } from "@/components/ui/aceternity/number-ticker";

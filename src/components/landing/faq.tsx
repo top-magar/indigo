@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { cn } from "@/shared/utils";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Plus, MessageCircle } from "lucide-react";
 
 const faqs = [

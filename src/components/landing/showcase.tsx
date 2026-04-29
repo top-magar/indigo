@@ -4,7 +4,7 @@
 
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const stores = [
     { name: "Himalayan Threads", category: "Fashion", color: "from-rose-500/20 to-pink-500/20", accent: "bg-rose-500" },

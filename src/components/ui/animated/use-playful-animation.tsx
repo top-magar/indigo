@@ -1,6 +1,6 @@
 "use client"
 
-import { useReducedMotion, type Easing } from "framer-motion"
+import { useReducedMotion, type Easing } from "motion/react"
 import { useMemo } from "react"
 
 const easeInOut: Easing = "easeInOut"

@@ -44,7 +44,7 @@ export const POST = withRateLimit("storefront", async function POST(request: Req
     is_verified: false,
   });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: "Failed to submit review" }, { status: 500 });
   return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

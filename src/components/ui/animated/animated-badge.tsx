@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { forwardRef, type ReactNode } from "react"
 import { cn } from "@/shared/utils"
 

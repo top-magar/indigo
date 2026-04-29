@@ -26,7 +26,7 @@ const hasDatabaseUrl = !!process.env.DATABASE_URL;
 // CI-8: Use POOLER_DATABASE_URL (Supabase connection pooler) for serverless;
 // falls back to DATABASE_URL for local dev
 const client = hasDatabaseUrl ? postgres(process.env.POOLER_DATABASE_URL || process.env.DATABASE_URL!, {
-  max: 25,
+  max: 5,
   idle_timeout: 20,
   connect_timeout: 10,
 }) : null;

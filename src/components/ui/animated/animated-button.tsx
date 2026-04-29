@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, type HTMLMotionProps, type Easing } from "framer-motion"
+import { motion, type HTMLMotionProps, type Easing } from "motion/react"
 import { forwardRef } from "react"
 import { cn } from "@/shared/utils"
 

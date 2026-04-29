@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { forwardRef, useState, type ComponentPropsWithoutRef } from "react"
 import { cn } from "@/shared/utils"
 import { Check, AlertCircle } from "lucide-react"

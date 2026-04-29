@@ -58,7 +58,7 @@ interface NavItemComponentProps {
     pathname: string;
 }
 
-export function NavItemComponent({
+export const NavItemComponent = memo(function NavItemComponent({
     item, isActive, isCollapsed, userRole, planType, pathname,
 }: NavItemComponentProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -238,6 +238,4 @@ export function NavItemComponent({
             </SidebarMenuItem>
         </Collapsible>
     );
-}
-
-export default memo(NavItemComponent);
+});

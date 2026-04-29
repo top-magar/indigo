@@ -6,7 +6,7 @@
 
 import { TextGenerateEffect } from "@/components/ui/aceternity/text-generate-effect";
 import { Spotlight } from "@/components/ui/aceternity/spotlight";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export function PullQuote() {
     return (

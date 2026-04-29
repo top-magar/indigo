@@ -199,7 +199,7 @@ const nextConfig: NextConfig = {
       "recharts",
       "lucide-react",
       // Animation libraries
-      "framer-motion",
+      "motion",
       "gsap",
       // Utility libraries
       "date-fns",
