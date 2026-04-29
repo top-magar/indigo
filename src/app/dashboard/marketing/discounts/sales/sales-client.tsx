@@ -51,6 +51,7 @@ import {
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { EntityListPage } from "@/components/dashboard/templates";
@@ -237,7 +238,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
             )}
 
             {/* Table */}
-            <div className="border rounded-lg">
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity border rounded-lg")}>
                 <Table>
                     <TableHeader>
                         <TableRow>

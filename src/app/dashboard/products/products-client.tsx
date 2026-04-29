@@ -522,6 +522,7 @@ export function ProductsListView({
             </div>
 
             {/* Products Table */}
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
             <div className="hidden md:block overflow-x-auto">
             <Table>
                     <TableHeader>
@@ -738,6 +739,8 @@ export function ProductsListView({
                   );
                 })
               )}
+            </div>
+
             </div>
 
             {/* Pagination */}

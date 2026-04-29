@@ -16,7 +16,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
 import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
 import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
-import { formatRelativeTime } from '@/shared/utils';
+import { formatRelativeTime, cn } from '@/shared/utils';
 import type { SentimentStats, ReviewWithProduct } from '@/features/reviews/repositories/reviews';
 import { approveReview, rejectReview, deleteReview, bulkApproveReviews, reanalyzeReview } from './actions';
 
@@ -174,7 +174,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
       ) : (
         <>
           {/* Desktop Table */}
-          <div className="hidden md:block rounded-lg border">
+          <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity hidden md:block rounded-lg border")}>
             <Table>
               <TableHeader>
                 <TableRow>

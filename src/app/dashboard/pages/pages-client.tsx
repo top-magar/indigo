@@ -15,6 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { cn } from "@/shared/utils";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -32,7 +33,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   const [renameValue, setRenameValue] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const filtered = useMemo(() => query
     ? pages.filter(p =>
@@ -133,7 +134,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
       </div>
 
       {/* Page list */}
-      <div className="rounded-lg border">
+      <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-2 border-b bg-muted/30 text-xs font-medium text-muted-foreground">
           <span className="flex-1">Page</span>

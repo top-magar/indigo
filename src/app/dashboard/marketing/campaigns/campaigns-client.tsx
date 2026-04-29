@@ -86,7 +86,7 @@ import { deleteCampaign, pauseCampaign, sendCampaign, duplicateCampaign } from "
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { formatCurrency } from "@/shared/utils";
+import { formatCurrency, cn } from "@/shared/utils";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar";
@@ -411,6 +411,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
             </div>
 
             {/* Table — headers always visible, empty state inside tbody */}
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -670,6 +671,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     )}
                 </TableBody>
             </Table>
+            </div>
 
             {/* Pagination */}
             {filteredCampaigns.length > 0 && (

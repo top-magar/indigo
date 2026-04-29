@@ -207,7 +207,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             </div>
 
             {/* Table */}
-            <div className="rounded-lg border">
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
                     {filtered.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-8">
                             {cards.length === 0

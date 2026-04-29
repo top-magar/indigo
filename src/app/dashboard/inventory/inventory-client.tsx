@@ -429,7 +429,7 @@ export function InventoryClient({
             </div>
 
             {/* Inventory Table */}
-            <div className="hidden md:block">
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity hidden md:block")}>
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">

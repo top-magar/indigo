@@ -374,7 +374,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             </div>
 
             {/* Categories List */}
-            <div className="rounded-lg border">
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
                     {filteredCategories.length === 0 ? (
                         <EmptyState
                             icon={Grid3x3}

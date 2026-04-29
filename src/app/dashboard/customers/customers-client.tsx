@@ -279,7 +279,7 @@ export function CustomersClient({
 
 
                 {/* Customers Table */}
-                <div className="rounded-lg border">
+                <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
                         {customers.length === 0 ? (
                             <EmptyState
                                 icon={Users}

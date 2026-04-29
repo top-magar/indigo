@@ -303,6 +303,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             }
         >
             {/* Collections Table */}
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
             <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
@@ -457,6 +458,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         )}
                     </TableBody>
                 </Table>
+            </div>
 
             {/* Bulk Actions */}
             {selectedIds.size > 0 && (
