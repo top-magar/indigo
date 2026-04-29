@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { EntityListPage } from "@/components/dashboard/templates";
 import {
     Ticket,
+    Percent,
     Search,
     Plus,
     MoreHorizontal,
@@ -53,6 +54,8 @@ import {
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { EmptyState } from "@/components/ui/empty-state";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 
 interface VouchersClientProps {
     initialVouchers: Discount[];
@@ -67,16 +70,21 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
 
     const vouchers = initialVouchers;
 
-    const filteredVouchers = vouchers.filter((voucher) => {
+    const filteredVouchers = useMemo(() => vouchers.filter((voucher) => {
         const matchesSearch = voucher.name.toLowerCase().includes(searchQuery.toLowerCase());
         const status = getDiscountStatus(voucher);
         const matchesStatus = statusFilter === "all" || status === statusFilter;
         const matchesType = typeFilter === "all" || voucher.type === typeFilter;
         return matchesSearch && matchesStatus && matchesType;
-    });
+    }), [vouchers, searchQuery, statusFilter, typeFilter]);
+
+    const pageCount = Math.ceil(filteredVouchers.length / pageSize);
+    const paginatedVouchers = filteredVouchers.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
         if (selectedIds.length === filteredVouchers.length) {
@@ -187,7 +195,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                         <Input
                             aria-label="Search vouchers" placeholder="Search vouchers..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => { setSearchQuery(e.target.value); setPageIndex(0); }}
                             className="pl-9"
                         />
                     </div>
@@ -256,12 +264,12 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     <TableBody>
                         {filteredVouchers.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                                    No vouchers found
+                                <TableCell colSpan={7}>
+                                    <EmptyState icon={Percent} title="No vouchers found" description="Try adjusting your search or filters." size="sm" />
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredVouchers.map((voucher) => {
+                            paginatedVouchers.map((voucher) => {
                                 const status = getDiscountStatus(voucher);
                                 return (
                                     <TableRow key={voucher.id}>
@@ -338,6 +346,17 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     </TableBody>
                 </Table>
             </div>
+
+            {filteredVouchers.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filteredVouchers.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+                />
+            )}
 
             <CreateVoucherDialog
                 open={createDialogOpen}

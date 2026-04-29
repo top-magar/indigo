@@ -5,6 +5,8 @@ import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Mail, Package, DollarSign, Users, Search, MoreHorizontal, Eye, Trash2 } from "lucide-react";
 import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
+import { EmptyState } from "@/components/ui/empty-state";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -32,6 +34,8 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
     const [isPending, startTransition] = useTransition();
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
 
     const filtered = useMemo(() => {
         let result = checkouts;
@@ -51,6 +55,9 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
         }
         return result;
     }, [checkouts, search, statusFilter]);
+
+    const pageCount = Math.ceil(filtered.length / pageSize);
+    const paginated = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     function handleSendRecovery(cartId: string) {
         startTransition(async () => {
@@ -109,7 +116,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPageIndex(0); }}>
                         <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by status">
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
@@ -127,7 +134,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
             {/* Table */}
             <div className="rounded-lg border">
                     {filtered.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-8">No abandoned checkouts found. 🎉</p>
+                        <EmptyState icon={Package} title="No abandoned checkouts found" description="🎉 All carts are accounted for." size="sm" />
                     ) : (
                         <Table>
                             <TableHeader>
@@ -140,7 +147,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filtered.map((c) => (
+                                {paginated.map((c) => (
                                     <TableRow key={c.id} className="group">
                                         <TableCell>
                                             <div>
@@ -201,6 +208,17 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                         </Table>
                     )}
             </div>
+
+            {filtered.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filtered.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+                />
+            )}
         </EntityListPage>
     );
 }

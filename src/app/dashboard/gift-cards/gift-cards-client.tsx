@@ -22,6 +22,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/shared/utils";
 import { type GiftCard, type GiftCardStats, createGiftCard, toggleGiftCardStatus } from "./actions";
 

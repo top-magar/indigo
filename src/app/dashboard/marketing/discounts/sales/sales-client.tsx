@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,8 @@ import {
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { EmptyState } from "@/components/ui/empty-state";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { EntityListPage } from "@/components/dashboard/templates";
 
 interface SalesClientProps {
@@ -65,15 +67,20 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+    const [pageIndex, setPageIndex] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
 
     const sales = initialSales;
 
-    const filteredSales = sales.filter((sale) => {
+    const filteredSales = useMemo(() => sales.filter((sale) => {
         const matchesSearch = sale.name.toLowerCase().includes(searchQuery.toLowerCase());
         const status = getDiscountStatus(sale);
         const matchesStatus = statusFilter === "all" || status === statusFilter;
         return matchesSearch && matchesStatus;
-    });
+    }), [sales, searchQuery, statusFilter]);
+
+    const pageCount = Math.ceil(filteredSales.length / pageSize);
+    const paginatedSales = filteredSales.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
     const toggleSelectAll = () => {
         if (selectedIds.length === filteredSales.length) {
@@ -197,7 +204,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         className="pl-9"
                     />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPageIndex(0); }}>
                     <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
@@ -251,12 +258,12 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                     <TableBody>
                         {filteredSales.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                                    No sales found
+                                <TableCell colSpan={7}>
+                                    <EmptyState icon={Percent} title="No sales found" description="Try adjusting your search or filters." size="sm" />
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredSales.map((sale) => {
+                            paginatedSales.map((sale) => {
                                 const status = getDiscountStatus(sale);
                                 const counts = getAssignmentCount(sale);
                                 return (
@@ -347,6 +354,17 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                     </TableBody>
                 </Table>
             </div>
+
+            {filteredSales.length > 0 && (
+                <DataTablePagination
+                    pageIndex={pageIndex}
+                    pageSize={pageSize}
+                    pageCount={pageCount}
+                    totalItems={filteredSales.length}
+                    onPageChange={setPageIndex}
+                    onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+                />
+            )}
 
             <CreateSaleDialog
                 open={createDialogOpen}

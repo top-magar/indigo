@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useMemo, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -8,6 +8,8 @@ import {
   Pencil, Globe, Trash2, Type, ExternalLink, Plus,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/ui/empty-state";
+import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -24,18 +26,23 @@ type Site = { id: string; name: string; published: boolean | null; slug: string 
 
 export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: EditorPage[]; tenantSlug: string }) {
   const [query, setQuery] = useState("");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [, startTransition] = useTransition();
 
-  const filtered = query
+  const filtered = useMemo(() => query
     ? pages.filter(p =>
         p.name.toLowerCase().includes(query.toLowerCase()) ||
         p.slug.toLowerCase().includes(query.toLowerCase())
       )
-    : pages;
+    : pages, [pages, query]);
+
+  const pageCount = Math.ceil(filtered.length / pageSize);
+  const paginated = filtered.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
 
   const handleDelete = (page: EditorPage) => {
     startTransition(async () => {
@@ -122,7 +129,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => setQuery(e.target.value)} />
+        <Input placeholder="Search pages..." className="pl-9" value={query} onChange={e => { setQuery(e.target.value); setPageIndex(0); }} />
       </div>
 
       {/* Page list */}
@@ -136,11 +143,9 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
         </div>
 
         {filtered.length === 0 ? (
-          <div className="p-8 text-center text-sm text-muted-foreground">
-            {query ? "No pages match your search." : "No pages yet."}
-          </div>
+          <EmptyState icon={Globe} title={query ? "No pages match your search" : "No pages yet"} description={query ? "Try adjusting your search." : "Create your first page to get started."} size="sm" />
         ) : (
-          filtered.map(page => (
+          paginated.map(page => (
             <div key={page.id} className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0 hover:bg-accent/50 transition-colors group">
               {/* Icon */}
               <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
@@ -245,6 +250,17 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           ))
         )}
       </div>
+
+      {filtered.length > 0 && (
+        <DataTablePagination
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          pageCount={pageCount}
+          totalItems={filtered.length}
+          onPageChange={setPageIndex}
+          onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
+        />
+      )}
     </div>
   );
 }
