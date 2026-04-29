@@ -14,7 +14,7 @@ import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
 const log = createLogger("api:checkout")
 
-const VALID_PAYMENT_METHODS = ['cod', 'bank_transfer', 'esewa', 'khalti', 'stripe', 'card'] as const
+const VALID_PAYMENT_METHODS = ['cod', 'bank_transfer', 'esewa', 'khalti'] as const
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 interface ShippingRate {

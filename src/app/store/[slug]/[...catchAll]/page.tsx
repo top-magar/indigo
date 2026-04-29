@@ -51,7 +51,7 @@ export default async function CatchAllPage({
       const bodyContent = DOMPurify.sanitize(bodyMatch ? bodyMatch[1] : page.publishedHtml, { ADD_TAGS: ['style'], ADD_ATTR: ['target'] })
       const headMatch = page.publishedHtml.match(/<head[^>]*>([\s\S]*?)<\/head>/i)
       const styles = headMatch ? headMatch[1].match(/<style[^>]*>[\s\S]*?<\/style>/gi) : null
-      const headStyles = styles ? styles.map(s => s.replace(/<\/?style[^>]*>/gi, '')).join('\n') : null
+      const headStyles = styles ? styles.map(s => s.replace(/<\/?style[^>]*>/gi, '')).map(s => s.replace(/@import\b[^;]*;?/gi, '').replace(/url\s*\([^)]*\)/gi, 'url()').replace(/expression\s*\([^)]*\)/gi, '')).join('\n') : null
 
       return (
         <>

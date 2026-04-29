@@ -22,6 +22,13 @@ const ENABLE_MODERATION = process.env.AWS_REKOGNITION_ENABLED === 'true';
 // Image types that can be moderated
 const MODERATABLE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
+// Allowed upload types
+const ALLOWED_TYPES = [
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif', 'image/svg+xml',
+  'video/mp4', 'video/webm',
+  'application/pdf',
+];
+
 export const POST = withRateLimit("dashboard", async function POST(request: Request) {
   try {
     // Authenticate
@@ -46,6 +53,10 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 400 });
+    }
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json({ error: 'File type not allowed' }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -106,6 +117,10 @@ export const GET = withRateLimit("dashboard", async function GET(request: Reques
         { error: 'Missing filename or contentType' },
         { status: 400 }
       );
+    }
+
+    if (!ALLOWED_TYPES.includes(contentType)) {
+      return NextResponse.json({ error: 'Content type not allowed' }, { status: 400 });
     }
 
     const { getPresignedUploadUrl, getCdnUrl } = await import('@/infrastructure/aws/s3');

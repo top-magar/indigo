@@ -20,12 +20,16 @@ function extractBodyContent(html: string): string {
   return bodyMatch ? bodyMatch[1] : html;
 }
 
-/** Extract <style> tags from <head> */
+/** Extract <style> tags from <head> and sanitize CSS */
 function extractHeadStyles(html: string): string | null {
   const headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
   if (!headMatch) return null;
   const styles = headMatch[1].match(/<style[^>]*>[\s\S]*?<\/style>/gi);
-  return styles ? styles.map(s => s.replace(/<\/?style[^>]*>/gi, '')).join('\n') : null;
+  if (!styles) return null;
+  return styles
+    .map(s => s.replace(/<\/?style[^>]*>/gi, ''))
+    .map(s => s.replace(/@import\b[^;]*;?/gi, '').replace(/url\s*\([^)]*\)/gi, 'url()').replace(/expression\s*\([^)]*\)/gi, ''))
+    .join('\n');
 }
 
 export async function generateStaticParams() {
@@ -197,6 +201,7 @@ export async function generateMetadata({
     title,
     description,
     icons: { icon: faviconUrl },
+    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}` },
     openGraph: {
       title: ogTitle,
       description: ogDescription,

@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, integer, decimal, varchar, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, decimal, varchar, boolean, jsonb, index } from "drizzle-orm/pg-core";
 import { tenants } from "./tenants";
 
 /**
@@ -56,7 +56,10 @@ export const subscriptions = pgTable("subscriptions", {
   notes: text("notes"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => ({
+  tenantIdx: index("subscriptions_tenant_idx").on(table.tenantId),
+  statusIdx: index("subscriptions_status_idx").on(table.tenantId, table.status),
+}));
 
 /**
  * Payment records — admin logs each payment manually.
@@ -77,7 +80,9 @@ export const payments = pgTable("payments", {
 
   recordedBy: uuid("recorded_by").notNull(), // admin user ID who recorded this
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => ({
+  tenantIdx: index("payments_tenant_idx").on(table.tenantId),
+}));
 
 export type Plan = typeof plans.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
@@ -110,6 +115,10 @@ export const invoices = pgTable("invoices", {
   paymentId: uuid("payment_id").references(() => payments.id),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => ({
+  tenantIdx: index("invoices_tenant_idx").on(table.tenantId),
+  statusIdx: index("invoices_status_idx").on(table.tenantId, table.status),
+  periodIdx: index("invoices_period_idx").on(table.tenantId, table.periodStart),
+}));
 
 export type Invoice = typeof invoices.$inferSelect;

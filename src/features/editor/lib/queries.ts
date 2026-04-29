@@ -281,9 +281,10 @@ export async function setHomepage(projectId: string, pageId: string) {
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
   if (!project) return;
-  // Unset all pages, then set the target
-  await db.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
-  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.projectId, projectId)));
+  await db.transaction(async (tx) => {
+    await tx.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
+    await tx.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.projectId, projectId)));
+  });
   revalidatePath('/dashboard/pages');
 }
 

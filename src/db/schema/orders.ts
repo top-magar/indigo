@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, integer, index, varchar, decimal, jsonb, check } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, index, varchar, decimal, jsonb, check, unique } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { tenants } from "./tenants";
 import { customers } from "./customers";
@@ -68,6 +68,7 @@ export const orders = pgTable("orders", {
 }, (table) => ({
     tenantCreatedIdx: index("orders_tenant_created_idx").on(table.tenantId, table.createdAt),
     orderNumberIdx: index("orders_order_number_idx").on(table.tenantId, table.orderNumber),
+    orderNumberUnique: unique("orders_tenant_order_number").on(table.tenantId, table.orderNumber),
     statusIdx: index("orders_status_idx").on(table.tenantId, table.status),
     paymentStatusIdx: index("orders_payment_status_idx").on(table.tenantId, table.paymentStatus, table.createdAt),
     fulfillmentStatusIdx: index("orders_fulfillment_status_idx").on(table.tenantId, table.fulfillmentStatus, table.createdAt),

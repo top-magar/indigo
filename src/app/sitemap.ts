@@ -14,12 +14,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (!tenants?.length) return [{ url: baseUrl, lastModified: new Date(), priority: 1 }];
 
-    const { data: pages } = await supabase
-      .from("store_layouts")
-      .select("tenant_id, slug, updated_at, is_homepage, tenants!inner(slug)")
-      .not("blocks", "is", null)
-      .eq("status", "published")
-      .limit(5000);
+    const [{ data: pages }, { data: products }] = await Promise.all([
+      supabase
+        .from("store_layouts")
+        .select("tenant_id, slug, updated_at, is_homepage, tenants!inner(slug)")
+        .not("blocks", "is", null)
+        .eq("status", "published")
+        .limit(5000),
+      supabase
+        .from("products")
+        .select("slug, updated_at, tenants!inner(slug)")
+        .eq("status", "active")
+        .limit(10000),
+    ]);
 
     const tenantMap = new Map(tenants.map((t) => [t.slug, t.updated_at]));
 
@@ -44,6 +51,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: p.updated_at,
         changeFrequency: "weekly",
         priority: 0.8,
+      });
+    }
+
+    for (const prod of products ?? []) {
+      const tenantSlug = (prod.tenants as unknown as { slug: string })?.slug;
+      if (!tenantSlug || !prod.slug) continue;
+      entries.push({
+        url: `${baseUrl}/store/${tenantSlug}/products/${prod.slug}`,
+        lastModified: prod.updated_at,
+        changeFrequency: "weekly",
+        priority: 0.9,
       });
     }
 
