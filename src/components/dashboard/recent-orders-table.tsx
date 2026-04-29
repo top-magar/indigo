@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingCart } from "lucide-react";
+import { ArrowRight, Package } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
 import Link from "next/link";
 
@@ -54,7 +54,7 @@ export function RecentOrdersTable({ orders, currency }: RecentOrdersTableProps) 
         {orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="size-10 rounded-xl bg-muted/50 flex items-center justify-center mb-3">
-              <ShoppingCart className="size-5 text-muted-foreground/50" />
+              <Package className="size-5 text-muted-foreground/50" />
             </div>
             <p className="text-sm font-medium text-muted-foreground">No orders yet</p>
             <p className="text-xs text-muted-foreground/60 mt-1">Orders will appear here once customers start buying</p>

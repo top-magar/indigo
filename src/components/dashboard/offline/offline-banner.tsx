@@ -85,7 +85,7 @@ export function OfflineBanner({
           className="absolute right-2 text-destructive hover:text-destructive hover:bg-destructive/20"
           aria-label="Dismiss offline banner"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="size-3.5" />
         </Button>
       )}
     </div>
@@ -112,7 +112,7 @@ export function OfflineBannerCompact({ className }: { className?: string }) {
         className
       )}
     >
-      <WifiOff className="h-3.5 w-3.5 text-destructive" />
+      <WifiOff className="size-3.5 text-destructive" />
       <span className="text-destructive font-medium">Offline mode</span>
     </div>
   );

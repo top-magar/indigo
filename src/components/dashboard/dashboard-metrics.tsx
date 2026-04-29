@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUp, ArrowDown, DollarSign, ShoppingCart, Users, TrendingUp } from "lucide-react";
+import { ArrowUp, ArrowDown, DollarSign, Package, Users, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
 import Link from "next/link";
 
@@ -22,7 +22,7 @@ interface DashboardMetricsProps {
 
 const ICON_MAP = {
   revenue: { Icon: DollarSign, color: "success" },
-  orders: { Icon: ShoppingCart, color: "primary" },
+  orders: { Icon: Package, color: "primary" },
   customers: { Icon: Users, color: "warning" },
   average: { Icon: TrendingUp, color: "info" },
 };
@@ -54,9 +54,9 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
                 }`}
               >
                 {isPositive ? (
-                  <ArrowUp className="w-2.5 h-2.5" />
+                  <ArrowUp className="size-2.5" />
                 ) : (
-                  <ArrowDown className="w-2.5 h-2.5" />
+                  <ArrowDown className="size-2.5" />
                 )}
                 {Math.abs(metric.change ?? 0)}%
               </Badge>

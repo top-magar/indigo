@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   Store,
   Sparkles,
-  ShoppingBag,
+  Tag,
   LineChart,
   Paintbrush,
   CreditCard,
@@ -41,7 +41,7 @@ const sizeClasses: Record<WelcomeModalSize, string> = {
 
 const DEFAULT_FEATURES: Feature[] = [
   {
-    icon: ShoppingBag,
+    icon: Tag,
     title: "Product Management",
     description: "Add and organize your products with ease",
     color: "primary",

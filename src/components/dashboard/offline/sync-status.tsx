@@ -180,15 +180,15 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
   const getStatusIcon = (status: SyncStatusType) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-3.5 w-3.5 text-muted-foreground" />;
+        return <Clock className="size-3.5 text-muted-foreground" />;
       case "syncing":
-        return <RotateCw className="h-3.5 w-3.5 text-primary animate-spin" />;
+        return <RotateCw className="size-3.5 text-primary animate-spin" />;
       case "completed":
-        return <CheckCircle className="h-3.5 w-3.5 text-success" />;
+        return <CheckCircle className="size-3.5 text-success" />;
       case "failed":
-        return <AlertCircle className="h-3.5 w-3.5 text-destructive" />;
+        return <AlertCircle className="size-3.5 text-destructive" />;
       case "conflict":
-        return <AlertCircle className="h-3.5 w-3.5 text-warning" />;
+        return <AlertCircle className="size-3.5 text-warning" />;
       default:
         return null;
     }

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, RefreshCw, Home } from "lucide-react"
+import { AlertCircle, RefreshCw, Home } from "lucide-react"
 import Link from "next/link"
 
 interface ErrorBoundaryPageProps {
@@ -36,7 +36,7 @@ export function ErrorBoundaryPage({
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 p-8">
       <div className="flex size-16 items-center justify-center rounded-full bg-destructive/10">
-        <AlertTriangle className="size-8 text-destructive" />
+        <AlertCircle className="size-8 text-destructive" />
       </div>
       
       <div className="text-center space-y-2">

@@ -96,9 +96,9 @@ export function StatCard({
                                         className="text-xs px-1.5 py-0 gap-0.5"
                                     >
                                         {trend.direction === "up" ? (
-                                            <ArrowUp className="w-2.5 h-2.5" />
+                                            <ArrowUp className="size-2.5" />
                                         ) : (
-                                            <ArrowDown className="w-2.5 h-2.5" />
+                                            <ArrowDown className="size-2.5" />
                                         )}
                                         {Math.abs(trend.value)}%
                                     </Badge>

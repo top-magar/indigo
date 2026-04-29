@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  ShoppingCart,
+  ClipboardList,
   CheckCircle,
   Package,
   Truck,
-  Home,
+  PackageCheck,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/shared/utils";
@@ -25,11 +25,11 @@ interface OrderStepperProps {
 }
 
 const steps = [
-  { status: "pending", label: "Placed", icon: ShoppingCart },
+  { status: "pending", label: "Placed", icon: ClipboardList },
   { status: "confirmed", label: "Confirmed", icon: CheckCircle },
   { status: "processing", label: "Processing", icon: Package },
   { status: "shipped", label: "Shipped", icon: Truck },
-  { status: "delivered", label: "Delivered", icon: Home },
+  { status: "delivered", label: "Delivered", icon: PackageCheck },
 ];
 
 const statusToStep: Record<OrderStatus, number> = {

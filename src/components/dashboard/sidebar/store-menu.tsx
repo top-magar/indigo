@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Settings, ChevronsUpDown, ExternalLink, Globe, CreditCard, Truck, Palette, LayoutDashboard } from "lucide-react";
+import { Settings, ChevronsUpDown, ExternalLink, Globe, CreditCard, Truck, Palette } from "lucide-react";
 import {
     DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
     DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,

@@ -273,7 +273,7 @@ export function TimelineNote({
                   className="size-6"
                   onClick={() => setIsEditMode(true)}
                 >
-                  <MessageSquare className="w-3.5 h-3.5" />
+                  <MessageSquare className="size-3.5" />
                 </Button>
               )}
             </div>

@@ -5,7 +5,7 @@ import { useUnsavedChanges, useFormDirty } from "@/hooks/use-unsaved-changes";
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Bell, ShoppingCart, AlertCircle, Settings, AtSign, Mail, Loader2, CheckCircle, Moon, Smartphone, Volume2, VolumeX } from "lucide-react";
+import { Bell, Package, AlertCircle, Settings, AtSign, Mail, Loader2, CheckCircle, Moon, Smartphone, Volume2, VolumeX } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,7 @@ import { updateNotificationPreferences, updateQuietHours } from "./actions";
 import type { NotificationCategory, NotificationChannel, NotificationFrequency, NotificationPreferenceInput, UserNotificationPreferences } from "@/features/notifications/repositories";
 
 const CATEGORIES: { id: NotificationCategory; label: string; desc: string; icon: LucideIcon; color: string }[] = [
-  { id: "orders", label: "Orders", desc: "New orders, status updates, cancellations", icon: ShoppingCart, color: "text-blue-500" },
+  { id: "orders", label: "Orders", desc: "New orders, status updates, cancellations", icon: Package, color: "text-blue-500" },
   { id: "inventory", label: "Inventory", desc: "Low stock alerts and restock reminders", icon: AlertCircle, color: "text-warning" },
   { id: "system", label: "System", desc: "Platform updates, security, and maintenance", icon: Settings, color: "text-muted-foreground" },
   { id: "mentions", label: "Mentions", desc: "When someone mentions you or assigns a task", icon: AtSign, color: "text-violet-500" },

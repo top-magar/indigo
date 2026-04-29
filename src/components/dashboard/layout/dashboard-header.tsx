@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Search, Plus, ShoppingCart, Package, Users, BarChart3,
-  Settings, LayoutDashboard, Layers, FolderTree, Tags, Gift,
-  Warehouse, Image as ImageIcon, FileText, Star, Megaphone,
+  Search, Plus, Package, Tag, Users, TrendingUp,
+  Settings, House, Boxes, FolderTree, Tags, Gift,
+  Layers, Image as ImageIcon, FileText, Star, Megaphone,
   DollarSign, Percent, Mail, CreditCard, Globe, Truck,
 } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -22,16 +22,16 @@ type CmdItem = { label: string; href: string; icon: typeof Search; keys?: string
 
 const ACTIONS: CmdItem[] = [
   { label: "Create Product", href: "/dashboard/products/new", icon: Plus, keys: ["C"] },
-  { label: "Create Order", href: "/dashboard/orders/new", icon: ShoppingCart },
+  { label: "Create Order", href: "/dashboard/orders/new", icon: Package },
 ];
 
 const PAGES: CmdItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, keys: ["G", "D"] },
-  { label: "Orders", href: "/dashboard/orders", icon: ShoppingCart, keys: ["G", "O"] },
-  { label: "Products", href: "/dashboard/products", icon: Package, keys: ["G", "P"] },
+  { label: "Dashboard", href: "/dashboard", icon: House, keys: ["G", "D"] },
+  { label: "Orders", href: "/dashboard/orders", icon: Package, keys: ["G", "O"] },
+  { label: "Products", href: "/dashboard/products", icon: Tag, keys: ["G", "P"] },
   { label: "Customers", href: "/dashboard/customers", icon: Users, keys: ["G", "C"] },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, keys: ["G", "A"] },
-  { label: "Inventory", href: "/dashboard/inventory", icon: Warehouse },
+  { label: "Analytics", href: "/dashboard/analytics", icon: TrendingUp, keys: ["G", "A"] },
+  { label: "Inventory", href: "/dashboard/inventory", icon: Boxes },
   { label: "Collections", href: "/dashboard/collections", icon: Layers },
   { label: "Categories", href: "/dashboard/categories", icon: FolderTree },
   { label: "Attributes", href: "/dashboard/attributes", icon: Tags },

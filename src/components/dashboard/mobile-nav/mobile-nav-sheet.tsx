@@ -92,7 +92,7 @@ export function MobileNavSheet({
                             {item.title}
                         </span>
                         {item.external && (
-                            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                            <ExternalLink className="size-3.5 text-muted-foreground" />
                         )}
                         {item.badge && (
                             <Badge

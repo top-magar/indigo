@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
+import { Package } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,7 +35,7 @@ export function OrdersByStatus({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="size-6 text-muted-foreground" />
+                            <Package className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                     </div>

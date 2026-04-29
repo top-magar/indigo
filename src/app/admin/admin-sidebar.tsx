@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Shield, UserCog, Menu } from "lucide-react";
+import { House, Users, CreditCard, Settings, LogOut, Shield, UserCog, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/infrastructure/supabase/client";
@@ -11,7 +11,7 @@ import { cn } from "@/shared/utils";
 import type { Permission } from "./_lib/types";
 
 const NAV = [
-  { href: "/admin", icon: LayoutDashboard, label: "Overview", exact: true, permission: "view_overview" as Permission },
+  { href: "/admin", icon: House, label: "Overview", exact: true, permission: "view_overview" as Permission },
   { href: "/admin/merchants", icon: Users, label: "Merchants", permission: "view_merchants" as Permission },
   { href: "/admin/billing", icon: CreditCard, label: "Billing", permission: "view_billing" as Permission },
   { href: "/admin/team", icon: UserCog, label: "Team", permission: "view_team" as Permission },

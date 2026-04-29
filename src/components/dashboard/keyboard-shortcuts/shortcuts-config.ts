@@ -1,7 +1,7 @@
 import {
-  Home,
-  ShoppingCart,
+  House,
   Package,
+  Tag,
   Users,
   Settings,
   Plus,
@@ -10,7 +10,7 @@ import {
   Search,
   X,
   TrendingUp,
-  Layers,
+  Boxes,
   ArrowRight,
   Eye,
 } from "lucide-react";
@@ -30,21 +30,21 @@ export const navigationShortcuts: ShortcutCategory = {
       label: "Go to Home",
       keys: ["g", "h"],
       isSequence: true,
-      icon: Home,
+      icon: House,
     },
     {
       id: "nav-orders",
       label: "Go to Orders",
       keys: ["g", "o"],
       isSequence: true,
-      icon: ShoppingCart,
+      icon: Package,
     },
     {
       id: "nav-products",
       label: "Go to Products",
       keys: ["g", "p"],
       isSequence: true,
-      icon: Package,
+      icon: Tag,
     },
     {
       id: "nav-customers",
@@ -65,7 +65,7 @@ export const navigationShortcuts: ShortcutCategory = {
       label: "Go to Inventory",
       keys: ["g", "i"],
       isSequence: true,
-      icon: Layers,
+      icon: Boxes,
     },
     {
       id: "nav-settings",

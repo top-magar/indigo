@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ShoppingCart, BarChart3, Boxes, Plus } from "lucide-react";
+import { Tag, Package, TrendingUp, Boxes, Plus } from "lucide-react";
 import Link from "next/link";
 
 interface QuickActionsCardProps {
@@ -13,19 +13,19 @@ const QUICK_ACTIONS = [
   {
     label: "Add Product",
     href: "/dashboard/products/new",
-    icon: Package,
+    icon: Tag,
     description: "Create a new product",
   },
   {
     label: "Create Order",
     href: "/dashboard/orders/new",
-    icon: ShoppingCart,
+    icon: Package,
     description: "Manual order entry",
   },
   {
     label: "View Analytics",
     href: "/dashboard/analytics",
-    icon: BarChart3,
+    icon: TrendingUp,
     description: "Sales insights",
   },
   {

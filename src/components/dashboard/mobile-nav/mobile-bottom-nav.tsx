@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutDashboard, ShoppingCart, Tag, Users, Menu, type LucideIcon } from "lucide-react";
+import { House, Package, Tag, Users, Menu, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Badge } from "@/components/ui/badge";
 import { MobileNavSheet } from "./mobile-nav-sheet";
@@ -32,13 +32,13 @@ const mainNavItems: NavItem[] = [
         id: "home",
         title: "Home",
         href: "/dashboard",
-        icon: LayoutDashboard,
+        icon: House,
     },
     {
         id: "orders",
         title: "Orders",
         href: "/dashboard/orders",
-        icon: ShoppingCart,
+        icon: Package,
     },
     {
         id: "products",

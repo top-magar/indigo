@@ -2,16 +2,16 @@
 
 import * as React from "react";
 import { 
-  Home, 
-  ShoppingCart, 
+  House, 
   Package, 
+  Tag, 
   Users, 
   Settings, 
   Plus, 
   Search, 
   ArrowRight, 
   TrendingUp, 
-  Layers, 
+  Boxes, 
   Tags, 
   Store, 
   LogOut,
@@ -312,16 +312,16 @@ export function CommandPalette({
 
 // Export icon constants for use in command definitions
 export const CommandIcons = {
-  Home: Home,
-  Orders: ShoppingCart,
-  Products: Package,
+  Home: House,
+  Orders: Package,
+  Products: Tag,
   Customers: Users,
   Settings: Settings,
   Add: Plus,
   Search: Search,
   Navigate: ArrowRight,
   Analytics: TrendingUp,
-  Inventory: Layers,
+  Inventory: Boxes,
   Categories: Tags,
   Store: Store,
   Logout: LogOut,

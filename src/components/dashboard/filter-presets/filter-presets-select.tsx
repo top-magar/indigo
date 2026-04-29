@@ -183,7 +183,7 @@ export function FilterPresetsSelect({
                 onClick={() => onApply(preset.id)}
               >
                 <span className="flex items-center gap-2">
-                  <Bookmark className="w-3.5 h-3.5 text-muted-foreground" />
+                  <Bookmark className="size-3.5 text-muted-foreground" />
                   <span className="truncate max-w-[120px]">{preset.name}</span>
                 </span>
               </button>

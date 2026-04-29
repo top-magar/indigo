@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingCart, User, Package, AlertCircle, CheckCircle2, Clock, type LucideIcon } from "lucide-react";
+import { ArrowRight, Package, User, AlertCircle, CheckCircle2, Clock, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
@@ -22,11 +22,11 @@ export interface ActivityFeedProps {
 }
 
 const typeIcon: Record<string, LucideIcon> = {
-  order: ShoppingCart, customer: User, product: Package, alert: AlertCircle, success: CheckCircle2,
+  order: Package, customer: User, product: Package, alert: AlertCircle, success: CheckCircle2,
 };
 
 function ActivityItemRow({ activity }: { activity: ActivityItem }) {
-  const Icon = typeIcon[activity.type] || ShoppingCart;
+  const Icon = typeIcon[activity.type] || Package;
   const timeAgo = formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true });
 
   const content = (
