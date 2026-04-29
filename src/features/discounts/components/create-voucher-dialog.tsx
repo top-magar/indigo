@@ -18,7 +18,7 @@ import {
     Ticket,
     Info,
     Calendar,
-    ShoppingCart,
+    Package,
     Users,
     type LucideIcon,
 } from "lucide-react";
@@ -296,7 +296,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                 "flex size-8 shrink-0 items-center justify-center rounded-md",
                                                 scope === "entire_order" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
-                                                <ShoppingCart className="size-4" />
+                                                <Package className="size-4" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium">Entire order</p>
@@ -490,7 +490,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Minimum Requirements */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <ShoppingCart className="size-4 text-muted-foreground" />
+                                        <Package className="size-4 text-muted-foreground" />
                                         <h3 className="font-medium">Minimum Requirements</h3>
                                     </div>
                                     

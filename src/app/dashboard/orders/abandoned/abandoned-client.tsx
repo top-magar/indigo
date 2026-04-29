@@ -3,7 +3,7 @@
 import { useState, useMemo, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { Mail, ShoppingCart, DollarSign, Users, Search, MoreHorizontal, Eye, Trash2 } from "lucide-react";
+import { Mail, Package, DollarSign, Users, Search, MoreHorizontal, Eye, Trash2 } from "lucide-react";
 import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -82,7 +82,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
     const recoverable = checkouts.filter((c) => c.email && !c.recovery_email_sent);
 
     const statItems: StatItem[] = [
-        { label: "Abandoned", value: stats.total, icon: <ShoppingCart className="size-4 text-muted-foreground" /> },
+        { label: "Abandoned", value: stats.total, icon: <Package className="size-4 text-muted-foreground" /> },
         { label: "Recoverable", value: stats.recoverable, icon: <Users className="size-4 text-muted-foreground" /> },
         { label: "Lost Revenue", value: formatCurrency(stats.totalValue, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
     ];

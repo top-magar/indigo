@@ -1,7 +1,7 @@
 "use client";
 
 import { format, formatDistanceToNow } from "date-fns";
-import { Clock, ShoppingCart, Calendar } from "lucide-react";
+import { Clock, Package, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { Customer } from "@/app/dashboard/customers/types";
@@ -40,7 +40,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
                 {/* Last Order */}
                 <div className="flex items-center gap-3">
                     <div className="size-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <ShoppingCart className="size-4 text-muted-foreground" />
+                        <Package className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">Last order</p>

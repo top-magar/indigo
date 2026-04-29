@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-    ShoppingCart,
+    Package,
     DollarSign,
     Calendar,
     TrendingUp,
@@ -92,7 +92,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <ShoppingCart className="size-4 text-primary" />
+                                    <Package className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <p className="text-lg font-semibold tabular-nums">{customer.stats.totalOrders}</p>

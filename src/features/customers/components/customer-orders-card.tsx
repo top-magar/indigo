@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { ShoppingCart, ArrowRight } from "lucide-react";
+import { Package, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,7 +47,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="flex items-center gap-2">
-                    <ShoppingCart className="size-4" />
+                    <Package className="size-4" />
                     Recent Orders
                 </CardTitle>
                 {recentOrders.length > 0 && (
@@ -63,7 +63,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                 {recentOrders.length === 0 ? (
                     <div className="text-center py-8">
                         <div className="size-12 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto">
-                            <ShoppingCart className="size-5 text-muted-foreground/50" />
+                            <Package className="size-5 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders found</p>
                     </div>

@@ -2,7 +2,7 @@
 
 import {
     Eye,
-    ShoppingCart,
+    Package,
     CreditCard,
     CheckCircle,
     ChevronDown,
@@ -26,7 +26,7 @@ const stageConfig: Record<FunnelStage, { icon: typeof Eye; color: string; bgColo
         bgColor: "bg-primary/10",
     },
     cart: {
-        icon: ShoppingCart,
+        icon: Package,
         color: "text-success",
         bgColor: "bg-success/10",
     },
@@ -61,7 +61,7 @@ export function ConversionFunnel({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="size-9 rounded-lg bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="size-6 text-muted-foreground" />
+                            <Package className="size-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No funnel data available</p>
                     </div>

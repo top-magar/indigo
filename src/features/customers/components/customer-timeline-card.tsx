@@ -3,7 +3,7 @@
 import { formatDistanceToNow } from "date-fns";
 import {
     User,
-    ShoppingCart,
+    Package,
     StickyNote,
     MapPin,
     Mail,
@@ -25,7 +25,7 @@ const eventConfig: Record<TimelineEventType, {
 }> = {
     customer_created: { icon: User, color: "text-success", bgColor: "bg-success/10" },
     customer_updated: { icon: User, color: "text-info", bgColor: "bg-info/10" },
-    order_placed: { icon: ShoppingCart, color: "text-info", bgColor: "bg-info/10" },
+    order_placed: { icon: Package, color: "text-info", bgColor: "bg-info/10" },
     order_fulfilled: { icon: CheckCircle2, color: "text-success", bgColor: "bg-success/10" },
     order_cancelled: { icon: XCircle, color: "text-destructive", bgColor: "bg-destructive/10" },
     note_added: { icon: StickyNote, color: "text-warning", bgColor: "bg-warning/10" },

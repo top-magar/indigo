@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ShoppingCart,
   Truck,
   PackageCheck,
   X,
@@ -30,7 +29,7 @@ interface NotificationDisplayConfig {
 // Configuration for each notification type
 const notificationConfig: Record<NotificationType, NotificationDisplayConfig> = {
   order_received: {
-    icon: ShoppingCart,
+    icon: Package,
     color: "text-info",
     bgColor: "bg-info/10",
     category: "orders",

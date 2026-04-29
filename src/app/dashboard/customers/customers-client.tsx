@@ -13,7 +13,6 @@ import {
     Eye,
     Mail,
     X,
-    ShoppingCart,
     ChevronUp,
     ChevronDown,
     Phone,

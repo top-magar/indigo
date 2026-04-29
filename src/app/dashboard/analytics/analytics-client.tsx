@@ -10,8 +10,6 @@ import {
     Calendar,
     TrendingUp,
     Package,
-    ShoppingCart,
-    BarChart3,
     Image as ImageIcon,
 } from "lucide-react";
 import { getOrderStatus } from "@/config/status";
@@ -195,7 +193,7 @@ export function AnalyticsDashboardView({
 
                 {empty ? (
                     <EmptyState
-                        icon={BarChart3}
+                        icon={TrendingUp}
                         title="No analytics data yet"
                         description="Once you receive orders, your sales data will appear here."
                         className="py-16"
@@ -249,7 +247,7 @@ export function AnalyticsDashboardView({
                             <div className="rounded-lg border p-4 space-y-3">
                                 <h2 className="text-sm font-medium">Orders by Status</h2>
                                 {data.ordersByStatus.length === 0 ? (
-                                    <EmptyState icon={ShoppingCart} title="No orders yet" className="py-8" />
+                                    <EmptyState icon={Package} title="No orders yet" className="py-8" />
                                 ) : (
                                     <div className="space-y-3">
                                         {data.ordersByStatus.map((item) => {

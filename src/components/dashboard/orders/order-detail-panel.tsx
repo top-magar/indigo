@@ -16,7 +16,6 @@ import {
   ImageIcon,
   CheckCircle,
   X,
-  ShoppingCart,
   FileText,
   StickyNote,
   type LucideIcon,
@@ -348,7 +347,7 @@ export function OrderDetailPanel({
             {/* Order Totals Section */}
             <section>
               <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
-                <ShoppingCart className="size-4 text-muted-foreground" />
+                <Package className="size-4 text-muted-foreground" />
                 Order Summary
               </h3>
               <div className="space-y-2">

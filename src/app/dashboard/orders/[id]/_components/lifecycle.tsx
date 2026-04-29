@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, Banknote, CreditCard, Truck, Package, CheckCircle2, AlertTriangle, MapPin, Clock } from "lucide-react";
+import { Phone, Banknote, CreditCard, Truck, Package, CheckCircle2, MapPin, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

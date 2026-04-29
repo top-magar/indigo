@@ -3,7 +3,7 @@
 import { formatDistanceToNow } from "date-fns"
 
 import { useState, useTransition } from "react"
-import { ChevronRight } from "lucide-react"
+
 // Types are defined in the parent order-detail-client.tsx
 import type { AIAnalysis } from "../order-detail-client";
 type OrderAddress = {
@@ -14,7 +14,7 @@ type OrderAddress = {
 type OrderEvent = {
   id: string; type: string; message: string; createdAt: string; user?: string | null;
 };
-import { AlertTriangle, Brain, Loader2, Phone, History } from "lucide-react"
+import { Brain, Phone, History } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { STATUS_CONFIG } from "../../_components/order-badges"

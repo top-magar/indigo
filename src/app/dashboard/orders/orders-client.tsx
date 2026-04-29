@@ -6,7 +6,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/ui/empty-state";
 import { format, formatDistanceToNow } from "date-fns";
 import {
-  ShoppingCart,
+
   Search,
   Download,
   MoreHorizontal,
@@ -711,7 +711,7 @@ export function OrdersListView({
                   <TableRow>
                     <TableCell colSpan={9} className="h-64">
                       <EmptyState
-                        icon={ShoppingCart}
+                        icon={Package}
                         title="No orders found"
                         description="Orders will appear here once customers start purchasing."
                         hint="Press ⌘K to navigate or G then O to jump here"
@@ -741,7 +741,7 @@ export function OrdersListView({
           <div className="md:hidden space-y-2">
             {orders.length === 0 ? (
               <EmptyState
-                icon={ShoppingCart}
+                icon={Package}
                 title="No orders found"
                 description="Orders will appear here once customers start purchasing."
                 action={{

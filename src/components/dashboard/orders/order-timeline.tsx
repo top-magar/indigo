@@ -7,7 +7,6 @@ import {
     Truck,
     Package,
     X,
-    ShoppingCart,
     CreditCard,
     Mail,
     type LucideIcon,
@@ -29,7 +28,7 @@ interface OrderTimelineProps {
 
 const eventConfig: Record<string, { icon: LucideIcon; color: string; bgColor: string }> = {
     created: {
-        icon: ShoppingCart,
+        icon: Package,
         color: "text-primary",
         bgColor: "bg-info/10",
     },

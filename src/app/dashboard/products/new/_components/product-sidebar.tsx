@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { CheckCircle2, Circle, Eye, ImageIcon, AlertCircle } from "lucide-react"
+import { CheckCircle2, Circle, Eye, AlertCircle } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/shared/utils"
 

@@ -82,7 +82,7 @@ export interface DataTableAction {
 }
 
 // Import LucideIcon type for EmptyState compatibility
-import { type LucideIcon, Inbox } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 
 export interface DataTableEmptyState {
   icon?: LucideIcon;

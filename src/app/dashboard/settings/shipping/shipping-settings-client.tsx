@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, MoreHorizontal, MapPin, Clock, Package, Edit, Loader2, CheckCircle, Truck } from "lucide-react";
+import { Plus, Trash2, MoreHorizontal, MapPin, Clock, Package, Edit, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";

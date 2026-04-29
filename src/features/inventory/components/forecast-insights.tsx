@@ -9,7 +9,6 @@ import {
   RefreshCw,
   ChevronRight,
   Calendar,
-  ShoppingCart,
 } from 'lucide-react';
 
 import { cn } from '@/shared/utils';
@@ -48,7 +47,7 @@ const priorityColors = {
 
 const typeIcons = {
   stock_out_warning: AlertTriangle,
-  reorder_suggestion: ShoppingCart,
+  reorder_suggestion: Package,
   overstock_alert: Package,
   seasonal_trend: TrendingUp,
 };

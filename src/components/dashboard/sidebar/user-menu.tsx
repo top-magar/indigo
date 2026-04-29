@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronsUpDown, User, Moon, Sun, Monitor, Bell, Shield, LogOut } from "lucide-react";
+import { ChevronsUpDown, User, Moon, Sun, Monitor, Bell, Shield } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,

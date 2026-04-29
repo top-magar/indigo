@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart, Truck, Percent } from "lucide-react";
+import { Package, Truck, Percent } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Order } from "@/features/orders/types";
@@ -15,7 +15,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <ShoppingCart className="size-4" />
+                    <Package className="size-4" />
                     Order Summary
                 </CardTitle>
             </CardHeader>
