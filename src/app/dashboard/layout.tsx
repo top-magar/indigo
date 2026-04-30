@@ -74,7 +74,7 @@ export default async function DashboardLayout({
         </a>
         <SidebarProvider>
             {/* Sidebar - Server wrapper with client content */}
-            <Sidebar collapsible="icon" className="border-r">
+            <Sidebar variant="inset" collapsible="icon">
                 <SidebarClient
                     tenantName={tenant?.name || "My Store"}
                     storeLogo={tenant?.logo_url}

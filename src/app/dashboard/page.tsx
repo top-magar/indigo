@@ -91,7 +91,7 @@ export default async function DashboardPage() {
       {hasProducts && d.tenant.slug && (() => {
         const storeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://indigo.store"}/store/${d.tenant.slug}`
         return (
-          <div className="rounded-lg border p-4">
+          <div className="rounded-lg border bg-background p-4">
             <div className="flex items-center justify-between">
               <div className="min-w-0">
                 <p className="text-sm font-medium">Share your store</p>
