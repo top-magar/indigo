@@ -94,7 +94,7 @@ export default async function DashboardLayout({
                 <DashboardHeader />
 
                 {/* Main Content - Scrollable */}
-                <main className="flex-1 overflow-y-auto p-3 md:p-4" id="main-content" aria-label="Dashboard content">
+                <main className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-4" id="main-content" aria-label="Dashboard content">
                     <VerificationBanner tenantId={user.tenantId} />
                     {children}
                 </main>
