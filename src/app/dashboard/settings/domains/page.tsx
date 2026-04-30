@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
+import { getDomains } from "@/infrastructure/services/domain";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import DomainsClient from "./domains-client";
@@ -11,7 +12,7 @@ export default async function DomainsPage() {
   if (limits.planName === "Free") {
     return (
       <div className="max-w-2xl flex flex-col items-center justify-center py-24 gap-4">
-        <div className="size-12 rounded-full bg-muted flex items-center justify-center">
+        <div className="size-12 rounded-md bg-muted flex items-center justify-center">
           <Lock className="size-5 text-muted-foreground" />
         </div>
         <div className="text-center">
@@ -23,5 +24,11 @@ export default async function DomainsPage() {
     );
   }
 
-  return <DomainsClient />;
+  let initialDomains: Parameters<typeof DomainsClient>[0]["initialDomains"] = [];
+  try {
+    const raw = await getDomains();
+    initialDomains = raw.map(d => ({ ...d, createdAt: d.createdAt instanceof Date ? d.createdAt.toISOString() : d.createdAt, verifiedAt: d.verifiedAt instanceof Date ? d.verifiedAt.toISOString() : d.verifiedAt })) as typeof initialDomains;
+  } catch {}
+
+  return <DomainsClient initialDomains={initialDomains} />;
 }

@@ -201,7 +201,10 @@ export async function generateMetadata({
     title,
     description,
     icons: { icon: faviconUrl },
-    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}` },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}`,
+      languages: { "en-NP": `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}` },
+    },
     openGraph: {
       title: ogTitle,
       description: ogDescription,

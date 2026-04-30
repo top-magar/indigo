@@ -37,9 +37,9 @@ const STATUS_STYLE: Record<string, string> = {
   failed: "bg-destructive/10 text-destructive",
 };
 
-export default function DomainsClient() {
-  const [domains, setDomains] = useState<DomainRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function DomainsClient({ initialDomains = [] }: { initialDomains?: DomainRecord[] }) {
+  const [domains, setDomains] = useState<DomainRecord[]>(initialDomains);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newDomainInstructions, setNewDomainInstructions] = useState<{
@@ -60,7 +60,7 @@ export default function DomainsClient() {
     }
   }, []);
 
-  useEffect(() => { fetchDomains(); }, [fetchDomains]);
+  useEffect(() => { if (initialDomains.length === 0) fetchDomains(); }, []);
 
   const handleDomainAdded = (domain: DomainRecord, instructions: DnsInstructions) => {
     setDomains(prev => [...prev, domain]);

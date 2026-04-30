@@ -247,7 +247,10 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}/products/${productSlug}` },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}/products/${productSlug}`,
+      languages: { "en-NP": `${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}/products/${productSlug}` },
+    },
     openGraph: {
       title: product.name,
       description,
