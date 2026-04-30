@@ -123,7 +123,7 @@ export function DashboardHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4">
+      <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:rounded-t-xl">
         <SidebarTrigger />
         <div className="flex-1" />
         <Button
