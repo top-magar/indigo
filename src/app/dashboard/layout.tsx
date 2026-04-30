@@ -89,12 +89,12 @@ export default async function DashboardLayout({
                 <SidebarRail />
             </Sidebar>
 
-            <SidebarInset>
-                {/* Header - Client component for dynamic breadcrumbs */}
+            <SidebarInset className="flex flex-col h-svh overflow-hidden">
+                {/* Header - Sticky at top of content panel */}
                 <DashboardHeader />
 
-                {/* Main Content */}
-                <main className="flex-1 p-3 md:p-4" id="main-content" aria-label="Dashboard content">
+                {/* Main Content - Scrollable */}
+                <main className="flex-1 overflow-y-auto p-3 md:p-4" id="main-content" aria-label="Dashboard content">
                     <VerificationBanner tenantId={user.tenantId} />
                     {children}
                 </main>
