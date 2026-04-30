@@ -10,9 +10,10 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Star, CheckCircle, MoreVertical, ThumbsDown, Trash2, RotateCcw } from 'lucide-react';
+import { Search, Star, CheckCircle, MoreHorizontal, ThumbsDown, Trash2, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/ui/empty-state';
+import { EntityListPage } from '@/components/dashboard/templates';
 import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
 import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
 import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
@@ -132,19 +133,17 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   const setF = <T,>(setter: (v: T) => void) => (v: T) => { setter(v); setPageIndex(0); };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Reviews</h1>
-          <p className="text-xs text-muted-foreground">{stats.averageRating.toFixed(1)} avg · {stats.total} reviews · {pendingCount} pending</p>
-        </div>
-        {pendingCount > 0 && (
+    <EntityListPage
+      title="Reviews"
+      description={`${stats.averageRating.toFixed(1)} avg · ${stats.total} reviews · ${pendingCount} pending`}
+      actions={
+        pendingCount > 0 ? (
           <Button variant="outline" size="sm" onClick={handleBulkApprove} disabled={isPending}>
             <CheckCircle className="size-3.5 text-success" /> Approve All Pending ({pendingCount})
           </Button>
-        )}
-      </div>
+        ) : undefined
+      }
+    >
 
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -213,7 +212,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm" aria-label="Review actions"><MoreVertical className="size-4" /></Button>
+                          <Button variant="ghost" size="icon-sm" aria-label="Review actions"><MoreHorizontal className="size-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => act(() => approveReview(review.id), 'Review approved')}><CheckCircle className="size-4 text-success" /> Approve</DropdownMenuItem>
@@ -267,6 +266,6 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
       {sortedReviews.length > 0 && (
         <DataTablePagination pageIndex={pageIndex} pageSize={pageSize} pageCount={pageCount} totalItems={sortedReviews.length} onPageChange={setPageIndex} onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }} selectedCount={selectedIds.size} />
       )}
-    </div>
+    </EntityListPage>
   );
 }

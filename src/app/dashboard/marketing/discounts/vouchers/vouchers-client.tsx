@@ -160,24 +160,14 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
 
     if (vouchers.length === 0 && !searchQuery && statusFilter === "all" && typeFilter === "all") {
         return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="size-16 rounded-lg bg-muted flex items-center justify-center mb-4">
-                    <Ticket className="size-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-sm font-semibold mb-2">No vouchers yet</h3>
-                <p className="text-muted-foreground mb-4 max-w-sm">
-                    Create your first voucher to offer discount codes to your customers.
-                </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-3.5" />
-                    Create Voucher
-                </Button>
+            <>
+                <EmptyState icon={Percent} title="No vouchers yet" description="Create discount vouchers for your customers" action={{ label: "Create Voucher", onClick: () => setCreateDialogOpen(true) }} />
                 <CreateVoucherDialog
                     open={createDialogOpen}
                     onOpenChange={setCreateDialogOpen}
                     onSuccess={handleCreateSuccess}
                 />
-            </div>
+            </>
         );
     }
 

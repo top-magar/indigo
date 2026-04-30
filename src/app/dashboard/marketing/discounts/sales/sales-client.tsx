@@ -163,24 +163,14 @@ export function SalesClient({ initialSales }: SalesClientProps) {
 
     if (sales.length === 0 && !searchQuery && statusFilter === "all") {
         return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="size-16 rounded-lg bg-muted flex items-center justify-center mb-4">
-                    <Percent className="size-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-sm font-semibold mb-2">No sales yet</h3>
-                <p className="text-muted-foreground mb-4 max-w-sm">
-                    Create your first sale to automatically apply discounts to products.
-                </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="size-3.5" />
-                    Create Sale
-                </Button>
+            <>
+                <EmptyState icon={Percent} title="No sales yet" description="Create sales to offer discounts on your products" action={{ label: "Create Sale", onClick: () => setCreateDialogOpen(true) }} />
                 <CreateSaleDialog
                     open={createDialogOpen}
                     onOpenChange={setCreateDialogOpen}
                     onSuccess={handleCreateSuccess}
                 />
-            </div>
+            </>
         );
     }
 

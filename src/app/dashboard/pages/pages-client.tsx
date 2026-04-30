@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/empty-state";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -96,12 +97,10 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Pages</h1>
-          <p className="text-xs text-muted-foreground">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
-        </div>
+    <EntityListPage
+      title="Pages"
+      description={`${pages.length} page${pages.length !== 1 ? "s" : ""}`}
+      actions={
         <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
           <DialogTrigger asChild>
             <Button size="sm">
@@ -126,7 +125,8 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
             </form>
           </DialogContent>
         </Dialog>
-      </div>
+      }
+    >
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -330,6 +330,6 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           onPageSizeChange={(size) => { setPageSize(size); setPageIndex(0); }}
         />
       )}
-    </div>
+    </EntityListPage>
   );
 }

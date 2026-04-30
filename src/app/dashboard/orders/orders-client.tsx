@@ -674,29 +674,29 @@ export function OrdersListView({
                       aria-label="Select all orders"
                     />
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     <button onClick={() => onSort("created_at")} className="flex items-center gap-1 hover:text-foreground transition-colors">
                       Order {sort === "created_at" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     Customer
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     Items
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     <button onClick={() => onSort("status")} className="flex items-center gap-1 hover:text-foreground transition-colors">
                       Status {sort === "status" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
                     </button>
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     Payment
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <TableHead className="text-xs font-medium text-muted-foreground">
                     Fulfillment
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
+                  <TableHead className="text-xs font-medium text-muted-foreground text-right">
                     <button onClick={() => onSort("total")} className="flex items-center gap-1 hover:text-foreground transition-colors ml-auto">
                       Total {sort === "total" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
                     </button>

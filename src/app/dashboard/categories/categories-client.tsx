@@ -398,9 +398,9 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                     onCheckedChange={toggleSelectAll}
                                     aria-label="Select all"
                                 />
-                                <span className="text-sm font-medium flex-1">Category</span>
-                                <span className="text-sm font-medium w-24 text-center hidden md:block">Products</span>
-                                <span className="text-sm font-medium w-20 text-center hidden md:block">Order</span>
+                                <span className="text-xs font-medium text-muted-foreground flex-1">Category</span>
+                                <span className="text-xs font-medium text-muted-foreground w-24 text-center hidden md:block">Products</span>
+                                <span className="text-xs font-medium text-muted-foreground w-20 text-center hidden md:block">Order</span>
                                 <span className="w-10"></span>
                             </div>
                             
