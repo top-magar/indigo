@@ -89,7 +89,7 @@ export default async function DashboardLayout({
                 <SidebarRail />
             </Sidebar>
 
-            <SidebarInset className="flex flex-col max-h-svh md:max-h-[calc(100svh-theme(spacing.2)*2)] overflow-hidden">
+            <SidebarInset>
                 {/* Header - Sticky at top of content panel */}
                 <DashboardHeader />
 
