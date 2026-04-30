@@ -74,7 +74,7 @@ export default async function DashboardLayout({
         </a>
         <SidebarProvider>
             {/* Sidebar - Server wrapper with client content */}
-            <Sidebar variant="inset" collapsible="icon">
+            <Sidebar collapsible="icon" className="border-r">
                 <SidebarClient
                     tenantName={tenant?.name || "My Store"}
                     storeLogo={tenant?.logo_url}
@@ -90,11 +90,9 @@ export default async function DashboardLayout({
             </Sidebar>
 
             <SidebarInset>
-                {/* Header - Sticky at top of content panel */}
                 <DashboardHeader />
 
-                {/* Main Content - Scrollable */}
-                <main className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-4" id="main-content" aria-label="Dashboard content">
+                <main className="flex-1 p-3 md:p-4" id="main-content" aria-label="Dashboard content">
                     <VerificationBanner tenantId={user.tenantId} />
                     {children}
                 </main>

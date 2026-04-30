@@ -396,8 +396,8 @@
   --card-foreground: var(--ds-gray-1000);
   --popover: var(--ds-background-100);
   --popover-foreground: var(--ds-gray-1000);
-  --primary: oklch(0.40 0.18 280);
-  --primary-foreground: hsl(0 0% 100%);
+  --primary: var(--ds-gray-1000);
+  --primary-foreground: var(--ds-background-100);
   --secondary: var(--ds-gray-100);
   --secondary-foreground: var(--ds-gray-900);
   --muted: var(--ds-gray-100);
@@ -410,20 +410,20 @@
   --destructive-foreground: var(--ds-background-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
-  --ring: oklch(0.40 0.18 280);
+  --ring: var(--ds-gray-1000);
   --chart-1: oklch(0.65 0.18 25);
   --chart-2: oklch(0.65 0.15 230);
   --chart-3: oklch(0.65 0.15 155);
   --chart-4: oklch(0.65 0.15 55);
   --chart-5: oklch(0.65 0.12 300);
-  --sidebar: hsl(260 15% 96%);
+  --sidebar: var(--ds-background-100);
   --sidebar-foreground: var(--ds-gray-1000);
-  --sidebar-primary: oklch(0.40 0.18 280);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(260 15% 93%);
+  --sidebar-primary: var(--ds-gray-1000);
+  --sidebar-primary-foreground: var(--ds-background-100);
+  --sidebar-accent: var(--ds-gray-100);
   --sidebar-accent-foreground: var(--ds-gray-1000);
-  --sidebar-border: hsl(260 10% 90%);
-  --sidebar-ring: oklch(0.40 0.18 280);
+  --sidebar-border: var(--ds-gray-200);
+  --sidebar-ring: var(--ds-gray-1000);
 
   /* Selection */
   --selection: var(--ds-gray-1000);
@@ -568,8 +568,8 @@
   --card-foreground: var(--ds-gray-1000);
   --popover: var(--ds-gray-100);
   --popover-foreground: var(--ds-gray-1000);
-  --primary: oklch(0.55 0.20 280);
-  --primary-foreground: hsl(0 0% 100%);
+  --primary: var(--ds-gray-1000);
+  --primary-foreground: var(--ds-gray-100);
   --secondary: var(--ds-gray-200);
   --secondary-foreground: var(--ds-gray-1000);
   --muted: var(--ds-gray-200);
@@ -582,7 +582,7 @@
   --destructive-foreground: var(--ds-gray-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
-  --ring: oklch(0.55 0.20 280);
+  --ring: var(--ds-gray-1000);
   --chart-1: oklch(0.72 0.18 25);
   --chart-2: oklch(0.72 0.15 230);
   --chart-3: oklch(0.72 0.15 155);

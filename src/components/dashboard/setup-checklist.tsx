@@ -25,7 +25,7 @@ export function SetupChecklist({ storeName, hasProducts, hasPayments, hasStorefr
   const nextStep = nextIdx >= 0 ? STEPS[nextIdx] : null;
 
   return (
-    <div className="rounded-lg border bg-background overflow-hidden">
+    <div className="rounded-lg border overflow-hidden">
       {/* Header */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex items-center justify-between mb-3">
