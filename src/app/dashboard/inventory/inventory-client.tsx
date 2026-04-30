@@ -77,6 +77,7 @@ import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { EntityListPage } from "@/components/dashboard/templates";
+import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar/bulk-actions-bar";
 import type { InventoryProduct, StockMovement } from "./types";
 import { StockLevelIndicator, StockBadge } from "./_components/helpers";
 import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
@@ -345,40 +346,34 @@ export function InventoryClient({
                 </div>
 
                 {/* Bulk Actions */}
-                {selectedProducts.size > 0 && (
-                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <span className="text-sm font-medium">{selectedProducts.size} selected</span>
-                        <div className="flex items-center gap-2">
-                            <Button 
-                                
-                                variant="outline"
-                                className="gap-1"
-                                onClick={() => {
-                                    setBulkAdjustType("add");
-                                    setBulkAdjustDialogOpen(true);
-                                }}
-                            >
-                                <Plus className="size-3.5" />
-                                Add Stock
-                            </Button>
-                            <Button 
-                                
-                                variant="outline"
-                                className="gap-1"
-                                onClick={() => {
-                                    setBulkAdjustType("remove");
-                                    setBulkAdjustDialogOpen(true);
-                                }}
-                            >
-                                <Minus className="size-3.5" />
-                                Remove Stock
-                            </Button>
-                            <Button variant="ghost" onClick={() => setSelectedProducts(new Set())}>
-                                Clear
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                <StickyBulkActionsBar
+                    selectedCount={selectedProducts.size}
+                    onClear={() => setSelectedProducts(new Set())}
+                    itemLabel="product"
+                >
+                    <Button 
+                        variant="outline"
+                        className="gap-1"
+                        onClick={() => {
+                            setBulkAdjustType("add");
+                            setBulkAdjustDialogOpen(true);
+                        }}
+                    >
+                        <Plus className="size-3.5" />
+                        Add Stock
+                    </Button>
+                    <Button 
+                        variant="outline"
+                        className="gap-1"
+                        onClick={() => {
+                            setBulkAdjustType("remove");
+                            setBulkAdjustDialogOpen(true);
+                        }}
+                    >
+                        <Minus className="size-3.5" />
+                        Remove Stock
+                    </Button>
+                </StickyBulkActionsBar>
             </div>
 
             {/* Mobile Cards */}

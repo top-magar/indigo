@@ -57,6 +57,7 @@ import { toast } from "sonner";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar/bulk-actions-bar";
 import { SortableHeader, useClientSort } from "@/components/dashboard/sortable-header";
 
 interface VouchersClientProps {
@@ -220,20 +221,20 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
             }
             bulkActions={
                 selectedIds.length > 0 ? (
-                    <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                        <span className="text-sm font-medium">
-                            {selectedIds.length} selected
-                        </span>
+                    <StickyBulkActionsBar
+                        selectedCount={selectedIds.length}
+                        onClear={() => setSelectedIds([])}
+                        itemLabel="voucher"
+                    >
                         <Button
                             variant="destructive"
-                           
                             onClick={handleBulkDelete}
                             disabled={isPending}
                         >
                             {isPending && <Loader2 className="size-3.5 animate-spin" />}
                             Delete
                         </Button>
-                    </div>
+                    </StickyBulkActionsBar>
                 ) : undefined
             }
         >

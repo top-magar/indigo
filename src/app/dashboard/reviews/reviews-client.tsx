@@ -176,7 +176,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
       ) : (
         <>
           {/* Desktop Table */}
-          <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity hidden md:block rounded-lg border")}>
+          <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity hidden md:block")}>
             <Table>
               <TableHeader>
                 <TableRow>

@@ -205,7 +205,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             </div>
 
             {/* Table */}
-            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
+            <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
                     {sorted.length === 0 ? (
                         <EmptyState icon={Gift} title={cards.length === 0 ? "No gift cards yet" : "No gift cards match your filters"} description={cards.length === 0 ? 'Click "Issue gift card" to create one.' : "Try adjusting your search or filters."} size="sm" />
                     ) : (

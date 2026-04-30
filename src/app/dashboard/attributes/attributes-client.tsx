@@ -206,7 +206,7 @@ export function AttributesClient({
                 }
             >
                 {/* Table */}
-                <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity rounded-lg border")}>
+                <div className={cn(isPending && "opacity-50 pointer-events-none", "transition-opacity")}>
                         {attributes.length === 0 ? (
                             <EmptyState
                                 icon={Filter}
