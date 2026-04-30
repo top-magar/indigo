@@ -43,7 +43,7 @@ export function EmptyState({
     >
       <div
         className={cn(
-          "rounded-full bg-muted flex items-center justify-center mb-4",
+          "rounded-md bg-muted flex items-center justify-center mb-4",
           size === "sm" && "size-10",
           size === "md" && "size-12",
           size === "lg" && "size-16"
@@ -60,10 +60,10 @@ export function EmptyState({
       </div>
       <h3
         className={cn(
-          "font-semibold text-foreground",
-          size === "sm" && "text-sm",
-          size === "md" && "text-base",
-          size === "lg" && "text-lg"
+          "text-foreground tracking-tight",
+          size === "sm" && "text-sm font-medium",
+          size === "md" && "text-sm font-medium",
+          size === "lg" && "text-lg font-semibold"
         )}
       >
         {title}
@@ -128,7 +128,7 @@ export function NoResults({
         className
       )}
     >
-      <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+      <div className="flex size-12 items-center justify-center rounded-md bg-muted">
         <Search className="size-6 text-muted-foreground" />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-center">

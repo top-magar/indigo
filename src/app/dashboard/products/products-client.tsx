@@ -354,14 +354,18 @@ export function ProductsListView({
             title="Products"
             actions={
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={onExport}>
-                        <Download className="size-3.5" />
-                        <span className="hidden sm:inline">Export</span>
-                    </Button>
-                    <Button variant="outline" onClick={() => onImportOpen()}>
-                        <Upload className="size-3.5" />
-                        <span className="hidden sm:inline">Import</span>
-                    </Button>
+                    {totalCount > 0 && (
+                        <>
+                            <Button variant="outline" onClick={onExport}>
+                                <Download className="size-3.5" />
+                                <span className="hidden sm:inline">Export</span>
+                            </Button>
+                            <Button variant="outline" onClick={() => onImportOpen()}>
+                                <Upload className="size-3.5" />
+                                <span className="hidden sm:inline">Import</span>
+                            </Button>
+                        </>
+                    )}
                     <Button asChild>
                         <Link href="/dashboard/products/new">
                             <Plus className="size-4" />
