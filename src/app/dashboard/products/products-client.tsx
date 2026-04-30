@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import {
     Package,
     Plus,
@@ -321,14 +321,9 @@ export function ProductsListView({
     const activeFilterChips = useMemo(() => {
         const chips: { key: string; label: string; displayValue: string }[] = [];
         
-        const statusFilter = getFilter("status");
         const stockFilter = getFilter("stock");
         const categoryFilter = getFilter("category");
         
-        if (statusFilter) {
-            const option = statusOptions.find(o => o.value === statusFilter);
-            chips.push({ key: "status", label: "Status", displayValue: option?.label || statusFilter });
-        }
         if (stockFilter) {
             const option = stockOptions.find(o => o.value === stockFilter);
             chips.push({ key: "stock", label: "Stock", displayValue: option?.label || stockFilter });
@@ -339,7 +334,7 @@ export function ProductsListView({
         }
         
         return chips;
-    }, [getFilter, statusOptions, stockOptions, categoryOptions]);
+    }, [getFilter, stockOptions, categoryOptions]);
 
     // Clear bulk selection when products change (e.g., page change)
     useEffect(() => {
@@ -352,6 +347,7 @@ export function ProductsListView({
     return (
         <EntityListPage
             title="Products"
+            description={totalCount > 0 ? `${totalCount} products` : undefined}
             actions={
                 <div className="flex items-center gap-2">
                     {totalCount > 0 && (
@@ -376,6 +372,30 @@ export function ProductsListView({
             }
         >
 
+            {/* Status Tabs */}
+            <div className="flex items-center gap-1 border-b">
+                {(["all", "active", "draft", "archived"] as const).map(tab => {
+                    const count = tab === "all" ? totalCount : stats[tab];
+                    const currentStatus = getFilter("status");
+                    const isActive = tab === "all" ? !currentStatus : currentStatus === tab;
+                    return (
+                        <button
+                            key={tab}
+                            type="button"
+                            onClick={() => onFilterChange("status", tab === "all" ? undefined : tab)}
+                            className={cn(
+                                "px-3 py-2 text-xs font-medium transition-colors relative",
+                                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                            <span className="ml-1.5 text-muted-foreground">{count}</span>
+                            {isActive && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground" />}
+                        </button>
+                    );
+                })}
+            </div>
+
             {/* Toolbar */}
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -394,30 +414,6 @@ export function ProductsListView({
 
                     {/* Inline Filters */}
                     <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-                        {/* Status Filter */}
-                        <Select
-                            value={getFilter("status") || "all"}
-                            onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
-                        >
-                            <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Status</SelectItem>
-                                {statusOptions.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
-                                        <span className="flex items-center gap-2">
-                                            {opt.color && <span className={cn("size-2 rounded-full", opt.color)} />}
-                                            {opt.label}
-                                            {opt.count !== undefined && (
-                                                <span className="text-muted-foreground">({opt.count})</span>
-                                            )}
-                                        </span>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
                         {/* Stock Filter */}
                         <Select
                             value={getFilter("stock") || "all"}
@@ -547,13 +543,14 @@ export function ProductsListView({
                             <TableHead className="whitespace-nowrap"><SortableHeader label="Status" column="status" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="hidden md:table-cell whitespace-nowrap"><SortableHeader label="Stock" column="quantity" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
                             <TableHead className="text-right whitespace-nowrap"><SortableHeader label="Price" column="price" currentSort={sort} currentDir={dir} onSort={handleSort} /></TableHead>
+                            <TableHead className="hidden xl:table-cell whitespace-nowrap">Updated</TableHead>
                             <TableHead className="w-12"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {sortedProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
-                                <TableCell colSpan={8} className="h-[300px]">
+                                <TableCell colSpan={9} className="h-[300px]">
                                     <EmptyState
                                         icon={Package}
                                         title={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
@@ -583,9 +580,10 @@ export function ProductsListView({
                                 return (
                                     <TableRow 
                                         key={product.id} 
-                                        className={cn("group", isSelected && "bg-muted/50")}
+                                        className={cn("group cursor-pointer hover:bg-muted/50 transition-colors", isSelected && "bg-muted/50")}
+                                        onClick={() => onNavigate(`/dashboard/products/${product.id}`)}
                                     >
-                                        <TableCell>
+                                        <TableCell onClick={(e) => e.stopPropagation()}>
                                             <Checkbox
                                                 checked={isSelected}
                                                 onCheckedChange={() => bulkActions.toggle(product.id)}
@@ -613,6 +611,7 @@ export function ProductsListView({
                                                 <Link 
                                                     href={`/dashboard/products/${product.id}`}
                                                     className="font-medium hover:text-primary transition-colors line-clamp-1"
+                                                    onClick={(e) => e.stopPropagation()}
                                                 >
                                                     {product.name}
                                                 </Link>
@@ -644,7 +643,10 @@ export function ProductsListView({
                                                 )}
                                             </div>
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="hidden xl:table-cell text-xs text-muted-foreground">
+                                            {formatDistanceToNow(new Date(product.updated_at), { addSuffix: true })}
+                                        </TableCell>
+                                        <TableCell onClick={(e) => e.stopPropagation()}>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
