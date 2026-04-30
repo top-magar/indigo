@@ -215,11 +215,11 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                           <Button variant="ghost" size="icon-sm" aria-label="Review actions"><MoreHorizontal className="size-4" /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => act(() => approveReview(review.id), 'Review approved')}><CheckCircle className="size-4 text-success" /> Approve</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => act(() => rejectReview(review.id), 'Review rejected')}><ThumbsDown className="size-4 text-destructive" /> Reject</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => act(() => reanalyzeReview(review.id), 'Review re-analyzed')}><RotateCcw className="size-4" /> Re-analyze</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => act(() => approveReview(review.id), 'Review approved')}><CheckCircle className="size-3.5 text-success" /> Approve</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => act(() => rejectReview(review.id), 'Review rejected')}><ThumbsDown className="size-3.5 text-destructive" /> Reject</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => act(() => reanalyzeReview(review.id), 'Review re-analyzed')}><RotateCcw className="size-3.5" /> Re-analyze</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(review.id)}><Trash2 className="size-4" /> Delete</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(review.id)}><Trash2 className="size-3.5" /> Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

@@ -634,7 +634,7 @@ export function ProductsListView({
                                         </TableCell>
                                         <TableCell className="text-right whitespace-nowrap">
                                             <div>
-                                                <span className="font-semibold tabular-nums">
+                                                <span className="font-medium tabular-nums">
                                                     {formatCurrency(Number(product.price), currency)}
                                                 </span>
                                                 {product.compare_at_price && product.compare_at_price > product.price && (

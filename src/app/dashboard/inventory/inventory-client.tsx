@@ -274,7 +274,7 @@ export function InventoryClient({
                             aria-label="Search by name, SKU, or barcode" placeholder="Search by name, SKU, or barcode..."
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
-                            className="pl-9 bg-background"
+                            className="pl-9"
                         />
                     </div>
 
@@ -284,7 +284,7 @@ export function InventoryClient({
                             value={filters.stock || "all"}
                             onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-full sm:w-[140px] bg-background" aria-label="Filter by stock level">
+                            <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by stock level">
                                 <SelectValue placeholder="Stock Level" />
                             </SelectTrigger>
                             <SelectContent>
@@ -315,7 +315,7 @@ export function InventoryClient({
                                 value={filters.category || "all"}
                                 onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-full sm:w-[150px] bg-background" aria-label="Filter by category">
+                                <SelectTrigger className="w-full sm:w-[150px]" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -417,7 +417,7 @@ export function InventoryClient({
                                 </div>
                                 <div className="flex flex-col items-end gap-1 shrink-0">
                                     <span className={cn(
-                                        "font-semibold tabular-nums",
+                                        "font-medium tabular-nums",
                                         product.quantity === 0 && "text-destructive",
                                         product.quantity > 0 && product.quantity <= product.reorder_point && "text-warning"
                                     )}>
@@ -533,7 +533,7 @@ export function InventoryClient({
                                         <TableCell className="text-center">
                                             <div className="flex flex-col items-center gap-1">
                                                 <span className={cn(
-                                                    "font-semibold tabular-nums",
+                                                    "font-medium tabular-nums",
                                                     product.quantity === 0 && "text-destructive",
                                                     product.quantity > 0 && product.quantity <= product.reorder_point && "text-warning"
                                                 )}>

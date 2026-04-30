@@ -103,7 +103,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
       actions={
         <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
           <DialogTrigger asChild>
-            <Button size="sm">
+            <Button>
               <Plus className="size-3.5" /> New Page
             </Button>
           </DialogTrigger>

@@ -148,12 +148,7 @@ export function AttributesClient({
                         </Button>
                     </>
                 }
-                stats={[
-                    { label: "Total", value: stats.total, icon: <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center"><Filter className="size-4 text-primary" /></div> },
-                    { label: "Dropdown", value: stats.dropdown, icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><ListChecks className="size-4 text-success" /></div> },
-                    { label: "Swatch", value: stats.swatch, icon: <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center"><Palette className="size-4 text-info" /></div> },
-                    { label: "Other", value: stats.text + stats.numeric + stats.boolean + stats.other, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><Type className="size-4 text-warning" /></div> },
-                ]}
+
                 filters={
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex flex-1 items-center gap-2">

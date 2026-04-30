@@ -283,12 +283,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     Create Collection
                 </Button>
             }
-            stats={[
-                { label: "Total", value: collections.length, icon: <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center"><FolderOpen className="size-4 text-primary" /></div> },
-                { label: "Active", value: activeCount, icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
-                { label: "Inactive", value: collections.length - activeCount, icon: <div className="size-9 rounded-lg bg-shipping/10 flex items-center justify-center"><X className="size-4 text-shipping" /></div> },
-                { label: "Products", value: totalProducts, icon: <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center"><Eye className="size-4 text-primary" /></div> },
-            ]}
+
             filters={
                 <div className="flex items-center gap-4">
                     <div className="relative flex-1 w-full sm:max-w-sm">

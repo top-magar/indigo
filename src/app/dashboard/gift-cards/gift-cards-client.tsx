@@ -178,12 +178,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                     </DialogContent>
                 </Dialog>
             }
-            stats={[
-                { label: "Total Issued", value: stats.total, icon: <Gift className="size-4 text-muted-foreground" /> },
-                { label: "Active", value: stats.active, icon: <CreditCard className="size-4 text-muted-foreground" /> },
-                { label: "Total Value Issued", value: formatCurrency(stats.totalIssued, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
-                { label: "Outstanding Balance", value: formatCurrency(stats.totalRemaining, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
-            ]}
+
         >
             {/* Filters */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
