@@ -372,32 +372,8 @@ export function ProductsListView({
             }
         >
 
-            {/* Status Tabs */}
-            <div className="flex items-center gap-1 border-b">
-                {(["all", "active", "draft", "archived"] as const).map(tab => {
-                    const count = tab === "all" ? totalCount : stats[tab];
-                    const currentStatus = getFilter("status");
-                    const isActive = tab === "all" ? !currentStatus : currentStatus === tab;
-                    return (
-                        <button
-                            key={tab}
-                            type="button"
-                            onClick={() => onFilterChange("status", tab === "all" ? undefined : tab)}
-                            className={cn(
-                                "px-3 py-2 text-xs font-medium transition-colors relative",
-                                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            {tab === "all" ? "All" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            <span className="ml-1.5 text-muted-foreground">{count}</span>
-                            {isActive && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground" />}
-                        </button>
-                    );
-                })}
-            </div>
-
             {/* Toolbar */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
@@ -414,6 +390,22 @@ export function ProductsListView({
 
                     {/* Inline Filters */}
                     <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                        {/* Status Filter */}
+                        <Select
+                            value={getFilter("status") || "all"}
+                            onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
+                        >
+                            <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
+                                <SelectValue placeholder="All Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                <SelectItem value="active">Active</SelectItem>
+                                <SelectItem value="draft">Draft</SelectItem>
+                                <SelectItem value="archived">Archived</SelectItem>
+                            </SelectContent>
+                        </Select>
+
                         {/* Stock Filter */}
                         <Select
                             value={getFilter("stock") || "all"}
