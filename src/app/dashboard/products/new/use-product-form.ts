@@ -243,7 +243,6 @@ export function useProductForm() {
                     router.push("/dashboard/products");
                 } else {
                     setIsPublished(true);
-                    setTimeout(() => router.push("/dashboard/products"), 3000);
                 }
             } catch { toast.error("Failed to create product"); }
         });

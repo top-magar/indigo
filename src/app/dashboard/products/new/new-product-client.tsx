@@ -56,9 +56,15 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
                         <span className="font-medium text-foreground">{form.formData.name}</span> is now visible to customers in your store.
                     </p>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Loader2 className="size-3 animate-spin" />
-                    <span>Taking you to products…</span>
+                <div className="flex items-center gap-3">
+                    {storeSlug && (
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/store/${storeSlug}`} target="_blank">View in store</Link>
+                        </Button>
+                    )}
+                    <Button size="sm" asChild>
+                        <Link href="/dashboard/products">Go to products</Link>
+                    </Button>
                 </div>
             </div>
         );
@@ -148,17 +154,15 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
                         </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="hidden lg:block">
-                        <div className="sticky top-4">
-                            <ProductSidebar
+                    {/* Sidebar — sticky on desktop, stacks below on mobile */}
+                    <div className="lg:sticky lg:top-4">
+                        <ProductSidebar
                                 formData={form.formData}
                                 updateField={form.updateField}
                                 completionPercentage={form.completionPercentage}
                                 onNavigateStep={form.goToStep}
                                 categories={categories}
                             />
-                        </div>
                     </div>
                 </div>
             </form>
