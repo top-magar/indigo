@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     if (!tenants?.length) return [{ url: baseUrl, lastModified: new Date(), priority: 1 }];
 
-    const [{ data: pages }, { data: products }] = await Promise.all([
+    const [{ data: pages }, { data: products }, { data: categories }] = await Promise.all([
       supabase
         .from("store_layouts")
         .select("tenant_id, slug, updated_at, is_homepage, tenants!inner(slug)")
@@ -26,6 +26,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .select("slug, updated_at, tenants!inner(slug)")
         .eq("status", "active")
         .limit(10000),
+      supabase
+        .from("categories")
+        .select("slug, updated_at, tenants!inner(slug)")
+        .limit(5000),
     ]);
 
     const tenantMap = new Map(tenants.map((t) => [t.slug, t.updated_at]));
@@ -38,7 +42,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push(
         { url: `${baseUrl}/store/${t.slug}`, lastModified: t.updated_at, changeFrequency: "daily", priority: 1.0 },
         { url: `${baseUrl}/store/${t.slug}/products`, lastModified: t.updated_at, changeFrequency: "daily", priority: 0.7 },
+        { url: `${baseUrl}/store/${t.slug}/about`, lastModified: t.updated_at, changeFrequency: "monthly", priority: 0.4 },
+        { url: `${baseUrl}/store/${t.slug}/contact`, lastModified: t.updated_at, changeFrequency: "monthly", priority: 0.4 },
+        { url: `${baseUrl}/store/${t.slug}/faq`, lastModified: t.updated_at, changeFrequency: "monthly", priority: 0.4 },
       );
+    }
+
+    // Blog pages
+    entries.push(
+      { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    );
+
+    for (const cat of categories ?? []) {
+      const tenantSlug = (cat.tenants as unknown as { slug: string })?.slug;
+      if (!tenantSlug || !cat.slug) continue;
+      entries.push({
+        url: `${baseUrl}/store/${tenantSlug}/category/${cat.slug}`,
+        lastModified: cat.updated_at,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
     }
 
     for (const p of pages ?? []) {

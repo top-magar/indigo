@@ -3,7 +3,9 @@ import { getAllPosts } from "@/lib/mdx"
 
 export const metadata = {
   title: "Blog",
-  description: "Latest news and updates from our platform",
+  description: "Tips, guides, and updates for Nepali online sellers. Learn how to grow your e-commerce business.",
+  alternates: { canonical: "/blog" },
+  openGraph: { title: "Indigo Blog", description: "Tips and guides for Nepali online sellers." },
 }
 
 export default async function BlogPage() {

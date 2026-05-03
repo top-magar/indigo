@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   ),
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_NP",
     siteName: "Indigo",
     title: "Indigo - E-Commerce Platform for Nepal",
     description: "The e-commerce platform that grows with your business. Built for Nepal. Loved by merchants.",

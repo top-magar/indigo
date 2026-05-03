@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   return {
     title: post.title,
     description: post.description,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: { title: post.title, description: post.description, type: "article" },
+    twitter: { card: "summary_large_image", title: post.title, description: post.description },
   }
 }
 

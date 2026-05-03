@@ -139,5 +139,6 @@ export async function generateMetadata({
   return {
     title: `${category.name} | ${tenant.name}`,
     description: category.description || `Shop ${category.name} at ${tenant.name}`,
+    alternates: { canonical: `/store/${slug}/category/${categorySlug}` },
   }
 }

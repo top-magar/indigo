@@ -185,5 +185,7 @@ export async function generateMetadata({
   return {
     title: `All Products | ${tenant.name}`,
     description: `Browse all products at ${tenant.name}. Shop our full collection with free shipping on select items.`,
+    alternates: { canonical: `/store/${slug}/products` },
+    openGraph: { title: `All Products | ${tenant.name}`, description: `Shop the full collection at ${tenant.name}.` },
   }
 }
