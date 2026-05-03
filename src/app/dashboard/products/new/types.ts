@@ -1,3 +1,11 @@
+export type WizardStep = 0 | 1 | 2;
+
+export const WIZARD_STEPS = [
+    { label: "Details", description: "Name, description & media" },
+    { label: "Organize", description: "Categories, tags & shipping" },
+    { label: "Pricing", description: "Prices & variants" },
+] as const;
+
 export interface ProductImage {
     id: string;
     url: string;

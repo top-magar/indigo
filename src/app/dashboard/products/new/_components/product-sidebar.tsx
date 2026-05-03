@@ -1,222 +1,87 @@
-"use client"
+"use client";
 
-import type { ProductFormData } from "../types"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { CheckCircle2, Circle, Eye } from "lucide-react"
-import Image from "next/image"
-import { cn } from "@/shared/utils"
+import type { ProductFormData, WizardStep } from "../types";
+import { CheckCircle2, Circle, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 
 interface ProductSidebarProps {
-  formData: ProductFormData
-  updateField: <K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => void
-  completionPercentage: number
-  scrollToSection: (id: string) => void
-  lastSaved: Date | null
-  isDirty: boolean
-  clearDraft: () => void
-  seoPreviewUrl: string
-  categories: { id: string; name: string }[]
+    formData: ProductFormData;
+    updateField: <K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => void;
+    completionPercentage: number;
+    onNavigateStep: (step: WizardStep) => void;
+    categories: { id: string; name: string }[];
 }
 
-export function ProductSidebar({
-  formData, updateField, completionPercentage, scrollToSection,
-  lastSaved, isDirty, clearDraft, seoPreviewUrl, categories,
-}: ProductSidebarProps) {
-  return (
-<div className="space-y-4">
-    {/* Status Card */}
-    <Card>
-        <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Status</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-            <Select
-                value={formData.status}
-                onValueChange={(v: "draft" | "active" | "archived") => updateField("status", v)}
-            >
-                <SelectTrigger>
-                    <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="draft">
-                        <div className="flex items-center gap-2">
-                            <span className="size-2 rounded-full bg-muted-foreground" />
-                            Draft
-                        </div>
-                    </SelectItem>
-                    <SelectItem value="active">
-                        <div className="flex items-center gap-2">
-                            <span className="size-2 rounded-full bg-success" />
-                            Active
-                        </div>
-                    </SelectItem>
-                    <SelectItem value="archived">
-                        <div className="flex items-center gap-2">
-                            <span className="size-2 rounded-full bg-destructive" />
-                            Archived
-                        </div>
-                    </SelectItem>
-                </SelectContent>
-            </Select>
+export function ProductSidebar({ formData, completionPercentage, onNavigateStep, categories }: ProductSidebarProps) {
+    const hasContent = formData.name || formData.images.length > 0;
+    const priced = formData.variants.filter(v => v.enabled && v.price);
+    const prices = priced.map(v => parseFloat(v.price));
+    const minPrice = prices.length ? Math.min(...prices) : 0;
+    const maxPrice = prices.length ? Math.max(...prices) : 0;
 
-            <Separator />
-
-            <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                    <Label className="text-xs">Schedule for later</Label>
-                    <Switch
-                        checked={!formData.publishNow}
-                        onCheckedChange={(checked) => {
-                            updateField("publishNow", !checked);
-                            if (!checked) updateField("publishDate", undefined);
-                        }}
-                    />
-                </div>
-
-                {!formData.publishNow && (
-                    <div className="space-y-2 pt-2">
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1">
-                                <Label className="text-xs">Date</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button variant="outline" className="w-full justify-start text-left font-normal">
-                                            {formData.publishDate ? (
-                                                formData.publishDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-                                            ) : (
-                                                <span className="text-muted-foreground">Pick date</span>
-                                            )}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={formData.publishDate}
-                                            onSelect={(date) => updateField("publishDate", date)}
-                                            disabled={(date) => date < new Date()}
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <div className="space-y-1">
-                                <Label className="text-xs">Time</Label>
-                                <Input
-                                    type="time"
-                                    value={formData.publishTime}
-                                    onChange={(e) => updateField("publishTime", e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </CardContent>
-    </Card>
-
-    {/* Preview Card */}
-    {formData.name && (
-        <Card className="bg-muted/30">
-            <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
-                    <Eye className="size-3.5" aria-hidden="true" />
-                    Preview
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-                {formData.images[0] && (
-                    <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                        <Image
-                            src={formData.images[0].url}
-                            alt={formData.images[0].alt}
-                            width={200}
-                            height={200}
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                )}
-                <div>
-                    <p className="font-medium text-sm truncate">{formData.name}</p>
-                    {formData.subtitle && (
-                        <p className="text-xs text-muted-foreground truncate">{formData.subtitle}</p>
-                    )}
-                    {formData.categoryId && (
-                        <p className="text-xs text-muted-foreground">
-                            {categories.find(c => c.id === formData.categoryId)?.name}
-                        </p>
-                    )}
-                </div>
-                {(() => {
-                    const enabledWithPrice = formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled && v.price);
-                    if (enabledWithPrice.length === 0) return (
-                        <span className="text-sm text-muted-foreground">Set price below</span>
-                    );
-                    const prices = enabledWithPrice.map((v: { price: string }) => parseFloat(v.price));
-                    const min = Math.min(...prices);
-                    const max = Math.max(...prices);
-                    return (
-                        <span className="font-semibold font-mono tabular-nums">
-                            {min === max ? `${min.toLocaleString()}` : `${min.toLocaleString()} – ${max.toLocaleString()}`}
-                        </span>
-                    );
-                })()}
-                {formData.hasVariants && (
-                    <p className="text-xs text-muted-foreground">
-                        {formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled).length} variant{formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled).length !== 1 ? "s" : ""}
-                    </p>
-                )}
-            </CardContent>
-        </Card>
-    )}
-
-    {/* Completion Progress */}
-    <Card className="bg-muted/30">
-        <CardContent className="pt-4">
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium">Completion</span>
-                <span className="text-xs text-muted-foreground">{completionPercentage}%</span>
-            </div>
-            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                <div
-                    className="h-full bg-primary transition-colors duration-300"
-                    style={{ width: `${completionPercentage}%` }}
-                />
-            </div>
-            <div className="mt-2 space-y-1">
-                {[
-                    { done: !!formData.name, label: "Add title", section: "section-general" },
-                    { done: formData.variants.some((v: { enabled: boolean; price: string }) => v.enabled && !!v.price), label: "Set price", section: "section-pricing" },
-                    { done: formData.images.length > 0, label: "Add images", section: "section-general" },
-                    { done: !!formData.description, label: "Add description", section: "section-general" },
-                    { done: !!formData.categoryId, label: "Select category", section: "section-organization" },
-                ].map((item, i) => (
-                    <button
-                        key={i}
-                        type="button"
-                        className="flex items-center gap-2 text-xs w-full text-left hover:bg-muted/50 rounded p-0.5 transition-colors"
-                        onClick={() => scrollToSection(item.section)}
-                    >
-                        {item.done ? (
-                            <CheckCircle2 className="size-3.5 text-success" aria-hidden="true" />
+    return (
+        <div className="space-y-6">
+            {/* Live storefront preview */}
+            <div>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Preview</p>
+                <div className="rounded-xl border bg-background overflow-hidden">
+                    {/* Product image */}
+                    <div className="aspect-square bg-muted/50 relative overflow-hidden">
+                        {formData.images[0] ? (
+                            <Image src={formData.images[0].url} alt={formData.images[0].alt} fill className="object-cover" />
                         ) : (
-                            <Circle className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground/30">
+                                <ShoppingBag className="size-12" strokeWidth={1} />
+                                <p className="text-xs mt-2">No image yet</p>
+                            </div>
                         )}
-                        <span className={item.done ? "text-muted-foreground line-through" : ""}>
-                            {item.label}
-                        </span>
-                    </button>
-                ))}
+                    </div>
+                    {/* Product info */}
+                    <div className="p-4 space-y-2">
+                        <div>
+                            <p className={`font-medium text-sm ${formData.name ? "" : "text-muted-foreground"}`}>
+                                {formData.name || "Product name"}
+                            </p>
+                            {(formData.subtitle || formData.categoryId) && (
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                    {formData.subtitle || categories.find(c => c.id === formData.categoryId)?.name}
+                                </p>
+                            )}
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className={`font-semibold tabular-nums ${prices.length ? "text-foreground" : "text-muted-foreground"}`}>
+                                {prices.length
+                                    ? minPrice === maxPrice ? `Rs ${minPrice.toLocaleString()}` : `Rs ${minPrice.toLocaleString()} – ${maxPrice.toLocaleString()}`
+                                    : "Rs —"
+                                }
+                            </span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">Draft</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </CardContent>
-    </Card>
-</div>
-  )
+
+            {/* Completion */}
+            <div>
+                <div className="flex items-center justify-between mb-3">
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Checklist</p>
+                    <span className="text-xs font-medium tabular-nums text-muted-foreground">{completionPercentage}%</span>
+                </div>
+                <div className="space-y-0.5">
+                    {([
+                        { done: !!formData.name, label: "Add title", step: 0 as WizardStep },
+                        { done: formData.images.length > 0, label: "Add photos", step: 0 as WizardStep },
+                        { done: !!formData.description, label: "Write description", step: 0 as WizardStep },
+                        { done: priced.length > 0, label: "Set price", step: 2 as WizardStep },
+                        { done: !!formData.categoryId, label: "Choose category", step: 1 as WizardStep },
+                    ]).map((item, i) => (
+                        <button key={i} type="button" className="flex items-center gap-2 text-xs w-full text-left hover:bg-muted/50 rounded-md px-2 py-1.5 transition-colors" onClick={() => onNavigateStep(item.step)}>
+                            {item.done ? <CheckCircle2 className="size-3.5 text-success shrink-0" /> : <Circle className="size-3.5 text-muted-foreground/40 shrink-0" />}
+                            <span className={item.done ? "text-muted-foreground line-through" : "text-foreground"}>{item.label}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 }

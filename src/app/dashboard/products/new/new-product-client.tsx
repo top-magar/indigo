@@ -1,406 +1,156 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
-import {
-    ArrowLeft, Plus, Trash2, X,
-    AlertCircle, Save, Loader2, ChevronDown,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, AlertCircle, Save, Loader2, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { FormField } from "@/components/dashboard/form-field";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/shared/utils";
 import type { Category, Collection } from "./types";
-import { generateSlug, AUTOSAVE_KEY } from "./types";
+import { WIZARD_STEPS } from "./types";
 import { useProductForm } from "./use-product-form";
-import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { StepIndicator } from "./_components/step-indicator";
 import { ProductSidebar } from "./_components/product-sidebar";
+import { GeneralInfoSection } from "./_components/general-info-section";
 import { MediaSection } from "./_components/media-section";
-import { VariantTable } from "./_components/variant-table";
+import { PricingVariantsSection } from "./_components/pricing-variants-section";
+import { OrganizationSection } from "./_components/organization-section";
+import { ShippingSection } from "./_components/shipping-section";
+import { SeoSection } from "./_components/seo-section";
 
-export function NewProductClient({ categories, collections, storeSlug }: { categories: Category[]; collections: Collection[]; storeSlug: string }) {
-    const {
-        formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
-        lastSaved, isUploading, draggedImageIndex, fileInputRef,
-        isPending, completionPercentage,
-        setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
-        updateField, addTag, removeTag, toggleCollection,
-        addOption, removeOption, updateOptionTitle, updateOptionValues,
-        updateVariant, toggleAllVariants,
-        handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
-        handleSubmit, handleNavigation, clearDraft, router,
-    } = useProductForm();
+interface Props {
+    categories: Category[];
+    collections: Collection[];
+    storeSlug: string;
+}
 
-    const seoPreviewUrl = `${storeSlug || "yourstore"}.indigo.shop/products/${formData.slug || "product-name"}`;
-
-    const [optionValueInputs, setOptionValueInputs] = useState<Record<string, string>>({});
-    const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-        organization: false,
-        shipping: false,
-        seo: false,
-    });
-    const errorSummaryRef = useRef<HTMLDivElement>(null);
-    const errorEntries = Object.entries(errors).filter(([, v]) => v);
-    const defaultVariant = formData.variants[0];
-
-    useSaveShortcut(useCallback(() => handleSubmit(true), [handleSubmit]));
+export function NewProductClient({ categories, collections, storeSlug }: Props) {
+    const form = useProductForm();
+    const errorRef = useRef<HTMLDivElement>(null);
+    const seoPreviewUrl = `${storeSlug || "yourstore"}.indigo.shop/products/${form.formData.slug || "product-name"}`;
+    const errorEntries = Object.entries(form.errors).filter(([, v]) => v);
+    const isLastStep = form.currentStep === 2;
 
     useEffect(() => {
-        if (errorEntries.length > 0 && errorSummaryRef.current) {
-            errorSummaryRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (errorEntries.length > 0 && errorRef.current) {
+            errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
         }
     }, [errorEntries.length]);
 
-    const addOptionValue = (optionId: string) => {
-        const raw = optionValueInputs[optionId]?.trim();
-        if (!raw) return;
-        const option = formData.options.find(o => o.id === optionId);
-        if (!option) return;
-        const newValues = raw.split(",").map(v => v.trim()).filter(v => v && !option.values.includes(v));
-        if (newValues.length > 0) updateOptionValues(optionId, [...option.values, ...newValues]);
-        setOptionValueInputs(prev => ({ ...prev, [optionId]: "" }));
-    };
+    useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [form.currentStep]);
 
-    const removeOptionValue = (optionId: string, value: string) => {
-        const option = formData.options.find(o => o.id === optionId);
-        if (!option) return;
-        updateOptionValues(optionId, option.values.filter(v => v !== value));
-    };
+    // Celebration state
+    if (form.isPublished) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                <div className="size-16 rounded-full bg-success/10 flex items-center justify-center">
+                    <PartyPopper className="size-8 text-success" />
+                </div>
+                <div className="text-center space-y-1">
+                    <h1 className="text-lg font-semibold tracking-tight">Product published!</h1>
+                    <p className="text-sm text-muted-foreground">{form.formData.name} is now live in your store</p>
+                </div>
+                <p className="text-xs text-muted-foreground">Redirecting to products…</p>
+            </div>
+        );
+    }
 
     return (
-            <div className="space-y-3">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-1.5 rounded-md hover:bg-muted transition-colors" aria-label="Back to products">
-                            <ArrowLeft className="size-4" aria-hidden="true" />
-                        </button>
-                        <div>
-                            <h1 className="text-lg font-semibold tracking-tight">Add product</h1>
-                            <div className="flex items-center gap-2" aria-live="polite">
-                                {lastSaved && <span className="text-[10px] text-muted-foreground">Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>}
-                                {isDirty && !lastSaved && <span className="text-[10px] text-muted-foreground">Unsaved changes</span>}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {isDirty && <Button variant="ghost" size="sm" onClick={clearDraft} className="text-muted-foreground">Discard</Button>}
-                        <Button variant={completionPercentage >= 60 ? "outline" : "default"} size="sm" onClick={() => handleSubmit(true)} disabled={isPending} title="⌘S">
-                            <Save className="size-3.5" aria-hidden="true" />Save draft
-                        </Button>
-                        <Button variant={completionPercentage >= 60 ? "default" : "outline"} size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
-                            {isPending ? <><Loader2 className="size-3.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
-                        </Button>
-                    </div>
+        <div className="space-y-4">
+            {/* Header — tight grouping */}
+            <div>
+                <Link href="/dashboard/products" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                    <ArrowLeft className="size-3.5" />Products
+                </Link>
+                <div className="flex items-center justify-between mt-1">
+                    <h1 className="text-lg font-semibold tracking-tight">Add product</h1>
+                    <Button variant="outline" size="sm" onClick={() => form.handleSubmit(true)} disabled={form.isPending} title="⌘S">
+                        <Save className="size-3.5" />Save draft
+                    </Button>
                 </div>
-
-                {/* Scrollable content */}
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }}>
-                <div className="space-y-3 pb-6">
-                    {errorEntries.length > 0 && (
-                        <div ref={errorSummaryRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert" aria-live="assertive">
-                            <div className="flex items-center gap-2 mb-1">
-                                <AlertCircle className="size-3.5 text-destructive" aria-hidden="true" />
-                                <span className="text-sm font-medium text-destructive">{errorEntries.length} {errorEntries.length === 1 ? "error" : "errors"} found</span>
-                            </div>
-                            <ul className="space-y-0.5 ml-6">
-                                {errorEntries.map(([key, msg]) => <li key={key} className="text-xs text-destructive">{msg}</li>)}
-                            </ul>
-                        </div>
-                    )}
-
-                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4">
-                        <div className="space-y-3">
-                            {/* General Information */}
-                            <Card id="section-general">
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm font-medium">General information</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <FormField label="Title" required error={errors.name}>
-                                            <Input id="name" value={formData.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Short sleeve t-shirt" className={cn(errors.name && "border-destructive")} aria-invalid={!!errors.name} autoFocus />
-                                        </FormField>
-                                        <FormField label="Subtitle">
-                                            <Input id="subtitle" value={formData.subtitle} onChange={(e) => updateField("subtitle", e.target.value)} placeholder="Comfortable everyday wear" />
-                                        </FormField>
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center justify-between mb-1.5">
-                                            <label className="text-xs font-medium">Handle</label>
-                                            <Button type="button" variant="ghost" className="h-6 text-xs" onClick={() => updateField("slug", generateSlug(formData.name))}>Generate</Button>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <span className="text-xs text-muted-foreground shrink-0">/products/</span>
-                                            <Input id="slug" value={formData.slug} onChange={(e) => updateField("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))} placeholder="short-sleeve-t-shirt" className="font-mono" />
-                                        </div>
-                                    </div>
-                                    <FormField label="Description">
-                                        <Textarea id="description" value={formData.description} onChange={(e) => updateField("description", e.target.value)} placeholder="Describe your product..." className="min-h-24 resize-none" maxLength={5000} />
-                                        <span className="text-xs text-muted-foreground">{formData.description.length}/5000</span>
-                                    </FormField>
-                                </CardContent>
-                            </Card>
-
-                            {/* Media */}
-                            <MediaSection
-                                images={formData.images} isUploading={isUploading} draggedImageIndex={draggedImageIndex}
-                                fileInputRef={fileInputRef} handleImageUpload={handleImageUpload} removeImage={removeImage}
-                                handleDragStart={handleDragStart} handleDragOver={handleDragOver} handleDragEnd={handleDragEnd} handleFileDrop={handleFileDrop}
-                            />
-
-                            {/* Pricing & Variants */}
-                            <Card id="section-pricing">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-sm font-medium">Pricing &amp; variants</CardTitle>
-                                        <Switch checked={formData.hasVariants} onCheckedChange={(v) => { updateField("hasVariants", v); if (v && formData.options.length === 0) addOption(); }} aria-label="Enable product variants" />
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    {!formData.hasVariants && defaultVariant && (
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <FormField label="Price (Rs)">
-                                                <Input id="price" type="number" value={defaultVariant.price} onChange={(e) => updateVariant(defaultVariant.id, "price", e.target.value)} placeholder="e.g. 1500" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </FormField>
-                                            <FormField label="Compare-at price">
-                                                <Input id="compareAtPrice" type="number" value={defaultVariant.compareAtPrice} onChange={(e) => updateVariant(defaultVariant.id, "compareAtPrice", e.target.value)} placeholder="Original price" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </FormField>
-                                            <FormField label="Cost price">
-                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="Your cost" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </FormField>
-                                        </div>
-                                    )}
-                                    {formData.hasVariants && (
-                                        <>
-                                            {formData.options.map((option, optIndex) => (
-                                                <div key={option.id} className="p-3 rounded-lg border space-y-3">
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-xs font-medium text-muted-foreground">Option {optIndex + 1}</span>
-                                                        {formData.options.length > 1 && (
-                                                            <Button type="button" variant="ghost" onClick={() => removeOption(option.id)} className="size-7 p-0 text-destructive hover:text-destructive" aria-label={`Remove option ${optIndex + 1}`}>
-                                                                <Trash2 className="size-3.5" aria-hidden="true" />
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <Label className="text-xs">Option title</Label>
-                                                        <Input placeholder="e.g. Color, Size, Material" value={option.title} onChange={(e) => updateOptionTitle(option.id, e.target.value)} className="h-7 text-xs" />
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <Label className="text-xs">Values (comma-separated)</Label>
-                                                        <div className="flex gap-2">
-                                                            <Input placeholder="e.g. Black, White, Red" value={optionValueInputs[option.id] || ""} onChange={(e) => setOptionValueInputs(prev => ({ ...prev, [option.id]: e.target.value }))} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addOptionValue(option.id); } }} className="h-7 text-xs" />
-                                                            <Button type="button" variant="outline" onClick={() => addOptionValue(option.id)} aria-label="Add values"><Plus className="size-4" aria-hidden="true" /></Button>
-                                                        </div>
-                                                        {option.values.length > 0 && (
-                                                            <div className="flex flex-wrap gap-1.5">
-                                                                {option.values.map(val => (
-                                                                    <Badge key={val} variant="secondary" className="gap-1 pr-1 text-xs">
-                                                                        {val}
-                                                                        <button type="button" onClick={() => removeOptionValue(option.id, val)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove ${val}`}><X className="size-2.5" aria-hidden="true" /></button>
-                                                                    </Badge>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            {formData.options.length < 5 && (
-                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-4 " aria-hidden="true" />Add another option</Button>
-                                            )}
-                                            {formData.variants.length > 0 && (
-                                                <VariantTable variants={formData.variants} variantError={errors.variants} updateVariant={updateVariant} toggleAllVariants={toggleAllVariants} />
-                                            )}
-                                        </>
-                                    )}
-                                </CardContent>
-                            </Card>
-
-                            {/* Organization */}
-                            <Collapsible open={openSections.organization} onOpenChange={(v) => setOpenSections(s => ({ ...s, organization: v }))}>
-                            <Card id="section-organization">
-                                <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-sm font-medium">Organization</CardTitle>
-                                        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.organization && "rotate-180")} />
-                                    </div>
-                                </CardHeader>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                <CardContent className="space-y-3">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <Label htmlFor="category" className="text-xs">Category</Label>
-                                            <Select value={formData.categoryId} onValueChange={(v) => updateField("categoryId", v)}>
-                                                <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
-                                                <SelectContent>
-                                                    {categories.length === 0 ? (
-                                                        <div className="p-3 text-center"><p className="text-xs text-muted-foreground mb-2">No categories</p><Button variant="outline" asChild><Link href="/dashboard/categories/new">Create</Link></Button></div>
-                                                    ) : categories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>)}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <Label htmlFor="brand" className="text-xs">Brand</Label>
-                                            <Input id="brand" value={formData.brand} onChange={(e) => updateField("brand", e.target.value)} placeholder="e.g. Nike" />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <Label className="text-xs">Collections</Label>
-                                            {formData.collectionIds.length > 0 && <Badge variant="secondary" className="text-xs">{formData.collectionIds.length}</Badge>}
-                                        </div>
-                                        {collections.length === 0 ? (
-                                            <div className="text-center py-4 border rounded-lg">
-                                                <p className="text-xs text-muted-foreground mb-1">Group products into collections like &ldquo;Summer Sale&rdquo;</p>
-                                                <Button variant="outline" size="sm" asChild><Link href="/dashboard/collections/new">Create collection</Link></Button>
-                                            </div>
-                                        ) : (
-                                            <div className="space-y-1 max-h-[160px] overflow-y-auto border rounded-lg p-2">
-                                                {collections.map(c => (
-                                                    <label key={c.id} className="flex items-center gap-2 p-1.5 rounded hover:bg-muted/50 cursor-pointer transition-colors">
-                                                        <Checkbox checked={formData.collectionIds.includes(c.id)} onCheckedChange={() => toggleCollection(c.id)} />
-                                                        <span className="text-xs">{c.name}</span>
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <Label className="text-xs">Tags</Label>
-                                            <span className="text-xs text-muted-foreground">{formData.tags.length}/20</span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add a tag..." className="flex-1" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }} />
-                                            <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}><Plus className="size-4" aria-hidden="true" /></Button>
-                                        </div>
-                                        {formData.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {formData.tags.map(tag => (
-                                                    <Badge key={tag} variant="secondary" className="gap-1 pr-1 text-xs">{tag}<button type="button" onClick={() => removeTag(tag)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove tag ${tag}`}><X className="size-2.5" aria-hidden="true" /></button></Badge>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
-                                        <div><Label htmlFor="discountable" className="text-xs">Discountable</Label><p className="text-xs text-muted-foreground">Allow discounts to be applied</p></div>
-                                        <Switch id="discountable" checked={formData.discountable} onCheckedChange={(v) => updateField("discountable", v)} />
-                                    </div>
-                                </CardContent>
-                                </CollapsibleContent>
-                            </Card>
-                            </Collapsible>
-
-                            {/* Shipping */}
-                            <Collapsible open={openSections.shipping} onOpenChange={(v) => setOpenSections(s => ({ ...s, shipping: v }))}>
-                            <Card>
-                                <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-sm font-medium">Shipping</CardTitle>
-                                        <div className="flex items-center gap-2">
-                                            <Badge variant={formData.requiresShipping ? "secondary" : "outline"} className="text-xs">{formData.requiresShipping ? "Physical" : "Digital"}</Badge>
-                                            <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.shipping && "rotate-180")} />
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                <CardContent className="space-y-3">
-                                    <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
-                                        <div><Label htmlFor="requiresShipping" className="text-xs">Physical product</Label><p className="text-xs text-muted-foreground">This product requires shipping</p></div>
-                                        <Switch id="requiresShipping" checked={formData.requiresShipping} onCheckedChange={(v) => updateField("requiresShipping", v)} />
-                                    </div>
-                                    {formData.requiresShipping && (
-                                        <div className="space-y-1">
-                                            <Label htmlFor="weight" className="text-xs">Weight</Label>
-                                            <div className="flex gap-2">
-                                                <Input id="weight" type="number" value={formData.weight} onChange={(e) => updateField("weight", e.target.value)} placeholder="0" min="0" className="flex-1" />
-                                                <Select value={formData.weightUnit} onValueChange={(v) => updateField("weightUnit", v)}>
-                                                    <SelectTrigger className="w-20" aria-label="Weight unit"><SelectValue /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="g">g</SelectItem><SelectItem value="kg">kg</SelectItem>
-                                                        <SelectItem value="lb">lb</SelectItem><SelectItem value="oz">oz</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                    )}
-                                </CardContent>
-                                </CollapsibleContent>
-                            </Card>
-                            </Collapsible>
-
-                            {/* SEO */}
-                            <Collapsible open={openSections.seo} onOpenChange={(v) => setOpenSections(s => ({ ...s, seo: v }))}>
-                            <Card>
-                                <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-sm font-medium">Search engine listing</CardTitle>
-                                        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.seo && "rotate-180")} />
-                                    </div>
-                                </CardHeader>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent>
-                                <CardContent className="space-y-3">
-                                    <div className="p-3 rounded-lg border bg-background">
-                                        <p className="text-xs text-primary truncate">{seoPreviewUrl}</p>
-                                        <p className="text-sm text-primary font-medium mt-0.5 truncate">{formData.metaTitle || formData.name || "Product Name"} - Your Store</p>
-                                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{formData.metaDescription || formData.description || "Product description will appear here."}</p>
-                                    </div>
-                                    <FormField label="Page title">
-                                        <Input id="metaTitle" value={formData.metaTitle} onChange={(e) => updateField("metaTitle", e.target.value)} placeholder={formData.name || "Product name - Your Store"} maxLength={70} />
-                                        <span className={cn("text-xs", formData.metaTitle.length > 60 ? "text-destructive" : "text-muted-foreground")}>{formData.metaTitle.length}/60</span>
-                                    </FormField>
-                                    <FormField label="Meta description" description="Appears in Google search results below the page title">
-                                        <Textarea id="metaDescription" value={formData.metaDescription} onChange={(e) => updateField("metaDescription", e.target.value)} placeholder="A brief description for search engines..." className="min-h-20 resize-none" maxLength={170} />
-                                        <span className={cn("text-xs", formData.metaDescription.length > 160 ? "text-destructive" : "text-muted-foreground")}>{formData.metaDescription.length}/160</span>
-                                    </FormField>
-                                </CardContent>
-                                </CollapsibleContent>
-                            </Card>
-                            </Collapsible>
-                        </div>
-
-                        <div className="hidden lg:block">
-                            <div className="sticky top-0">
-                                <ProductSidebar formData={formData} updateField={updateField} completionPercentage={completionPercentage} scrollToSection={(id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })} lastSaved={lastSaved} isDirty={isDirty} clearDraft={clearDraft} seoPreviewUrl={seoPreviewUrl} categories={categories} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                </form>
-
-                <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
-                            <AlertDialogDescription>You have unsaved changes. Do you want to save them as a draft before leaving?</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel onClick={() => { setShowUnsavedDialog(false); setPendingNavigation(null); }}>Cancel</AlertDialogCancel>
-                            <AlertDialogAction variant="outline" onClick={() => { localStorage.removeItem(AUTOSAVE_KEY); if (pendingNavigation) router.push(pendingNavigation); }}>Discard</AlertDialogAction>
-                            <AlertDialogAction onClick={async () => { await handleSubmit(true); if (pendingNavigation) router.push(pendingNavigation); }}>Save Draft</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
             </div>
+
+            {/* Step indicator */}
+            <StepIndicator steps={[...WIZARD_STEPS]} currentStep={form.currentStep} onStepClick={(i) => form.goToStep(i as 0 | 1 | 2)} />
+
+            {/* Error summary */}
+            {errorEntries.length > 0 && (
+                <div ref={errorRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert">
+                    <div className="flex items-center gap-2 mb-1">
+                        <AlertCircle className="size-3.5 text-destructive" />
+                        <span className="text-sm font-medium text-destructive">{errorEntries.length} {errorEntries.length === 1 ? "error" : "errors"} found</span>
+                    </div>
+                    <ul className="space-y-0.5 ml-6">
+                        {errorEntries.map(([key, msg]) => <li key={key} className="text-xs text-destructive">{msg}</li>)}
+                    </ul>
+                </div>
+            )}
+
+            {/* Main + Sidebar */}
+            <form onSubmit={(e) => { e.preventDefault(); isLastStep ? form.handleSubmit(false) : form.goNext(); }}>
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+                    <div className="space-y-4">
+                        {form.currentStep === 0 && (
+                            <>
+                                <GeneralInfoSection formData={form.formData} errors={form.errors} updateField={form.updateField} />
+                                <MediaSection
+                                    images={form.formData.images} isUploading={form.isUploading} draggedImageIndex={form.draggedImageIndex}
+                                    fileInputRef={form.fileInputRef} handleImageUpload={form.handleImageUpload} removeImage={form.removeImage}
+                                    handleDragStart={form.handleDragStart} handleDragOver={form.handleDragOver} handleDragEnd={form.handleDragEnd} handleFileDrop={form.handleFileDrop}
+                                />
+                            </>
+                        )}
+                        {form.currentStep === 1 && (
+                            <>
+                                <OrganizationSection
+                                    formData={form.formData} categories={categories} collections={collections}
+                                    tagInput={form.tagInput} setTagInput={form.setTagInput} updateField={form.updateField}
+                                    addTag={form.addTag} removeTag={form.removeTag} toggleCollection={form.toggleCollection}
+                                />
+                                <ShippingSection formData={form.formData} updateField={form.updateField} />
+                                <SeoSection formData={form.formData} seoPreviewUrl={seoPreviewUrl} updateField={form.updateField} />
+                            </>
+                        )}
+                        {form.currentStep === 2 && (
+                            <PricingVariantsSection
+                                formData={form.formData} errors={form.errors} updateField={form.updateField}
+                                updateVariant={form.updateVariant} toggleAllVariants={form.toggleAllVariants}
+                                addOption={form.addOption} removeOption={form.removeOption}
+                                updateOptionTitle={form.updateOptionTitle} updateOptionValues={form.updateOptionValues}
+                            />
+                        )}
+
+                        {/* Step navigation */}
+                        <div className="flex items-center justify-between border-t pt-4 pb-8">
+                            <div>
+                                {form.currentStep > 0 && (
+                                    <Button type="button" variant="ghost" onClick={form.goBack}>
+                                        <ArrowLeft className="size-4" />Back
+                                    </Button>
+                                )}
+                            </div>
+                            <Button type="submit" disabled={form.isPending}>
+                                {isLastStep ? (
+                                    form.isPending ? <><Loader2 className="size-4 animate-spin" />Publishing…</> : "Publish product"
+                                ) : (
+                                    <>Continue<ArrowRight className="size-4" /></>
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="hidden lg:block">
+                        <div className="sticky top-4">
+                            <ProductSidebar
+                                formData={form.formData}
+                                updateField={form.updateField}
+                                completionPercentage={form.completionPercentage}
+                                onNavigateStep={form.goToStep}
+                                categories={categories}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     );
 }

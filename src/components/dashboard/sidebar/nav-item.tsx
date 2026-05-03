@@ -99,7 +99,7 @@ export const NavItemComponent = memo(function NavItemComponent({
                         >
                             {isDisabled ? (
                                 <span className="flex items-center gap-2 w-full">
-                                    <item.icon strokeWidth={1.5} className={iconCn} />
+                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={iconCn} />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && statusBadge}
                                 </span>

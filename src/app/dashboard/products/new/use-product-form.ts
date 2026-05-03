@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
+import { useFormDirty } from "@/hooks/use-form-dirty";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 import { createProductWithDetails } from "../actions";
 import type {
     ProductImage,
@@ -9,6 +10,7 @@ import type {
     ProductOption,
     ProductFormData,
     ProductFormErrors,
+    WizardStep,
 } from "./types";
 import {
     AUTOSAVE_KEY,
@@ -19,379 +21,291 @@ import {
     initialFormData,
 } from "./types";
 
-type FormData = ProductFormData;
-type FormErrors = ProductFormErrors;
-
 export function useProductForm() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [formData, setFormData] = useState<FormData>(initialFormData);
-    const [errors, setErrors] = useState<FormErrors>({});
+    const [errors, setErrors] = useState<ProductFormErrors>({});
     const [tagInput, setTagInput] = useState("");
-    const [isDirty, setIsDirty] = useState(false);
-    const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
-    const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
-    const [lastSaved, setLastSaved] = useState<Date | null>(null);
+    const [isPublished, setIsPublished] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Load autosaved draft on mount
+    // --- Core form state via useFormDirty ---
+    const { data: formData, isDirty, setField, setFields, reset, markClean } = useFormDirty({
+        initialData: initialFormData as Record<string, unknown> & ProductFormData,
+        confirmOnLeave: true,
+    });
+
+    // Typed setField wrapper
+    const updateField = useCallback(<K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => {
+        if (field === "name" && typeof value === "string") {
+            setFields({ [field]: value, slug: generateSlug(value) } as Partial<Record<string, unknown> & ProductFormData>);
+        } else {
+            setField(field, value as (Record<string, unknown> & ProductFormData)[K]);
+        }
+        if (errors[field]) setErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
+    }, [setField, setFields, errors]);
+
+    // --- Load autosaved draft ---
     useEffect(() => {
         const saved = localStorage.getItem(AUTOSAVE_KEY);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed.publishDate) {
-                    parsed.publishDate = new Date(parsed.publishDate);
-                }
-                // Merge with defaults so old drafts missing new fields still work
-                setFormData({ ...initialFormData, ...parsed, options: parsed.options ?? [], variants: parsed.variants ?? initialFormData.variants });
-                setLastSaved(new Date());
-                toast.info("Draft restored from autosave");
-            } catch {
-                localStorage.removeItem(AUTOSAVE_KEY);
-            }
-        }
+        if (!saved) return;
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed.publishDate) parsed.publishDate = new Date(parsed.publishDate);
+            setFields({ ...initialFormData, ...parsed, options: parsed.options ?? [], variants: parsed.variants ?? initialFormData.variants } as Partial<Record<string, unknown> & ProductFormData>);
+            toast.info("Draft restored from autosave");
+        } catch { localStorage.removeItem(AUTOSAVE_KEY); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Autosave effect
+    // --- Autosave ---
     useEffect(() => {
         if (!isDirty) return;
         const timer = setTimeout(() => {
-            // Filter out blob URLs — they're invalid across sessions
-            const saveable = {
-                ...formData,
-                images: formData.images.filter(img => !img.url.startsWith("blob:")),
-            };
+            const saveable = { ...formData, images: (formData.images as ProductImage[]).filter(img => !img.url.startsWith("blob:")) };
             localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(saveable));
-            setLastSaved(new Date());
         }, AUTOSAVE_INTERVAL);
         return () => clearTimeout(timer);
     }, [formData, isDirty]);
 
-    // Warn before leaving
-    useUnsavedChanges(isDirty);
-
-    const updateField = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
-        setFormData(prev => {
-            const newData = { ...prev, [field]: value };
-            if (field === "name" && typeof value === "string") {
-                newData.slug = generateSlug(value);
-            }
-            return newData;
-        });
-        setIsDirty(true);
-        if (errors[field]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[field];
-                return newErrors;
-            });
-        }
-    }, [errors]);
-
-    // --- Option management (Medusa pattern) ---
+    // --- Option management ---
     const addOption = useCallback(() => {
-        if (formData.options.length >= 5) {
-            toast.error("Maximum 5 options allowed");
-            return;
-        }
-        const newOption: ProductOption = { id: generateId(), title: "", values: [] };
-        updateField("options", [...formData.options, newOption]);
+        const opts = formData.options as ProductOption[];
+        if (opts.length >= 5) { toast.error("Maximum 5 options"); return; }
+        updateField("options", [...opts, { id: generateId(), title: "", values: [] }]);
     }, [formData.options, updateField]);
 
     const removeOption = useCallback((optionId: string) => {
-        const newOptions = formData.options.filter(o => o.id !== optionId);
-        updateField("options", newOptions);
-        // Regenerate variants from remaining options
-        const newVariants = generateVariantsFromOptions(newOptions);
-        updateField("variants", newVariants);
-    }, [formData.options, updateField]);
+        const newOpts = (formData.options as ProductOption[]).filter(o => o.id !== optionId);
+        setFields({ options: newOpts, variants: generateVariantsFromOptions(newOpts) } as Partial<Record<string, unknown> & ProductFormData>);
+    }, [formData.options, setFields]);
 
     const updateOptionTitle = useCallback((optionId: string, title: string) => {
-        const newOptions = formData.options.map(o =>
-            o.id === optionId ? { ...o, title } : o
-        );
-        updateField("options", newOptions);
+        updateField("options", (formData.options as ProductOption[]).map(o => o.id === optionId ? { ...o, title } : o));
     }, [formData.options, updateField]);
 
     const updateOptionValues = useCallback((optionId: string, values: string[]) => {
-        const newOptions = formData.options.map(o =>
-            o.id === optionId ? { ...o, values } : o
-        );
-        updateField("options", newOptions);
-        // Regenerate variants when values change
-        const newVariants = generateVariantsFromOptions(newOptions);
-        updateField("variants", newVariants);
-    }, [formData.options, updateField]);
+        const newOpts = (formData.options as ProductOption[]).map(o => o.id === optionId ? { ...o, values } : o);
+        setFields({ options: newOpts, variants: generateVariantsFromOptions(newOpts) } as Partial<Record<string, unknown> & ProductFormData>);
+    }, [formData.options, setFields]);
 
-    // --- Tag management ---
+    // --- Tags ---
     const addTag = useCallback(() => {
         const tag = tagInput.trim();
-        if (tag && !formData.tags.includes(tag) && formData.tags.length < 20) {
-            updateField("tags", [...formData.tags, tag]);
+        const tags = formData.tags as string[];
+        if (tag && !tags.includes(tag) && tags.length < 20) {
+            updateField("tags", [...tags, tag]);
             setTagInput("");
         }
     }, [tagInput, formData.tags, updateField]);
 
-    const removeTag = useCallback((tagToRemove: string) => {
-        updateField("tags", formData.tags.filter(t => t !== tagToRemove));
+    const removeTag = useCallback((t: string) => {
+        updateField("tags", (formData.tags as string[]).filter(x => x !== t));
     }, [formData.tags, updateField]);
 
-    const toggleCollection = useCallback((collectionId: string) => {
-        const newIds = formData.collectionIds.includes(collectionId)
-            ? formData.collectionIds.filter(id => id !== collectionId)
-            : [...formData.collectionIds, collectionId];
-        updateField("collectionIds", newIds);
+    const toggleCollection = useCallback((id: string) => {
+        const ids = formData.collectionIds as string[];
+        updateField("collectionIds", ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id]);
     }, [formData.collectionIds, updateField]);
 
-    // --- Variant management (bulk editor) ---
+    // --- Variants ---
     const updateVariant = useCallback((id: string, field: keyof ProductVariant, value: string | boolean) => {
-        updateField("variants", formData.variants.map(v =>
-            v.id === id ? { ...v, [field]: value } : v
-        ));
+        updateField("variants", (formData.variants as ProductVariant[]).map(v => v.id === id ? { ...v, [field]: value } : v));
     }, [formData.variants, updateField]);
 
     const toggleAllVariants = useCallback((enabled: boolean) => {
-        updateField("variants", formData.variants.map(v => ({ ...v, enabled })));
+        updateField("variants", (formData.variants as ProductVariant[]).map(v => ({ ...v, enabled })));
     }, [formData.variants, updateField]);
 
-    // --- Image management ---
+    // --- Images ---
     const handleImageUpload = useCallback(async (files: FileList | null) => {
-        if (!files || files.length === 0) return;
+        if (!files?.length) return;
+        const images = formData.images as ProductImage[];
+        const maxNew = 10 - images.length;
+        if (maxNew <= 0) { toast.error("Maximum 10 images"); return; }
 
-        const maxImages = 10 - formData.images.length;
-        if (maxImages <= 0) {
-            toast.error("Maximum 10 images allowed");
-            return;
-        }
-
-        const filesToUpload = Array.from(files).slice(0, maxImages);
+        const batch = Array.from(files).slice(0, maxNew);
         setIsUploading(true);
 
-        const placeholders: ProductImage[] = filesToUpload.map((file, index) => ({
-            id: generateId(),
-            url: URL.createObjectURL(file),
-            alt: file.name,
-            position: formData.images.length + index,
-            isUploading: true,
+        const placeholders: ProductImage[] = batch.map((file, i) => ({
+            id: generateId(), url: URL.createObjectURL(file), alt: file.name, position: images.length + i, isUploading: true,
         }));
-
-        updateField("images", [...formData.images, ...placeholders]);
+        updateField("images", [...images, ...placeholders]);
 
         try {
-            const uploadPromises = filesToUpload.map(async (file, index) => {
-                const formDataUpload = new globalThis.FormData();
-                formDataUpload.append("file", file);
-
-                const response = await fetch("/api/upload", {
-                    method: "POST",
-                    body: formDataUpload,
-                });
-
-                if (!response.ok) throw new Error("Upload failed");
-
-                const data = await response.json();
-                return {
-                    id: placeholders[index].id,
-                    url: data.url,
-                    alt: file.name.replace(/\.[^/.]+$/, ""),
-                    position: formData.images.length + index,
-                };
-            });
-
-            const uploadedImages = await Promise.all(uploadPromises);
-
-            setFormData(prev => ({
-                ...prev,
-                images: prev.images.map(img => {
-                    const uploaded = uploadedImages.find(u => u.id === img.id);
-                    if (uploaded) {
-                        // Revoke the blob URL to free memory
-                        if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
-                        return { ...uploaded, isUploading: false };
-                    }
-                    return img;
-                }),
+            const uploaded = await Promise.all(batch.map(async (file, i) => {
+                const fd = new globalThis.FormData();
+                fd.append("file", file);
+                const res = await fetch("/api/upload", { method: "POST", body: fd });
+                if (!res.ok) throw new Error("Upload failed");
+                const data = await res.json();
+                return { id: placeholders[i].id, url: data.url, alt: file.name.replace(/\.[^/.]+$/, ""), position: images.length + i };
             }));
 
-            toast.success(`${uploadedImages.length} image(s) uploaded`);
-        } catch {
-            setFormData(prev => {
-                // Revoke blob URLs for failed uploads
-                prev.images.filter(img => img.isUploading).forEach(img => {
-                    if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
-                });
-                return { ...prev, images: prev.images.filter(img => !img.isUploading) };
+            // Replace placeholders with uploaded URLs
+            const currentImages = formData.images as ProductImage[];
+            const newImages = currentImages.map(img => {
+                const u = uploaded.find(x => x.id === img.id);
+                if (u) { if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url); return { ...u, isUploading: false } as ProductImage; }
+                return img;
             });
+            updateField("images", newImages);
+            toast.success(`${uploaded.length} image(s) uploaded`);
+        } catch {
+            const currentImages = formData.images as ProductImage[];
+            currentImages.filter(img => img.isUploading && img.url.startsWith("blob:")).forEach(img => URL.revokeObjectURL(img.url));
+            updateField("images", currentImages.filter(img => !img.isUploading));
             toast.error("Failed to upload image(s)");
-        } finally {
-            setIsUploading(false);
-        }
-    }, [formData.images, updateField]);
+        } finally { setIsUploading(false); }
+    }, [formData.images, updateField, setField]);
 
     const removeImage = useCallback((id: string) => {
-        updateField("images", formData.images.filter(img => img.id !== id).map((img, index) => ({
-            ...img,
-            position: index,
-        })));
+        updateField("images", (formData.images as ProductImage[]).filter(img => img.id !== id).map((img, i) => ({ ...img, position: i })));
     }, [formData.images, updateField]);
 
-    const handleDragStart = useCallback((index: number) => {
-        setDraggedImageIndex(index);
-    }, []);
-
+    const handleDragStart = useCallback((i: number) => setDraggedImageIndex(i), []);
     const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
         e.preventDefault();
         if (draggedImageIndex === null || draggedImageIndex === index) return;
-
-        const newImages = [...formData.images];
-        const draggedImage = newImages[draggedImageIndex];
-        newImages.splice(draggedImageIndex, 1);
-        newImages.splice(index, 0, draggedImage);
-
-        const reorderedImages = newImages.map((img, i) => ({ ...img, position: i }));
-        updateField("images", reorderedImages);
+        const imgs = [...(formData.images as ProductImage[])];
+        const dragged = imgs[draggedImageIndex];
+        imgs.splice(draggedImageIndex, 1);
+        imgs.splice(index, 0, dragged);
+        updateField("images", imgs.map((img, i) => ({ ...img, position: i })));
         setDraggedImageIndex(index);
     }, [draggedImageIndex, formData.images, updateField]);
-
-    const handleDragEnd = useCallback(() => {
-        setDraggedImageIndex(null);
-    }, []);
-
-    const handleFileDrop = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        const files = e.dataTransfer.files;
-        handleImageUpload(files);
-    }, [handleImageUpload]);
+    const handleDragEnd = useCallback(() => setDraggedImageIndex(null), []);
+    const handleFileDrop = useCallback((e: React.DragEvent) => { e.preventDefault(); handleImageUpload(e.dataTransfer.files); }, [handleImageUpload]);
 
     // --- Validation ---
     const validate = useCallback((): boolean => {
-        const newErrors: FormErrors = {};
-        if (!formData.name.trim()) newErrors.name = "Product title is required";
-        const enabledVariants = formData.variants.filter(v => v.enabled);
-        if (enabledVariants.some(v => !v.price || parseFloat(v.price) < 0)) {
-            newErrors.variants = "All enabled variants must have a valid price";
-        }
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const errs: ProductFormErrors = {};
+        if (!(formData.name as string).trim()) errs.name = "Product title is required";
+        const enabled = (formData.variants as ProductVariant[]).filter(v => v.enabled);
+        if (enabled.some(v => !v.price || parseFloat(v.price) < 0)) errs.variants = "All enabled variants must have a valid price";
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
     }, [formData]);
 
     // --- Submit ---
     const handleSubmit = useCallback(async (asDraft: boolean = false) => {
-        if (!asDraft && !validate()) {
-            toast.error("Please fix the errors before submitting");
-            return;
-        }
+        if (!asDraft && !validate()) { toast.error("Please fix errors before publishing"); return; }
 
         const status = asDraft ? "draft" : "active";
-
-        // Get the first enabled variant's price as the "main" price for backward compat
-        const enabledVariants = formData.variants.filter(v => v.enabled);
+        const enabledVariants = (formData.variants as ProductVariant[]).filter(v => v.enabled);
         const mainPrice = enabledVariants[0]?.price || "0";
 
-        const submitData = new globalThis.FormData();
-        submitData.set("name", formData.name);
-        submitData.set("subtitle", formData.subtitle);
-        submitData.set("slug", formData.slug || generateSlug(formData.name));
-        submitData.set("description", formData.description);
-        submitData.set("categoryId", formData.categoryId);
-        submitData.set("collectionIds", JSON.stringify(formData.collectionIds));
-        submitData.set("brand", formData.brand);
-        submitData.set("tags", JSON.stringify(formData.tags));
-        // Use first variant price as main product price
-        submitData.set("price", mainPrice);
-        submitData.set("compareAtPrice", enabledVariants[0]?.compareAtPrice || "");
-        submitData.set("costPrice", enabledVariants[0]?.costPrice || "");
-        submitData.set("sku", enabledVariants[0]?.sku || "");
-        submitData.set("barcode", "");
-        submitData.set("quantity", enabledVariants.reduce((sum, v) => sum + (parseInt(v.quantity) || 0), 0).toString());
-        submitData.set("trackQuantity", "true");
-        submitData.set("allowBackorder", String(enabledVariants.some(v => v.allowBackorder)));
-        submitData.set("lowStockThreshold", "");
-        submitData.set("weight", formData.weight);
-        submitData.set("weightUnit", formData.weightUnit);
-        submitData.set("length", "");
-        submitData.set("width", "");
-        submitData.set("height", "");
-        submitData.set("requiresShipping", String(formData.requiresShipping));
-        submitData.set("images", JSON.stringify(formData.images.filter(img => !img.isUploading)));
-        submitData.set("hasVariants", String(formData.hasVariants));
-        submitData.set("variants", JSON.stringify(enabledVariants.map(v => ({
-            title: v.title,
-            sku: v.sku,
-            price: parseFloat(v.price) || 0,
-            quantity: parseInt(v.quantity) || 0,
-        }))));
-        submitData.set("metaTitle", formData.metaTitle);
-        submitData.set("metaDescription", formData.metaDescription);
-        submitData.set("status", status);
+        const fd = new globalThis.FormData();
+        fd.set("name", formData.name as string);
+        fd.set("subtitle", formData.subtitle as string);
+        fd.set("slug", (formData.slug as string) || generateSlug(formData.name as string));
+        fd.set("description", formData.description as string);
+        fd.set("categoryId", formData.categoryId as string);
+        fd.set("collectionIds", JSON.stringify(formData.collectionIds));
+        fd.set("brand", formData.brand as string);
+        fd.set("tags", JSON.stringify(formData.tags));
+        fd.set("price", mainPrice);
+        fd.set("compareAtPrice", enabledVariants[0]?.compareAtPrice || "");
+        fd.set("costPrice", enabledVariants[0]?.costPrice || "");
+        fd.set("sku", enabledVariants[0]?.sku || "");
+        fd.set("barcode", "");
+        fd.set("quantity", enabledVariants.reduce((s, v) => s + (parseInt(v.quantity) || 0), 0).toString());
+        fd.set("trackQuantity", "true");
+        fd.set("allowBackorder", String(enabledVariants.some(v => v.allowBackorder)));
+        fd.set("weight", formData.weight as string);
+        fd.set("weightUnit", formData.weightUnit as string);
+        fd.set("length", ""); fd.set("width", ""); fd.set("height", "");
+        fd.set("requiresShipping", String(formData.requiresShipping));
+        fd.set("images", JSON.stringify((formData.images as ProductImage[]).filter(img => !img.isUploading)));
+        fd.set("hasVariants", String(formData.hasVariants));
+        fd.set("variants", JSON.stringify(enabledVariants.map(v => ({ title: v.title, sku: v.sku, price: parseFloat(v.price) || 0, quantity: parseInt(v.quantity) || 0 }))));
+        fd.set("metaTitle", formData.metaTitle as string);
+        fd.set("metaDescription", formData.metaDescription as string);
+        fd.set("status", status);
 
-        if (!formData.publishNow && formData.publishDate) {
-            const publishAt = new Date(formData.publishDate);
-            const [hours, minutes] = formData.publishTime.split(":").map(Number);
-            publishAt.setHours(hours, minutes, 0, 0);
-            submitData.set("publishAt", publishAt.toISOString());
+        if (!(formData.publishNow as boolean) && formData.publishDate) {
+            const d = new Date(formData.publishDate as Date);
+            const [h, m] = (formData.publishTime as string).split(":").map(Number);
+            d.setHours(h, m, 0, 0);
+            fd.set("publishAt", d.toISOString());
         }
 
         startTransition(async () => {
             try {
-                const result = await createProductWithDetails(submitData);
-
-                if (result.error) {
-                    toast.error(result.error);
-                    return;
-                }
-
+                const result = await createProductWithDetails(fd);
+                if (result.error) { toast.error(result.error); return; }
                 localStorage.removeItem(AUTOSAVE_KEY);
-                setIsDirty(false);
-
-                toast.success(asDraft ? "Draft saved successfully" : "Product created successfully");
-                router.push("/dashboard/products");
-            } catch {
-                toast.error("Failed to create product");
-            }
+                markClean();
+                if (asDraft) {
+                    toast.success("Draft saved");
+                    router.push("/dashboard/products");
+                } else {
+                    setIsPublished(true);
+                    setTimeout(() => router.push("/dashboard/products"), 3000);
+                }
+            } catch { toast.error("Failed to create product"); }
         });
-    }, [formData, validate, router]);
+    }, [formData, validate, markClean, router]);
 
-    const handleNavigation = useCallback((href: string) => {
-        if (isDirty) {
-            setPendingNavigation(href);
-            setShowUnsavedDialog(true);
-        } else {
-            router.push(href);
-        }
-    }, [isDirty, router]);
+    // --- ⌘S shortcut ---
+    useSaveShortcut(useCallback(() => handleSubmit(true), [handleSubmit]));
 
     const clearDraft = useCallback(() => {
         localStorage.removeItem(AUTOSAVE_KEY);
-        setFormData(initialFormData);
-        setIsDirty(false);
-        setLastSaved(null);
+        reset();
+        setErrors({});
         toast.success("Draft cleared");
-    }, []);
+    }, [reset]);
 
-    // Completion tracks key fields across all steps
+    // --- Completion ---
     const completionItems = [
-        !!formData.name,
-        formData.variants.some(v => v.enabled && !!v.price),
-        formData.images.length > 0,
-        !!formData.description,
-        !!formData.categoryId,
+        !!(formData.name as string),
+        (formData.variants as ProductVariant[]).some(v => v.enabled && !!v.price),
+        (formData.images as ProductImage[]).length > 0,
+        !!(formData.description as string),
+        !!(formData.categoryId as string),
     ];
     const completionPercentage = Math.round((completionItems.filter(Boolean).length / completionItems.length) * 100);
 
+    // --- Wizard steps ---
+    const [currentStep, setCurrentStep] = useState<WizardStep>(0);
+
+    const validateStep = useCallback((step: WizardStep): boolean => {
+        const errs: ProductFormErrors = {};
+        if (step === 0 && !(formData.name as string).trim()) errs.name = "Product title is required";
+        if (step === 2) {
+            const enabled = (formData.variants as ProductVariant[]).filter(v => v.enabled);
+            if (enabled.some(v => !v.price || parseFloat(v.price) < 0)) errs.variants = "All enabled variants must have a valid price";
+        }
+        setErrors(errs);
+        return Object.keys(errs).length === 0;
+    }, [formData]);
+
+    const goNext = useCallback(() => {
+        if (validateStep(currentStep)) setCurrentStep(s => Math.min(s + 1, 2) as WizardStep);
+    }, [currentStep, validateStep]);
+
+    const goBack = useCallback(() => {
+        setCurrentStep(s => Math.max(s - 1, 0) as WizardStep);
+    }, []);
+
+    const goToStep = useCallback((step: WizardStep) => {
+        // Can go back freely, forward only if current step validates
+        if (step <= currentStep) { setCurrentStep(step); return; }
+        if (validateStep(currentStep)) setCurrentStep(step);
+    }, [currentStep, validateStep]);
+
     return {
-        formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
-        lastSaved, isUploading, draggedImageIndex, fileInputRef,
-        isPending, completionPercentage,
-        setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
-        updateField, addTag, removeTag, toggleCollection,
+        formData: formData as unknown as ProductFormData,
+        errors, tagInput, isDirty, isPending, isPublished, completionPercentage,
+        currentStep, goNext, goBack, goToStep,
+        isUploading, draggedImageIndex, fileInputRef,
+        setTagInput, updateField, addTag, removeTag, toggleCollection,
         addOption, removeOption, updateOptionTitle, updateOptionValues,
         updateVariant, toggleAllVariants,
         handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
-        handleSubmit, handleNavigation, clearDraft,
-        router,
+        handleSubmit, clearDraft, validate, router,
     };
 }

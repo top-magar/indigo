@@ -28,6 +28,7 @@ interface EntityFormCardProps {
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  id?: string;
 }
 
 export function EntityFormCard({
@@ -36,9 +37,10 @@ export function EntityFormCard({
   actions,
   children,
   className,
+  id,
 }: EntityFormCardProps) {
   return (
-    <Card className={className}>
+    <Card className={className} id={id}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <div>
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
