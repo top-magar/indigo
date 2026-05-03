@@ -2,8 +2,9 @@
 
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, AlertCircle, Save, Loader2, PartyPopper } from "lucide-react";
+import { ArrowLeft, ArrowRight, AlertCircle, Save, Loader2, PartyPopper, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/shared/utils";
 import type { Category, Collection } from "./types";
 import { WIZARD_STEPS } from "./types";
 import { useProductForm } from "./use-product-form";
@@ -40,15 +41,25 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
     // Celebration state
     if (form.isPublished) {
         return (
-            <div className="flex flex-col items-center justify-center py-24 space-y-4">
-                <div className="size-16 rounded-full bg-success/10 flex items-center justify-center">
-                    <PartyPopper className="size-8 text-success" />
+            <div className="flex flex-col items-center justify-center py-32 space-y-6 animate-in fade-in duration-500">
+                <div className="relative">
+                    <div className="size-20 rounded-2xl bg-success/10 flex items-center justify-center">
+                        <PartyPopper className="size-9 text-success" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 size-5 rounded-full bg-success flex items-center justify-center">
+                        <Check className="size-3 text-success-foreground" />
+                    </div>
                 </div>
-                <div className="text-center space-y-1">
-                    <h1 className="text-lg font-semibold tracking-tight">Product published!</h1>
-                    <p className="text-sm text-muted-foreground">{form.formData.name} is now live in your store</p>
+                <div className="text-center space-y-2">
+                    <h1 className="text-xl font-semibold tracking-tight">Your product is live!</h1>
+                    <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                        <span className="font-medium text-foreground">{form.formData.name}</span> is now visible to customers in your store.
+                    </p>
                 </div>
-                <p className="text-xs text-muted-foreground">Redirecting to products…</p>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Loader2 className="size-3 animate-spin" />
+                    <span>Taking you to products…</span>
+                </div>
             </div>
         );
     }
@@ -119,19 +130,19 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
                         )}
 
                         {/* Step navigation */}
-                        <div className="flex items-center justify-between border-t pt-4 pb-8">
+                        <div className="flex items-center justify-between border-t pt-5 pb-8">
                             <div>
                                 {form.currentStep > 0 && (
-                                    <Button type="button" variant="ghost" onClick={form.goBack}>
-                                        <ArrowLeft className="size-4" />Back
+                                    <Button type="button" variant="ghost" onClick={form.goBack} className="gap-1.5 text-muted-foreground hover:text-foreground">
+                                        <ArrowLeft className="size-3.5" />Back
                                     </Button>
                                 )}
                             </div>
-                            <Button type="submit" disabled={form.isPending}>
+                            <Button type="submit" disabled={form.isPending} className={cn("gap-1.5 transition-all duration-200", isLastStep && "px-6")}>
                                 {isLastStep ? (
                                     form.isPending ? <><Loader2 className="size-4 animate-spin" />Publishing…</> : "Publish product"
                                 ) : (
-                                    <>Continue<ArrowRight className="size-4" /></>
+                                    <>Continue<ArrowRight className="size-3.5" /></>
                                 )}
                             </Button>
                         </div>

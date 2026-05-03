@@ -67,14 +67,17 @@ export function MediaSection({
                 ))}
                 {images.length < 10 && (
                     <label className={cn(
-                        "flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-primary/50 hover:bg-muted/30",
+                        "group flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300",
+                        "hover:border-foreground/20 hover:bg-muted/40 hover:shadow-sm",
                         images.length === 0 ? "h-52" : "aspect-square",
                         isUploading && "pointer-events-none opacity-50"
                     )}>
                         <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={(e) => handleImageUpload(e.target.files)} className="hidden" disabled={isUploading} />
-                        <ImagePlus className="size-8 text-muted-foreground/50" strokeWidth={1.5} />
+                        <div className="size-12 rounded-xl bg-muted/60 flex items-center justify-center group-hover:bg-muted transition-colors duration-300">
+                            <ImagePlus className="size-5 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors duration-300" strokeWidth={1.5} />
+                        </div>
                         <div className="text-center">
-                            <p className="text-sm font-medium">{images.length === 0 ? "Drop photos here" : "Add more"}</p>
+                            <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground transition-colors">{images.length === 0 ? "Drop photos here" : "Add more"}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">{images.length === 0 ? "or click to browse · PNG, JPG up to 5MB" : "PNG, JPG up to 5MB"}</p>
                         </div>
                         {images.length > 0 && <span className="text-[10px] text-muted-foreground">{images.length}/10</span>}

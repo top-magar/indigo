@@ -24,22 +24,24 @@ export function ProductSidebar({ formData, completionPercentage, onNavigateStep,
             {/* Live storefront preview */}
             <div>
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Preview</p>
-                <div className="rounded-xl border bg-background overflow-hidden">
+                <div className="rounded-xl border bg-background overflow-hidden shadow-sm transition-shadow hover:shadow-md">
                     {/* Product image */}
-                    <div className="aspect-square bg-muted/50 relative overflow-hidden">
+                    <div className="aspect-square bg-gradient-to-br from-muted/30 to-muted/60 relative overflow-hidden">
                         {formData.images[0] ? (
                             <Image src={formData.images[0].url} alt={formData.images[0].alt} fill className="object-cover" />
                         ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground/30">
-                                <ShoppingBag className="size-12" strokeWidth={1} />
-                                <p className="text-xs mt-2">No image yet</p>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                                <div className="size-14 rounded-2xl bg-background/60 backdrop-blur-sm flex items-center justify-center">
+                                    <ShoppingBag className="size-7 text-muted-foreground/30" strokeWidth={1.5} />
+                                </div>
+                                <p className="text-[11px] text-muted-foreground/40">No image yet</p>
                             </div>
                         )}
                     </div>
                     {/* Product info */}
                     <div className="p-4 space-y-2">
                         <div>
-                            <p className={`font-medium text-sm ${formData.name ? "" : "text-muted-foreground"}`}>
+                            <p className={`font-medium text-sm ${formData.name ? "text-foreground" : "text-muted-foreground/50"}`}>
                                 {formData.name || "Product name"}
                             </p>
                             {(formData.subtitle || formData.categoryId) && (
