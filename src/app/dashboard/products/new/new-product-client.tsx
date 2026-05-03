@@ -51,7 +51,7 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
                     </div>
                 </div>
                 <div className="text-center space-y-2">
-                    <h1 className="text-xl font-semibold tracking-tight">Your product is live!</h1>
+                    <h1 className="text-lg font-semibold tracking-tight">Your product is live!</h1>
                     <p className="text-sm text-muted-foreground max-w-xs mx-auto">
                         <span className="font-medium text-foreground">{form.formData.name}</span> is now visible to customers in your store.
                     </p>
@@ -144,7 +144,7 @@ export function NewProductClient({ categories, collections, storeSlug }: Props) 
                                     </Button>
                                 )}
                             </div>
-                            <Button type="submit" disabled={form.isPending} className={cn("gap-1.5 transition-all duration-200", isLastStep && "px-6")}>
+                            <Button type="submit" disabled={form.isPending} className={cn("gap-1.5 transition-colors", isLastStep && "px-6")}>
                                 {isLastStep ? (
                                     form.isPending ? <><Loader2 className="size-4 animate-spin" />Publishing…</> : "Publish product"
                                 ) : (
