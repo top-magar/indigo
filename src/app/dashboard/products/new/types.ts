@@ -1,5 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-
 export interface ProductImage {
     id: string;
     url: string;
@@ -71,13 +69,7 @@ export interface ProductFormData {
     publishTime: string;
 }
 
-export interface ProductFormErrors {
-    [key: string]: string;
-}
-
-export type WizardStep = 0 | 1 | 2;
-
-export const STEP_LABELS = ["Details", "Organize", "Pricing"] as const;
+export type ProductFormErrors = Partial<Record<keyof ProductFormData | "variants", string>>;
 
 export const AUTOSAVE_KEY = "product_draft_autosave";
 export const AUTOSAVE_INTERVAL = 30000;
@@ -159,14 +151,3 @@ export const initialFormData: ProductFormData = {
     publishDate: undefined,
     publishTime: "09:00",
 };
-
-export interface CollapsibleSectionProps {
-    title: string;
-    icon: LucideIcon;
-    description?: string;
-    isOpen: boolean;
-    onToggle: () => void;
-    children: React.ReactNode;
-    badge?: React.ReactNode;
-    iconColor?: "primary" | "info" | "success" | "teal" | "warning" | "purple" | "muted";
-}

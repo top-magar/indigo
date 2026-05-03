@@ -3,14 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-    ArrowLeft, Plus, Trash2, Package, Search, X,
-    AlertCircle, Save, Loader2, Layers, FolderOpen, Truck,
+    ArrowLeft, Plus, Trash2, X,
+    AlertCircle, Save, Loader2, ChevronDown, Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,11 +29,11 @@ import { ProductSidebar } from "./_components/product-sidebar";
 import { MediaSection } from "./_components/media-section";
 import { VariantTable } from "./_components/variant-table";
 
-export function NewProductClient({ categories, collections }: { categories: Category[]; collections: Collection[] }) {
+export function NewProductClient({ categories, collections, storeSlug }: { categories: Category[]; collections: Collection[]; storeSlug: string }) {
     const {
         formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
         lastSaved, isUploading, draggedImageIndex, fileInputRef,
-        isPending, seoPreviewUrl, completionPercentage,
+        isPending, completionPercentage,
         setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
         updateField, addTag, removeTag, toggleCollection,
         addOption, removeOption, updateOptionTitle, updateOptionValues,
@@ -41,7 +42,14 @@ export function NewProductClient({ categories, collections }: { categories: Cate
         handleSubmit, handleNavigation, clearDraft, router,
     } = useProductForm();
 
+    const seoPreviewUrl = `${storeSlug || "yourstore"}.indigo.shop/products/${formData.slug || "product-name"}`;
+
     const [optionValueInputs, setOptionValueInputs] = useState<Record<string, string>>({});
+    const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+        organization: false,
+        shipping: false,
+        seo: false,
+    });
     const errorSummaryRef = useRef<HTMLDivElement>(null);
     const errorEntries = Object.entries(errors).filter(([, v]) => v);
     const defaultVariant = formData.variants[0];
@@ -76,6 +84,15 @@ export function NewProductClient({ categories, collections }: { categories: Cate
         updateOptionValues(optionId, option.values.filter(v => v !== value));
     };
 
+    const FieldTip = ({ tip }: { tip: string }) => (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Info className="size-3 text-muted-foreground inline-block ml-1 cursor-help" aria-hidden="true" />
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[220px] text-xs">{tip}</TooltipContent>
+        </Tooltip>
+    );
+
     return (
         <TooltipProvider>
             <div className="flex h-[calc(100vh-6.5rem)] flex-col overflow-hidden">
@@ -91,7 +108,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <TooltipContent>Back to products</TooltipContent>
                         </Tooltip>
                         <div>
-                            <h1 className="text-sm font-semibold">Add product</h1>
+                            <h1 className="text-lg font-semibold tracking-tight">Add product</h1>
                             <div className="flex items-center gap-2" aria-live="polite">
                                 {lastSaved && <span className="text-[10px] text-muted-foreground">Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>}
                                 {isDirty && !lastSaved && <span className="text-[10px] text-muted-foreground">Unsaved changes</span>}
@@ -102,20 +119,20 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                         {isDirty && <Button variant="ghost" size="sm" onClick={clearDraft} className="text-muted-foreground">Discard</Button>}
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="outline" size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
+                                <Button variant={completionPercentage >= 60 ? "outline" : "default"} size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
                                     <Save className="size-3.5" aria-hidden="true" />Save draft
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>⌘S</TooltipContent>
                         </Tooltip>
-                        <Button size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
+                        <Button variant={completionPercentage >= 60 ? "default" : "outline"} size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
                             {isPending ? <><Loader2 className="size-3.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
                         </Button>
                     </div>
                 </div>
 
                 {/* Scrollable content */}
-                <div className="flex-1 overflow-y-auto -mx-3 md:-mx-4 px-3 md:px-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} className="flex-1 overflow-y-auto -mx-3 md:-mx-4 px-3 md:px-4">
                 <div className="max-w-5xl mx-auto space-y-3 pb-6">
                     {errorEntries.length > 0 && (
                         <div ref={errorSummaryRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert" aria-live="assertive">
@@ -134,10 +151,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             {/* General Information */}
                             <Card id="section-general">
                                 <CardHeader className="pb-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Package className="size-4 text-muted-foreground" aria-hidden="true" /></div>
-                                        <div><CardTitle className="text-sm font-medium">General information</CardTitle><CardDescription className="text-xs">Title, subtitle, and description</CardDescription></div>
-                                    </div>
+                                    <CardTitle className="text-sm font-medium">General information</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -153,7 +167,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center justify-between">
-                                            <Label htmlFor="slug" className="text-xs">Handle</Label>
+                                            <Label htmlFor="slug" className="text-xs">Handle<FieldTip tip="The URL-friendly name for this product" /></Label>
                                             <Button type="button" variant="ghost" className="h-6 text-xs" onClick={() => updateField("slug", generateSlug(formData.name))}>Generate</Button>
                                         </div>
                                         <div className="flex items-center gap-1">
@@ -180,13 +194,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card id="section-pricing">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Layers className="size-4 text-muted-foreground" aria-hidden="true" /></div>
-                                            <div>
-                                                <CardTitle className="text-sm font-medium">Pricing &amp; variants</CardTitle>
-                                                <CardDescription className="text-xs">{formData.hasVariants ? "Options, pricing, and inventory per variant" : "Set product pricing"}</CardDescription>
-                                            </div>
-                                        </div>
+                                        <CardTitle className="text-sm font-medium">Pricing &amp; variants</CardTitle>
                                         <Switch checked={formData.hasVariants} onCheckedChange={(v) => { updateField("hasVariants", v); if (v && formData.options.length === 0) addOption(); }} aria-label="Enable product variants" />
                                     </div>
                                 </CardHeader>
@@ -195,15 +203,15 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div className="space-y-1">
                                                 <Label htmlFor="price" className="text-xs">Price (Rs)</Label>
-                                                <Input id="price" type="number" value={defaultVariant.price} onChange={(e) => updateVariant(defaultVariant.id, "price", e.target.value)} placeholder="0.00" min="0" step="0.01" className="font-mono tabular-nums" />
+                                                <Input id="price" type="number" value={defaultVariant.price} onChange={(e) => updateVariant(defaultVariant.id, "price", e.target.value)} placeholder="e.g. 1500" min="0" step="0.01" className="font-mono tabular-nums" />
                                             </div>
                                             <div className="space-y-1">
-                                                <Label htmlFor="compareAtPrice" className="text-xs">Compare-at price</Label>
-                                                <Input id="compareAtPrice" type="number" value={defaultVariant.compareAtPrice} onChange={(e) => updateVariant(defaultVariant.id, "compareAtPrice", e.target.value)} placeholder="0.00" min="0" step="0.01" className="font-mono tabular-nums" />
+                                                <Label htmlFor="compareAtPrice" className="text-xs">Compare-at price<FieldTip tip="Original price shown with a strikethrough to highlight the discount" /></Label>
+                                                <Input id="compareAtPrice" type="number" value={defaultVariant.compareAtPrice} onChange={(e) => updateVariant(defaultVariant.id, "compareAtPrice", e.target.value)} placeholder="" min="0" step="0.01" className="font-mono tabular-nums" />
                                             </div>
                                             <div className="space-y-1">
-                                                <Label htmlFor="costPrice" className="text-xs">Cost price</Label>
-                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="0.00" min="0" step="0.01" className="font-mono tabular-nums" />
+                                                <Label htmlFor="costPrice" className="text-xs">Cost price<FieldTip tip="Your cost to source this product. Used for profit calculations." /></Label>
+                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="" min="0" step="0.01" className="font-mono tabular-nums" />
                                             </div>
                                         </div>
                                     )}
@@ -254,13 +262,17 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             </Card>
 
                             {/* Organization */}
+                            <Collapsible open={openSections.organization} onOpenChange={(v) => setOpenSections(s => ({ ...s, organization: v }))}>
                             <Card id="section-organization">
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><FolderOpen className="size-4 text-muted-foreground" aria-hidden="true" /></div>
-                                        <div><CardTitle className="text-sm font-medium">Organization</CardTitle><CardDescription className="text-xs">Category, collections, and tags</CardDescription></div>
+                                <CollapsibleTrigger asChild>
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-sm font-medium">Organization</CardTitle>
+                                        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.organization && "rotate-180")} />
                                     </div>
                                 </CardHeader>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
                                 <CardContent className="space-y-3">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-1">
@@ -285,7 +297,10 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                             {formData.collectionIds.length > 0 && <Badge variant="secondary" className="text-xs">{formData.collectionIds.length}</Badge>}
                                         </div>
                                         {collections.length === 0 ? (
-                                            <div className="text-center py-3 border rounded-lg"><p className="text-xs text-muted-foreground mb-2">No collections</p><Button variant="outline" asChild><Link href="/dashboard/collections/new">Create</Link></Button></div>
+                                            <div className="text-center py-4 border rounded-lg">
+                                                <p className="text-xs text-muted-foreground mb-1">Group products into collections like &ldquo;Summer Sale&rdquo;</p>
+                                                <Button variant="outline" size="sm" asChild><Link href="/dashboard/collections/new">Create collection</Link></Button>
+                                            </div>
                                         ) : (
                                             <div className="space-y-1 max-h-[160px] overflow-y-auto border rounded-lg p-2">
                                                 {collections.map(c => (
@@ -319,19 +334,25 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         <Switch id="discountable" checked={formData.discountable} onCheckedChange={(v) => updateField("discountable", v)} />
                                     </div>
                                 </CardContent>
+                                </CollapsibleContent>
                             </Card>
+                            </Collapsible>
 
                             {/* Shipping */}
+                            <Collapsible open={openSections.shipping} onOpenChange={(v) => setOpenSections(s => ({ ...s, shipping: v }))}>
                             <Card>
-                                <CardHeader className="pb-3">
+                                <CollapsibleTrigger asChild>
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Truck className="size-4 text-muted-foreground" aria-hidden="true" /></div>
-                                            <div><CardTitle className="text-sm font-medium">Shipping</CardTitle><CardDescription className="text-xs">Physical product settings</CardDescription></div>
+                                        <CardTitle className="text-sm font-medium">Shipping</CardTitle>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant={formData.requiresShipping ? "secondary" : "outline"} className="text-xs">{formData.requiresShipping ? "Physical" : "Digital"}</Badge>
+                                            <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.shipping && "rotate-180")} />
                                         </div>
-                                        <Badge variant={formData.requiresShipping ? "secondary" : "outline"} className="text-xs">{formData.requiresShipping ? "Physical" : "Digital"}</Badge>
                                     </div>
                                 </CardHeader>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
                                 <CardContent className="space-y-3">
                                     <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
                                         <div><Label htmlFor="requiresShipping" className="text-xs">Physical product</Label><p className="text-xs text-muted-foreground">This product requires shipping</p></div>
@@ -353,16 +374,22 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         </div>
                                     )}
                                 </CardContent>
+                                </CollapsibleContent>
                             </Card>
+                            </Collapsible>
 
                             {/* SEO */}
+                            <Collapsible open={openSections.seo} onOpenChange={(v) => setOpenSections(s => ({ ...s, seo: v }))}>
                             <Card>
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Search className="size-4 text-muted-foreground" aria-hidden="true" /></div>
-                                        <div><CardTitle className="text-sm font-medium">Search engine listing</CardTitle><CardDescription className="text-xs">Optimize for search engines</CardDescription></div>
+                                <CollapsibleTrigger asChild>
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-sm font-medium">Search engine listing</CardTitle>
+                                        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.seo && "rotate-180")} />
                                     </div>
                                 </CardHeader>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
                                 <CardContent className="space-y-3">
                                     <div className="p-3 rounded-lg border bg-background">
                                         <p className="text-xs text-primary truncate">{seoPreviewUrl}</p>
@@ -378,20 +405,26 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                     </div>
                                     <div className="space-y-1">
                                         <div className="flex items-center justify-between">
-                                            <Label htmlFor="metaDescription" className="text-xs">Meta description</Label>
+                                            <Label htmlFor="metaDescription" className="text-xs">Meta description<FieldTip tip="Appears in Google search results below the page title" /></Label>
                                             <span className={cn("text-xs", formData.metaDescription.length > 160 ? "text-destructive" : "text-muted-foreground")}>{formData.metaDescription.length}/160</span>
                                         </div>
                                         <Textarea id="metaDescription" value={formData.metaDescription} onChange={(e) => updateField("metaDescription", e.target.value)} placeholder="A brief description for search engines..." className="min-h-[80px] resize-none" maxLength={170} />
                                     </div>
                                 </CardContent>
+                                </CollapsibleContent>
                             </Card>
+                            </Collapsible>
                         </div>
 
-                        <ProductSidebar formData={formData} updateField={updateField as (field: string, value: any) => void} completionPercentage={completionPercentage} scrollToSection={(id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })} lastSaved={lastSaved} isDirty={isDirty} clearDraft={clearDraft} seoPreviewUrl={seoPreviewUrl} categories={categories} />
+                        <div className="hidden lg:block">
+                            <div className="sticky top-0">
+                                <ProductSidebar formData={formData} updateField={updateField} completionPercentage={completionPercentage} scrollToSection={(id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })} lastSaved={lastSaved} isDirty={isDirty} clearDraft={clearDraft} seoPreviewUrl={seoPreviewUrl} categories={categories} />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                </div>
+                </form>
 
                 <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
                     <AlertDialogContent>

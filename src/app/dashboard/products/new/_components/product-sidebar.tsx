@@ -10,14 +10,13 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { CheckCircle2, Circle, Eye, AlertCircle } from "lucide-react"
+import { CheckCircle2, Circle, Eye } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/shared/utils"
 
 interface ProductSidebarProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formData: ProductFormData
-  updateField: (field: string, value: unknown) => void
+  updateField: <K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => void
   completionPercentage: number
   scrollToSection: (id: string) => void
   lastSaved: Date | null
@@ -125,7 +124,7 @@ export function ProductSidebar({
 
     {/* Preview Card */}
     {formData.name && (
-        <Card className="bg-muted/30 border-dashed">
+        <Card className="bg-muted/30">
             <CardHeader className="pb-2">
                 <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
                     <Eye className="size-3.5" aria-hidden="true" />
@@ -208,7 +207,7 @@ export function ProductSidebar({
                         {item.done ? (
                             <CheckCircle2 className="size-3.5 text-success" aria-hidden="true" />
                         ) : (
-                            <AlertCircle className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                            <Circle className="size-3.5 text-muted-foreground" aria-hidden="true" />
                         )}
                         <span className={item.done ? "text-muted-foreground line-through" : ""}>
                             {item.label}

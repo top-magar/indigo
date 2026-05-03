@@ -1,10 +1,10 @@
 import Image from "next/image";
 import {
-    ImageIcon, Plus, X, GripVertical, Loader2, Link2,
+    Plus, X, GripVertical, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/shared/utils";
 import type { ProductImage } from "../types";
 
@@ -29,12 +29,8 @@ export function MediaSection({
         <Card>
             <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                    <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center">
-                        <ImageIcon className="size-4 text-muted-foreground" aria-hidden="true" />
-                    </div>
                     <div>
                         <CardTitle className="text-sm font-medium">Media</CardTitle>
-                        <CardDescription className="text-xs">Product images</CardDescription>
                     </div>
                     {images.length > 0 && (
                         <Badge variant="secondary" className="text-xs ml-auto">{images.length}/10</Badge>
@@ -112,16 +108,10 @@ export function MediaSection({
                             </div>
                             <div className="text-center">
                                 <p className="text-xs font-medium">{images.length === 0 ? "Add images" : "Add more"}</p>
-                                <p className="text-xs text-muted-foreground">PNG, JPG up to 5MB</p>
+                                <p className="text-xs text-muted-foreground">{images.length === 0 ? "Your best photo first — it'll be the main image" : "PNG, JPG up to 5MB"}</p>
                             </div>
                         </label>
                     )}
-                </div>
-                <div className="mt-3 pt-3 border-t">
-                    <Button variant="ghost" className="text-xs gap-1.5 text-muted-foreground" disabled>
-                        <Link2 className="size-3.5" aria-hidden="true" />
-                        Add from URL
-                    </Button>
                 </div>
             </CardContent>
         </Card>

@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "figma": {
+      "url": "https://mcp.figma.com/mcp",
+      "disabled": false
+    },
     "next-devtools": {
       "command": "/opt/homebrew/opt/node@20/bin/npx",
       "args": [

@@ -8,7 +8,6 @@ import type {
     ProductOption,
     ProductFormData,
     ProductFormErrors,
-    WizardStep,
 } from "./types";
 import {
     AUTOSAVE_KEY,
@@ -35,7 +34,6 @@ export function useProductForm() {
     const [isUploading, setIsUploading] = useState(false);
     const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [currentStep, setCurrentStep] = useState<WizardStep>(0);
 
     // Load autosaved draft on mount
     useEffect(() => {
@@ -60,7 +58,12 @@ export function useProductForm() {
     useEffect(() => {
         if (!isDirty) return;
         const timer = setTimeout(() => {
-            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(formData));
+            // Filter out blob URLs — they're invalid across sessions
+            const saveable = {
+                ...formData,
+                images: formData.images.filter(img => !img.url.startsWith("blob:")),
+            };
+            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(saveable));
             setLastSaved(new Date());
         }, AUTOSAVE_INTERVAL);
         return () => clearTimeout(timer);
@@ -211,16 +214,24 @@ export function useProductForm() {
                 ...prev,
                 images: prev.images.map(img => {
                     const uploaded = uploadedImages.find(u => u.id === img.id);
-                    return uploaded ? { ...uploaded, isUploading: false } : img;
+                    if (uploaded) {
+                        // Revoke the blob URL to free memory
+                        if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
+                        return { ...uploaded, isUploading: false };
+                    }
+                    return img;
                 }),
             }));
 
             toast.success(`${uploadedImages.length} image(s) uploaded`);
         } catch {
-            setFormData(prev => ({
-                ...prev,
-                images: prev.images.filter(img => !img.isUploading),
-            }));
+            setFormData(prev => {
+                // Revoke blob URLs for failed uploads
+                prev.images.filter(img => img.isUploading).forEach(img => {
+                    if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url);
+                });
+                return { ...prev, images: prev.images.filter(img => !img.isUploading) };
+            });
             toast.error("Failed to upload image(s)");
         } finally {
             setIsUploading(false);
@@ -262,86 +273,26 @@ export function useProductForm() {
         handleImageUpload(files);
     }, [handleImageUpload]);
 
-    // --- Per-step validation (Medusa: title is only required field) ---
-    const validateStep = useCallback((step: WizardStep): boolean => {
+    // --- Validation ---
+    const validate = useCallback((): boolean => {
         const newErrors: FormErrors = {};
-
-        if (step === 0) {
-            if (!formData.name.trim()) {
-                newErrors.name = "Product title is required";
-            }
+        if (!formData.name.trim()) newErrors.name = "Product title is required";
+        const enabledVariants = formData.variants.filter(v => v.enabled);
+        if (enabledVariants.some(v => !v.price || parseFloat(v.price) < 0)) {
+            newErrors.variants = "All enabled variants must have a valid price";
         }
-
-        // Step 1 (Organize): nothing required
-        // Step 2 (Variants): validate enabled variants have prices
-        if (step === 2) {
-            const enabledVariants = formData.variants.filter(v => v.enabled);
-            const missingPrices = enabledVariants.some(v => !v.price || parseFloat(v.price) < 0);
-            if (missingPrices) {
-                newErrors.variants = "All enabled variants must have a valid price";
-            }
-        }
-
-        setErrors(prev => {
-            const cleared = { ...prev };
-            const stepFields: Record<WizardStep, string[]> = {
-                0: ["name"],
-                1: [],
-                2: ["variants"],
-            };
-            for (const field of stepFields[step]) {
-                delete cleared[field];
-            }
-            return { ...cleared, ...newErrors };
-        });
-
+        setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }, [formData]);
 
-    const validateAllSteps = useCallback((): boolean => {
-        const s0 = validateStep(0);
-        const s1 = validateStep(1);
-        const s2 = validateStep(2);
-        return s0 && s1 && s2;
-    }, [validateStep]);
-
-    const goToNextStep = useCallback(() => {
-        if (validateStep(currentStep)) {
-            setCurrentStep(prev => Math.min(prev + 1, 2) as WizardStep);
-            return true;
-        }
-        return false;
-    }, [currentStep, validateStep]);
-
-    const goToPrevStep = useCallback(() => {
-        setCurrentStep(prev => Math.max(prev - 1, 0) as WizardStep);
-    }, []);
-
-    const goToStep = useCallback((step: WizardStep) => {
-        if (step < currentStep) {
-            setCurrentStep(step);
-            return;
-        }
-        let valid = true;
-        for (let s = currentStep; s < step; s++) {
-            if (!validateStep(s as WizardStep)) {
-                valid = false;
-                break;
-            }
-        }
-        if (valid) {
-            setCurrentStep(step);
-        }
-    }, [currentStep, validateStep]);
-
     // --- Submit ---
     const handleSubmit = useCallback(async (asDraft: boolean = false) => {
-        if (!asDraft && !validateAllSteps()) {
+        if (!asDraft && !validate()) {
             toast.error("Please fix the errors before submitting");
             return;
         }
 
-        const status = asDraft ? "draft" : formData.status === "draft" ? "active" : formData.status;
+        const status = asDraft ? "draft" : "active";
 
         // Get the first enabled variant's price as the "main" price for backward compat
         const enabledVariants = formData.variants.filter(v => v.enabled);
@@ -409,7 +360,7 @@ export function useProductForm() {
                 toast.error("Failed to create product");
             }
         });
-    }, [formData, validateAllSteps, router]);
+    }, [formData, validate, router]);
 
     const handleNavigation = useCallback((href: string) => {
         if (isDirty) {
@@ -425,11 +376,8 @@ export function useProductForm() {
         setFormData(initialFormData);
         setIsDirty(false);
         setLastSaved(null);
-        setCurrentStep(0);
         toast.success("Draft cleared");
     }, []);
-
-    const seoPreviewUrl = `yourstore.com/products/${formData.slug || "product-name"}`;
 
     // Completion tracks key fields across all steps
     const completionItems = [
@@ -444,15 +392,13 @@ export function useProductForm() {
     return {
         formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
         lastSaved, isUploading, draggedImageIndex, fileInputRef,
-        isPending, seoPreviewUrl, completionPercentage,
-        currentStep,
+        isPending, completionPercentage,
         setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
         updateField, addTag, removeTag, toggleCollection,
         addOption, removeOption, updateOptionTitle, updateOptionValues,
         updateVariant, toggleAllVariants,
         handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
         handleSubmit, handleNavigation, clearDraft,
-        goToNextStep, goToPrevStep, goToStep, validateStep,
         router,
     };
 }

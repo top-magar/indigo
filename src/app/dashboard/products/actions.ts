@@ -6,7 +6,7 @@ const log = createLogger("actions:products");
 import { z } from "zod";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { db } from "@/infrastructure/db";
-import { products, categories } from "@/db/schema/products";
+import { products, categories, productVariants } from "@/db/schema/products";
 import { collectionProducts } from "@/db/schema/collections";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -76,6 +76,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
 
 const productDetailsSchema = z.object({
     name: z.string().min(1, "Product name is required").max(255),
+    subtitle: z.string().max(255).optional(),
     slug: z.string().optional(),
     description: z.string().max(10000).optional(),
     categoryId: z.string().uuid().optional().or(z.literal("")),
@@ -117,6 +118,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
 
         const raw = {
             name: formData.get("name") as string || "",
+            subtitle: (formData.get("subtitle") as string) || undefined,
             slug: (formData.get("slug") as string) || undefined,
             description: (formData.get("description") as string) || undefined,
             categoryId: (formData.get("categoryId") as string) || undefined,
@@ -167,6 +169,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
             images: validated.images.length > 0 ? validated.images : [],
             metadata: {
                 brand: validated.brand || null,
+                subtitle: validated.subtitle || null,
                 tags: validated.tags,
                 seo: { metaTitle: validated.metaTitle || null, metaDescription: validated.metaDescription || null },
                 shipping: { requiresShipping: validated.requiresShipping, weightUnit: validated.weightUnit },
@@ -176,6 +179,26 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
 
         if (!product) {
             return { success: false, error: "Failed to create product" };
+        }
+
+        // Save collection associations
+        if (validated.collectionIds.length > 0) {
+            await db.insert(collectionProducts).values(
+                validated.collectionIds.map((collectionId, i) => ({
+                    tenantId, collectionId, productId: product.id, position: i,
+                }))
+            );
+        }
+
+        // Save variants to productVariants table
+        if (validated.hasVariants && validated.variants.length > 0) {
+            await db.insert(productVariants).values(
+                validated.variants.map((v, i) => ({
+                    tenantId, productId: product.id, name: v.title,
+                    sku: v.sku || null, price: v.price?.toString() ?? null,
+                    quantity: v.quantity ?? 0, position: i,
+                }))
+            );
         }
 
         try {
