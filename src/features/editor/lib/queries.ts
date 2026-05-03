@@ -388,12 +388,17 @@ export async function deleteSavedComponent(id: string) {
   await db.delete(editorProjects).where(and(eq(editorProjects.id, id), eq(editorProjects.tenantId, tenantId)));
 }
 
+import { sanitizeSearch } from "@/shared/utils/sanitize";
+
 // ─── Product Data for Editor Binding ─────────────────────
 
 export async function getEditorProducts(opts?: { collectionId?: string; limit?: number; search?: string }) {
   const tenantId = await getTenant();
   const conditions = [eq(products.tenantId, tenantId)];
-  if (opts?.search) conditions.push(sql`${products.name} ILIKE ${'%' + opts.search + '%'}`);
+  if (opts?.search) {
+    const term = `%${sanitizeSearch(opts.search)}%`;
+    conditions.push(sql`${products.name} ILIKE ${term}`);
+  }
 
   return db.select({
     id: products.id, name: products.name, slug: products.slug,

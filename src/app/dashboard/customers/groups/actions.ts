@@ -25,6 +25,7 @@ const memberSchema = z.object({
 })
 
 export async function createCustomerGroup(formData: FormData) {
+  try {
   const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = createGroupSchema.parse({
@@ -54,6 +55,9 @@ export async function createCustomerGroup(formData: FormData) {
 
   revalidatePath("/dashboard/customers/groups")
   return { data }
+  } catch (err) {
+    return { success: false, error: err instanceof z.ZodError ? err.issues[0].message : err instanceof Error ? err.message : "Failed to create group" }
+  }
 }
 
 export async function updateCustomerGroup(formData: FormData) {
