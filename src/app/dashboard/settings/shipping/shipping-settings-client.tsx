@@ -166,7 +166,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                   <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{zone.rates.length} rate{zone.rates.length !== 1 ? "s" : ""}</Badge>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon"><MoreHorizontal className="size-3.5" /></Button>
+                      <Button variant="ghost" size="icon" aria-label="More options"><MoreHorizontal className="size-3.5" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuItem onClick={() => { setSelectedZone(zone); setZoneDialogOpen(true); }} className="text-xs gap-2">
@@ -199,7 +199,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                         </span>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm"><MoreHorizontal className="size-3.5" /></Button>
+                            <Button variant="ghost" size="icon-sm" aria-label="More options"><MoreHorizontal className="size-3.5" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-32">
                             <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }} className="text-xs gap-2">

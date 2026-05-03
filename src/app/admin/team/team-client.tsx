@@ -109,7 +109,7 @@ export default function TeamClient({ members, invites, canManage, currentUserId 
                 {canManage && m.platformRole !== "super_admin" && m.id !== currentUserId && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-sm"><MoreHorizontal className="size-3.5" /></Button>
+                      <Button variant="ghost" size="icon-sm" aria-label="More options"><MoreHorizontal className="size-3.5" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {["admin", "support", "finance"].filter(r => r !== m.platformRole).map(r => (
