@@ -231,7 +231,7 @@ export async function generateMetadata({
   // Parallel fetch for metadata
   const [tenantResult, productResult] = await Promise.all([
     supabase.from("tenants").select("name").eq("slug", slug).single(),
-    supabase.from("products").select("name, description, price").eq("slug", productSlug).single(),
+    supabase.from("products").select("name, description, price, images").eq("slug", productSlug).single(),
   ])
 
   const tenant = tenantResult.data
@@ -255,11 +255,13 @@ export async function generateMetadata({
       title: product.name,
       description,
       type: "website",
+      ...(product.images?.[0] && { images: [{ url: typeof product.images[0] === "string" ? product.images[0] : (product.images[0] as { url: string }).url }] }),
     },
     twitter: {
       card: "summary_large_image",
       title: product.name,
       description,
+      ...(product.images?.[0] && { images: [typeof product.images[0] === "string" ? product.images[0] : (product.images[0] as { url: string }).url] }),
     },
   }
 }
