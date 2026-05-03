@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, ShoppingBag, Star, Quote, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -67,7 +68,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
             </div>
             {imageUrl && (
               <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
-                <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+                <Image src={imageUrl} alt={title} fill className="object-cover" />
               </div>
             )}
           </section>
@@ -126,7 +127,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
                 className={`group block ${isCarousel ? "min-w-[260px] snap-start" : ""}`}>
                 <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-3">
                   {p.images[0] ? (
-                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <Image src={p.images[0]} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center"><ShoppingBag className="size-8 text-muted-foreground/30" /></div>
                   )}
@@ -153,7 +154,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
               {categories.slice(0, 6).map((cat) => (
                 <Link key={cat.id} href={href(`/category/${cat.slug}`)}
                   className="relative h-48 rounded-lg overflow-hidden bg-muted group">
-                  {cat.imageUrl && <img src={cat.imageUrl} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
+                  {cat.imageUrl && <Image src={cat.imageUrl} alt={cat.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
                     <h3 className="font-semibold text-lg">{cat.name}</h3>
@@ -195,7 +196,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
         return (
           <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
             <div className="rounded-2xl overflow-hidden grid md:grid-cols-2" style={{ backgroundColor: `${primaryColor}10` }}>
-              {c.imageUrl && <img src={c.imageUrl} alt={title} className="w-full h-64 md:h-auto object-cover" />}
+              {c.imageUrl && <Image src={c.imageUrl} alt={title} width={600} height={400} className="w-full h-64 md:h-auto object-cover" />}
               <div className="p-8 sm:p-12 flex flex-col justify-center">
                 <h2 className="text-2xl sm:text-3xl font-semibold">{title}</h2>
                 {c.subtitle && <p className="mt-3 text-muted-foreground">{c.subtitle}</p>}

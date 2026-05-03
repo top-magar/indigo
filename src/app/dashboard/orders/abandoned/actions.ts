@@ -36,6 +36,7 @@ async function getTenantId() {
 }
 
 export async function getAbandonedCheckouts(): Promise<{ checkouts: AbandonedCheckout[]; stats: AbandonedStats }> {
+    try {
     const supabase = await createClient();
     const tenantId = await getTenantId();
 
@@ -71,9 +72,14 @@ export async function getAbandonedCheckouts(): Promise<{ checkouts: AbandonedChe
             totalValue,
         },
     };
+    } catch (err) {
+        log.error("Failed to get abandoned checkouts", { error: err instanceof Error ? err.message : String(err) });
+        return { checkouts: [], stats: { total: 0, recoverable: 0, totalValue: 0 } };
+    }
 }
 
 export async function sendRecoveryEmail(cartId: string): Promise<{ success: boolean; error?: string }> {
+    try {
     const validCartId = z.string().uuid().parse(cartId);
     const supabase = await createClient();
     const tenantId = await getTenantId();
@@ -138,9 +144,14 @@ export async function sendRecoveryEmail(cartId: string): Promise<{ success: bool
 
     log.info("Recovery email sent", { cartId: validCartId, email: cart.email });
     return { success: true };
+    } catch (err) {
+        log.error("Failed to send recovery email", { error: err instanceof Error ? err.message : String(err) });
+        return { success: false, error: err instanceof z.ZodError ? "Invalid cart ID" : "Failed to send recovery email" };
+    }
 }
 
 export async function bulkSendRecoveryEmails(cartIds: string[]): Promise<{ success: boolean; sent: number; error?: string }> {
+    try {
     const validCartIds = z.array(z.string().uuid()).min(1).parse(cartIds);
     let sent = 0;
     for (const id of validCartIds) {
@@ -148,4 +159,7 @@ export async function bulkSendRecoveryEmails(cartIds: string[]): Promise<{ succe
         if (result.success) sent++;
     }
     return { success: true, sent };
+    } catch (err) {
+        return { success: false, sent: 0, error: err instanceof z.ZodError ? "Invalid cart IDs" : "Failed to send emails" };
+    }
 }

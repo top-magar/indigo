@@ -7,31 +7,42 @@ import { eq, and, count } from "drizzle-orm";
 import { requireTenantUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function renamePage(id: string, name: string) {
+export async function renamePage(id: string, name: string): Promise<{ success: boolean; error?: string }> {
+  try {
   const user = await requireTenantUser();
   const [page] = await db.select({ projectId: editorPages.projectId }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
-  if (!page) return;
+  if (!page) return { success: false, error: "Page not found" };
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
-  if (!project) return;
+  if (!project) return { success: false, error: "Not authorized" };
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   await db.update(editorPages).set({ name, slug, updatedAt: new Date() }).where(eq(editorPages.id, id));
   revalidatePath("/dashboard/pages");
+  return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to rename page" };
+  }
 }
 
-export async function deletePage(id: string) {
+export async function deletePage(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
   const user = await requireTenantUser();
   const [page] = await db.select({ projectId: editorPages.projectId, isHomepage: editorPages.isHomepage }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
-  if (!page) return;
-  if (page.isHomepage) return; // Cannot delete homepage
+  if (!page) return { success: false, error: "Page not found" };
+  if (page.isHomepage) return { success: false, error: "Cannot delete homepage" };
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
-  if (!project) return;
+  if (!project) return { success: false, error: "Not authorized" };
   await db.delete(editorPages).where(eq(editorPages.id, id));
   revalidatePath("/dashboard/pages");
+  return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to delete page" };
+  }
 }
 
 export async function createPage(projectId: string, pageName?: string): Promise<{ success?: boolean; id?: string; error?: string }> {
+  try {
   const user = await requireTenantUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
@@ -54,4 +65,7 @@ export async function createPage(projectId: string, pageName?: string): Promise<
 
   revalidatePath("/dashboard/pages");
   return { id: page.id };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to create page" };
+  }
 }

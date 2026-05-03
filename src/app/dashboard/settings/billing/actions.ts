@@ -13,6 +13,7 @@ const requestSchema = z.object({
 });
 
 export async function requestUpgrade(input: z.infer<typeof requestSchema>): Promise<{ success?: boolean; error?: string; paymentInfo?: { planName: string; amount: string; cycle: string } }> {
+  try {
   const user = await requireUser();
   const parsed = requestSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Invalid input" };
@@ -31,4 +32,7 @@ export async function requestUpgrade(input: z.infer<typeof requestSchema>): Prom
       cycle: parsed.data.billingCycle,
     },
   };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to process upgrade" };
+  }
 }

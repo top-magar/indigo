@@ -42,6 +42,7 @@ function generateCode(): string {
 }
 
 export async function getGiftCards(): Promise<{ cards: GiftCard[]; stats: GiftCardStats }> {
+    try {
     const { supabase, tenantId } = await getAuth();
 
     const { data, error } = await supabase
@@ -69,6 +70,10 @@ export async function getGiftCards(): Promise<{ cards: GiftCard[]; stats: GiftCa
             totalRemaining: cards.reduce((s, c) => s + (c.current_balance ?? 0), 0),
         },
     };
+    } catch (err) {
+        log.error("Failed to get gift cards", { error: err instanceof Error ? err.message : String(err) });
+        return { cards: [], stats: { total: 0, active: 0, totalIssued: 0, totalRemaining: 0 } };
+    }
 }
 
 const createGiftCardSchema = z.object({
@@ -86,6 +91,7 @@ export async function createGiftCard(input: {
     note?: string;
     expiresAt?: string;
 }): Promise<{ success: boolean; error?: string; card?: GiftCard }> {
+    try {
     const data = createGiftCardSchema.parse(input);
     const { supabase, tenantId } = await getAuth();
 
@@ -115,9 +121,14 @@ export async function createGiftCard(input: {
 
     revalidatePath("/dashboard/gift-cards");
     return { success: true, card };
+    } catch (err) {
+        log.error("Failed to create gift card", { error: err instanceof Error ? err.message : String(err) });
+        return { success: false, error: err instanceof z.ZodError ? err.issues[0].message : "Failed to create gift card" };
+    }
 }
 
 export async function toggleGiftCardStatus(id: string, isActive: boolean): Promise<{ success: boolean; error?: string }> {
+    try {
     const validId = z.string().uuid().parse(id);
     const validIsActive = z.boolean().parse(isActive);
     const { supabase, tenantId } = await getAuth();
@@ -131,4 +142,7 @@ export async function toggleGiftCardStatus(id: string, isActive: boolean): Promi
     if (error) return { success: false, error: error.message };
     revalidatePath("/dashboard/gift-cards");
     return { success: true };
+    } catch (err) {
+        return { success: false, error: err instanceof z.ZodError ? err.issues[0].message : "Failed to update gift card" };
+    }
 }
