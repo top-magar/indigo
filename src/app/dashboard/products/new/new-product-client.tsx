@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
     ArrowLeft, Plus, Trash2, X,
-    AlertCircle, Save, Loader2, ChevronDown, Info,
+    AlertCircle, Save, Loader2, ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FormField } from "@/components/dashboard/form-field";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
@@ -20,11 +21,11 @@ import {
     AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
 import type { Category, Collection } from "./types";
 import { generateSlug, AUTOSAVE_KEY } from "./types";
 import { useProductForm } from "./use-product-form";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 import { ProductSidebar } from "./_components/product-sidebar";
 import { MediaSection } from "./_components/media-section";
 import { VariantTable } from "./_components/variant-table";
@@ -54,13 +55,7 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
     const errorEntries = Object.entries(errors).filter(([, v]) => v);
     const defaultVariant = formData.variants[0];
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); handleSubmit(true); }
-        };
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [handleSubmit]);
+    useSaveShortcut(useCallback(() => handleSubmit(true), [handleSubmit]));
 
     useEffect(() => {
         if (errorEntries.length > 0 && errorSummaryRef.current) {
@@ -84,29 +79,14 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
         updateOptionValues(optionId, option.values.filter(v => v !== value));
     };
 
-    const FieldTip = ({ tip }: { tip: string }) => (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <Info className="size-3 text-muted-foreground inline-block ml-1 cursor-help" aria-hidden="true" />
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[220px] text-xs">{tip}</TooltipContent>
-        </Tooltip>
-    );
-
     return (
-        <TooltipProvider>
-            <div className="flex h-[calc(100vh-6.5rem)] flex-col overflow-hidden">
+            <div className="space-y-3">
                 {/* Header */}
-                <div className="shrink-0 flex items-center justify-between pb-3">
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-1.5 rounded-md hover:bg-muted transition-colors" aria-label="Back to products">
-                                    <ArrowLeft className="size-4" aria-hidden="true" />
-                                </button>
-                            </TooltipTrigger>
-                            <TooltipContent>Back to products</TooltipContent>
-                        </Tooltip>
+                        <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-1.5 rounded-md hover:bg-muted transition-colors" aria-label="Back to products">
+                            <ArrowLeft className="size-4" aria-hidden="true" />
+                        </button>
                         <div>
                             <h1 className="text-lg font-semibold tracking-tight">Add product</h1>
                             <div className="flex items-center gap-2" aria-live="polite">
@@ -117,14 +97,9 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                     </div>
                     <div className="flex items-center gap-2">
                         {isDirty && <Button variant="ghost" size="sm" onClick={clearDraft} className="text-muted-foreground">Discard</Button>}
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant={completionPercentage >= 60 ? "outline" : "default"} size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
-                                    <Save className="size-3.5" aria-hidden="true" />Save draft
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>⌘S</TooltipContent>
-                        </Tooltip>
+                        <Button variant={completionPercentage >= 60 ? "outline" : "default"} size="sm" onClick={() => handleSubmit(true)} disabled={isPending} title="⌘S">
+                            <Save className="size-3.5" aria-hidden="true" />Save draft
+                        </Button>
                         <Button variant={completionPercentage >= 60 ? "default" : "outline"} size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
                             {isPending ? <><Loader2 className="size-3.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
                         </Button>
@@ -132,8 +107,8 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                 </div>
 
                 {/* Scrollable content */}
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} className="flex-1 overflow-y-auto -mx-3 md:-mx-4 px-3 md:px-4">
-                <div className="max-w-5xl mx-auto space-y-3 pb-6">
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }}>
+                <div className="space-y-3 pb-6">
                     {errorEntries.length > 0 && (
                         <div ref={errorSummaryRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert" aria-live="assertive">
                             <div className="flex items-center gap-2 mb-1">
@@ -146,7 +121,7 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4">
                         <div className="space-y-3">
                             {/* General Information */}
                             <Card id="section-general">
@@ -155,19 +130,16 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                                 </CardHeader>
                                 <CardContent className="space-y-3">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <Label htmlFor="name" className="text-xs">Title <span className="text-destructive">*</span></Label>
-                                            <Input id="name" value={formData.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Short sleeve t-shirt" className={cn(errors.name && "border-destructive")} aria-invalid={!!errors.name} aria-required="true" autoFocus />
-                                            {errors.name && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="size-3.5" aria-hidden="true" />{errors.name}</p>}
-                                        </div>
-                                        <div className="space-y-1">
-                                            <Label htmlFor="subtitle" className="text-xs">Subtitle</Label>
+                                        <FormField label="Title" required error={errors.name}>
+                                            <Input id="name" value={formData.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Short sleeve t-shirt" className={cn(errors.name && "border-destructive")} aria-invalid={!!errors.name} autoFocus />
+                                        </FormField>
+                                        <FormField label="Subtitle">
                                             <Input id="subtitle" value={formData.subtitle} onChange={(e) => updateField("subtitle", e.target.value)} placeholder="Comfortable everyday wear" />
-                                        </div>
+                                        </FormField>
                                     </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <Label htmlFor="slug" className="text-xs">Handle<FieldTip tip="The URL-friendly name for this product" /></Label>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-1.5">
+                                            <label className="text-xs font-medium">Handle</label>
                                             <Button type="button" variant="ghost" className="h-6 text-xs" onClick={() => updateField("slug", generateSlug(formData.name))}>Generate</Button>
                                         </div>
                                         <div className="flex items-center gap-1">
@@ -175,11 +147,10 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                                             <Input id="slug" value={formData.slug} onChange={(e) => updateField("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))} placeholder="short-sleeve-t-shirt" className="font-mono" />
                                         </div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <Label htmlFor="description" className="text-xs">Description</Label>
-                                        <Textarea id="description" value={formData.description} onChange={(e) => updateField("description", e.target.value)} placeholder="Describe your product..." className="min-h-[100px] resize-none" maxLength={5000} />
+                                    <FormField label="Description">
+                                        <Textarea id="description" value={formData.description} onChange={(e) => updateField("description", e.target.value)} placeholder="Describe your product..." className="min-h-24 resize-none" maxLength={5000} />
                                         <span className="text-xs text-muted-foreground">{formData.description.length}/5000</span>
-                                    </div>
+                                    </FormField>
                                 </CardContent>
                             </Card>
 
@@ -201,18 +172,15 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                                 <CardContent className="space-y-3">
                                     {!formData.hasVariants && defaultVariant && (
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div className="space-y-1">
-                                                <Label htmlFor="price" className="text-xs">Price (Rs)</Label>
+                                            <FormField label="Price (Rs)">
                                                 <Input id="price" type="number" value={defaultVariant.price} onChange={(e) => updateVariant(defaultVariant.id, "price", e.target.value)} placeholder="e.g. 1500" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <Label htmlFor="compareAtPrice" className="text-xs">Compare-at price<FieldTip tip="Original price shown with a strikethrough to highlight the discount" /></Label>
-                                                <Input id="compareAtPrice" type="number" value={defaultVariant.compareAtPrice} onChange={(e) => updateVariant(defaultVariant.id, "compareAtPrice", e.target.value)} placeholder="" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <Label htmlFor="costPrice" className="text-xs">Cost price<FieldTip tip="Your cost to source this product. Used for profit calculations." /></Label>
-                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="" min="0" step="0.01" className="font-mono tabular-nums" />
-                                            </div>
+                                            </FormField>
+                                            <FormField label="Compare-at price">
+                                                <Input id="compareAtPrice" type="number" value={defaultVariant.compareAtPrice} onChange={(e) => updateVariant(defaultVariant.id, "compareAtPrice", e.target.value)} placeholder="Original price" min="0" step="0.01" className="font-mono tabular-nums" />
+                                            </FormField>
+                                            <FormField label="Cost price">
+                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="Your cost" min="0" step="0.01" className="font-mono tabular-nums" />
+                                            </FormField>
                                         </div>
                                     )}
                                     {formData.hasVariants && (
@@ -265,7 +233,7 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                             <Collapsible open={openSections.organization} onOpenChange={(v) => setOpenSections(s => ({ ...s, organization: v }))}>
                             <Card id="section-organization">
                                 <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-sm font-medium">Organization</CardTitle>
                                         <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.organization && "rotate-180")} />
@@ -342,7 +310,7 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                             <Collapsible open={openSections.shipping} onOpenChange={(v) => setOpenSections(s => ({ ...s, shipping: v }))}>
                             <Card>
                                 <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-sm font-medium">Shipping</CardTitle>
                                         <div className="flex items-center gap-2">
@@ -382,7 +350,7 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                             <Collapsible open={openSections.seo} onOpenChange={(v) => setOpenSections(s => ({ ...s, seo: v }))}>
                             <Card>
                                 <CollapsibleTrigger asChild>
-                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                                <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-sm font-medium">Search engine listing</CardTitle>
                                         <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", openSections.seo && "rotate-180")} />
@@ -396,20 +364,14 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                                         <p className="text-sm text-primary font-medium mt-0.5 truncate">{formData.metaTitle || formData.name || "Product Name"} - Your Store</p>
                                         <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{formData.metaDescription || formData.description || "Product description will appear here."}</p>
                                     </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <Label htmlFor="metaTitle" className="text-xs">Page title</Label>
-                                            <span className={cn("text-xs", formData.metaTitle.length > 60 ? "text-destructive" : "text-muted-foreground")}>{formData.metaTitle.length}/60</span>
-                                        </div>
+                                    <FormField label="Page title">
                                         <Input id="metaTitle" value={formData.metaTitle} onChange={(e) => updateField("metaTitle", e.target.value)} placeholder={formData.name || "Product name - Your Store"} maxLength={70} />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="flex items-center justify-between">
-                                            <Label htmlFor="metaDescription" className="text-xs">Meta description<FieldTip tip="Appears in Google search results below the page title" /></Label>
-                                            <span className={cn("text-xs", formData.metaDescription.length > 160 ? "text-destructive" : "text-muted-foreground")}>{formData.metaDescription.length}/160</span>
-                                        </div>
-                                        <Textarea id="metaDescription" value={formData.metaDescription} onChange={(e) => updateField("metaDescription", e.target.value)} placeholder="A brief description for search engines..." className="min-h-[80px] resize-none" maxLength={170} />
-                                    </div>
+                                        <span className={cn("text-xs", formData.metaTitle.length > 60 ? "text-destructive" : "text-muted-foreground")}>{formData.metaTitle.length}/60</span>
+                                    </FormField>
+                                    <FormField label="Meta description" description="Appears in Google search results below the page title">
+                                        <Textarea id="metaDescription" value={formData.metaDescription} onChange={(e) => updateField("metaDescription", e.target.value)} placeholder="A brief description for search engines..." className="min-h-20 resize-none" maxLength={170} />
+                                        <span className={cn("text-xs", formData.metaDescription.length > 160 ? "text-destructive" : "text-muted-foreground")}>{formData.metaDescription.length}/160</span>
+                                    </FormField>
                                 </CardContent>
                                 </CollapsibleContent>
                             </Card>
@@ -440,6 +402,5 @@ export function NewProductClient({ categories, collections, storeSlug }: { categ
                     </AlertDialogContent>
                 </AlertDialog>
             </div>
-        </TooltipProvider>
     );
 }

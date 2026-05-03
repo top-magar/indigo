@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { createProductWithDetails } from "../actions";
 import type {
     ProductImage,
@@ -70,15 +71,7 @@ export function useProductForm() {
     }, [formData, isDirty]);
 
     // Warn before leaving
-    useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (isDirty) {
-                e.preventDefault();
-            }
-        };
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, [isDirty]);
+    useUnsavedChanges(isDirty);
 
     const updateField = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
         setFormData(prev => {
