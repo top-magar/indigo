@@ -37,6 +37,10 @@ export function useProductForm() {
         confirmOnLeave: true,
     });
 
+    // Ref for fresh state in async callbacks (avoids stale closures)
+    const formDataRef = useRef(formData);
+    formDataRef.current = formData;
+
     // Typed setField wrapper
     const updateField = useCallback(<K extends keyof ProductFormData>(field: K, value: ProductFormData[K]) => {
         if (field === "name" && typeof value === "string") {
@@ -144,8 +148,8 @@ export function useProductForm() {
                 return { id: placeholders[i].id, url: data.url, alt: file.name.replace(/\.[^/.]+$/, ""), position: images.length + i };
             }));
 
-            // Replace placeholders with uploaded URLs
-            const currentImages = formData.images as ProductImage[];
+            // Replace placeholders with uploaded URLs — use ref for fresh state
+            const currentImages = formDataRef.current.images as ProductImage[];
             const newImages = currentImages.map(img => {
                 const u = uploaded.find(x => x.id === img.id);
                 if (u) { if (img.url.startsWith("blob:")) URL.revokeObjectURL(img.url); return { ...u, isUploading: false } as ProductImage; }
@@ -154,7 +158,7 @@ export function useProductForm() {
             updateField("images", newImages);
             toast.success(`${uploaded.length} image(s) uploaded`);
         } catch {
-            const currentImages = formData.images as ProductImage[];
+            const currentImages = formDataRef.current.images as ProductImage[];
             currentImages.filter(img => img.isUploading && img.url.startsWith("blob:")).forEach(img => URL.revokeObjectURL(img.url));
             updateField("images", currentImages.filter(img => !img.isUploading));
             toast.error("Failed to upload image(s)");
@@ -305,6 +309,6 @@ export function useProductForm() {
         addOption, removeOption, updateOptionTitle, updateOptionValues,
         updateVariant, toggleAllVariants,
         handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
-        handleSubmit, clearDraft, validate, router,
+        handleSubmit, clearDraft,
     };
 }
