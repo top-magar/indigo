@@ -54,8 +54,7 @@ export const POST = withRateLimit("storefront", async function POST(request: Req
           VALUES (${tenantId}, ${sectionId || 'form'}, ${JSON.stringify(cleanFields)}::jsonb, NOW())`
     );
   } catch {
-    // Table may not exist yet — log as fallback
-    console.log("[form-submit]", { tenantId, sectionId, fields: cleanFields })
+    // Table may not exist yet — silently ignore
   }
 
   return NextResponse.json({ success: true })
