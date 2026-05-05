@@ -1,0 +1,335 @@
+{
+  "project": "CRM CRD (Framer Template)",
+  "breakpoints": {
+    "desktop": { "width": "1440px", "maxContent": "1280px" },
+    "tablet": { "width": "810px" },
+    "phone": { "width": "390px" }
+  },
+  "colors": {
+    "primary": "rgb(4, 84, 255)",
+    "primaryLight": "rgb(134, 185, 255)",
+    "primaryBg": "rgb(235, 241, 255)",
+    "accent": "rgb(126, 91, 255)",
+    "danger": "rgb(255, 91, 91)",
+    "dangerBg": "rgb(255, 242, 242)",
+    "dark": "rgb(0, 0, 0)",
+    "text": "rgb(61, 61, 61)",
+    "textMuted": "rgb(109, 109, 109)",
+    "border": "rgb(234, 234, 234)",
+    "surface": "rgb(245, 246, 248)",
+    "white": "rgb(255, 255, 255)"
+  },
+  "typography": {
+    "fontFamily": "Archivo",
+    "headings": {
+      "h1": { "font": "Archivo-semibold", "size": "64px", "lineHeight": "110%", "tracking": "-0.04em", "align": "center", "tag": "h1" },
+      "h2": { "font": "Archivo-semibold", "size": "56px", "lineHeight": "110%", "tracking": "-0.04em", "align": "center", "tag": "h2" },
+      "h3": { "font": "Archivo-bold", "size": "48px", "lineHeight": "110%", "tracking": "-0.04em", "align": "left", "tag": "h3" },
+      "h4": { "font": "Archivo-medium", "size": "36px", "lineHeight": "110%", "tracking": "-0.02em", "align": "left", "tag": "h4" },
+      "h5": { "font": "Archivo-semibold", "size": "24px", "lineHeight": "110%", "tracking": "-0.04em", "align": "left", "tag": "h5" },
+      "h6": { "font": "Inter-SemiBold", "size": "16px", "lineHeight": "1.4em", "tracking": "-0.02em", "align": "left", "tag": "h6" }
+    },
+    "body": {
+      "large": { "font": "Archivo-medium", "size": "20px", "lineHeight": "140%", "tracking": "-0.4px" },
+      "medium": { "font": "Archivo-medium", "size": "18px", "lineHeight": "140%", "tracking": "-0.2px" },
+      "regular": { "font": "Archivo-regular", "size": "16px", "lineHeight": "140%", "tracking": "-0.2px" },
+      "semibold": { "font": "Archivo-semibold", "size": "16px", "lineHeight": "140%", "tracking": "-0.2px" }
+    },
+    "tags": {
+      "regular": { "font": "Archivo-regular", "size": "14px", "lineHeight": "120%", "tracking": "0px" },
+      "small": { "font": "Archivo-regular", "size": "12px", "lineHeight": "130%", "tracking": "0px" }
+    }
+  },
+  "spacing": {
+    "sectionGap": "160px",
+    "sectionPadding": "0px 80px",
+    "contentGap": "64px",
+    "cardGap": "24px",
+    "innerGap": "48px",
+    "tagPadding": "9px 18px 9px 10px",
+    "heroTopPadding": "84px",
+    "ctaPadding": "120px 0px"
+  },
+  "layout": {
+    "maxWidth": "1440px",
+    "contentMaxWidth": "1280px",
+    "direction": "vertical",
+    "alignment": "center"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "name": "Hero Section",
+      "layout": {
+        "direction": "vertical",
+        "alignment": "center",
+        "gap": "48px",
+        "padding": "84px 0px 4px 0px"
+      },
+      "background": {
+        "type": "image",
+        "url": "https://framerusercontent.com/images/LTzUgqhBMU0fYD8l2vHeGvu8dQI.jpg"
+      },
+      "elements": [
+        {
+          "type": "badge",
+          "text": "Enterprise-Grade Relationship Management",
+          "style": { "bg": "primary", "radius": "100px", "padding": "9px 18px 9px 10px", "textColor": "white", "icon": true }
+        },
+        {
+          "type": "heading",
+          "level": "h1",
+          "text": "Build Stronger Custom Relationships All.",
+          "style": { "align": "center", "width": "100%" }
+        },
+        {
+          "type": "paragraph",
+          "text": "Create realistic, expressive, and natural voices in seconds powered by advanced AI technology.",
+          "style": { "width": "44%", "maxWidth": "630px", "align": "center" }
+        },
+        {
+          "type": "form",
+          "style": { "maxWidth": "360px" },
+          "elements": [
+            { "type": "input", "placeholder": "Enter your email" },
+            { "type": "button", "text": "Get started", "position": "absolute-right" }
+          ]
+        },
+        {
+          "type": "image",
+          "role": "dashboard-screenshot",
+          "url": "https://framerusercontent.com/images/iNqHkj9JE19lMFT6vXbow1lDNM.png",
+          "style": { "width": "100%", "height": "700px", "maxWidth": "1440px", "aspectRatio": 2.057 }
+        }
+      ],
+      "responsive": {
+        "tablet": { "padding": "60px 40px 4px 40px", "h1Size": "48px", "descWidth": "70%" },
+        "phone": { "padding": "40px 20px 4px 20px", "h1Size": "36px", "descWidth": "100%", "formMaxWidth": "100%" }
+      }
+    },
+    {
+      "id": "ticker",
+      "name": "Logo Ticker",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "56px", "padding": "0px 140px" },
+      "elements": [
+        { "type": "paragraph", "text": "Join 10,000+ Businesses Who Rely on CRM CRD", "style": { "font": "medium", "size": "18px" } },
+        { "type": "ticker", "speed": 60, "direction": "left", "gap": 86, "height": "40px", "logos": 6 }
+      ],
+      "responsive": {
+        "tablet": { "padding": "0px 40px" },
+        "phone": { "padding": "0px 20px", "fontSize": "16px" }
+      }
+    },
+    {
+      "id": "features",
+      "name": "Features Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "64px", "padding": "0px 80px", "maxWidth": "1440px" },
+      "elements": [
+        {
+          "type": "sectionHeading",
+          "tag": "FEATURES",
+          "title": "Smarter Tools to Accelerate Your Growth",
+          "description": "Explore powerful capabilities designed to simplify workflows and boost team productivity."
+        },
+        {
+          "type": "grid",
+          "columns": 2,
+          "rows": 2,
+          "gap": "24px",
+          "cards": [
+            { "title": "Advanced Analytics Dashboard", "description": "Turn raw data into clear insights with real-time reports, smart visualizations, and performance metrics.", "metric": "89" },
+            { "title": "Streamlined Relationship Organization", "description": "Simplify how you manage connections with streamlined relationship organization — effortlessly.", "metric": "55" },
+            { "title": "Smart and Effortless Data Analysis", "description": "Experience smart and effortless data analysis with advanced AI tools that simplify insights.", "metric": "26" },
+            { "title": "Intelligent Automated Task Planner", "description": "Boost efficiency with an intelligent automated task planner — effortlessly schedule, prioritize and manage.", "metric": "55" }
+          ]
+        }
+      ],
+      "responsive": {
+        "tablet": { "columns": 1, "padding": "0px 40px" },
+        "phone": { "columns": 1, "padding": "0px 20px", "gap": "16px" }
+      }
+    },
+    {
+      "id": "pricing",
+      "name": "Pricing Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "64px", "maxWidth": "1440px" },
+      "elements": [
+        {
+          "type": "sectionHeading",
+          "tag": "PRICING PLANS",
+          "title": "Flexible Pricing Plans",
+          "description": "Choose a plan that fits your needs with flexible pricing and options for every stage of growth."
+        },
+        {
+          "type": "pricingTable",
+          "plans": [
+            { "name": "Pro Plan", "price": "29", "description": "Perfect for solo founders and small teams.", "features": ["Up to 500 contacts", "Up to 200 GB Storage", "Advance analytics", "Advanced reporting features", "Customizable dashboards", "AI-driven insights"] },
+            { "name": "Enterprise Plan", "price": "39", "description": "Perfect for solo founders and small teams.", "features": ["Up to 1000 contacts", "Unlimited storage", "Advance analytics", "Enhanced analytics tools", "Custom branding options", "Dedicated account support"], "featured": true },
+            { "name": "Enterprise Plan", "price": "99", "description": "Perfect for solo founders and small teams.", "features": ["Up to 5000 contacts", "Up to 200 GB Storage", "Advance analytics", "Advanced reporting features", "Customizable dashboards", "AI-driven insights"] }
+          ]
+        }
+      ],
+      "responsive": {
+        "tablet": { "layout": "vertical", "gap": "16px" },
+        "phone": { "layout": "vertical", "gap": "16px" }
+      }
+    },
+    {
+      "id": "benefits",
+      "name": "Benefits Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "64px", "padding": "0px 80px", "maxWidth": "1440px" },
+      "elements": [
+        {
+          "type": "sectionHeading",
+          "tag": "BENEFITS",
+          "title": "The Powerful Advantages Your Team Gets",
+          "description": "Unlock key benefits that boost your team's productivity and performance."
+        },
+        {
+          "type": "grid",
+          "columns": 3,
+          "rows": 2,
+          "gap": "24px",
+          "cardWidth": "412px",
+          "cards": [
+            { "title": "Clear visibility into interaction", "description": "Flowsuite centralizes all your contacts, communication history, notes, activities, and tasks." },
+            { "title": "Smoother sales pipelines", "description": "Track leads, automate follow-ups, and move deals forward with a faster, more organized sales flow." },
+            { "title": "Increased team productivity", "description": "Automate repetitive tasks like reminders, follow-ups, email sends, task assignments." },
+            { "title": "Flexible & Remote-Friendly", "description": "Work from anywhere with ease. Stay connected and productive no matter where you are." },
+            { "title": "Smart Workflow Automation", "description": "Work your way — from home or on the go — with tools that keep you connected and productive." },
+            { "title": "Customizable Dashboard", "description": "Build your ideal workspace with widgets and layouts you can shape to match your workflow." }
+          ]
+        }
+      ],
+      "responsive": {
+        "tablet": { "columns": 2, "padding": "0px 40px" },
+        "phone": { "columns": 1, "padding": "0px 20px" }
+      }
+    },
+    {
+      "id": "integrations",
+      "name": "Integration Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "40px", "padding": "120px 0px" },
+      "background": { "type": "svg", "url": "https://framerusercontent.com/images/Kk2qrfbXdplkIOTNSe41M9SuKI.svg" },
+      "elements": [
+        { "type": "sectionHeading", "tag": "INTEGRATION", "title": "Integrate with the leading tools", "description": "Stay ahead with tips, CRM best practices, and stories from fast-growing teams." }
+      ]
+    },
+    {
+      "id": "testimonials",
+      "name": "Testimonials Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "64px", "padding": "0px 80px", "maxWidth": "1440px" },
+      "elements": [
+        {
+          "type": "sectionHeading",
+          "tag": "TESTIMONIALS",
+          "title": "Trusted by Teams Worldwide",
+          "description": "Join thousands of teams globally who rely on our solutions to collaborate, grow, and succeed."
+        },
+        {
+          "type": "testimonialGrid",
+          "layout": "3-column",
+          "columns": [
+            {
+              "cards": [
+                { "type": "large", "quote": "This CRM transformed the way our team manages customers and opportunities. Within only three months of consistent use, we achieved a remarkable 35% increase in sales.", "name": "Alex Jordan", "role": "Content Strategist", "bgColor": "rgb(0,0,0)" },
+                { "type": "small", "quote": "Within just 60 seconds, our complete CRM system was set up and ready for immediate use.", "name": "Alex Jofer", "role": "Systems Administrator" }
+              ]
+            },
+            {
+              "cards": [
+                { "type": "small", "quote": "Our team finally stopped juggling countless spreadsheets and switched to a cleaner, more efficient workflow solution.", "name": "Daniel Cooper", "role": "Project Coordinator" },
+                { "type": "small", "quote": "In just one day, our whole team was seamlessly collaborating and managing projects through a single dashboard.", "name": "Liam Parker", "role": "Productivity Lead" },
+                { "type": "small", "quote": "Our customer response time has improved by 40%, allowing us to provide faster, more efficient support.", "name": "Ethan Ross", "role": "Operations Manager" }
+              ]
+            },
+            {
+              "cards": [
+                { "type": "small", "quote": "We moved away from messy manual processes and embraced a smoother workflow that keeps our whole team aligned.", "name": "Alison Thomas", "role": "Team Operations Lead" },
+                { "type": "large", "quote": "CRM CRD is a modern CRM platform designed to be simple, intelligent, and enjoyable to use.", "name": "Maya Rahman", "role": "Business Process Analyst", "bgColor": "rgb(4, 84, 255)" }
+              ]
+            }
+          ]
+        }
+      ],
+      "responsive": {
+        "tablet": { "columns": 2 },
+        "phone": { "columns": 1 }
+      }
+    },
+    {
+      "id": "blog",
+      "name": "Blog Section",
+      "layout": { "direction": "vertical", "alignment": "center", "gap": "72px", "padding": "0px 80px" },
+      "elements": [
+        { "type": "sectionHeading", "tag": "BLOG AND INSIGHTS", "title": "Insights, Guides, and Tips to Help You Grow Smarter", "description": "Discover expert insights, practical guides, and actionable tips." },
+        { "type": "blogCards", "layout": "horizontal", "gap": "24px" }
+      ],
+      "responsive": {
+        "tablet": { "padding": "0px 40px" },
+        "phone": { "padding": "0px 20px", "layout": "vertical" }
+      }
+    },
+    {
+      "id": "faq",
+      "name": "FAQ Section",
+      "layout": { "direction": "horizontal", "alignment": "start", "gap": "180px", "padding": "0px 80px", "maxWidth": "1440px" },
+      "elements": [
+        {
+          "type": "faqLeft",
+          "width": "33%",
+          "tag": "FAQ",
+          "title": "Your Questions Answered",
+          "description": "Find clear answers and solutions to all your questions quickly."
+        },
+        {
+          "type": "faqAccordion",
+          "width": "1fr",
+          "questions": [
+            { "q": "What is FlowSuite and who is it for?", "a": "FlowSuite is a modern customer relationship management platform designed for startups, agencies, sales teams, and growing businesses." },
+            { "q": "Do I need technical experience to use FlowSuite?", "a": "Not at all. FlowSuite is built with simplicity in mind." },
+            { "q": "Is my data secure on FlowSuite?", "a": "Absolutely. We use industry-standard encryption, routine security audits, and advanced protection layers." },
+            { "q": "Does FlowSuite support team collaboration?", "a": "Yes. You can add team members, assign tasks, share notes, and track activities in real time." },
+            { "q": "What kind of support do you offer?", "a": "We offer responsive customer support via chat and email." },
+            { "q": "Can I migrate my data from another CRM?", "a": "Yes. FlowSuite allows simple data migration through CSV import or guided setup." }
+          ]
+        }
+      ],
+      "responsive": {
+        "tablet": { "direction": "vertical", "gap": "40px", "faqLeftWidth": "100%" },
+        "phone": { "direction": "vertical", "gap": "24px", "faqLeftWidth": "100%", "padding": "0px 20px" }
+      }
+    },
+    {
+      "id": "cta",
+      "name": "CTA Section",
+      "layout": { "direction": "horizontal", "alignment": "center" }
+    }
+  ],
+  "components": {
+    "sectionHeading": {
+      "layout": "vertical",
+      "alignment": "center",
+      "elements": ["tag (pill badge)", "title (h2)", "description (paragraph)"],
+      "tagStyle": { "font": "Archivo-regular", "size": "14px", "uppercase": false }
+    },
+    "card": {
+      "radius": "12px",
+      "padding": "24px",
+      "border": "1px solid rgb(234, 234, 234)",
+      "bg": "white"
+    },
+    "button": {
+      "primary": { "bg": "rgb(4, 84, 255)", "text": "white", "radius": "100px", "padding": "12px 24px", "font": "Archivo-medium", "size": "16px" },
+      "secondary": { "bg": "transparent", "text": "rgb(4, 84, 255)", "border": "1px solid rgb(4, 84, 255)", "radius": "100px" }
+    },
+    "badge": {
+      "radius": "100px",
+      "padding": "9px 18px",
+      "bg": "primary",
+      "text": "white",
+      "font": "Archivo-regular",
+      "size": "14px"
+    }
+  }
+}
