@@ -1,0 +1,50 @@
+/* Landing Page Color Tokens */
+:root {
+  /* Base */
+  --lp-bg: #ffffff;
+  --lp-bg-subtle: #fafafa;
+  --lp-bg-muted: #f3f4f6;
+  --lp-text: #111827;
+  --lp-text-secondary: rgba(17, 24, 39, 0.6);
+  --lp-text-tertiary: rgba(17, 24, 39, 0.4);
+  --lp-text-faint: rgba(17, 24, 39, 0.25);
+  --lp-border: rgba(17, 24, 39, 0.06);
+  --lp-border-hover: rgba(17, 24, 39, 0.12);
+
+  /* Accent */
+  --lp-accent: #7c3aed;
+  --lp-accent-hover: #6d28d9;
+  --lp-accent-light: #ede9fe;
+  --lp-accent-glow: rgba(124, 58, 237, 0.15);
+
+  /* Fluid gradient blobs */
+  --lp-blob-1: #ff6b6b;
+  --lp-blob-2: #48dbfb;
+  --lp-blob-3: #ff9ff3;
+  --lp-blob-4: #feca57;
+  --lp-blob-5: #5f27cd;
+
+  /* Feature icon colors */
+  --lp-feat-payments: #059669;
+  --lp-feat-shipping: #2563eb;
+  --lp-feat-storefront: #7c3aed;
+  --lp-feat-setup: #d97706;
+  --lp-feat-security: #e11d48;
+  --lp-feat-analytics: #0d9488;
+
+  /* Pricing */
+  --lp-pricing-featured-from: #667eea;
+  --lp-pricing-featured-to: #764ba2;
+  --lp-pricing-check: #059669;
+
+  /* Semantic */
+  --lp-success: #059669;
+  --lp-star: #f59e0b;
+
+  /* Shadows */
+  --lp-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --lp-shadow-md: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --lp-shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
+  --lp-shadow-accent: 0 8px 30px rgba(124, 58, 237, 0.15);
+  --lp-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.12);
+}

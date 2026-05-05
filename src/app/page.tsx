@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, CreditCard, Truck, Globe, Zap, Shield, BarChart3, ChevronRight, Star } from "lucide-react";
 import { ScrollReveal } from "@/components/landing/torch/scroll-reveal";
+import "./landing.css";
 
 export const metadata: Metadata = {
   title: "Indigo — Accept eSewa in 2 Minutes. Your Store is Live.",
@@ -18,11 +19,11 @@ export default function LandingPage() {
           ═══════════════════════════════════════════ */}
       <div className="relative min-h-screen flex flex-col overflow-hidden animate-[fluidShift_12s_ease-in-out_infinite]" style={{ background: "#ffffff" }}>
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[80px] opacity-40 animate-[blob1_10s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff6b6b, transparent 70%)" }} />
-          <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full blur-[80px] opacity-35 animate-[blob2_12s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #48dbfb, transparent 70%)" }} />
-          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full blur-[80px] opacity-30 animate-[blob3_14s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff9ff3, transparent 70%)" }} />
-          <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] rounded-full blur-[60px] opacity-25 animate-[blob1_16s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #feca57, transparent 70%)" }} />
-          <div className="absolute top-[40%] left-[30%] w-[35%] h-[35%] rounded-full blur-[60px] opacity-20 animate-[blob2_11s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #5f27cd, transparent 70%)" }} />
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[80px] opacity-40 animate-[blob1_10s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, var(--lp-blob-1), transparent 70%)" }} />
+          <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full blur-[80px] opacity-35 animate-[blob2_12s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, var(--lp-blob-2), transparent 70%)" }} />
+          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full blur-[80px] opacity-30 animate-[blob3_14s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, var(--lp-blob-3), transparent 70%)" }} />
+          <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] rounded-full blur-[60px] opacity-25 animate-[blob1_16s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, var(--lp-blob-4), transparent 70%)" }} />
+          <div className="absolute top-[40%] left-[30%] w-[35%] h-[35%] rounded-full blur-[60px] opacity-20 animate-[blob2_11s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, var(--lp-blob-5), transparent 70%)" }} />
         </div>
 
         {/* Nav */}
@@ -38,7 +39,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/auth/login" className="text-[13px] text-white/70 hover:text-white transition-colors duration-150">Log in</Link>
-            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-violet-500/15">Start free</Link>
+            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-[var(--lp-shadow-accent)]">Start free</Link>
           </div>
         </nav>
 
@@ -58,7 +59,7 @@ export default function LandingPage() {
                 Payments, shipping, storefront — all connected. Built for Nepali merchants. No code required.
               </p>
               <div className="flex items-center gap-3 mb-6">
-                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-[#1a1a1a] text-white text-[14px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-violet-500/20">
+                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-[#1a1a1a] text-white text-[14px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-[var(--lp-shadow-accent)]">
                   Launch your store
                   <span className="flex items-center justify-center size-7 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={14} /></span>
                 </Link>
@@ -206,7 +207,7 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {PLANS.map(plan => (
                 <ScrollReveal key={plan.name}>
-                  <div className={`rounded-xl p-7 h-full flex flex-col ${plan.featured ? "text-white ring-2 ring-white/20 shadow-xl" : "bg-white border border-black/[0.06]"}`} style={plan.featured ? { background: "linear-gradient(135deg, #667eea, #764ba2)" } : undefined}>
+                  <div className={`rounded-xl p-7 h-full flex flex-col ${plan.featured ? "text-white ring-2 ring-white/20 shadow-xl" : "bg-white border border-black/[0.06]"}`} style={plan.featured ? { background: "linear-gradient(135deg, var(--lp-pricing-featured-from), var(--lp-pricing-featured-to))" } : undefined}>
                     {plan.featured && <span className="text-[10px] font-medium uppercase tracking-wider text-white/80 mb-2">Most popular</span>}
                     <p className={`text-[13px] font-medium ${plan.featured ? "text-white/70" : "text-[#1a1a1a]/50"}`}>{plan.name}</p>
                     <div className="flex items-baseline gap-1 mt-1 mb-1">
@@ -260,7 +261,7 @@ export default function LandingPage() {
             <div className="relative z-10">
               <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em] mb-3">Ready to sell?</h2>
               <p className="text-[15px] text-white/80 mb-8 max-w-[380px] mx-auto">Join 12,000+ Nepali businesses. Free forever. Live in 2 minutes.</p>
-              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-violet-500/20">
+              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-[var(--lp-shadow-accent)]">
                 Start free today
                 <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={15} /></span>
               </Link>
