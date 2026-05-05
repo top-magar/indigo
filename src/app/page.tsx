@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, ChevronUp, Star, CreditCard, Globe, Truck, BarChart3 } from "lucide-react";
+import { StickyNav, EmailForm, BackToTop, HowItWorks } from "@/components/landing/interactive";
 import "./landing.css";
 
 export const metadata: Metadata = {
@@ -16,31 +17,23 @@ export default function LandingPage() {
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" />
 
+      {/* Skip to content — a11y */}
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#4338ca] focus:text-white focus:rounded-md focus:text-[14px]">
+        Skip to main content
+      </a>
+
+      {/* Sticky nav with mobile menu */}
+      <StickyNav />
+
       {/* ═══ HERO ═══ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#1e1b4b] via-[#312e81] to-[#4338ca]">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1e1b4b] via-[#312e81] to-[#4338ca] pt-[72px]">
         {/* Decorative brackets */}
-        <div className="absolute top-[18%] left-[7%] w-[50px] h-[110px] border-l-2 border-t-2 border-b-2 border-white/15 rounded-l-md hidden lg:block" />
-        <div className="absolute top-[18%] right-[7%] w-[50px] h-[110px] border-r-2 border-t-2 border-b-2 border-white/15 rounded-r-md hidden lg:block" />
-        <div className="absolute bottom-[35%] left-[4%] w-[35px] h-[70px] border-l-2 border-t-2 border-b-2 border-white/8 rounded-l-md hidden lg:block" />
-        <div className="absolute bottom-[35%] right-[4%] w-[35px] h-[70px] border-r-2 border-t-2 border-b-2 border-white/8 rounded-r-md hidden lg:block" />
+        <div className="absolute top-[22%] left-[7%] w-[50px] h-[110px] border-l-2 border-t-2 border-b-2 border-white/10 rounded-l-md hidden lg:block" />
+        <div className="absolute top-[22%] right-[7%] w-[50px] h-[110px] border-r-2 border-t-2 border-b-2 border-white/10 rounded-r-md hidden lg:block" />
 
-        {/* Nav — real anchor links */}
-        <nav className="relative z-20 max-w-[1200px] mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
-          <span className="text-[18px] font-bold tracking-tight text-white">✦ Indigo</span>
-          <div className="hidden md:flex items-center gap-6 text-[14px] text-white/70">
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-          </div>
-          <Link href="/auth/signup" className="btn-press px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-[13px] font-medium hover:bg-white/20 transition-colors">
-            Start free
-          </Link>
-        </nav>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 pt-12 md:pt-20 pb-0 text-center">
+        <div id="main" className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 pt-12 md:pt-20 pb-0 text-center">
           <div className="hero-badge flex justify-center mb-6">
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm text-white text-[13px] font-medium">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 bg-white/5 text-white text-[13px] font-medium">
               <Star size={13} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
             </span>
           </div>
@@ -51,26 +44,30 @@ export default function LandingPage() {
             Accept eSewa &amp; Khalti. Ship via Pathao. Build your storefront visually. Live in 2 minutes. Made for Nepal.
           </p>
           <div className="hero-form flex justify-center mb-14">
-            <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)] focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:outline-none" />
-              <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors">
-                Start free
-              </Link>
-            </div>
+            <EmailForm variant="hero" />
           </div>
+          {/* Dashboard image with fallback */}
           <div className="hero-dashboard relative mx-auto max-w-[960px]">
-            <img src="/dashboard-preview.png" alt="Indigo merchant dashboard" className="w-full rounded-t-xl shadow-[0_-5px_60px_rgba(0,0,0,0.25)]" style={{ aspectRatio: "2.057" }} />
+            <div className="w-full rounded-t-xl bg-[#1a1a1a] overflow-hidden shadow-[0_-5px_60px_rgba(0,0,0,0.25)]" style={{ aspectRatio: "2.057" }}>
+              <img
+                src="/dashboard-preview.png"
+                alt="Indigo merchant dashboard showing orders, revenue chart, and product management"
+                className="w-full h-full object-cover"
+                loading="eager"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══ TICKER ═══ */}
-      <section className="py-12 px-6 md:px-10">
+      <section className="py-12 px-6 md:px-10" aria-label="Integration partners">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="text-[15px] md:text-[17px] font-medium text-[#1a1a1a] tracking-[-0.2px] mb-8">
             Works with the tools you already use
           </p>
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden" aria-hidden="true">
             <div className="flex animate-[marquee_25s_linear_infinite] gap-[86px] opacity-30">
               {[...Array(2)].map((_, set) => (
                 <div key={set} className="flex shrink-0 gap-[86px]">
@@ -84,11 +81,14 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ═══ HOW IT WORKS — progressive disclosure ═══ */}
+      <HowItWorks />
+
       {/* ═══ FEATURES — asymmetric layout ═══ */}
       <section id="features" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
           <SectionHeading tag="FEATURES" title="Everything You Need to Sell Online" description="Payments, shipping, storefront, analytics — built for Nepali merchants." />
-          {/* Featured card — full width */}
+          {/* Featured card — full width, horizontal */}
           <div className="w-full">
             <div className="card-hover rounded-2xl overflow-hidden bg-[#1a1a1a] text-white md:flex md:items-stretch">
               <div className="relative md:w-[45%] h-[200px] md:h-auto flex items-center justify-center feature-img-placeholder">
@@ -133,7 +133,7 @@ export default function LandingPage() {
                     <span className="text-[14px] text-[#6d6d6d]">/mo</span>
                   </div>
                   <p className="text-[14px] text-[#6d6d6d] mb-6">{plan.desc}</p>
-                  <Link href="/auth/signup" className="btn-press block text-center py-3.5 rounded-full bg-black text-white text-[14px] font-medium hover:bg-[#222] transition-colors mb-7">
+                  <Link href="/auth/signup" className="btn-press block text-center py-3.5 rounded-full bg-black text-white text-[14px] font-medium hover:bg-[#222] transition-colors focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:outline-none mb-7">
                     Start selling
                   </Link>
                   <ul className="space-y-3.5">
@@ -160,7 +160,7 @@ export default function LandingPage() {
           {/* Large featured card */}
           <div className="w-full rounded-2xl bg-black text-white p-8 md:p-12 relative overflow-hidden">
             <div className="absolute top-6 right-10 text-[100px] leading-none text-white/[0.06] font-serif select-none hidden md:block">&ldquo;</div>
-            <div className="flex gap-0.5 mb-5">
+            <div className="flex gap-0.5 mb-5" aria-label="4 out of 5 stars">
               {[...Array(4)].map((_, i) => <Star key={i} size={16} className="fill-white text-white" />)}
               <Star size={16} className="text-white/25" />
             </div>
@@ -196,7 +196,11 @@ export default function LandingPage() {
       {/* ═══ FAQ ═══ */}
       <section id="faq" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto">
-          <div className="divide-y divide-[#eaeaea] border-t border-[#eaeaea]">
+          <div className="text-center mb-12">
+            <h2 className="text-[34px] md:text-[46px] font-semibold leading-[108%] tracking-[-0.04em] mb-3">Common Questions</h2>
+            <p className="text-[15px] text-[#6d6d6d]">Can&apos;t find your answer? <a href="mailto:hello@indigo.com.np" className="text-[#4338ca] underline underline-offset-2 hover:text-[#3730a3]">Email us</a></p>
+          </div>
+          <div className="divide-y divide-[#eaeaea] border-t border-b border-[#eaeaea]">
             {FAQS.map(faq => (
               <details key={faq.q} className="group">
                 <summary className="flex items-center justify-between py-5 md:py-6 cursor-pointer text-[16px] md:text-[18px] font-medium list-none select-none hover:text-[#4338ca] transition-colors">
@@ -212,14 +216,7 @@ export default function LandingPage() {
 
       {/* ═══ CTA ═══ */}
       <section className="bg-black py-20 md:py-28 px-6 md:px-10 relative overflow-hidden">
-        <div className="absolute top-[18%] left-[5%] w-[45px] h-[90px] border-l-2 border-t-2 border-b-2 border-white/8 rounded-l-md hidden lg:block" />
-        <div className="absolute top-[18%] right-[5%] w-[45px] h-[90px] border-r-2 border-t-2 border-b-2 border-white/8 rounded-r-md hidden lg:block" />
         <div className="max-w-[1200px] mx-auto text-center relative z-10">
-          <div className="flex justify-center mb-5">
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 text-white text-[13px] font-medium">
-              <Star size={13} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
-            </span>
-          </div>
           <h2 className="text-[34px] md:text-[48px] lg:text-[56px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[680px] mx-auto mb-4">
             Your Store Could Be Live in 2 Minutes.
           </h2>
@@ -227,12 +224,7 @@ export default function LandingPage() {
             Free forever. No credit card. Accept eSewa from day one.
           </p>
           <div className="flex justify-center">
-            <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" />
-              <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors border border-white/10">
-                Start free
-              </Link>
-            </div>
+            <EmailForm variant="cta" />
           </div>
         </div>
       </section>
@@ -254,11 +246,10 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Company</p>
+              <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Support</p>
               <ul className="space-y-2 text-[13px] text-white/60">
-                <li><a href="#" className="hover:text-white/80 transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white/80 transition-colors">Blog</a></li>
-                <li><a href="mailto:hello@indigo.com.np" className="hover:text-white/80 transition-colors">Contact</a></li>
+                <li><a href="#faq" className="hover:text-white/80 transition-colors">FAQ</a></li>
+                <li><a href="mailto:hello@indigo.com.np" className="hover:text-white/80 transition-colors">hello@indigo.com.np</a></li>
               </ul>
             </div>
             <div>
@@ -275,6 +266,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Back to top button */}
+      <BackToTop />
     </div>
   );
 }
@@ -285,7 +279,7 @@ function SectionHeading({ tag, title, description }: { tag: string; title: strin
       <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#4338ca] mb-3">
         <Star size={13} className="text-[#4338ca]" /> {tag}
       </span>
-      <h2 className="text-[34px] md:text-[46px] lg:text-[54px] font-semibold leading-[108%] tracking-[-0.04em] mb-3">{title}</h2>
+      <h2 className="text-[34px] md:text-[46px] font-semibold leading-[108%] tracking-[-0.04em] mb-3">{title}</h2>
       <p className="text-[15px] text-[#6d6d6d] leading-[155%]">{description}</p>
     </div>
   );
