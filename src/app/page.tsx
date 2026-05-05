@@ -17,7 +17,7 @@ export default function LandingPage() {
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" />
 
       {/* ═══ HERO ═══ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#0454ff] via-[#2d7aff] to-[#7ab4ff]">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1e1b4b] via-[#312e81] to-[#4338ca]">
         {/* Decorative brackets */}
         <div className="absolute top-[18%] left-[7%] w-[50px] h-[110px] border-l-2 border-t-2 border-b-2 border-white/15 rounded-l-md hidden lg:block" />
         <div className="absolute top-[18%] right-[7%] w-[50px] h-[110px] border-r-2 border-t-2 border-b-2 border-white/15 rounded-r-md hidden lg:block" />
@@ -47,7 +47,7 @@ export default function LandingPage() {
           </p>
           <div className="hero-form flex justify-center mb-14">
             <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)] focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" />
+              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)] focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:outline-none" />
               <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors">
                 Start free
               </Link>
@@ -69,7 +69,7 @@ export default function LandingPage() {
             <div className="flex animate-[marquee_25s_linear_infinite] gap-[86px] opacity-30">
               {[...Array(2)].map((_, set) => (
                 <div key={set} className="flex shrink-0 gap-[86px]">
-                  {["eSewa", "Khalti", "Pathao", "Stripe", "FonePay", "Daraz", "eSewa", "Khalti"].map((name, i) => (
+                  {["eSewa", "Khalti", "Pathao", "Stripe", "FonePay", "ConnectIPS", "eSewa", "Khalti"].map((name, i) => (
                     <span key={`${set}-${i}`} className="text-[18px] font-semibold text-[#1a1a1a] tracking-tight whitespace-nowrap">{name}</span>
                   ))}
                 </div>
@@ -88,7 +88,7 @@ export default function LandingPage() {
               <div key={f.title} className={`card-hover rounded-2xl overflow-hidden ${i < 2 ? "bg-[#1a1a1a] text-white" : "bg-[#f5f6f8] text-[#1a1a1a]"}`}>
                 <div className={`relative w-full h-[220px] md:h-[280px] flex items-center justify-center ${i < 2 ? "feature-img-placeholder" : ""}`}>
                   <div className={`size-14 rounded-2xl flex items-center justify-center ${i < 2 ? "bg-white/10 border border-white/10" : "bg-white shadow-sm border border-[#eaeaea]"}`}>
-                    <f.icon size={26} strokeWidth={1.5} className={i < 2 ? "text-white/80" : "text-[#0454ff]"} />
+                    <f.icon size={26} strokeWidth={1.5} className={i < 2 ? "text-white/80" : "text-[#4338ca]"} />
                   </div>
                 </div>
                 <div className="px-7 pb-7 pt-2">
@@ -108,7 +108,7 @@ export default function LandingPage() {
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             {PRICING_PLANS.map(plan => (
               <div key={plan.name} className="card-hover rounded-2xl border border-[#eaeaea] bg-white overflow-hidden">
-                <div className="h-[5px] bg-gradient-to-r from-[#0454ff] to-[#7e5bff]" />
+                <div className="h-[5px] bg-gradient-to-r from-[#4338ca] to-[#f97316]" />
                 <div className="p-7 md:p-8">
                   <p className="text-[13px] text-[#6d6d6d] font-medium uppercase tracking-wide mb-1">{plan.name}</p>
                   <div className="flex items-baseline gap-1 mb-2">
@@ -122,7 +122,7 @@ export default function LandingPage() {
                   <ul className="space-y-3.5">
                     {plan.features.map(feat => (
                       <li key={feat} className="flex items-center gap-3 text-[14px] text-[#3d3d3d]">
-                        <span className="flex items-center justify-center size-[22px] rounded-full bg-[#0454ff] shrink-0">
+                        <span className="flex items-center justify-center size-[22px] rounded-full bg-[#4338ca] shrink-0">
                           <Check size={12} strokeWidth={3} className="text-white" />
                         </span>
                         {feat}
@@ -182,7 +182,7 @@ export default function LandingPage() {
               <div key={t.name} className="card-hover rounded-2xl border border-[#eaeaea] bg-white p-6">
                 <p className="text-[14px] text-[#3d3d3d] leading-[165%] mb-5">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="size-8 rounded-full bg-[#f5f6f8] border border-[#eaeaea]" />
+                  <div className="size-8 rounded-full bg-[#eef2ff] border border-[#e0e7ff] flex items-center justify-center text-[11px] font-semibold text-[#4338ca]">{t.name.split(" ").map(n => n[0]).join("")}</div>
                   <div>
                     <p className="text-[13px] font-semibold text-[#1a1a1a]">{t.name}</p>
                     <p className="text-[11px] text-[#6d6d6d]">{t.role}</p>
@@ -200,7 +200,7 @@ export default function LandingPage() {
           <div className="divide-y divide-[#eaeaea] border-t border-[#eaeaea]">
             {FAQS.map(faq => (
               <details key={faq.q} className="group">
-                <summary className="flex items-center justify-between py-5 md:py-6 cursor-pointer text-[16px] md:text-[18px] font-medium list-none select-none hover:text-[#0454ff] transition-colors">
+                <summary className="flex items-center justify-between py-5 md:py-6 cursor-pointer text-[16px] md:text-[18px] font-medium list-none select-none hover:text-[#4338ca] transition-colors">
                   {faq.q}
                   <ChevronUp size={20} className="text-[#999] group-open:rotate-180 transition-transform duration-200 shrink-0 ml-4" />
                 </summary>
@@ -283,8 +283,8 @@ export default function LandingPage() {
 function SectionHeading({ tag, title, description }: { tag: string; title: string; description: string }) {
   return (
     <div className="text-center max-w-[680px]">
-      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#0454ff] mb-3">
-        <Star size={13} className="text-[#0454ff]" /> {tag}
+      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#4338ca] mb-3">
+        <Star size={13} className="text-[#4338ca]" /> {tag}
       </span>
       <h2 className="text-[34px] md:text-[46px] lg:text-[54px] font-semibold leading-[108%] tracking-[-0.04em] mb-3">{title}</h2>
       <p className="text-[15px] text-[#6d6d6d] leading-[155%]">{description}</p>
@@ -306,7 +306,7 @@ const PRICING_PLANS = [
 ];
 
 const BENEFITS: { icon: typeof Lightbulb; title: string; description: string; iconBg: string; iconColor: string }[] = [
-  { icon: Lightbulb, title: "Live in 2 minutes", description: "Connect eSewa, add your first product, and share your store link. That fast.", iconBg: "bg-[#eaf1ff]", iconColor: "text-[#0454ff]" },
+  { icon: Lightbulb, title: "Live in 2 minutes", description: "Connect eSewa, add your first product, and share your store link. That fast.", iconBg: "bg-[#eef2ff]", iconColor: "text-[#4338ca]" },
   { icon: Truck, title: "Ship across Nepal", description: "Pathao integration with auto-rates for Kathmandu Valley. Print labels in one click.", iconBg: "bg-[#fff8e1]", iconColor: "text-[#f59e0b]" },
   { icon: Shield, title: "No tech skills needed", description: "If you can post on Facebook, you can run a store on Indigo. Visual builder, zero code.", iconBg: "bg-[#e8f5e9]", iconColor: "text-[#22c55e]" },
   { icon: BarChart3, title: "Know your numbers", description: "See which products sell, which don't. Revenue trends, customer insights, inventory alerts.", iconBg: "bg-[#fce4ec]", iconColor: "text-[#ef4444]" },
