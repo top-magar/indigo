@@ -61,7 +61,7 @@ export default function LandingPage() {
             </p>
 
             {/* CTAs */}
-            <div className="flex items-center justify-center gap-3 mb-12">
+            <div className="flex items-center justify-center gap-3 mb-8">
               <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
                 Launch your store
                 <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:bg-[#1a1a1a]/10 group-hover:translate-x-0.5 transition-all duration-150"><ArrowRight size={15} /></span>
@@ -94,7 +94,7 @@ export default function LandingPage() {
       <div className="bg-white text-[#1a1a1a]">
 
         {/* Stats bar */}
-        <section className="py-14 bg-gradient-to-b from-white to-[#f8f7ff]">
+        <section className="py-8 bg-gradient-to-b from-white to-[#f8f7ff]">
           <div className="max-w-[1120px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6">
             {STATS.map(s => (
               <div key={s.label} className="text-center">
@@ -106,10 +106,10 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how" className="py-24 px-6 bg-[#f8f7ff]">
+        <section id="how" className="py-16 px-6 bg-[#f8f7ff]">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <div className="text-center mb-14">
+              <div className="text-center mb-8">
                 <span className="inline-block px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-[11px] font-semibold uppercase tracking-wider mb-3">How it works</span>
                 <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em]">Three steps. Two minutes. Done.</h2>
               </div>
@@ -131,10 +131,10 @@ export default function LandingPage() {
         </section>
 
         {/* Features */}
-        <section id="features" className="py-24 px-6">
+        <section id="features" className="py-16 px-6">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <div className="text-center mb-14">
+              <div className="text-center mb-8">
                 <span className="inline-block px-3 py-1 rounded-full bg-fuchsia-100 text-fuchsia-700 text-[11px] font-semibold uppercase tracking-wider mb-3">Features</span>
                 <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em]">Everything you need. Nothing you don&apos;t.</h2>
               </div>
@@ -157,7 +157,7 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonial */}
-        <section className="py-20 px-6">
+        <section className="py-12 px-6">
           <div className="max-w-[640px] mx-auto text-center">
             <ScrollReveal>
               <div className="flex items-center justify-center gap-0.5 mb-4">
@@ -172,10 +172,10 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="py-20 px-6 bg-[#FAFAFA]">
+        <section id="pricing" className="py-16 px-6">
           <div className="max-w-[960px] mx-auto">
             <ScrollReveal>
-              <div className="text-center mb-12">
+              <div className="text-center mb-8">
                 <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">Pricing</p>
                 <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em]">Start free. Upgrade when you&apos;re ready.</h2>
                 <p className="text-[14px] text-[#1a1a1a]/45 mt-2">No credit card required. No transaction fees from Indigo.</p>
@@ -210,7 +210,7 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="py-20 px-6">
+        <section id="faq" className="py-12 px-6">
           <div className="max-w-[640px] mx-auto">
             <ScrollReveal>
               <h2 className="text-[clamp(26px,4vw,36px)] font-bold tracking-[-0.02em] text-center mb-10">Common questions</h2>
@@ -232,7 +232,7 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-6 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" }}>
+        <section className="py-16 px-6 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" }}>
           <div className="absolute inset-0 bg-black/5" />
           <ScrollReveal>
             <div className="relative z-10">
