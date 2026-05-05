@@ -54,7 +54,6 @@ export default function LandingPage() {
                 alt="Indigo merchant dashboard showing orders, revenue chart, and product management"
                 className="w-full h-full object-cover"
                 loading="eager"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
             </div>
           </div>
