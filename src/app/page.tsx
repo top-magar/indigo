@@ -16,7 +16,7 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="relative min-h-[90vh] flex flex-col overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #f5576c 100%)" }}>
+      <div className="relative min-h-[90vh] flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea)" }}>
         {/* Soft overlay shapes */}
         <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/10 blur-[80px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-300/10 blur-[60px]" />
@@ -94,33 +94,35 @@ export default function LandingPage() {
       <div className="bg-white text-[#1a1a1a]">
 
         {/* Stats bar */}
-        <section className="border-b border-black/[0.05] py-10">
+        <section className="py-14 bg-gradient-to-b from-white to-[#f8f7ff]">
           <div className="max-w-[1120px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6">
             {STATS.map(s => (
               <div key={s.label} className="text-center">
-                <div className="text-[26px] font-bold tracking-tight text-[#1a1a1a]">{s.value}</div>
-                <div className="text-[12px] text-[#1a1a1a]/40 mt-0.5">{s.label}</div>
+                <div className="text-[30px] font-extrabold tracking-tight bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent">{s.value}</div>
+                <div className="text-[12px] text-[#1a1a1a]/40 mt-1 font-medium">{s.label}</div>
               </div>
             ))}
           </div>
         </section>
 
         {/* How it works */}
-        <section id="how" className="py-20 px-6">
+        <section id="how" className="py-24 px-6 bg-[#f8f7ff]">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">How it works</p>
-              <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em] mb-12">Three steps. Two minutes. Done.</h2>
+              <div className="text-center mb-14">
+                <span className="inline-block px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-[11px] font-semibold uppercase tracking-wider mb-3">How it works</span>
+                <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em]">Three steps. Two minutes. Done.</h2>
+              </div>
             </ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {STEPS.map((step, i) => (
                 <ScrollReveal key={step.title}>
-                  <div className="relative">
-                    <div className="text-[48px] font-bold text-black/[0.04] absolute -top-2 -left-1">{i + 1}</div>
-                    <div className="relative pt-8">
-                      <h3 className="text-[17px] font-semibold mb-2">{step.title}</h3>
-                      <p className="text-[14px] text-[#1a1a1a]/50 leading-relaxed">{step.description}</p>
+                  <div className="relative bg-white rounded-2xl p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_40px_rgba(102,126,234,0.1)] transition-shadow duration-300">
+                    <div className="inline-flex items-center justify-center size-10 rounded-xl mb-4 font-extrabold text-[18px] text-white" style={{ background: ["linear-gradient(135deg, #667eea, #764ba2)", "linear-gradient(135deg, #f093fb, #f5576c)", "linear-gradient(135deg, #f5576c, #fbb03b)"][i] }}>
+                      {i + 1}
                     </div>
+                    <h3 className="text-[17px] font-bold mb-2">{step.title}</h3>
+                    <p className="text-[14px] text-[#1a1a1a]/50 leading-relaxed">{step.description}</p>
                   </div>
                 </ScrollReveal>
               ))}
@@ -129,21 +131,24 @@ export default function LandingPage() {
         </section>
 
         {/* Features */}
-        <section id="features" className="py-20 px-6 bg-[#FAFAFA]">
+        <section id="features" className="py-24 px-6">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">Features</p>
-              <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em] mb-12">Everything you need. Nothing you don&apos;t.</h2>
+              <div className="text-center mb-14">
+                <span className="inline-block px-3 py-1 rounded-full bg-fuchsia-100 text-fuchsia-700 text-[11px] font-semibold uppercase tracking-wider mb-3">Features</span>
+                <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em]">Everything you need. Nothing you don&apos;t.</h2>
+              </div>
             </ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {FEATURES.map(f => (
                 <ScrollReveal key={f.title}>
-                  <div className="bg-white rounded-xl p-6 border border-black/[0.04] hover:border-black/[0.08] hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all duration-150">
-                    <div className={`inline-flex items-center justify-center size-9 rounded-lg mb-3 ${f.bg}`}>
-                      <f.icon size={17} strokeWidth={1.5} className={f.color} />
+                  <div className="group bg-white rounded-2xl p-7 border border-black/[0.04] hover:border-transparent hover:shadow-[0_8px_40px_rgba(102,126,234,0.1)] transition-all duration-300 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-y-1/2 translate-x-1/2" style={{ background: f.glow }} />
+                    <div className={`relative inline-flex items-center justify-center size-11 rounded-xl mb-4 ${f.bg}`}>
+                      <f.icon size={20} strokeWidth={1.5} className={f.color} />
                     </div>
-                    <h3 className="text-[15px] font-semibold mb-1.5">{f.title}</h3>
-                    <p className="text-[13px] text-[#1a1a1a]/45 leading-relaxed">{f.description}</p>
+                    <h3 className="relative text-[16px] font-bold mb-2">{f.title}</h3>
+                    <p className="relative text-[14px] text-[#1a1a1a]/45 leading-relaxed">{f.description}</p>
                   </div>
                 </ScrollReveal>
               ))}
@@ -257,6 +262,15 @@ export default function LandingPage() {
           </div>
         </footer>
       </div>
+
+      {/* Animations */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}} />
     </div>
   );
 }
@@ -277,12 +291,12 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { icon: CreditCard, title: "Nepal Payments", description: "eSewa, Khalti, FonePay, and Stripe. One dashboard for all providers.", color: "text-violet-600", bg: "bg-emerald-50" },
-  { icon: Truck, title: "Pathao Shipping", description: "Auto-calculate rates for Kathmandu Valley. Print labels. Track deliveries.", color: "text-blue-600", bg: "bg-blue-50" },
-  { icon: Globe, title: "Visual Storefront", description: "Drag-and-drop page builder. Custom domain. Mobile-first. No code.", color: "text-violet-600", bg: "bg-violet-50" },
-  { icon: Zap, title: "Instant Setup", description: "Sign up to first sale in under 5 minutes. CSV import for bulk products.", color: "text-amber-600", bg: "bg-amber-50" },
-  { icon: Shield, title: "Secure & Isolated", description: "Your data is yours. Bank-grade encryption. Multi-tenant isolation.", color: "text-rose-600", bg: "bg-rose-50" },
-  { icon: BarChart3, title: "Growth Dashboard", description: "Revenue, orders, customers, inventory alerts. Know your numbers.", color: "text-teal-600", bg: "bg-teal-50" },
+  { icon: CreditCard, title: "Nepal Payments", description: "eSewa, Khalti, FonePay, and Stripe. One dashboard for all providers.", color: "text-emerald-600", bg: "bg-emerald-50", glow: "radial-gradient(circle,rgba(16,185,129,0.12),transparent)" },
+  { icon: Truck, title: "Pathao Shipping", description: "Auto-calculate rates for Kathmandu Valley. Print labels. Track deliveries.", color: "text-blue-600", bg: "bg-blue-50", glow: "radial-gradient(circle,rgba(59,130,246,0.12),transparent)" },
+  { icon: Globe, title: "Visual Storefront", description: "Drag-and-drop page builder. Custom domain. Mobile-first. No code.", color: "text-violet-600", bg: "bg-violet-50", glow: "radial-gradient(circle,rgba(139,92,246,0.12),transparent)" },
+  { icon: Zap, title: "Instant Setup", description: "Sign up to first sale in under 5 minutes. CSV import for bulk products.", color: "text-amber-600", bg: "bg-amber-50", glow: "radial-gradient(circle,rgba(245,158,11,0.12),transparent)" },
+  { icon: Shield, title: "Secure & Isolated", description: "Your data is yours. Bank-grade encryption. Multi-tenant isolation.", color: "text-rose-600", bg: "bg-rose-50", glow: "radial-gradient(circle,rgba(244,63,94,0.12),transparent)" },
+  { icon: BarChart3, title: "Growth Dashboard", description: "Revenue, orders, customers, inventory alerts. Know your numbers.", color: "text-teal-600", bg: "bg-teal-50", glow: "radial-gradient(circle,rgba(20,184,166,0.12),transparent)" },
 ];
 
 const PLANS = [
