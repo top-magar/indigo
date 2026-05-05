@@ -14,15 +14,16 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-[#ededed] antialiased overflow-x-hidden">
       {/* Grid texture */}
-      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-      {/* Hero glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none z-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.06) 0%, transparent 60%)" }} />
+      <div className="fixed inset-0 pointer-events-none z-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      {/* Hero glow — warm violet */}
+      <div className="fixed top-[-10%] right-[-5%] w-[700px] h-[700px] pointer-events-none z-0 rounded-full" style={{ background: "radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 60%)" }} />
+      <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] pointer-events-none z-0 rounded-full" style={{ background: "radial-gradient(circle, rgba(244,114,82,0.04) 0%, transparent 60%)" }} />
 
       {/* ═══ NAV — floating pill ═══ */}
       <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max">
         <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#050505]/80 backdrop-blur-xl border border-white/[0.06]">
           <div className="flex items-center gap-2">
-            <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="size-2 rounded-full bg-violet-500 animate-pulse" />
             <span className="text-[14px] font-semibold tracking-tight">indigo</span>
           </div>
           <div className="hidden md:flex items-center gap-5 text-[13px] text-white/40">
@@ -30,63 +31,64 @@ export default function LandingPage() {
             <a href="#pricing" className="hover:text-white/80 transition-colors duration-200">Pricing</a>
             <a href="#faq" className="hover:text-white/80 transition-colors duration-200">FAQ</a>
           </div>
-          <Link href="/auth/signup" className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500 text-[#050505] text-[13px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-200">
+          <Link href="/auth/signup" className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500 text-white text-[13px] font-medium hover:bg-violet-400 active:scale-[0.98] transition-all duration-200">
             Get Started
           </Link>
         </div>
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="relative z-10 pt-40 pb-24 px-6">
-        <div className="max-w-[1120px] mx-auto text-center">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] mb-8">
-            <div className="size-1.5 rounded-full bg-emerald-500" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-white/50">12,000+ stores live</span>
+      <section className="relative z-10 pt-36 pb-24 px-6">
+        <div className="max-w-[1120px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-16 items-center">
+          {/* Left — text */}
+          <div>
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-violet-500/20 bg-violet-500/[0.05] mb-8">
+              <div className="size-1.5 rounded-full bg-violet-500" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-violet-300/70">12,000+ stores live</span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-[clamp(40px,6vw,68px)] font-bold leading-[0.95] tracking-[-0.03em] mb-6">
+              Commerce<br/>infrastructure<br/>for{" "}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Nepal.</span>
+            </h1>
+
+            {/* Sub */}
+            <p className="text-[16px] text-white/45 max-w-[440px] leading-[1.7] mb-10">
+              Accept eSewa, Khalti, Stripe. Ship via Pathao. Visual storefront builder. Multi-tenant from day one.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex items-center gap-3">
+              <Link href="/auth/signup" className="group flex items-center gap-2 pl-6 pr-2 py-2.5 rounded-full bg-violet-500 text-white text-[14px] font-medium hover:bg-violet-400 active:scale-[0.98] transition-all duration-200">
+                Start building
+                <span className="flex items-center justify-center size-7 rounded-full bg-white/10 group-hover:translate-x-0.5 transition-transform duration-200">
+                  <ArrowRight size={14} />
+                </span>
+              </Link>
+              <Link href="#features" className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/[0.08] text-[14px] text-white/60 hover:border-white/[0.15] hover:text-white transition-all duration-200">
+                See how it works
+              </Link>
+            </div>
           </div>
 
-          {/* Headline */}
-          <h1 className="text-[clamp(40px,6vw,72px)] font-bold leading-[0.95] tracking-[-0.03em] max-w-[700px] mx-auto mb-6">
-            The commerce<br/>infrastructure for{" "}
-            <span className="text-emerald-500">Nepal.</span>
-          </h1>
-
-          {/* Sub */}
-          <p className="text-[16px] text-white/50 max-w-[480px] mx-auto leading-[1.6] mb-10">
-            Accept eSewa, Khalti, Stripe. Ship via Pathao. Visual storefront builder. Multi-tenant from day one.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex items-center justify-center gap-3 mb-16">
-            <Link href="/auth/signup" className="group flex items-center gap-2 pl-6 pr-2 py-2.5 rounded-full bg-emerald-500 text-[#050505] text-[14px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-200">
-              Start building
-              <span className="flex items-center justify-center size-7 rounded-full bg-black/10 group-hover:translate-x-0.5 transition-transform duration-200">
-                <ArrowRight size={14} />
-              </span>
-            </Link>
-            <Link href="#features" className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/[0.08] text-[14px] text-white/60 hover:border-white/[0.15] hover:text-white transition-all duration-200">
-              See how it works
-            </Link>
-          </div>
-
-          {/* Terminal — double bezel */}
-          <div className="max-w-[520px] mx-auto">
-            <div className="p-[1px] rounded-2xl" style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.08), transparent)" }}>
-              <div className="rounded-[calc(1rem-1px)] bg-[#0a0a0a] overflow-hidden">
-                <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/[0.06]">
-                  <div className="size-[7px] rounded-full bg-white/[0.08]" />
-                  <div className="size-[7px] rounded-full bg-white/[0.08]" />
-                  <div className="size-[7px] rounded-full bg-white/[0.08]" />
-                  <span className="ml-3 font-mono text-[11px] text-white/20">terminal</span>
-                </div>
-                <div className="p-5 font-mono text-[13px] leading-[1.7] text-left">
-                  <p className="text-white/30">$ npx create-indigo-store</p>
-                  <p className="text-emerald-500/80 mt-1">✓ Store created → dhaka-threads.indigo.shop</p>
-                  <p className="text-emerald-500/80">✓ eSewa payment connected</p>
-                  <p className="text-emerald-500/80">✓ 3 products imported from CSV</p>
-                  <p className="text-emerald-500/80">✓ Storefront live</p>
-                  <p className="text-white/30 mt-3">$ <span className="inline-block w-[7px] h-[14px] bg-white/40 animate-pulse" /></p>
-                </div>
+          {/* Right — terminal */}
+          <div className="p-[1px] rounded-2xl" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.3), rgba(139,92,246,0.05), transparent)" }}>
+            <div className="rounded-[calc(1rem-1px)] bg-[#0a0a0a] overflow-hidden">
+              <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/[0.06]">
+                <div className="size-[7px] rounded-full bg-red-400/60" />
+                <div className="size-[7px] rounded-full bg-yellow-400/60" />
+                <div className="size-[7px] rounded-full bg-green-400/60" />
+                <span className="ml-3 font-mono text-[11px] text-white/20">terminal</span>
+              </div>
+              <div className="p-5 font-mono text-[13px] leading-[1.8] text-left">
+                <p className="text-white/30">$ npx create-indigo-store</p>
+                <p className="text-violet-400/80 mt-1">✓ Store created → dhaka-threads.indigo.shop</p>
+                <p className="text-violet-400/80">✓ eSewa payment connected</p>
+                <p className="text-violet-400/80">✓ 3 products imported from CSV</p>
+                <p className="text-violet-400/80">✓ Storefront live</p>
+                <p className="text-white/30 mt-3">$ <span className="inline-block w-[7px] h-[14px] bg-violet-400/60 animate-pulse" /></p>
               </div>
             </div>
           </div>
@@ -110,22 +112,22 @@ export default function LandingPage() {
         <div className="max-w-[1120px] mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] mb-4">
-                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-white/50">Core modules</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-violet-500/20 bg-violet-500/[0.05] mb-4">
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-violet-300/70">Core modules</span>
               </div>
               <h2 className="text-[clamp(28px,4vw,44px)] font-semibold leading-[1.1] tracking-[-0.02em]">Built for production.</h2>
             </div>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px rounded-2xl overflow-hidden bg-white/[0.04]">
-            {FEATURES.map(f => (
+            {FEATURES.map((f, i) => (
               <ScrollReveal key={f.title}>
-                <div className="bg-[#050505] p-8 h-full hover:bg-[#0a0a0a] transition-colors duration-200">
-                  <div className="flex items-center justify-center size-10 rounded-xl bg-emerald-500/[0.08] mb-4">
-                    <f.icon size={18} strokeWidth={1.5} className="text-emerald-500" />
+                <div className={`bg-[#050505] p-8 h-full hover:bg-[#0a0a0a] transition-colors duration-200 ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}>
+                  <div className="flex items-center justify-center size-10 rounded-xl bg-violet-500/[0.08] mb-4">
+                    <f.icon size={18} strokeWidth={1.5} className="text-violet-400" />
                   </div>
-                  <h3 className="text-[18px] font-semibold tracking-[-0.01em] mb-2">{f.title}</h3>
-                  <p className="text-[14px] text-white/40 leading-[1.6]">{f.description}</p>
+                  <h3 className={`font-semibold tracking-[-0.01em] mb-2 ${i === 0 ? "text-[24px]" : "text-[18px]"}`}>{f.title}</h3>
+                  <p className={`text-white/40 leading-[1.6] ${i === 0 ? "text-[16px] max-w-[400px]" : "text-[14px]"}`}>{f.description}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -148,7 +150,7 @@ export default function LandingPage() {
                 <p className="text-[16px] text-white/40 leading-[1.6] mb-6 max-w-[400px]">
                   Every query is tenant-scoped. Every action is type-checked. Every mutation is audited. Built on Next.js 16, Drizzle ORM, and Supabase.
                 </p>
-                <Link href="/auth/signup" className="inline-flex items-center gap-1.5 text-[14px] text-emerald-500 hover:text-emerald-400 transition-colors duration-200">
+                <Link href="/auth/signup" className="inline-flex items-center gap-1.5 text-[14px] text-violet-500 hover:text-violet-400 transition-colors duration-200">
                   Read the docs <ChevronRight size={14} />
                 </Link>
               </div>
@@ -188,8 +190,8 @@ export default function LandingPage() {
                       <div className="absolute inset-0 rounded-2xl p-[1px]" style={{ background: "linear-gradient(to bottom, rgba(16,185,129,0.3), transparent)" }}>
                         <div className="w-full h-full rounded-[calc(1rem-1px)] bg-[#0a0a0a]" />
                       </div>
-                      <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-emerald-500/[0.1] border border-emerald-500/20">
-                        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-emerald-500">Popular</span>
+                      <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-violet-500/[0.1] border border-violet-500/20">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-violet-500">Popular</span>
                       </div>
                     </>
                   )}
@@ -200,11 +202,11 @@ export default function LandingPage() {
                     <ul className="space-y-3 mb-8 flex-1">
                       {plan.features.map(feat => (
                         <li key={feat} className="flex items-start gap-2.5 text-[14px] text-white/50">
-                          <Check size={14} strokeWidth={2} className="text-emerald-500 mt-[3px] shrink-0" />{feat}
+                          <Check size={14} strokeWidth={2} className="text-violet-500 mt-[3px] shrink-0" />{feat}
                         </li>
                       ))}
                     </ul>
-                    <Link href="/auth/signup" className={`block text-center py-3 rounded-full text-[14px] font-medium active:scale-[0.98] transition-all duration-200 ${plan.featured ? "bg-emerald-500 text-[#050505] hover:bg-emerald-400" : "border border-white/[0.08] text-white/60 hover:border-white/[0.15] hover:text-white"}`}>
+                    <Link href="/auth/signup" className={`block text-center py-3 rounded-full text-[14px] font-medium active:scale-[0.98] transition-all duration-200 ${plan.featured ? "bg-violet-500 text-white hover:bg-violet-400" : "border border-white/[0.08] text-white/60 hover:border-white/[0.15] hover:text-white"}`}>
                       Get Started
                     </Link>
                   </div>
@@ -226,7 +228,7 @@ export default function LandingPage() {
           <div className="space-y-2">
             {FAQS.map(faq => (
               <ScrollReveal key={faq.q}>
-                <details className="group rounded-xl border border-white/[0.06] bg-[#0a0a0a] open:border-emerald-500/20 transition-colors duration-200">
+                <details className="group rounded-xl border border-white/[0.06] bg-[#0a0a0a] open:border-violet-500/20 transition-colors duration-200">
                   <summary className="flex items-center justify-between px-6 py-4 cursor-pointer text-[15px] font-medium list-none">
                     {faq.q}
                     <span className="text-white/20 group-open:rotate-45 transition-transform duration-200 text-[18px]">+</span>
@@ -247,7 +249,7 @@ export default function LandingPage() {
               <div className="rounded-[calc(1.5rem-1px)] bg-[#0a0a0a] py-20 px-8 text-center" style={{ boxShadow: "0 0 80px rgba(16,185,129,0.04)" }}>
                 <h2 className="text-[clamp(28px,4vw,44px)] font-semibold tracking-[-0.02em] mb-4">Build your store tonight.</h2>
                 <p className="text-[16px] text-white/40 mb-8 max-w-[400px] mx-auto">Join 12,000+ Nepali businesses. Free forever tier. Deploy in 2 minutes.</p>
-                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2 py-3 rounded-full bg-emerald-500 text-[#050505] text-[14px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-200">
+                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2 py-3 rounded-full bg-violet-500 text-white text-[14px] font-medium hover:bg-violet-400 active:scale-[0.98] transition-all duration-200">
                   Start free today
                   <span className="flex items-center justify-center size-8 rounded-full bg-black/10 group-hover:translate-x-0.5 transition-transform duration-200">
                     <ArrowRight size={15} />
@@ -263,7 +265,7 @@ export default function LandingPage() {
       <footer className="relative z-10 py-8 px-6 border-t border-white/[0.04]">
         <div className="max-w-[1120px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="size-1.5 rounded-full bg-emerald-500" />
+            <div className="size-1.5 rounded-full bg-violet-500" />
             <span className="text-[14px] font-semibold tracking-tight">indigo</span>
           </div>
           <div className="flex items-center gap-5 text-[13px] text-white/25">
