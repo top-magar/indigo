@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronUp, Star, Zap, Lightbulb, TrendingUp, Shield, BarChart3, Users } from "lucide-react";
+import { Check, ChevronUp, Star, Zap, Lightbulb, CreditCard, Globe, Truck, Shield, BarChart3, Users } from "lucide-react";
 import "./landing.css";
 
 export const metadata: Metadata = {
@@ -40,16 +40,16 @@ export default function LandingPage() {
             </span>
           </div>
           <h1 className="hero-title text-[34px] md:text-[52px] lg:text-[66px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[780px] mx-auto mb-5">
-            Launch Your Online Store in Nepal Today.
+            If You Can Post on Facebook, You Can Run a Store.
           </h1>
           <p className="hero-desc text-[15px] md:text-[17px] text-white/75 leading-[155%] max-w-[540px] mx-auto mb-8">
-            Accept eSewa, Khalti & Stripe payments. Ship via Pathao. Beautiful storefront builder. No code required.
+            Accept eSewa &amp; Khalti. Ship via Pathao. Build your storefront visually. Live in 2 minutes. Made for Nepal.
           </p>
           <div className="hero-form flex justify-center mb-14">
             <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)]" />
+              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)] focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" />
               <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors">
-                Get started
+                Start free
               </Link>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function LandingPage() {
       <section className="py-12 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto text-center">
           <p className="text-[15px] md:text-[17px] font-medium text-[#1a1a1a] tracking-[-0.2px] mb-8">
-            Join 12,000+ Businesses Who Sell on Indigo
+            Works with the tools you already use
           </p>
           <div className="relative overflow-hidden">
             <div className="flex animate-[marquee_25s_linear_infinite] gap-[86px] opacity-30">
@@ -82,7 +82,7 @@ export default function LandingPage() {
       {/* ═══ FEATURES ═══ */}
       <section id="features" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading tag="FEATURES" title="Smarter Tools to Grow Your Store" description="Everything you need to sell online in Nepal — payments, shipping, analytics, and more." />
+          <SectionHeading tag="FEATURES" title="Everything You Need to Sell Online" description="Payments, shipping, storefront, analytics — built for Nepali merchants." />
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             {FEATURES.map((f, i) => (
               <div key={f.title} className={`card-hover rounded-2xl overflow-hidden ${i < 2 ? "bg-[#1a1a1a] text-white" : "bg-[#f5f6f8] text-[#1a1a1a]"}`}>
@@ -93,7 +93,7 @@ export default function LandingPage() {
                 </div>
                 <div className="px-7 pb-7 pt-2">
                   <h3 className="text-[20px] md:text-[22px] font-semibold tracking-[-0.03em] leading-[125%] mb-2">{f.title}</h3>
-                  <p className={`text-[14px] leading-[155%] ${i < 2 ? "text-white/55" : "text-[#6d6d6d]"}`}>{f.description}</p>
+                  <p className={`text-[14px] leading-[155%] ${i < 2 ? "text-white/70" : "text-[#6d6d6d]"}`}>{f.description}</p>
                 </div>
               </div>
             ))}
@@ -104,7 +104,7 @@ export default function LandingPage() {
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading tag="PRICING" title="Simple, Transparent Pricing" description="Start free. Upgrade as you grow. No transaction fees from Indigo." />
+          <SectionHeading tag="PRICING" title="Start Free, Grow When Ready" description="No transaction fees from Indigo. You only pay the payment gateway's standard rate." />
           <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             {PRICING_PLANS.map(plan => (
               <div key={plan.name} className="card-hover rounded-2xl border border-[#eaeaea] bg-white overflow-hidden">
@@ -117,7 +117,7 @@ export default function LandingPage() {
                   </div>
                   <p className="text-[14px] text-[#6d6d6d] mb-6">{plan.desc}</p>
                   <Link href="/auth/signup" className="btn-press block text-center py-3.5 rounded-full bg-black text-white text-[14px] font-medium hover:bg-[#222] transition-colors mb-7">
-                    Get started
+                    Start selling
                   </Link>
                   <ul className="space-y-3.5">
                     {plan.features.map(feat => (
@@ -139,7 +139,7 @@ export default function LandingPage() {
       {/* ═══ BENEFITS ═══ */}
       <section className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading tag="BENEFITS" title="The Powerful Advantages Your Team Gets" description="Unlock key benefits that boost your team's productivity and performance." />
+          <SectionHeading tag="WHY INDIGO" title="Built for How Nepal Sells" description="Not another global tool localized as an afterthought. Built here, for here." />
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {BENEFITS.map(b => (
               <div key={b.title} className="card-hover rounded-2xl border border-[#eaeaea] bg-white p-6">
@@ -157,7 +157,7 @@ export default function LandingPage() {
       {/* ═══ TESTIMONIALS ═══ */}
       <section className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading tag="TESTIMONIALS" title="Trusted by Teams Worldwide" description="Join thousands of teams globally who rely on our solutions to collaborate, grow, and succeed." />
+          <SectionHeading tag="MERCHANTS" title="Real Stores, Real Results" description="Hear from merchants who moved from Instagram DMs to a proper online store." />
           {/* Large featured card */}
           <div className="w-full rounded-2xl bg-black text-white p-8 md:p-12 relative overflow-hidden">
             <div className="absolute top-6 right-10 text-[100px] leading-none text-white/[0.06] font-serif select-none hidden md:block">&ldquo;</div>
@@ -166,13 +166,13 @@ export default function LandingPage() {
               <Star size={16} className="text-white/25" />
             </div>
             <p className="text-[16px] md:text-[18px] leading-[165%] text-white/85 max-w-[580px] mb-8">
-              &ldquo;This platform transformed the way our team manages customers and opportunities. Within only three months of consistent use, we achieved a remarkable 35% increase in sales, driven by smarter workflows, better communication, and improved tracking.&rdquo;
+              &ldquo;We moved from Instagram DMs to Indigo in one afternoon. Our Dashain sales were 4x last year because customers could pay with eSewa directly instead of bank transfers. Setup took maybe 5 minutes.&rdquo;
             </p>
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10" />
+              <div className="size-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 flex items-center justify-center text-[13px] font-semibold">SM</div>
               <div>
                 <p className="text-[14px] font-semibold text-white">Srijana Maharjan</p>
-                <p className="text-[12px] text-white/45">Founder, Dhaka Threads</p>
+                <p className="text-[12px] text-white/70">Dhaka Threads · Patan</p>
               </div>
             </div>
           </div>
@@ -222,16 +222,16 @@ export default function LandingPage() {
             </span>
           </div>
           <h2 className="text-[34px] md:text-[48px] lg:text-[56px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[680px] mx-auto mb-4">
-            Build Stronger Relationships. Close More Deals.
+            Your Store Could Be Live in 2 Minutes.
           </h2>
-          <p className="text-[15px] text-white/55 leading-[155%] max-w-[480px] mx-auto mb-8">
-            Join 12,000+ Nepali businesses. Free forever tier. Accept eSewa in 2 minutes.
+          <p className="text-[15px] text-white/70 leading-[155%] max-w-[480px] mx-auto mb-8">
+            Free forever. No credit card. Accept eSewa from day one.
           </p>
           <div className="flex justify-center">
             <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999]" />
+              <input type="email" placeholder="you@store.com.np" aria-label="Email address" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] placeholder:text-[#999] focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" />
               <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors border border-white/10">
-                Get started
+                Start free
               </Link>
             </div>
           </div>
@@ -244,11 +244,11 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div>
               <span className="text-[16px] font-bold text-white mb-3 block">✦ Indigo</span>
-              <p className="text-[12px] text-white/40 leading-[165%]">Nepal&apos;s e-commerce platform for modern merchants.</p>
+              <p className="text-[12px] text-white/60 leading-[165%]">Nepal&apos;s e-commerce platform for modern merchants.</p>
             </div>
             <div>
               <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Product</p>
-              <ul className="space-y-2 text-[13px] text-white/40">
+              <ul className="space-y-2 text-[13px] text-white/60">
                 <li><a href="#features" className="hover:text-white/80 transition-colors">Features</a></li>
                 <li><a href="#pricing" className="hover:text-white/80 transition-colors">Pricing</a></li>
                 <li><Link href="/auth/signup" className="hover:text-white/80 transition-colors">Get Started</Link></li>
@@ -256,7 +256,7 @@ export default function LandingPage() {
             </div>
             <div>
               <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Company</p>
-              <ul className="space-y-2 text-[13px] text-white/40">
+              <ul className="space-y-2 text-[13px] text-white/60">
                 <li><a href="#" className="hover:text-white/80 transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-white/80 transition-colors">Blog</a></li>
                 <li><a href="mailto:hello@indigo.com.np" className="hover:text-white/80 transition-colors">Contact</a></li>
@@ -264,15 +264,15 @@ export default function LandingPage() {
             </div>
             <div>
               <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Legal</p>
-              <ul className="space-y-2 text-[13px] text-white/40">
+              <ul className="space-y-2 text-[13px] text-white/60">
                 <li><Link href="/legal/privacy" className="hover:text-white/80 transition-colors">Privacy</Link></li>
                 <li><Link href="/legal/terms" className="hover:text-white/80 transition-colors">Terms</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-white/[0.06] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <span className="text-[11px] text-white/30">© 2026 Indigo. Built in Nepal.</span>
-            <span className="text-[11px] text-white/30">All rights reserved.</span>
+            <span className="text-[11px] text-white/50">© 2026 Indigo. Built in Nepal.</span>
+            <span className="text-[11px] text-white/50">All rights reserved.</span>
           </div>
         </div>
       </footer>
@@ -294,35 +294,35 @@ function SectionHeading({ tag, title, description }: { tag: string; title: strin
 
 // ═══ Data ═══
 const FEATURES = [
-  { icon: BarChart3, title: "Advanced Analytics Dashboard", description: "Turn raw data into clear insights with real-time reports, smart visualizations, and performance metrics." },
-  { icon: Users, title: "Streamlined Relationship Organization", description: "Simplify how you manage connections with streamlined relationship organization — effortlessly." },
-  { icon: Zap, title: "Smart and Effortless Data Analysis", description: "Experience smart and effortless data analysis with advanced AI tools that simplify insights and visualize patterns." },
-  { icon: Shield, title: "Intelligent Automated Task Planner", description: "Boost efficiency with an intelligent automated task planner — effortlessly schedule, prioritize and manage." },
+  { icon: CreditCard, title: "Accept eSewa & Khalti Instantly", description: "Connect Nepal's top payment methods in 2 minutes. No paperwork, no waiting period. Start receiving money today." },
+  { icon: Globe, title: "Visual Storefront Builder", description: "Drag-and-drop page builder with custom domains, mobile-first themes, and live preview. No coding required." },
+  { icon: BarChart3, title: "Orders & Inventory Dashboard", description: "Track every order from placement to delivery. Low-stock alerts, revenue charts, and customer insights in real-time." },
+  { icon: Truck, title: "Pathao Shipping Built In", description: "Auto-calculate delivery rates for Kathmandu Valley. Print labels, track packages, notify customers — all from one place." },
 ];
 
 const PRICING_PLANS = [
-  { name: "Starter Plan", price: "0", desc: "Perfect for getting started", features: ["Up to 1000 contacts", "Unlimited storage", "Advance analytics", "Enhanced analytics tools", "Custom branding options", "Dedicated account support"] },
-  { name: "Growth Plan", price: "2,000", desc: "For growing businesses", features: ["Up to 500 contacts", "Up to 200 GB Storage", "Advance analytics", "Advanced reporting features", "Customizable dashboards", "AI-driven insights"] },
+  { name: "Free Forever", price: "0", desc: "Start selling today — no credit card needed", features: ["25 products", "Unlimited orders", "eSewa + Cash on Delivery", "Indigo subdomain", "Basic analytics", "Email support"] },
+  { name: "Growth", price: "2,000", desc: "For stores ready to scale", features: ["Unlimited products", "All payment methods", "Custom domain + SSL", "Advanced analytics", "Discount codes & coupons", "Priority WhatsApp support"] },
 ];
 
 const BENEFITS: { icon: typeof Lightbulb; title: string; description: string; iconBg: string; iconColor: string }[] = [
-  { icon: Lightbulb, title: "Accept payments in 2 minutes", description: "Connect eSewa or Khalti instantly. No paperwork, no waiting.", iconBg: "bg-[#eaf1ff]", iconColor: "text-[#0454ff]" },
-  { icon: TrendingUp, title: "Ship anywhere in Nepal", description: "Pathao integration with auto-rates, label printing, and real-time tracking.", iconBg: "bg-[#fff8e1]", iconColor: "text-[#f59e0b]" },
-  { icon: Shield, title: "No technical skills needed", description: "If you can use Facebook, you can run a store on Indigo.", iconBg: "bg-[#e8f5e9]", iconColor: "text-[#22c55e]" },
-  { icon: BarChart3, title: "Multi-tenant & secure", description: "Your data is isolated. Bank-grade encryption. Row-level security.", iconBg: "bg-[#fce4ec]", iconColor: "text-[#ef4444]" },
-  { icon: Users, title: "Grow with analytics", description: "Revenue charts, customer insights, inventory alerts.", iconBg: "bg-[#f3e5f5]", iconColor: "text-[#a855f7]" },
-  { icon: Zap, title: "Free forever tier", description: "Start with 25 products, eSewa payments, and your own subdomain.", iconBg: "bg-[#e0f7fa]", iconColor: "text-[#06b6d4]" },
+  { icon: Lightbulb, title: "Live in 2 minutes", description: "Connect eSewa, add your first product, and share your store link. That fast.", iconBg: "bg-[#eaf1ff]", iconColor: "text-[#0454ff]" },
+  { icon: Truck, title: "Ship across Nepal", description: "Pathao integration with auto-rates for Kathmandu Valley. Print labels in one click.", iconBg: "bg-[#fff8e1]", iconColor: "text-[#f59e0b]" },
+  { icon: Shield, title: "No tech skills needed", description: "If you can post on Facebook, you can run a store on Indigo. Visual builder, zero code.", iconBg: "bg-[#e8f5e9]", iconColor: "text-[#22c55e]" },
+  { icon: BarChart3, title: "Know your numbers", description: "See which products sell, which don't. Revenue trends, customer insights, inventory alerts.", iconBg: "bg-[#fce4ec]", iconColor: "text-[#ef4444]" },
+  { icon: Users, title: "Your data, isolated", description: "Bank-grade encryption. Row-level security. Your store data is completely separated from others.", iconBg: "bg-[#f3e5f5]", iconColor: "text-[#a855f7]" },
+  { icon: Zap, title: "Zero platform fees", description: "We don't take a cut of your sales. You only pay the payment gateway's standard rate.", iconBg: "bg-[#e0f7fa]", iconColor: "text-[#06b6d4]" },
 ];
 
 const SMALL_TESTIMONIALS = [
-  { quote: "Within just 60 seconds, our complete system was set up and ready for immediate use.", name: "Bikash Tamang", role: "Systems Administrator" },
-  { quote: "The analytics dashboard alone is worth it. I finally know which products are actually making money.", name: "Anita Gurung", role: "Founder, Anita's Boutique" },
-  { quote: "Customer support responded in 10 minutes when I had an issue. Incredible service.", name: "Priya Adhikari", role: "Manager, Priya Collections" },
+  { quote: "I moved from Instagram DMs to Indigo in one afternoon. My Dashain sales were 4x last year.", name: "Srijana M.", role: "Dhaka Threads, Patan" },
+  { quote: "Connected Khalti and had my first order within the hour. No joke.", name: "Bikash T.", role: "Himalayan Spices, Kathmandu" },
+  { quote: "The inventory alerts alone save me hours. I finally know what's actually selling.", name: "Anita G.", role: "Anita's Boutique, Pokhara" },
 ];
 
 const FAQS = [
-  { q: "Is my data secure on Indigo?", a: "Absolutely. We use bank-grade encryption, multi-tenant isolation, and row-level security. Your data is completely separated from other merchants." },
-  { q: "Does Indigo support team collaboration?", a: "Yes. Invite staff members with role-based access. Owners, admins, and staff each see only what they need." },
-  { q: "What kind of support do you offer?", a: "Email support on free tier, priority support on Growth, and a dedicated account manager on Pro. Average response time: 10 minutes." },
-  { q: "Can I migrate my data from another platform?", a: "Yes. Import your product catalog via CSV. We also help migrate your customer list for free." },
+  { q: "How fast can I start selling?", a: "Under 2 minutes. Add your first product, connect eSewa in settings, and share your store link. You're live." },
+  { q: "Do I need technical experience?", a: "Not at all. If you can use Facebook, you can run a store. Our visual builder requires zero coding." },
+  { q: "What does Indigo charge?", a: "Zero platform fees. You only pay the payment gateway's standard rate (eSewa: 1.5%, Khalti: 2%). The free tier is free forever." },
+  { q: "Can I use my own domain?", a: "Yes. On the Growth plan, connect any custom domain with free SSL. Your store, your brand." },
 ];
