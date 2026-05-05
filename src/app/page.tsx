@@ -16,9 +16,14 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b)" }}>
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/10 blur-[80px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-300/10 blur-[60px]" />
+      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[fluidShift_12s_ease-in-out_infinite]" style={{ background: "#1a1a2e" }}>
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[80px] opacity-70 animate-[blob1_10s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff6b6b, transparent 70%)" }} />
+          <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full blur-[80px] opacity-60 animate-[blob2_12s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #48dbfb, transparent 70%)" }} />
+          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full blur-[80px] opacity-60 animate-[blob3_14s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff9ff3, transparent 70%)" }} />
+          <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] rounded-full blur-[60px] opacity-50 animate-[blob1_16s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #feca57, transparent 70%)" }} />
+          <div className="absolute top-[40%] left-[30%] w-[35%] h-[35%] rounded-full blur-[60px] opacity-40 animate-[blob2_11s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #5f27cd, transparent 70%)" }} />
+        </div>
 
         {/* Nav */}
         <nav className="relative z-20 max-w-[1200px] mx-auto w-full px-6 py-5 flex items-center justify-between">
@@ -282,10 +287,24 @@ export default function LandingPage() {
 
       {/* Animations */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes gradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @keyframes fluidShift {
+          0%, 100% { filter: hue-rotate(0deg); }
+          50% { filter: hue-rotate(30deg); }
+        }
+        @keyframes blob1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(10%, 15%) scale(1.1); }
+          66% { transform: translate(-5%, -10%) scale(0.95); }
+        }
+        @keyframes blob2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-15%, 10%) scale(1.05); }
+          66% { transform: translate(10%, -15%) scale(1.1); }
+        }
+        @keyframes blob3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(15%, -10%) scale(1.1); }
+          66% { transform: translate(-10%, 15%) scale(0.95); }
         }
       `}} />
     </div>
