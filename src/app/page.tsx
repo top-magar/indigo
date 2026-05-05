@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, ChevronUp, Star, Zap, Lightbulb, CreditCard, Globe, Truck, Shield, BarChart3, Users } from "lucide-react";
+import { Check, ChevronUp, Star, CreditCard, Globe, Truck, BarChart3 } from "lucide-react";
 import "./landing.css";
 
 export const metadata: Metadata = {
@@ -24,12 +24,17 @@ export default function LandingPage() {
         <div className="absolute bottom-[35%] left-[4%] w-[35px] h-[70px] border-l-2 border-t-2 border-b-2 border-white/8 rounded-l-md hidden lg:block" />
         <div className="absolute bottom-[35%] right-[4%] w-[35px] h-[70px] border-r-2 border-t-2 border-b-2 border-white/8 rounded-r-md hidden lg:block" />
 
-        {/* Nav */}
+        {/* Nav — real anchor links */}
         <nav className="relative z-20 max-w-[1200px] mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
           <span className="text-[18px] font-bold tracking-tight text-white">✦ Indigo</span>
-          <button className="text-white" aria-label="Menu">
-            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
+          <div className="hidden md:flex items-center gap-6 text-[14px] text-white/70">
+            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+          </div>
+          <Link href="/auth/signup" className="btn-press px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-[13px] font-medium hover:bg-white/20 transition-colors">
+            Start free
+          </Link>
         </nav>
 
         {/* Content */}
@@ -42,7 +47,7 @@ export default function LandingPage() {
           <h1 className="hero-title text-[34px] md:text-[52px] lg:text-[66px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[780px] mx-auto mb-5">
             If You Can Post on Facebook, You Can Run a Store.
           </h1>
-          <p className="hero-desc text-[15px] md:text-[17px] text-white/75 leading-[155%] max-w-[540px] mx-auto mb-8">
+          <p className="hero-desc text-[15px] md:text-[17px] text-white/90 leading-[155%] max-w-[540px] mx-auto mb-8">
             Accept eSewa &amp; Khalti. Ship via Pathao. Build your storefront visually. Live in 2 minutes. Made for Nepal.
           </p>
           <div className="hero-form flex justify-center mb-14">
@@ -79,22 +84,34 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ FEATURES ═══ */}
+      {/* ═══ FEATURES — asymmetric layout ═══ */}
       <section id="features" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
           <SectionHeading tag="FEATURES" title="Everything You Need to Sell Online" description="Payments, shipping, storefront, analytics — built for Nepali merchants." />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
-            {FEATURES.map((f, i) => (
-              <div key={f.title} className={`card-hover rounded-2xl overflow-hidden ${i < 2 ? "bg-[#1a1a1a] text-white" : "bg-[#f5f6f8] text-[#1a1a1a]"}`}>
-                <div className={`relative w-full h-[220px] md:h-[280px] flex items-center justify-center ${i < 2 ? "feature-img-placeholder" : ""}`}>
-                  <div className={`size-14 rounded-2xl flex items-center justify-center ${i < 2 ? "bg-white/10 border border-white/10" : "bg-white shadow-sm border border-[#eaeaea]"}`}>
-                    <f.icon size={26} strokeWidth={1.5} className={i < 2 ? "text-white/80" : "text-[#4338ca]"} />
-                  </div>
+          {/* Featured card — full width */}
+          <div className="w-full">
+            <div className="card-hover rounded-2xl overflow-hidden bg-[#1a1a1a] text-white md:flex md:items-stretch">
+              <div className="relative md:w-[45%] h-[200px] md:h-auto flex items-center justify-center feature-img-placeholder">
+                <div className="size-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
+                  <CreditCard size={30} strokeWidth={1.5} className="text-white/80" />
                 </div>
-                <div className="px-7 pb-7 pt-2">
-                  <h3 className="text-[20px] md:text-[22px] font-semibold tracking-[-0.03em] leading-[125%] mb-2">{f.title}</h3>
-                  <p className={`text-[14px] leading-[155%] ${i < 2 ? "text-white/70" : "text-[#6d6d6d]"}`}>{f.description}</p>
+              </div>
+              <div className="p-7 md:p-10 md:w-[55%] flex flex-col justify-center">
+                <h3 className="text-[22px] md:text-[28px] font-semibold tracking-[-0.03em] leading-[120%] mb-3">Accept eSewa & Khalti Instantly</h3>
+                <p className="text-[15px] leading-[160%] text-white/70 mb-4">Connect Nepal&apos;s top payment methods in 2 minutes. No paperwork, no waiting period. Start receiving money today.</p>
+                <p className="text-[13px] text-white/50">eSewa · Khalti · FonePay · ConnectIPS · Stripe · COD</p>
+              </div>
+            </div>
+          </div>
+          {/* 3 smaller cards */}
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
+            {FEATURES_SMALL.map(f => (
+              <div key={f.title} className="card-hover rounded-2xl bg-[#f5f6f8] p-6">
+                <div className="size-11 rounded-xl bg-white shadow-sm border border-[#eaeaea] flex items-center justify-center mb-4">
+                  <f.icon size={20} strokeWidth={1.5} className="text-[#4338ca]" />
                 </div>
+                <h3 className="text-[17px] font-semibold tracking-[-0.02em] leading-[125%] mb-1.5">{f.title}</h3>
+                <p className="text-[13px] text-[#6d6d6d] leading-[155%]">{f.description}</p>
               </div>
             ))}
           </div>
@@ -136,24 +153,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ BENEFITS ═══ */}
-      <section className="py-20 px-6 md:px-10">
-        <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading tag="WHY INDIGO" title="Built for How Nepal Sells" description="Not another global tool localized as an afterthought. Built here, for here." />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {BENEFITS.map(b => (
-              <div key={b.title} className="card-hover rounded-2xl border border-[#eaeaea] bg-white p-6">
-                <div className={`size-11 rounded-full flex items-center justify-center mb-4 ${b.iconBg}`}>
-                  <b.icon size={18} className={b.iconColor} />
-                </div>
-                <h3 className="text-[17px] font-semibold tracking-[-0.02em] mb-1.5">{b.title}</h3>
-                <p className="text-[13px] text-[#6d6d6d] leading-[155%]">{b.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══ TESTIMONIALS ═══ */}
       <section className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
@@ -166,13 +165,13 @@ export default function LandingPage() {
               <Star size={16} className="text-white/25" />
             </div>
             <p className="text-[16px] md:text-[18px] leading-[165%] text-white/85 max-w-[580px] mb-8">
-              &ldquo;We moved from Instagram DMs to Indigo in one afternoon. Our Dashain sales were 4x last year because customers could pay with eSewa directly instead of bank transfers. Setup took maybe 5 minutes.&rdquo;
+              &ldquo;Before Indigo, I was managing orders in a notebook and collecting payments via bank transfer. Now I have a proper store, customers pay with eSewa at checkout, and Pathao picks up the packages. My revenue tripled in 3 months because I stopped losing customers to complicated payment steps.&rdquo;
             </p>
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 flex items-center justify-center text-[13px] font-semibold">SM</div>
+              <div className="size-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 flex items-center justify-center text-[13px] font-semibold">RS</div>
               <div>
-                <p className="text-[14px] font-semibold text-white">Srijana Maharjan</p>
-                <p className="text-[12px] text-white/70">Dhaka Threads · Patan</p>
+                <p className="text-[14px] font-semibold text-white">Rajesh Shrestha</p>
+                <p className="text-[12px] text-white/70">TechMart Nepal · Lalitpur</p>
               </div>
             </div>
           </div>
@@ -293,25 +292,15 @@ function SectionHeading({ tag, title, description }: { tag: string; title: strin
 }
 
 // ═══ Data ═══
-const FEATURES = [
-  { icon: CreditCard, title: "Accept eSewa & Khalti Instantly", description: "Connect Nepal's top payment methods in 2 minutes. No paperwork, no waiting period. Start receiving money today." },
-  { icon: Globe, title: "Visual Storefront Builder", description: "Drag-and-drop page builder with custom domains, mobile-first themes, and live preview. No coding required." },
-  { icon: BarChart3, title: "Orders & Inventory Dashboard", description: "Track every order from placement to delivery. Low-stock alerts, revenue charts, and customer insights in real-time." },
-  { icon: Truck, title: "Pathao Shipping Built In", description: "Auto-calculate delivery rates for Kathmandu Valley. Print labels, track packages, notify customers — all from one place." },
+const FEATURES_SMALL = [
+  { icon: Globe, title: "Visual Storefront Builder", description: "Drag-and-drop page builder with custom domains, mobile-first themes, and live preview." },
+  { icon: BarChart3, title: "Orders & Inventory Dashboard", description: "Track every order from placement to delivery. Low-stock alerts and revenue charts." },
+  { icon: Truck, title: "Pathao Shipping Built In", description: "Auto-calculate delivery rates for Kathmandu Valley. Print labels, track packages." },
 ];
 
 const PRICING_PLANS = [
   { name: "Free Forever", price: "0", desc: "Start selling today — no credit card needed", features: ["25 products", "Unlimited orders", "eSewa + Cash on Delivery", "Indigo subdomain", "Basic analytics", "Email support"] },
   { name: "Growth", price: "2,000", desc: "For stores ready to scale", features: ["Unlimited products", "All payment methods", "Custom domain + SSL", "Advanced analytics", "Discount codes & coupons", "Priority WhatsApp support"] },
-];
-
-const BENEFITS: { icon: typeof Lightbulb; title: string; description: string; iconBg: string; iconColor: string }[] = [
-  { icon: Lightbulb, title: "Live in 2 minutes", description: "Connect eSewa, add your first product, and share your store link. That fast.", iconBg: "bg-[#eef2ff]", iconColor: "text-[#4338ca]" },
-  { icon: Truck, title: "Ship across Nepal", description: "Pathao integration with auto-rates for Kathmandu Valley. Print labels in one click.", iconBg: "bg-[#fff8e1]", iconColor: "text-[#f59e0b]" },
-  { icon: Shield, title: "No tech skills needed", description: "If you can post on Facebook, you can run a store on Indigo. Visual builder, zero code.", iconBg: "bg-[#e8f5e9]", iconColor: "text-[#22c55e]" },
-  { icon: BarChart3, title: "Know your numbers", description: "See which products sell, which don't. Revenue trends, customer insights, inventory alerts.", iconBg: "bg-[#fce4ec]", iconColor: "text-[#ef4444]" },
-  { icon: Users, title: "Your data, isolated", description: "Bank-grade encryption. Row-level security. Your store data is completely separated from others.", iconBg: "bg-[#f3e5f5]", iconColor: "text-[#a855f7]" },
-  { icon: Zap, title: "Zero platform fees", description: "We don't take a cut of your sales. You only pay the payment gateway's standard rate.", iconBg: "bg-[#e0f7fa]", iconColor: "text-[#06b6d4]" },
 ];
 
 const SMALL_TESTIMONIALS = [
