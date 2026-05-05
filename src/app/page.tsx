@@ -16,7 +16,7 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea)" }}>
+      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b)" }}>
         <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/10 blur-[80px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-300/10 blur-[60px]" />
 
@@ -249,7 +249,7 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 px-6 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" }}>
+        <section className="py-16 px-6 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd)" }}>
           <div className="absolute inset-0 bg-black/5" />
           <ScrollReveal>
             <div className="relative z-10">
