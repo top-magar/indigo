@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, ChevronUp, Star, Zap, Lightbulb, TrendingUp, Shield, BarChart3, Users } from "lucide-react";
+import { Reveal } from "@/components/landing/reveal";
 import "./landing.css";
 
 export const metadata: Metadata = {
@@ -16,62 +17,57 @@ export default function LandingPage() {
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" />
 
-      {/* ═══ HERO — Blue gradient bg, white text ═══ */}
+      {/* ═══ HERO ═══ */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#0454ff] via-[#2d7aff] to-[#7ab4ff]">
-        {/* Decorative bracket elements */}
-        <div className="absolute top-[20%] left-[8%] w-[60px] h-[120px] border-l-2 border-t-2 border-b-2 border-white/20 rounded-l-lg" />
-        <div className="absolute top-[20%] right-[8%] w-[60px] h-[120px] border-r-2 border-t-2 border-b-2 border-white/20 rounded-r-lg" />
-        <div className="absolute bottom-[30%] left-[5%] w-[40px] h-[80px] border-l-2 border-t-2 border-b-2 border-white/10 rounded-l-lg" />
-        <div className="absolute bottom-[30%] right-[5%] w-[40px] h-[80px] border-r-2 border-t-2 border-b-2 border-white/10 rounded-r-lg" />
+        {/* Decorative brackets */}
+        <div className="absolute top-[18%] left-[7%] w-[50px] h-[110px] border-l-2 border-t-2 border-b-2 border-white/15 rounded-l-md hidden lg:block" />
+        <div className="absolute top-[18%] right-[7%] w-[50px] h-[110px] border-r-2 border-t-2 border-b-2 border-white/15 rounded-r-md hidden lg:block" />
+        <div className="absolute bottom-[35%] left-[4%] w-[35px] h-[70px] border-l-2 border-t-2 border-b-2 border-white/8 rounded-l-md hidden lg:block" />
+        <div className="absolute bottom-[35%] right-[4%] w-[35px] h-[70px] border-r-2 border-t-2 border-b-2 border-white/8 rounded-r-md hidden lg:block" />
 
         {/* Nav */}
-        <nav className="relative z-20 max-w-[1200px] mx-auto px-5 md:px-10 py-5 flex items-center justify-between">
+        <nav className="relative z-20 max-w-[1200px] mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
           <span className="text-[18px] font-bold tracking-tight text-white">✦ Indigo</span>
-          <button className="text-white">
+          <button className="text-white" aria-label="Menu">
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
         </nav>
 
-        {/* Hero content */}
-        <div className="relative z-10 max-w-[1200px] mx-auto px-5 md:px-10 pt-12 md:pt-20 pb-0 text-center">
-          {/* Badge */}
-          <div className="flex justify-center mb-6">
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[13px] font-medium">
-              <Star size={14} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
+        {/* Content */}
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-10 pt-12 md:pt-20 pb-0 text-center">
+          <div className="hero-badge flex justify-center mb-6">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm text-white text-[13px] font-medium">
+              <Star size={13} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
             </span>
           </div>
-          {/* H1 */}
-          <h1 className="text-[36px] md:text-[52px] lg:text-[68px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[800px] mx-auto mb-6">
+          <h1 className="hero-title text-[34px] md:text-[52px] lg:text-[66px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[780px] mx-auto mb-5">
             Launch Your Online Store in Nepal Today.
           </h1>
-          {/* Description */}
-          <p className="text-[15px] md:text-[17px] text-white/80 leading-[150%] max-w-[560px] mx-auto mb-8">
-            Accept eSewa, Khalti & Stripe payments. Ship via Pathao. Beautiful storefront builder. No code required. Live in 2 minutes.
+          <p className="hero-desc text-[15px] md:text-[17px] text-white/75 leading-[155%] max-w-[540px] mx-auto mb-8">
+            Accept eSewa, Khalti & Stripe payments. Ship via Pathao. Beautiful storefront builder. No code required.
           </p>
-          {/* CTA form — white input with black button */}
-          <div className="flex justify-center mb-16">
+          <div className="hero-form flex justify-center mb-14">
             <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999]" />
-              <Link href="/auth/signup" className="absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#333] transition-colors">
+              <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999] shadow-[0_4px_20px_rgba(0,0,0,0.1)]" />
+              <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors">
                 Get started
               </Link>
             </div>
           </div>
-          {/* Dashboard image — overlaps into next section */}
-          <div className="relative mx-auto max-w-[1000px]">
-            <img src="/dashboard-preview.png" alt="Indigo merchant dashboard" className="w-full rounded-t-xl shadow-[0_-10px_60px_rgba(0,0,0,0.2)]" style={{ aspectRatio: "2.057" }} />
+          <div className="hero-dashboard relative mx-auto max-w-[960px]">
+            <img src="/dashboard-preview.png" alt="Indigo merchant dashboard" className="w-full rounded-t-xl shadow-[0_-5px_60px_rgba(0,0,0,0.25)]" style={{ aspectRatio: "2.057" }} />
           </div>
         </div>
       </section>
 
       {/* ═══ TICKER ═══ */}
-      <section className="py-14 px-5 md:px-10">
+      <section className="py-12 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto text-center">
-          <p className="text-[16px] md:text-[18px] font-medium text-[#1a1a1a] tracking-[-0.2px] mb-10">
+          <p className="text-[15px] md:text-[17px] font-medium text-[#1a1a1a] tracking-[-0.2px] mb-8">
             Join 12,000+ Businesses Who Sell on Indigo
           </p>
           <div className="relative overflow-hidden">
-            <div className="flex animate-[marquee_20s_linear_infinite] gap-[86px] opacity-40">
+            <div className="flex animate-[marquee_25s_linear_infinite] gap-[86px] opacity-30">
               {[...Array(2)].map((_, set) => (
                 <div key={set} className="flex shrink-0 gap-[86px]">
                   {["eSewa", "Khalti", "Pathao", "Stripe", "FonePay", "Daraz", "eSewa", "Khalti"].map((name, i) => (
@@ -84,206 +80,214 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ FEATURES — 2×2 grid, tall cards with images ═══ */}
-      <section id="features" className="py-16 px-5 md:px-10">
+      {/* ═══ FEATURES ═══ */}
+      <section id="features" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading icon={<Star size={14} className="text-[#0454ff]" />} tag="FEATURES" title="Smarter Tools to Grow Your Store" description="Everything you need to sell online in Nepal — payments, shipping, analytics, and more." />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Reveal><SectionHeading tag="FEATURES" title="Smarter Tools to Grow Your Store" description="Everything you need to sell online in Nepal — payments, shipping, analytics, and more." /></Reveal>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
             {FEATURES.map((f, i) => (
-              <div key={f.title} className={`rounded-2xl overflow-hidden ${i < 2 ? "bg-[#1a1a1a] text-white" : "bg-[#f5f6f8] text-[#1a1a1a]"}`}>
-                {/* Image placeholder area */}
-                <div className={`w-full h-[240px] md:h-[300px] ${i < 2 ? "bg-gradient-to-br from-[#2a2a2a] to-[#111]" : "bg-gradient-to-br from-[#e8ecf4] to-[#f5f6f8]"} flex items-center justify-center`}>
-                  <div className={`size-16 rounded-2xl flex items-center justify-center ${i < 2 ? "bg-white/10" : "bg-white shadow-sm"}`}>
-                    <f.icon size={28} className={i < 2 ? "text-white/70" : "text-[#0454ff]"} />
+              <Reveal key={f.title} delay={i * 100}>
+                <div className={`card-hover rounded-2xl overflow-hidden h-full ${i < 2 ? "bg-[#1a1a1a] text-white" : "bg-[#f5f6f8] text-[#1a1a1a]"}`}>
+                  <div className={`relative w-full h-[220px] md:h-[280px] flex items-center justify-center ${i < 2 ? "feature-img-placeholder" : ""}`}>
+                    <div className={`size-14 rounded-2xl flex items-center justify-center ${i < 2 ? "bg-white/10 border border-white/10" : "bg-white shadow-sm border border-[#eaeaea]"}`}>
+                      <f.icon size={26} strokeWidth={1.5} className={i < 2 ? "text-white/80" : "text-[#0454ff]"} />
+                    </div>
+                  </div>
+                  <div className="px-7 pb-7 pt-2">
+                    <h3 className="text-[20px] md:text-[22px] font-semibold tracking-[-0.03em] leading-[125%] mb-2">{f.title}</h3>
+                    <p className={`text-[14px] leading-[155%] ${i < 2 ? "text-white/55" : "text-[#6d6d6d]"}`}>{f.description}</p>
                   </div>
                 </div>
-                {/* Text at bottom */}
-                <div className="p-6 md:p-8">
-                  <h3 className="text-[20px] md:text-[24px] font-semibold tracking-[-0.03em] leading-[120%] mb-2">{f.title}</h3>
-                  <p className={`text-[14px] md:text-[15px] leading-[150%] ${i < 2 ? "text-white/60" : "text-[#6d6d6d]"}`}>{f.description}</p>
-                </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ PRICING — 2 column, gradient strip at top ═══ */}
-      <section id="pricing" className="py-16 px-5 md:px-10">
+      {/* ═══ PRICING ═══ */}
+      <section id="pricing" className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading icon={<Star size={14} className="text-[#0454ff]" />} tag="PRICING" title="Simple, Transparent Pricing" description="Start free. Upgrade as you grow. No transaction fees from Indigo." />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-            {PRICING_PLANS.map(plan => (
-              <div key={plan.name} className="rounded-2xl border border-[#eaeaea] bg-white overflow-hidden">
-                {/* Gradient strip at top */}
-                <div className="h-[6px] bg-gradient-to-r from-[#0454ff] to-[#7e5bff]" />
-                <div className="p-6 md:p-8">
-                  <p className="text-[14px] text-[#6d6d6d] mb-1">{plan.name}</p>
-                  <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-[40px] md:text-[48px] font-semibold tracking-[-0.03em]">₨{plan.price}</span>
-                    <span className="text-[14px] text-[#6d6d6d]">/mo</span>
+          <Reveal><SectionHeading tag="PRICING" title="Simple, Transparent Pricing" description="Start free. Upgrade as you grow. No transaction fees from Indigo." /></Reveal>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
+            {PRICING_PLANS.map((plan, i) => (
+              <Reveal key={plan.name} delay={i * 120}>
+                <div className="card-hover rounded-2xl border border-[#eaeaea] bg-white overflow-hidden h-full">
+                  <div className="h-[5px] bg-gradient-to-r from-[#0454ff] to-[#7e5bff]" />
+                  <div className="p-7 md:p-8">
+                    <p className="text-[13px] text-[#6d6d6d] font-medium uppercase tracking-wide mb-1">{plan.name}</p>
+                    <div className="flex items-baseline gap-1 mb-2">
+                      <span className="text-[42px] md:text-[50px] font-semibold tracking-[-0.03em]">₨{plan.price}</span>
+                      <span className="text-[14px] text-[#6d6d6d]">/mo</span>
+                    </div>
+                    <p className="text-[14px] text-[#6d6d6d] mb-6">{plan.desc}</p>
+                    <Link href="/auth/signup" className="btn-press block text-center py-3.5 rounded-full bg-black text-white text-[14px] font-medium hover:bg-[#222] transition-colors mb-7">
+                      Get started
+                    </Link>
+                    <ul className="space-y-3.5">
+                      {plan.features.map(feat => (
+                        <li key={feat} className="flex items-center gap-3 text-[14px] text-[#3d3d3d]">
+                          <span className="flex items-center justify-center size-[22px] rounded-full bg-[#0454ff] shrink-0">
+                            <Check size={12} strokeWidth={3} className="text-white" />
+                          </span>
+                          {feat}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="text-[14px] text-[#6d6d6d] mb-6">{plan.desc}</p>
-                  <Link href="/auth/signup" className="block text-center py-3 rounded-full bg-black text-white text-[14px] font-medium hover:bg-[#333] transition-colors mb-6">
-                    Get started
-                  </Link>
-                  <ul className="space-y-3">
-                    {plan.features.map(feat => (
-                      <li key={feat} className="flex items-center gap-3 text-[14px] text-[#3d3d3d]">
-                        <span className="flex items-center justify-center size-5 rounded-full bg-[#0454ff] shrink-0">
-                          <Check size={12} strokeWidth={3} className="text-white" />
-                        </span>
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ BENEFITS — 3×2 grid, colored circle icons ═══ */}
-      <section className="py-16 px-5 md:px-10">
+      {/* ═══ BENEFITS ═══ */}
+      <section className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading icon={<Star size={14} className="text-[#0454ff]" />} tag="BENEFITS" title="The Powerful Advantages Your Team Gets" description="Unlock key benefits that boost your team's productivity and performance." />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {BENEFITS.map(b => (
-              <div key={b.title} className="rounded-2xl border border-[#eaeaea] bg-white p-6">
-                <div className={`size-12 rounded-full flex items-center justify-center mb-4 ${b.iconBg}`}>
-                  <b.icon size={20} className={b.iconColor} />
+          <Reveal><SectionHeading tag="BENEFITS" title="The Powerful Advantages Your Team Gets" description="Unlock key benefits that boost your team's productivity and performance." /></Reveal>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {BENEFITS.map((b, i) => (
+              <Reveal key={b.title} delay={i * 80}>
+                <div className="card-hover rounded-2xl border border-[#eaeaea] bg-white p-6 h-full">
+                  <div className={`size-11 rounded-full flex items-center justify-center mb-4 ${b.iconBg}`}>
+                    <b.icon size={18} className={b.iconColor} />
+                  </div>
+                  <h3 className="text-[17px] font-semibold tracking-[-0.02em] mb-1.5">{b.title}</h3>
+                  <p className="text-[13px] text-[#6d6d6d] leading-[155%]">{b.description}</p>
                 </div>
-                <h3 className="text-[18px] font-semibold tracking-[-0.02em] mb-2">{b.title}</h3>
-                <p className="text-[14px] text-[#6d6d6d] leading-[150%]">{b.description}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS — large black card + smaller white cards ═══ */}
-      <section className="py-16 px-5 md:px-10">
+      {/* ═══ TESTIMONIALS ═══ */}
+      <section className="py-20 px-6 md:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-14">
-          <SectionHeading icon={<Star size={14} className="text-[#0454ff]" />} tag="TESTIMONIALS" title="Trusted by Teams Worldwide" description="Join thousands of teams globally who rely on our solutions to collaborate, grow, and succeed." />
+          <Reveal><SectionHeading tag="TESTIMONIALS" title="Trusted by Teams Worldwide" description="Join thousands of teams globally who rely on our solutions to collaborate, grow, and succeed." /></Reveal>
           {/* Large featured card */}
-          <div className="w-full rounded-2xl bg-black text-white p-8 md:p-12">
-            <div className="flex gap-1 mb-6">
-              {[...Array(4)].map((_, i) => <Star key={i} size={18} className="fill-white text-white" />)}
-              <Star size={18} className="text-white/30" />
-            </div>
-            <p className="text-[16px] md:text-[18px] leading-[160%] text-white/90 max-w-[600px] mb-8">
-              &ldquo;This platform transformed the way our team manages customers and opportunities. Within only three months of consistent use, we achieved a remarkable 35% increase in sales, driven by smarter workflows, better communication, and improved tracking.&rdquo;
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full bg-white/20" />
-              <div>
-                <p className="text-[14px] font-semibold text-white">Srijana Maharjan</p>
-                <p className="text-[12px] text-white/50">Founder, Dhaka Threads</p>
+          <Reveal>
+            <div className="w-full rounded-2xl bg-black text-white p-8 md:p-12 relative overflow-hidden">
+              <div className="absolute top-6 right-10 text-[100px] leading-none text-white/[0.06] font-serif select-none hidden md:block">"</div>
+              <div className="flex gap-0.5 mb-5">
+                {[...Array(4)].map((_, i) => <Star key={i} size={16} className="fill-white text-white" />)}
+                <Star size={16} className="text-white/25" />
               </div>
-            </div>
-            {/* Large quote mark */}
-            <div className="absolute top-8 right-12 text-[80px] text-white/10 font-serif hidden md:block">&ldquo;</div>
-          </div>
-          {/* Smaller cards */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-            {SMALL_TESTIMONIALS.map(t => (
-              <div key={t.name} className="rounded-2xl border border-[#eaeaea] bg-white p-6">
-                <p className="text-[14px] text-[#3d3d3d] leading-[160%] mb-4">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="size-8 rounded-full bg-[#f5f6f8]" />
-                  <div>
-                    <p className="text-[13px] font-semibold text-[#1a1a1a]">{t.name}</p>
-                    <p className="text-[11px] text-[#6d6d6d]">{t.role}</p>
-                  </div>
+              <p className="text-[16px] md:text-[18px] leading-[165%] text-white/85 max-w-[580px] mb-8">
+                &ldquo;This platform transformed the way our team manages customers and opportunities. Within only three months of consistent use, we achieved a remarkable 35% increase in sales, driven by smarter workflows, better communication, and improved tracking.&rdquo;
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="size-10 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10" />
+                <div>
+                  <p className="text-[14px] font-semibold text-white">Srijana Maharjan</p>
+                  <p className="text-[12px] text-white/45">Founder, Dhaka Threads</p>
                 </div>
               </div>
+            </div>
+          </Reveal>
+          {/* Smaller cards */}
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
+            {SMALL_TESTIMONIALS.map((t, i) => (
+              <Reveal key={t.name} delay={i * 100}>
+                <div className="card-hover rounded-2xl border border-[#eaeaea] bg-white p-6 h-full">
+                  <p className="text-[14px] text-[#3d3d3d] leading-[165%] mb-5">&ldquo;{t.quote}&rdquo;</p>
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 rounded-full bg-[#f5f6f8] border border-[#eaeaea]" />
+                    <div>
+                      <p className="text-[13px] font-semibold text-[#1a1a1a]">{t.name}</p>
+                      <p className="text-[11px] text-[#6d6d6d]">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ FAQ — full-width, border-bottom dividers, chevron up ═══ */}
-      <section id="faq" className="py-16 px-5 md:px-10">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="divide-y divide-[#eaeaea]">
-            {FAQS.map(faq => (
-              <details key={faq.q} className="group">
-                <summary className="flex items-center justify-between py-6 cursor-pointer text-[16px] md:text-[18px] font-medium list-none select-none">
-                  {faq.q}
-                  <ChevronUp size={20} className="text-[#6d6d6d] group-open:rotate-180 transition-transform shrink-0 ml-4" />
-                </summary>
-                <p className="pb-6 text-[14px] md:text-[15px] text-[#6d6d6d] leading-[160%] max-w-[700px]">{faq.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ CTA — Black background ═══ */}
-      <section className="bg-black py-20 md:py-28 px-5 md:px-10 relative overflow-hidden">
-        {/* Decorative bracket elements */}
-        <div className="absolute top-[20%] left-[6%] w-[50px] h-[100px] border-l-2 border-t-2 border-b-2 border-white/10 rounded-l-lg" />
-        <div className="absolute top-[20%] right-[6%] w-[50px] h-[100px] border-r-2 border-t-2 border-b-2 border-white/10 rounded-r-lg" />
-
-        <div className="max-w-[1200px] mx-auto text-center relative z-10">
-          <div className="flex justify-center mb-6">
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 text-white text-[13px] font-medium">
-              <Star size={14} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
-            </span>
-          </div>
-          <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[700px] mx-auto mb-4">
-            Build Stronger Relationships. Close More Deals.
-          </h2>
-          <p className="text-[15px] text-white/60 leading-[150%] max-w-[500px] mx-auto mb-8">
-            Join 12,000+ Nepali businesses. Free forever tier. Accept eSewa in 2 minutes.
-          </p>
-          <div className="flex justify-center">
-            <div className="relative w-full max-w-[420px]">
-              <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999]" />
-              <Link href="/auth/signup" className="absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#333] transition-colors">
-                Get started
-              </Link>
+      {/* ═══ FAQ ═══ */}
+      <section id="faq" className="py-20 px-6 md:px-10">
+        <Reveal>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="divide-y divide-[#eaeaea] border-t border-[#eaeaea]">
+              {FAQS.map(faq => (
+                <details key={faq.q} className="group">
+                  <summary className="flex items-center justify-between py-5 md:py-6 cursor-pointer text-[16px] md:text-[18px] font-medium list-none select-none hover:text-[#0454ff] transition-colors">
+                    {faq.q}
+                    <ChevronUp size={20} className="text-[#999] group-open:rotate-180 transition-transform duration-200 shrink-0 ml-4" />
+                  </summary>
+                  <p className="pb-5 text-[14px] md:text-[15px] text-[#6d6d6d] leading-[165%] max-w-[680px]">{faq.a}</p>
+                </details>
+              ))}
             </div>
           </div>
+        </Reveal>
+      </section>
+
+      {/* ═══ CTA ═══ */}
+      <section className="bg-black py-20 md:py-28 px-6 md:px-10 relative overflow-hidden">
+        <div className="absolute top-[18%] left-[5%] w-[45px] h-[90px] border-l-2 border-t-2 border-b-2 border-white/8 rounded-l-md hidden lg:block" />
+        <div className="absolute top-[18%] right-[5%] w-[45px] h-[90px] border-r-2 border-t-2 border-b-2 border-white/8 rounded-r-md hidden lg:block" />
+        <div className="max-w-[1200px] mx-auto text-center relative z-10">
+          <Reveal>
+            <div className="flex justify-center mb-5">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/20 text-white text-[13px] font-medium">
+                <Star size={13} className="fill-white" /> Nepal&apos;s #1 E-Commerce Platform
+              </span>
+            </div>
+            <h2 className="text-[34px] md:text-[48px] lg:text-[56px] font-semibold leading-[105%] tracking-[-0.04em] text-white max-w-[680px] mx-auto mb-4">
+              Build Stronger Relationships. Close More Deals.
+            </h2>
+            <p className="text-[15px] text-white/55 leading-[155%] max-w-[480px] mx-auto mb-8">
+              Join 12,000+ Nepali businesses. Free forever tier. Accept eSewa in 2 minutes.
+            </p>
+            <div className="flex justify-center">
+              <div className="relative w-full max-w-[420px]">
+                <input type="email" placeholder="Enter your Email" className="w-full px-5 py-4 pr-[140px] rounded-full bg-white text-[14px] text-[#1a1a1a] outline-none placeholder:text-[#999]" />
+                <Link href="/auth/signup" className="btn-press absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-full bg-black text-white text-[13px] font-medium hover:bg-[#222] transition-colors border border-white/10">
+                  Get started
+                </Link>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ═══ FOOTER — Black bg, white text, multi-column ═══ */}
-      <footer className="bg-black py-12 px-5 md:px-10 border-t border-white/10">
+      {/* ═══ FOOTER ═══ */}
+      <footer className="bg-black py-12 px-6 md:px-10 border-t border-white/[0.06]">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div>
-              <span className="text-[16px] font-bold text-white mb-4 block">✦ Indigo</span>
-              <p className="text-[13px] text-white/50 leading-[160%]">Nepal&apos;s e-commerce platform for modern merchants.</p>
+              <span className="text-[16px] font-bold text-white mb-3 block">✦ Indigo</span>
+              <p className="text-[12px] text-white/40 leading-[165%]">Nepal&apos;s e-commerce platform for modern merchants.</p>
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-white mb-3">Product</p>
-              <ul className="space-y-2 text-[13px] text-white/50">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Get Started</Link></li>
+              <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Product</p>
+              <ul className="space-y-2 text-[13px] text-white/40">
+                <li><a href="#features" className="hover:text-white/80 transition-colors">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white/80 transition-colors">Pricing</a></li>
+                <li><Link href="/auth/signup" className="hover:text-white/80 transition-colors">Get Started</Link></li>
               </ul>
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-white mb-3">Company</p>
-              <ul className="space-y-2 text-[13px] text-white/50">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="mailto:hello@indigo.com.np" className="hover:text-white transition-colors">Contact</a></li>
+              <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Company</p>
+              <ul className="space-y-2 text-[13px] text-white/40">
+                <li><a href="#" className="hover:text-white/80 transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white/80 transition-colors">Blog</a></li>
+                <li><a href="mailto:hello@indigo.com.np" className="hover:text-white/80 transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
-              <p className="text-[13px] font-semibold text-white mb-3">Legal</p>
-              <ul className="space-y-2 text-[13px] text-white/50">
-                <li><Link href="/legal/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
-                <li><Link href="/legal/terms" className="hover:text-white transition-colors">Terms</Link></li>
+              <p className="text-[12px] font-semibold text-white/70 uppercase tracking-wider mb-3">Legal</p>
+              <ul className="space-y-2 text-[13px] text-white/40">
+                <li><Link href="/legal/privacy" className="hover:text-white/80 transition-colors">Privacy</Link></li>
+                <li><Link href="/legal/terms" className="hover:text-white/80 transition-colors">Terms</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <span className="text-[12px] text-white/40">© 2026 Indigo. Built in Nepal.</span>
-            <span className="text-[12px] text-white/40">All rights reserved.</span>
+          <div className="border-t border-white/[0.06] pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <span className="text-[11px] text-white/30">© 2026 Indigo. Built in Nepal.</span>
+            <span className="text-[11px] text-white/30">All rights reserved.</span>
           </div>
         </div>
       </footer>
@@ -291,14 +295,14 @@ export default function LandingPage() {
   );
 }
 
-function SectionHeading({ icon, tag, title, description }: { icon: React.ReactNode; tag: string; title: string; description: string }) {
+function SectionHeading({ tag, title, description }: { tag: string; title: string; description: string }) {
   return (
-    <div className="text-center max-w-[700px]">
-      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#0454ff] mb-4">
-        {icon} {tag}
+    <div className="text-center max-w-[680px]">
+      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#0454ff] mb-3">
+        <Star size={13} className="text-[#0454ff]" /> {tag}
       </span>
-      <h2 className="text-[36px] md:text-[48px] lg:text-[56px] font-semibold leading-[105%] tracking-[-0.04em] mb-3">{title}</h2>
-      <p className="text-[15px] text-[#6d6d6d] leading-[150%]">{description}</p>
+      <h2 className="text-[34px] md:text-[46px] lg:text-[54px] font-semibold leading-[108%] tracking-[-0.04em] mb-3">{title}</h2>
+      <p className="text-[15px] text-[#6d6d6d] leading-[155%]">{description}</p>
     </div>
   );
 }
@@ -307,7 +311,7 @@ function SectionHeading({ icon, tag, title, description }: { icon: React.ReactNo
 const FEATURES = [
   { icon: BarChart3, title: "Advanced Analytics Dashboard", description: "Turn raw data into clear insights with real-time reports, smart visualizations, and performance metrics." },
   { icon: Users, title: "Streamlined Relationship Organization", description: "Simplify how you manage connections with streamlined relationship organization — effortlessly." },
-  { icon: Zap, title: "Smart and Effortless Data Analysis", description: "Experience smart and effortless data analysis with advanced AI tools that simplify insights, visualize patterns." },
+  { icon: Zap, title: "Smart and Effortless Data Analysis", description: "Experience smart and effortless data analysis with advanced AI tools that simplify insights and visualize patterns." },
   { icon: Shield, title: "Intelligent Automated Task Planner", description: "Boost efficiency with an intelligent automated task planner — effortlessly schedule, prioritize and manage." },
 ];
 

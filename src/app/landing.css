@@ -1,56 +1,89 @@
-/* Landing Page Color Tokens */
+/* ═══ Landing Page Tokens ═══ */
 :root {
-  /* Base */
-  --lp-bg: #ffffff;
-  --lp-bg-subtle: #fafafa;
-  --lp-bg-muted: #f3f4f6;
-  --lp-text: #111827;
-  --lp-text-secondary: rgba(17, 24, 39, 0.6);
-  --lp-text-tertiary: rgba(17, 24, 39, 0.4);
-  --lp-text-faint: rgba(17, 24, 39, 0.25);
-  --lp-border: rgba(17, 24, 39, 0.06);
-  --lp-border-hover: rgba(17, 24, 39, 0.12);
-
-  /* Accent */
-  --lp-accent: #7c3aed;
-  --lp-accent-hover: #6d28d9;
-  --lp-accent-light: #ede9fe;
-  --lp-accent-glow: rgba(124, 58, 237, 0.15);
-
-  /* Fluid gradient blobs */
-  --lp-blob-1: #ff6b6b;
-  --lp-blob-2: #48dbfb;
-  --lp-blob-3: #ff9ff3;
-  --lp-blob-4: #feca57;
-  --lp-blob-5: #5f27cd;
-
-  /* Feature icon colors */
-  --lp-feat-payments: #059669;
-  --lp-feat-shipping: #2563eb;
-  --lp-feat-storefront: #7c3aed;
-  --lp-feat-setup: #d97706;
-  --lp-feat-security: #e11d48;
-  --lp-feat-analytics: #0d9488;
-
-  /* Pricing */
-  --lp-pricing-featured-from: #667eea;
-  --lp-pricing-featured-to: #764ba2;
-  --lp-pricing-check: #059669;
-
-  /* Semantic */
-  --lp-success: #059669;
-  --lp-star: #f59e0b;
-
-  /* Shadows */
-  --lp-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --lp-shadow-md: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --lp-shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
-  --lp-shadow-accent: 0 8px 30px rgba(124, 58, 237, 0.15);
-  --lp-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --lp-primary: #0454ff;
+  --lp-primary-light: #86b9ff;
+  --lp-primary-bg: #eaf1ff;
+  --lp-text: #1a1a1a;
+  --lp-muted: #6d6d6d;
+  --lp-border: #eaeaea;
+  --lp-surface: #f5f6f8;
 }
 
-/* Marquee animation */
+/* ═══ Marquee ═══ */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+/* ═══ Scroll Reveal ═══ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══ Hero entrance ═══ */
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroDashboard {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-badge { animation: heroFadeIn 0.6s ease-out 0.1s both; }
+.hero-title { animation: heroFadeIn 0.6s ease-out 0.2s both; }
+.hero-desc { animation: heroFadeIn 0.6s ease-out 0.3s both; }
+.hero-form { animation: heroFadeIn 0.6s ease-out 0.4s both; }
+.hero-dashboard { animation: heroDashboard 0.8s ease-out 0.6s both; }
+
+/* ═══ Card hover ═══ */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ═══ Feature card image shimmer ═══ */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.feature-img-placeholder {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* ═══ Button press ═══ */
+.btn-press {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ═══ FAQ details animation ═══ */
+details[open] summary ~ * {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* ═══ Reduced motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-badge, .hero-title, .hero-desc, .hero-form, .hero-dashboard { animation: none; opacity: 1; transform: none; }
+  .card-hover:hover { transform: none; }
+  .feature-img-placeholder { animation: none; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(0); } }
 }
