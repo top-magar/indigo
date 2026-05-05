@@ -14,85 +14,77 @@ export default function LandingPage() {
   return (
     <div className="antialiased overflow-x-hidden">
       {/* ═══════════════════════════════════════════
-          DARK HERO SECTION — technical credibility
+          HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="bg-[#050505] text-white relative">
-        {/* Subtle glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(16,185,129,0.05) 0%, transparent 70%)" }} />
+      <div className="relative min-h-[90vh] flex flex-col overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #f5576c 100%)" }}>
+        {/* Soft overlay shapes */}
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/10 blur-[80px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-300/10 blur-[60px]" />
 
         {/* Nav */}
-        <nav className="relative z-20 max-w-[1120px] mx-auto px-6 py-5 flex items-center justify-between">
+        <nav className="relative z-20 max-w-[1120px] mx-auto w-full px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="size-2 rounded-full bg-emerald-500" />
-            <span className="text-[15px] font-semibold tracking-tight">indigo</span>
+            <div className="size-2.5 rounded-full bg-white" />
+            <span className="text-[16px] font-bold tracking-tight text-white">indigo</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-[13px] text-white/50">
+          <div className="hidden md:flex items-center gap-6 text-[13px] text-white/70">
             <a href="#features" className="hover:text-white transition-colors duration-150">Features</a>
             <a href="#pricing" className="hover:text-white transition-colors duration-150">Pricing</a>
             <a href="#faq" className="hover:text-white transition-colors duration-150">FAQ</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/auth/login" className="text-[13px] text-white/50 hover:text-white transition-colors duration-150">Log in</Link>
-            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-emerald-500 text-[#050505] text-[13px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-150">
+            <Link href="/auth/login" className="text-[13px] text-white/70 hover:text-white transition-colors duration-150">Log in</Link>
+            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-black/10">
               Start free
             </Link>
           </div>
         </nav>
 
         {/* Hero content */}
-        <div className="relative z-10 max-w-[1120px] mx-auto px-6 pt-20 pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left — copy */}
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-emerald-500/80 mb-5">E-commerce infrastructure for Nepal</p>
-              <h1 className="text-[clamp(36px,5.5vw,60px)] font-bold leading-[1] tracking-[-0.03em] mb-5">
-                Accept eSewa in<br/>2 minutes. Your<br/>store is <span className="text-emerald-400">live.</span>
-              </h1>
-              <p className="text-[16px] text-white/45 leading-[1.7] max-w-[420px] mb-8">
-                The platform that makes selling online in Nepal actually work. Payments, shipping, storefront — all connected. No code required.
-              </p>
-              <div className="flex items-center gap-3 mb-10">
-                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-emerald-500 text-[#050505] text-[14px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-150">
-                  Launch your store
-                  <span className="flex items-center justify-center size-7 rounded-full bg-black/10 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={14} /></span>
-                </Link>
-                <Link href="#how" className="px-5 py-2.5 rounded-full border border-white/10 text-[14px] text-white/60 hover:border-white/20 hover:text-white transition-all duration-150">
-                  How it works
-                </Link>
-              </div>
-              {/* Payment logos */}
-              <div className="flex items-center gap-4">
-                <span className="text-[11px] text-white/30 uppercase tracking-wider">Accepts</span>
-                <div className="flex items-center gap-3 text-[12px] font-medium text-white/60">
-                  <span className="px-2.5 py-1 rounded bg-white/[0.06]">eSewa</span>
-                  <span className="px-2.5 py-1 rounded bg-white/[0.06]">Khalti</span>
-                  <span className="px-2.5 py-1 rounded bg-white/[0.06]">Stripe</span>
-                  <span className="px-2.5 py-1 rounded bg-white/[0.06]">COD</span>
-                </div>
-              </div>
+        <div className="relative z-10 flex-1 flex items-center">
+          <div className="max-w-[1120px] mx-auto px-6 w-full text-center py-16">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-8">
+              <span className="size-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-[12px] font-medium text-white">12,000+ stores already selling</span>
             </div>
 
-            {/* Right — terminal */}
-            <div className="p-[1px] rounded-xl" style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.02))" }}>
-              <div className="rounded-[11px] bg-[#0c0c0c] overflow-hidden">
-                <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/[0.05]">
-                  <div className="size-[7px] rounded-full bg-[#ff5f57]" />
-                  <div className="size-[7px] rounded-full bg-[#febc2e]" />
-                  <div className="size-[7px] rounded-full bg-[#28c840]" />
-                  <span className="ml-3 font-mono text-[10px] text-white/20">~/my-store</span>
-                </div>
-                <div className="p-5 font-mono text-[12px] leading-[2]">
-                  <p className="text-white/30">$ indigo init --store &quot;Dhaka Threads&quot;</p>
-                  <p className="text-emerald-400">✓ Store created at dhaka-threads.indigo.shop</p>
-                  <p className="text-emerald-400">✓ eSewa merchant account linked</p>
-                  <p className="text-emerald-400">✓ Pathao shipping enabled (Kathmandu Valley)</p>
-                  <p className="text-emerald-400">✓ 12 products imported from CSV</p>
-                  <p className="text-emerald-400">✓ Storefront live — accepting orders now</p>
-                  <p className="text-white/30 mt-2">$ <span className="inline-block w-[6px] h-[13px] bg-emerald-400/70 animate-pulse" /></p>
-                </div>
-              </div>
+            {/* Headline */}
+            <h1 className="text-[clamp(38px,6vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-white mb-5 max-w-[700px] mx-auto">
+              Your online store in Nepal,{" "}
+              <span className="underline decoration-yellow-300 decoration-4 underline-offset-4">ready today.</span>
+            </h1>
+
+            {/* Sub */}
+            <p className="text-[17px] text-white/80 max-w-[500px] mx-auto leading-[1.7] mb-10">
+              Accept eSewa & Khalti. Ship via Pathao. Beautiful storefront. Zero coding. Start selling in 2 minutes.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
+                Launch your store
+                <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:bg-[#1a1a1a]/10 group-hover:translate-x-0.5 transition-all duration-150"><ArrowRight size={15} /></span>
+              </Link>
+              <Link href="#how" className="px-6 py-3 rounded-full border-2 border-white/30 text-[15px] font-medium text-white hover:bg-white/10 hover:border-white/50 transition-all duration-150">
+                See how it works
+              </Link>
+            </div>
+
+            {/* Payment badges */}
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {["eSewa", "Khalti", "Stripe", "COD", "Pathao"].map(name => (
+                <span key={name} className="px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-[12px] font-medium text-white">{name}</span>
+              ))}
             </div>
           </div>
+        </div>
+
+        {/* Wave divider */}
+        <div className="relative z-10">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full h-auto block" preserveAspectRatio="none">
+            <path d="M0 40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0V40Z" fill="white" />
+          </svg>
         </div>
       </div>
 
@@ -117,7 +109,7 @@ export default function LandingPage() {
         <section id="how" className="py-20 px-6">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <p className="text-[12px] font-medium uppercase tracking-wider text-emerald-600 mb-2">How it works</p>
+              <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">How it works</p>
               <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em] mb-12">Three steps. Two minutes. Done.</h2>
             </ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -140,7 +132,7 @@ export default function LandingPage() {
         <section id="features" className="py-20 px-6 bg-[#FAFAFA]">
           <div className="max-w-[1120px] mx-auto">
             <ScrollReveal>
-              <p className="text-[12px] font-medium uppercase tracking-wider text-emerald-600 mb-2">Features</p>
+              <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">Features</p>
               <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em] mb-12">Everything you need. Nothing you don&apos;t.</h2>
             </ScrollReveal>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -179,7 +171,7 @@ export default function LandingPage() {
           <div className="max-w-[960px] mx-auto">
             <ScrollReveal>
               <div className="text-center mb-12">
-                <p className="text-[12px] font-medium uppercase tracking-wider text-emerald-600 mb-2">Pricing</p>
+                <p className="text-[12px] font-medium uppercase tracking-wider text-violet-600 mb-2">Pricing</p>
                 <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em]">Start free. Upgrade when you&apos;re ready.</h2>
                 <p className="text-[14px] text-[#1a1a1a]/45 mt-2">No credit card required. No transaction fees from Indigo.</p>
               </div>
@@ -187,9 +179,9 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {PLANS.map(plan => (
                 <ScrollReveal key={plan.name}>
-                  <div className={`rounded-xl p-7 h-full flex flex-col ${plan.featured ? "bg-[#050505] text-white ring-1 ring-emerald-500/20" : "bg-white border border-black/[0.06]"}`}>
-                    {plan.featured && <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-400 mb-2">Most popular</span>}
-                    <p className={`text-[13px] font-medium ${plan.featured ? "text-white/60" : "text-[#1a1a1a]/50"}`}>{plan.name}</p>
+                  <div className={`rounded-xl p-7 h-full flex flex-col ${plan.featured ? "text-white ring-2 ring-white/20 shadow-xl" : "bg-white border border-black/[0.06]"}`} style={plan.featured ? { background: "linear-gradient(135deg, #667eea, #764ba2)" } : undefined}>
+                    {plan.featured && <span className="text-[10px] font-medium uppercase tracking-wider text-white/80 mb-2">Most popular</span>}
+                    <p className={`text-[13px] font-medium ${plan.featured ? "text-white/70" : "text-[#1a1a1a]/50"}`}>{plan.name}</p>
                     <div className="flex items-baseline gap-1 mt-1 mb-1">
                       <span className="text-[32px] font-bold tracking-tight">{plan.price}</span>
                       {plan.period && <span className={`text-[13px] ${plan.featured ? "text-white/40" : "text-[#1a1a1a]/30"}`}>{plan.period}</span>}
@@ -198,7 +190,7 @@ export default function LandingPage() {
                     <ul className="space-y-2.5 mb-6 flex-1">
                       {plan.features.map(feat => (
                         <li key={feat} className={`flex items-start gap-2 text-[13px] ${plan.featured ? "text-white/70" : "text-[#1a1a1a]/60"}`}>
-                          <Check size={14} strokeWidth={2.5} className={`mt-[2px] shrink-0 ${plan.featured ? "text-emerald-400" : "text-emerald-500"}`} />{feat}
+                          <Check size={14} strokeWidth={2.5} className={`mt-[2px] shrink-0 ${plan.featured ? "text-white/80" : "text-violet-500"}`} />{feat}
                         </li>
                       ))}
                     </ul>
@@ -221,7 +213,7 @@ export default function LandingPage() {
             <div className="space-y-2">
               {FAQS.map(faq => (
                 <ScrollReveal key={faq.q}>
-                  <details className="group rounded-lg border border-black/[0.06] open:border-emerald-500/30 transition-colors duration-150">
+                  <details className="group rounded-lg border border-black/[0.06] open:border-violet-400/30 transition-colors duration-150">
                     <summary className="flex items-center justify-between px-5 py-4 cursor-pointer text-[14px] font-medium list-none select-none">
                       {faq.q}
                       <span className="text-[#1a1a1a]/20 group-open:rotate-45 transition-transform duration-150 text-lg leading-none">+</span>
@@ -235,14 +227,17 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-6 bg-[#050505] text-white text-center">
+        <section className="py-20 px-6 text-center text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)" }}>
+          <div className="absolute inset-0 bg-black/5" />
           <ScrollReveal>
-            <h2 className="text-[clamp(26px,4vw,40px)] font-bold tracking-[-0.02em] mb-3">Ready to sell?</h2>
-            <p className="text-[15px] text-white/45 mb-8 max-w-[380px] mx-auto">Join 12,000+ Nepali businesses. Free forever. Live in 2 minutes.</p>
-            <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2 py-3 rounded-full bg-emerald-500 text-[#050505] text-[14px] font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all duration-150">
-              Start free today
-              <span className="flex items-center justify-center size-8 rounded-full bg-black/10 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={15} /></span>
-            </Link>
+            <div className="relative z-10">
+              <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em] mb-3">Ready to sell?</h2>
+              <p className="text-[15px] text-white/80 mb-8 max-w-[380px] mx-auto">Join 12,000+ Nepali businesses. Free forever. Live in 2 minutes.</p>
+              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
+                Start free today
+                <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={15} /></span>
+              </Link>
+            </div>
           </ScrollReveal>
         </section>
 
@@ -282,7 +277,7 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { icon: CreditCard, title: "Nepal Payments", description: "eSewa, Khalti, FonePay, and Stripe. One dashboard for all providers.", color: "text-emerald-600", bg: "bg-emerald-50" },
+  { icon: CreditCard, title: "Nepal Payments", description: "eSewa, Khalti, FonePay, and Stripe. One dashboard for all providers.", color: "text-violet-600", bg: "bg-emerald-50" },
   { icon: Truck, title: "Pathao Shipping", description: "Auto-calculate rates for Kathmandu Valley. Print labels. Track deliveries.", color: "text-blue-600", bg: "bg-blue-50" },
   { icon: Globe, title: "Visual Storefront", description: "Drag-and-drop page builder. Custom domain. Mobile-first. No code.", color: "text-violet-600", bg: "bg-violet-50" },
   { icon: Zap, title: "Instant Setup", description: "Sign up to first sale in under 5 minutes. CSV import for bulk products.", color: "text-amber-600", bg: "bg-amber-50" },
