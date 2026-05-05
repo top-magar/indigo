@@ -78,7 +78,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Product mockup — browser frame */}
+            {/* Product mockup — browser frame with real screenshot */}
             <div className="max-w-[680px] mx-auto">
               <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/20 border border-white/10">
                 {/* Browser chrome */}
@@ -87,33 +87,11 @@ export default function LandingPage() {
                   <div className="size-[8px] rounded-full bg-[#febc2e]" />
                   <div className="size-[8px] rounded-full bg-[#28c840]" />
                   <div className="ml-3 flex-1 h-5 rounded bg-white/10 flex items-center px-2">
-                    <span className="text-[10px] text-white/40">dhaka-threads.indigo.shop</span>
+                    <span className="text-[10px] text-white/40">indigo.com.np/dashboard</span>
                   </div>
                 </div>
-                {/* Dashboard preview */}
-                <div className="bg-white p-4">
-                  <div className="grid grid-cols-4 gap-3 mb-4">
-                    <div className="rounded-lg bg-emerald-50 p-3"><div className="text-[10px] text-emerald-600 font-medium">Revenue</div><div className="text-[16px] font-bold text-[#1a1a1a]">₨ 2.4L</div></div>
-                    <div className="rounded-lg bg-blue-50 p-3"><div className="text-[10px] text-blue-600 font-medium">Orders</div><div className="text-[16px] font-bold text-[#1a1a1a]">148</div></div>
-                    <div className="rounded-lg bg-violet-50 p-3"><div className="text-[10px] text-violet-600 font-medium">Customers</div><div className="text-[16px] font-bold text-[#1a1a1a]">89</div></div>
-                    <div className="rounded-lg bg-amber-50 p-3"><div className="text-[10px] text-amber-600 font-medium">Products</div><div className="text-[16px] font-bold text-[#1a1a1a]">34</div></div>
-                  </div>
-                  <div className="rounded-lg border border-black/[0.06] p-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-semibold text-[#1a1a1a]">Recent Orders</span>
-                      <span className="text-[10px] text-[#1a1a1a]/40">View all</span>
-                    </div>
-                    <div className="space-y-2">
-                      {[{ name: "Srijana M.", amount: "₨ 3,200", status: "Delivered" }, { name: "Bikash T.", amount: "₨ 1,800", status: "Shipped" }, { name: "Anita G.", amount: "₨ 5,400", status: "Processing" }].map(o => (
-                        <div key={o.name} className="flex items-center justify-between py-1.5 border-b border-black/[0.03] last:border-0">
-                          <span className="text-[11px] text-[#1a1a1a]/70">{o.name}</span>
-                          <span className="text-[11px] font-medium text-[#1a1a1a]">{o.amount}</span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${o.status === "Delivered" ? "bg-emerald-50 text-emerald-600" : o.status === "Shipped" ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"}`}>{o.status}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                {/* Actual screenshot */}
+                <img src="/dashboard-preview.png" alt="Indigo dashboard showing orders, revenue, and products" className="w-full h-auto block" />
               </div>
             </div>
 
