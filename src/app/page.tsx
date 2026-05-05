@@ -69,10 +69,16 @@ export default function LandingPage() {
           <p className="text-[16px] md:text-[18px] font-medium text-[#3d3d3d] tracking-[-0.2px] mb-10">
             Join 12,000+ Businesses Who Sell on Indigo
           </p>
-          <div className="flex items-center justify-center gap-10 md:gap-[86px] flex-wrap opacity-40">
-            {["eSewa", "Khalti", "Pathao", "Stripe", "FonePay", "Daraz"].map(name => (
-              <span key={name} className="text-[16px] font-semibold text-[#3d3d3d] tracking-tight">{name}</span>
-            ))}
+          <div className="relative overflow-hidden">
+            <div className="flex animate-[marquee_20s_linear_infinite] gap-[86px] opacity-40">
+              {[...Array(2)].map((_, set) => (
+                <div key={set} className="flex shrink-0 gap-[86px]">
+                  {["eSewa", "Khalti", "Pathao", "Stripe", "FonePay", "Daraz", "eSewa", "Khalti", "Pathao", "Stripe"].map((name, i) => (
+                    <span key={`${set}-${i}`} className="text-[16px] font-semibold text-[#3d3d3d] tracking-tight whitespace-nowrap">{name}</span>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
