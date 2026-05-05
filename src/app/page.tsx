@@ -72,10 +72,64 @@ export default function LandingPage() {
             </div>
 
             {/* Payment badges */}
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center justify-center gap-3 flex-wrap mb-14">
               {["eSewa", "Khalti", "Stripe", "COD", "Pathao"].map(name => (
                 <span key={name} className="px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-[12px] font-medium text-white">{name}</span>
               ))}
+            </div>
+
+            {/* Product mockup — browser frame */}
+            <div className="max-w-[680px] mx-auto">
+              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/20 border border-white/10">
+                {/* Browser chrome */}
+                <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#1a1a1a]/80 backdrop-blur-sm">
+                  <div className="size-[8px] rounded-full bg-[#ff5f57]" />
+                  <div className="size-[8px] rounded-full bg-[#febc2e]" />
+                  <div className="size-[8px] rounded-full bg-[#28c840]" />
+                  <div className="ml-3 flex-1 h-5 rounded bg-white/10 flex items-center px-2">
+                    <span className="text-[10px] text-white/40">dhaka-threads.indigo.shop</span>
+                  </div>
+                </div>
+                {/* Dashboard preview */}
+                <div className="bg-white p-4">
+                  <div className="grid grid-cols-4 gap-3 mb-4">
+                    <div className="rounded-lg bg-emerald-50 p-3"><div className="text-[10px] text-emerald-600 font-medium">Revenue</div><div className="text-[16px] font-bold text-[#1a1a1a]">₨ 2.4L</div></div>
+                    <div className="rounded-lg bg-blue-50 p-3"><div className="text-[10px] text-blue-600 font-medium">Orders</div><div className="text-[16px] font-bold text-[#1a1a1a]">148</div></div>
+                    <div className="rounded-lg bg-violet-50 p-3"><div className="text-[10px] text-violet-600 font-medium">Customers</div><div className="text-[16px] font-bold text-[#1a1a1a]">89</div></div>
+                    <div className="rounded-lg bg-amber-50 p-3"><div className="text-[10px] text-amber-600 font-medium">Products</div><div className="text-[16px] font-bold text-[#1a1a1a]">34</div></div>
+                  </div>
+                  <div className="rounded-lg border border-black/[0.06] p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-semibold text-[#1a1a1a]">Recent Orders</span>
+                      <span className="text-[10px] text-[#1a1a1a]/40">View all</span>
+                    </div>
+                    <div className="space-y-2">
+                      {[{ name: "Srijana M.", amount: "₨ 3,200", status: "Delivered" }, { name: "Bikash T.", amount: "₨ 1,800", status: "Shipped" }, { name: "Anita G.", amount: "₨ 5,400", status: "Processing" }].map(o => (
+                        <div key={o.name} className="flex items-center justify-between py-1.5 border-b border-black/[0.03] last:border-0">
+                          <span className="text-[11px] text-[#1a1a1a]/70">{o.name}</span>
+                          <span className="text-[11px] font-medium text-[#1a1a1a]">{o.amount}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${o.status === "Delivered" ? "bg-emerald-50 text-emerald-600" : o.status === "Shipped" ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"}`}>{o.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Social proof */}
+            <div className="flex items-center justify-center gap-3 mt-8">
+              <div className="flex -space-x-2">
+                {["bg-rose-400", "bg-violet-400", "bg-emerald-400", "bg-amber-400"].map((c, i) => (
+                  <div key={i} className={`size-7 rounded-full ${c} border-2 border-white/30 flex items-center justify-center text-[9px] font-bold text-white`}>
+                    {["S", "B", "A", "R"][i]}
+                  </div>
+                ))}
+              </div>
+              <div className="text-[12px] text-white/80">
+                <span className="font-semibold">★ 4.8/5</span>
+                <span className="text-white/50 ml-1">from 200+ merchants</span>
+              </div>
             </div>
           </div>
         </div>
