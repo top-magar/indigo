@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { ArrowRight, Check, Zap, Shield, Globe, CreditCard, Truck, BarChart3 } from "lucide-react";
-
-const ParticleField = dynamic(
-  () => import("@/components/landing/torch/particle-field").then(m => ({ default: m.ParticleField })),
-  { ssr: false }
-);
+import { ParticleFieldWrapper as ParticleField } from "@/components/landing/torch/particle-field-wrapper";
 
 export const metadata: Metadata = {
   title: "Indigo — Launch Your Online Store in Nepal | E-Commerce Platform",
