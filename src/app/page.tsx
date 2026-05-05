@@ -16,19 +16,19 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[fluidShift_12s_ease-in-out_infinite]" style={{ background: "#1a1a2e" }}>
+      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[fluidShift_12s_ease-in-out_infinite]" style={{ background: "#ffffff" }}>
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[80px] opacity-70 animate-[blob1_10s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff6b6b, transparent 70%)" }} />
-          <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full blur-[80px] opacity-60 animate-[blob2_12s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #48dbfb, transparent 70%)" }} />
-          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full blur-[80px] opacity-60 animate-[blob3_14s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff9ff3, transparent 70%)" }} />
-          <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] rounded-full blur-[60px] opacity-50 animate-[blob1_16s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #feca57, transparent 70%)" }} />
-          <div className="absolute top-[40%] left-[30%] w-[35%] h-[35%] rounded-full blur-[60px] opacity-40 animate-[blob2_11s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #5f27cd, transparent 70%)" }} />
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full blur-[80px] opacity-40 animate-[blob1_10s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff6b6b, transparent 70%)" }} />
+          <div className="absolute top-[10%] right-[-15%] w-[55%] h-[55%] rounded-full blur-[80px] opacity-35 animate-[blob2_12s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #48dbfb, transparent 70%)" }} />
+          <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full blur-[80px] opacity-30 animate-[blob3_14s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #ff9ff3, transparent 70%)" }} />
+          <div className="absolute bottom-[10%] right-[10%] w-[40%] h-[40%] rounded-full blur-[60px] opacity-25 animate-[blob1_16s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #feca57, transparent 70%)" }} />
+          <div className="absolute top-[40%] left-[30%] w-[35%] h-[35%] rounded-full blur-[60px] opacity-20 animate-[blob2_11s_ease-in-out_infinite_reverse]" style={{ background: "radial-gradient(circle, #5f27cd, transparent 70%)" }} />
         </div>
 
         {/* Nav */}
         <nav className="relative z-20 max-w-[1200px] mx-auto w-full px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="size-2.5 rounded-full bg-white" />
+            <div className="size-2.5 rounded-full bg-violet-500" />
             <span className="text-[16px] font-bold tracking-tight text-white">indigo</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-[13px] text-white/70">
@@ -38,7 +38,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/auth/login" className="text-[13px] text-white/70 hover:text-white transition-colors duration-150">Log in</Link>
-            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-black/10">Start free</Link>
+            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-violet-500/15">Start free</Link>
           </div>
         </nav>
 
@@ -46,40 +46,40 @@ export default function LandingPage() {
         <div className="relative z-10 flex-1 flex items-center">
           <div className="max-w-[1200px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 items-center py-10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1a1a1a]/5 backdrop-blur-sm border border-[#1a1a1a]/10 mb-6">
                 <span className="size-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-[12px] font-medium text-white">12,000+ stores live in Nepal</span>
+                <span className="text-[12px] font-medium text-[#1a1a1a]">12,000+ stores live in Nepal</span>
               </div>
-              <h1 className="text-[clamp(32px,5vw,52px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white mb-5">
+              <h1 className="text-[clamp(32px,5vw,52px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#1a1a1a] mb-5">
                 Accept eSewa in 2 minutes.{" "}
-                <span className="underline decoration-yellow-300 decoration-[3px] underline-offset-4">Your store is live.</span>
+                <span className="underline decoration-violet-500 decoration-[3px] underline-offset-4">Your store is live.</span>
               </h1>
-              <p className="text-[15px] text-white/75 max-w-[400px] leading-[1.7] mb-7">
+              <p className="text-[15px] text-[#1a1a1a]/60 max-w-[400px] leading-[1.7] mb-7">
                 Payments, shipping, storefront — all connected. Built for Nepali merchants. No code required.
               </p>
               <div className="flex items-center gap-3 mb-6">
-                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-white text-[#1a1a1a] text-[14px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
+                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-[#1a1a1a] text-white text-[14px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-violet-500/20">
                   Launch your store
                   <span className="flex items-center justify-center size-7 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={14} /></span>
                 </Link>
-                <Link href="#how" className="px-5 py-2.5 rounded-full border-2 border-white/30 text-[14px] font-medium text-white hover:bg-white/10 transition-all duration-150">How it works</Link>
+                <Link href="#how" className="px-5 py-2.5 rounded-full border-2 border-[#1a1a1a]/15 text-[14px] font-medium text-[#1a1a1a] hover:bg-[#1a1a1a]/5 transition-all duration-150">How it works</Link>
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 {["eSewa", "Khalti", "Stripe", "Pathao"].map(name => (
-                  <span key={name} className="px-2.5 py-1 rounded-md bg-white/15 text-[11px] font-medium text-white/90">{name}</span>
+                  <span key={name} className="px-2.5 py-1 rounded-md bg-[#1a1a1a]/5 text-[11px] font-medium text-[#1a1a1a]/80">{name}</span>
                 ))}
               </div>
             </div>
 
             {/* Screenshot */}
             <div className="relative hidden lg:block">
-              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/25 border border-white/15 rotate-[1deg] hover:rotate-0 transition-transform duration-500">
+              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/25 border border-[#1a1a1a]/10 rotate-[1deg] hover:rotate-0 transition-transform duration-500">
                 <div className="flex items-center gap-1.5 px-3 py-2 bg-[#1a1a1a]">
                   <div className="size-[7px] rounded-full bg-[#ff5f57]" />
                   <div className="size-[7px] rounded-full bg-[#febc2e]" />
                   <div className="size-[7px] rounded-full bg-[#28c840]" />
-                  <div className="ml-2 flex-1 h-4 rounded bg-white/10 flex items-center px-2">
-                    <span className="text-[9px] text-white/40">indigo.com.np/dashboard</span>
+                  <div className="ml-2 flex-1 h-4 rounded bg-[#1a1a1a]/5 flex items-center px-2">
+                    <span className="text-[9px] text-[#1a1a1a]/30">indigo.com.np/dashboard</span>
                   </div>
                 </div>
                 <img src="/dashboard-preview.png" alt="Indigo merchant dashboard" className="w-full h-auto block" />
@@ -96,16 +96,16 @@ export default function LandingPage() {
         <div className="relative z-10 pb-6 flex items-center justify-center gap-4">
           <div className="flex -space-x-2">
             {["bg-rose-400","bg-violet-400","bg-emerald-400","bg-amber-400","bg-sky-400"].map((c,i) => (
-              <div key={i} className={`size-7 rounded-full ${c} border-2 border-white/40 flex items-center justify-center text-[9px] font-bold text-white`}>{["S","B","A","R","P"][i]}</div>
+              <div key={i} className={`size-7 rounded-full ${c} border-2 border-[#1a1a1a]/10 flex items-center justify-center text-[9px] font-bold text-white`}>{["S","B","A","R","P"][i]}</div>
             ))}
           </div>
-          <span className="text-[13px] text-white/90 font-medium">★ 4.8/5 <span className="text-white/60">from 200+ merchants</span></span>
+          <span className="text-[13px] text-[#1a1a1a]/80 font-medium">★ 4.8/5 <span className="text-[#1a1a1a]/40">from 200+ merchants</span></span>
         </div>
 
         {/* Wave */}
         <div className="relative z-10">
           <svg viewBox="0 0 1440 80" fill="none" className="w-full h-auto block" preserveAspectRatio="none">
-            <path d="M0 40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0V40Z" fill="white" />
+            <path d="M0 40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0V40Z" fill="#FAFAFA" />
           </svg>
         </div>
       </div>
@@ -260,7 +260,7 @@ export default function LandingPage() {
             <div className="relative z-10">
               <h2 className="text-[clamp(26px,4vw,40px)] font-extrabold tracking-[-0.02em] mb-3">Ready to sell?</h2>
               <p className="text-[15px] text-white/80 mb-8 max-w-[380px] mx-auto">Join 12,000+ Nepali businesses. Free forever. Live in 2 minutes.</p>
-              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
+              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-violet-500/20">
                 Start free today
                 <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={15} /></span>
               </Link>
