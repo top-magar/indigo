@@ -16,13 +16,12 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════
           HERO — warm gradient, vibrant, appealing
           ═══════════════════════════════════════════ */}
-      <div className="relative min-h-[90vh] flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea)" }}>
-        {/* Soft overlay shapes */}
+      <div className="relative min-h-screen flex flex-col overflow-hidden animate-[gradientShift_8s_ease_infinite]" style={{ backgroundSize: "200% 200%", backgroundImage: "linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #667eea)" }}>
         <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-white/10 blur-[80px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-yellow-300/10 blur-[60px]" />
 
         {/* Nav */}
-        <nav className="relative z-20 max-w-[1120px] mx-auto w-full px-6 py-5 flex items-center justify-between">
+        <nav className="relative z-20 max-w-[1200px] mx-auto w-full px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="size-2.5 rounded-full bg-white" />
             <span className="text-[16px] font-bold tracking-tight text-white">indigo</span>
@@ -34,85 +33,71 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/auth/login" className="text-[13px] text-white/70 hover:text-white transition-colors duration-150">Log in</Link>
-            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-black/10">
-              Start free
-            </Link>
+            <Link href="/auth/signup" className="px-4 py-2 rounded-full bg-white text-[#1a1a1a] text-[13px] font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-150 shadow-lg shadow-black/10">Start free</Link>
           </div>
         </nav>
 
-        {/* Hero content */}
+        {/* Split hero */}
         <div className="relative z-10 flex-1 flex items-center">
-          <div className="max-w-[1120px] mx-auto px-6 w-full text-center py-16">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-8">
-              <span className="size-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-[12px] font-medium text-white">12,000+ stores already selling</span>
-            </div>
-
-            {/* Headline */}
-            <h1 className="text-[clamp(38px,6vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-white mb-5 max-w-[700px] mx-auto">
-              Your online store in Nepal,{" "}
-              <span className="underline decoration-yellow-300 decoration-4 underline-offset-4">ready today.</span>
-            </h1>
-
-            {/* Sub */}
-            <p className="text-[17px] text-white/80 max-w-[500px] mx-auto leading-[1.7] mb-10">
-              Accept eSewa & Khalti. Ship via Pathao. Beautiful storefront. Zero coding. Start selling in 2 minutes.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-6 pr-2.5 py-3 rounded-full bg-white text-[#1a1a1a] text-[15px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
-                Launch your store
-                <span className="flex items-center justify-center size-8 rounded-full bg-[#1a1a1a]/5 group-hover:bg-[#1a1a1a]/10 group-hover:translate-x-0.5 transition-all duration-150"><ArrowRight size={15} /></span>
-              </Link>
-              <Link href="#how" className="px-6 py-3 rounded-full border-2 border-white/30 text-[15px] font-medium text-white hover:bg-white/10 hover:border-white/50 transition-all duration-150">
-                See how it works
-              </Link>
-            </div>
-
-            {/* Payment badges */}
-            <div className="flex items-center justify-center gap-3 flex-wrap mb-14">
-              {["eSewa", "Khalti", "Stripe", "COD", "Pathao"].map(name => (
-                <span key={name} className="px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-[12px] font-medium text-white">{name}</span>
-              ))}
-            </div>
-
-            {/* Product mockup — browser frame with real screenshot */}
-            <div className="max-w-[680px] mx-auto">
-              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/20 border border-white/10">
-                {/* Browser chrome */}
-                <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#1a1a1a]/80 backdrop-blur-sm">
-                  <div className="size-[8px] rounded-full bg-[#ff5f57]" />
-                  <div className="size-[8px] rounded-full bg-[#febc2e]" />
-                  <div className="size-[8px] rounded-full bg-[#28c840]" />
-                  <div className="ml-3 flex-1 h-5 rounded bg-white/10 flex items-center px-2">
-                    <span className="text-[10px] text-white/40">indigo.com.np/dashboard</span>
-                  </div>
-                </div>
-                {/* Actual screenshot */}
-                <img src="/dashboard-preview.png" alt="Indigo dashboard showing orders, revenue, and products" className="w-full h-auto block" />
+          <div className="max-w-[1200px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 items-center py-10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
+                <span className="size-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[12px] font-medium text-white">12,000+ stores live in Nepal</span>
               </div>
-            </div>
-
-            {/* Social proof */}
-            <div className="flex items-center justify-center gap-3 mt-8">
-              <div className="flex -space-x-2">
-                {["bg-rose-400", "bg-violet-400", "bg-emerald-400", "bg-amber-400"].map((c, i) => (
-                  <div key={i} className={`size-7 rounded-full ${c} border-2 border-white/30 flex items-center justify-center text-[9px] font-bold text-white`}>
-                    {["S", "B", "A", "R"][i]}
-                  </div>
+              <h1 className="text-[clamp(32px,5vw,52px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white mb-5">
+                Accept eSewa in 2 minutes.{" "}
+                <span className="underline decoration-yellow-300 decoration-[3px] underline-offset-4">Your store is live.</span>
+              </h1>
+              <p className="text-[15px] text-white/75 max-w-[400px] leading-[1.7] mb-7">
+                Payments, shipping, storefront — all connected. Built for Nepali merchants. No code required.
+              </p>
+              <div className="flex items-center gap-3 mb-6">
+                <Link href="/auth/signup" className="group inline-flex items-center gap-2 pl-5 pr-2 py-2.5 rounded-full bg-white text-[#1a1a1a] text-[14px] font-semibold hover:bg-white/95 active:scale-[0.98] transition-all duration-150 shadow-xl shadow-black/10">
+                  Launch your store
+                  <span className="flex items-center justify-center size-7 rounded-full bg-[#1a1a1a]/5 group-hover:translate-x-0.5 transition-transform duration-150"><ArrowRight size={14} /></span>
+                </Link>
+                <Link href="#how" className="px-5 py-2.5 rounded-full border-2 border-white/30 text-[14px] font-medium text-white hover:bg-white/10 transition-all duration-150">How it works</Link>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {["eSewa", "Khalti", "Stripe", "Pathao"].map(name => (
+                  <span key={name} className="px-2.5 py-1 rounded-md bg-white/15 text-[11px] font-medium text-white/90">{name}</span>
                 ))}
               </div>
-              <div className="text-[12px] text-white/80">
-                <span className="font-semibold">★ 4.8/5</span>
-                <span className="text-white/50 ml-1">from 200+ merchants</span>
+            </div>
+
+            {/* Screenshot */}
+            <div className="relative hidden lg:block">
+              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/25 border border-white/15 rotate-[1deg] hover:rotate-0 transition-transform duration-500">
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-[#1a1a1a]">
+                  <div className="size-[7px] rounded-full bg-[#ff5f57]" />
+                  <div className="size-[7px] rounded-full bg-[#febc2e]" />
+                  <div className="size-[7px] rounded-full bg-[#28c840]" />
+                  <div className="ml-2 flex-1 h-4 rounded bg-white/10 flex items-center px-2">
+                    <span className="text-[9px] text-white/40">indigo.com.np/dashboard</span>
+                  </div>
+                </div>
+                <img src="/dashboard-preview.png" alt="Indigo merchant dashboard" className="w-full h-auto block" />
+              </div>
+              <div className="absolute -bottom-3 -left-3 px-3 py-2 rounded-lg bg-white shadow-lg shadow-black/10 flex items-center gap-2">
+                <div className="size-6 rounded-full bg-emerald-100 flex items-center justify-center"><Check size={12} className="text-emerald-600" /></div>
+                <div><div className="text-[11px] font-semibold text-[#1a1a1a]">Order received!</div><div className="text-[9px] text-[#1a1a1a]/40">₨ 3,200 via eSewa</div></div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Wave divider */}
+        {/* Social proof */}
+        <div className="relative z-10 pb-6 flex items-center justify-center gap-4">
+          <div className="flex -space-x-2">
+            {["bg-rose-400","bg-violet-400","bg-emerald-400","bg-amber-400","bg-sky-400"].map((c,i) => (
+              <div key={i} className={`size-7 rounded-full ${c} border-2 border-white/40 flex items-center justify-center text-[9px] font-bold text-white`}>{["S","B","A","R","P"][i]}</div>
+            ))}
+          </div>
+          <span className="text-[13px] text-white/90 font-medium">★ 4.8/5 <span className="text-white/60">from 200+ merchants</span></span>
+        </div>
+
+        {/* Wave */}
         <div className="relative z-10">
           <svg viewBox="0 0 1440 80" fill="none" className="w-full h-auto block" preserveAspectRatio="none">
             <path d="M0 40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0V40Z" fill="white" />
