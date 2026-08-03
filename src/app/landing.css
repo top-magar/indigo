@@ -1,0 +1,482 @@
+/* ═══ Indigo Landing — Payload CMS Design System ═══ */
+/* Adapted from payloadcms.com live capture (Aug 2026).
+   Typography: Untitled Sans → Outfit (closest free geometric sans).
+   Colors: Exact Payload hex values from CSS custom properties.
+   Animations: Payload's keyframe patterns (fade-in-up, shimmer, pulse). */
+
+/* ─── Payload color tokens (scoped to .landing-page) ─── */
+.landing-page {
+  /* ── Base grayscale (Payload: 0→1000) ── */
+  --payload-base-0: #ffffff;
+  --payload-base-50: #f5f5f5;
+  --payload-base-100: #ebebeb;
+  --payload-base-200: #d0d0d0;
+  --payload-base-300: #b5b5b5;
+  --payload-base-400: #9a9a9a;
+  --payload-base-500: #808080;
+  --payload-base-600: #656565;
+  --payload-base-700: #4a4a4a;
+  --payload-base-800: #2f2f2f;
+  --payload-base-900: #141414;
+  --payload-base-950: #070707;
+  --payload-base-1000: #000000;
+
+  /* ── Success / Blue (Payload primary accent) ── */
+  --payload-success-50: #e5f2f7;
+  --payload-success-500: #007fae;
+  --payload-success-900: #001923;
+
+  /* ── Warning / Orange ── */
+  --payload-warning-50: #fef7ed;
+  --payload-warning-500: #f4ac4f;
+  --payload-warning-900: #312210;
+
+  /* ── Error / Coral ── */
+  --payload-error-50: #fff3f1;
+  --payload-error-500: #ff876f;
+  --payload-error-900: #331b16;
+
+  /* ── Purple accent ── */
+  --payload-purple-500: #f799f7;
+
+  /* ── Semantic overrides for Tailwind ── */
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-foreground: #ffffff;
+  --popover: #141414;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #9a9a9a;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff876f;
+  --destructive-foreground: #ffffff;
+  --success: #007fae;
+  --success-foreground: #ffffff;
+  --warning: #f4ac4f;
+  --warning-foreground: #000000;
+  --info: #007fae;
+  --info-foreground: #ffffff;
+  --border: #2f2f2f;
+  --input: #2f2f2f;
+  --ring: #ffffff;
+
+  /* ── Typography (Payload scale) ── */
+  /* H1: 64px, w500, ls -0.05em, lh 1.0 */
+  /* H2: 48px, w500, ls -0.05em, lh 1.0 */
+  /* H3: 24px, w500, ls -0.05em, lh 1.2 */
+  /* Body: 18px, w400, lh 1.4 */
+
+  /* ── Spacing ── */
+  --block-spacing: 7rem;
+  --gutter-h: calc(50vw - 40rem);
+}
+
+/* ─── Dark mode: keep Payload tokens consistent ─── */
+.landing-page.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --border: #2f2f2f;
+}
+
+.landing-page.light,
+html:not(.dark) .landing-page {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #f5f5f5;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #000000;
+  --muted: #f0f0f0;
+  --muted-foreground: #666666;
+  --accent: #f0f0f0;
+  --accent-foreground: #000000;
+  --border: #e0e0e0;
+  --input: #e0e0e0;
+  --ring: #000000;
+}
+
+/* ═══ Custom Utility Classes ═══ */
+
+@layer utilities {
+  /* ── Payload heading scale ── */
+  .font-payload-h1 {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: 1.0;
+    letter-spacing: -0.05em;
+  }
+
+  .font-payload-h2 {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 500;
+    line-height: 1.0;
+    letter-spacing: -0.05em;
+  }
+
+  .font-payload-h3 {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.05em;
+  }
+
+  .font-payload-h6 {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .font-payload-body {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.04em;
+  }
+
+  .font-payload-body-lg {
+    font-family: var(--font-outfit), var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+  }
+
+  /* ── Marquee ── */
+  .marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  .marquee-reverse {
+    animation: marquee-reverse 25s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  /* ── Clip-path line reveal ── */
+  .line-reveal {
+    clip-path: inset(0 100% 0 0);
+    animation: line-reveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  }
+
+  @keyframes line-reveal {
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  /* ── Springy hover lift ── */
+  .hover-lift {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  /* ── Character entrance (blur-in from below) ── */
+  .animate-char-in {
+    animation: char-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    filter: blur(40px);
+    transform: translateY(100%);
+  }
+
+  @keyframes char-in {
+    0% {
+      opacity: 0;
+      filter: blur(40px);
+      transform: translateY(100%);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Noise texture overlay ── */
+  .noise-overlay {
+    position: relative;
+  }
+
+  .noise-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Hero entrance animation (Payload fade-in-up) ── */
+  .hero-fade {
+    opacity: 0;
+    animation: hero-fade-in 0.9s cubic-bezier(0.2, 0.2, 0.2, 1) forwards;
+  }
+
+  @keyframes hero-fade-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Glassmorphic screenshot frame (Payload MediaStack) ── */
+  .glass-frame {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ── Payload shimmer (loading skeleton) ── */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Payload pulse (attention draw) ── */
+  .pulse-attention {
+    animation: pulse-attention 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-attention {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* ── Payload fade-in (opacity only) ── */
+  .fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── Payload rotateColor (background cycle) ── */
+  .rotate-bg {
+    animation: rotate-bg 8s ease-in-out infinite;
+  }
+
+  @keyframes rotate-bg {
+    0%, 100% { background-color: rgba(0, 127, 174, 0.1); }
+    33% { background-color: rgba(244, 172, 79, 0.1); }
+    66% { background-color: rgba(247, 153, 247, 0.1); }
+  }
+
+  /* ── Payload slideDown / slideUp (accordion) ── */
+  .slide-down {
+    animation: slide-down 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-down {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 500px; }
+  }
+
+  .slide-up {
+    animation: slide-up 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-up {
+    from { opacity: 1; max-height: 500px; }
+    to { opacity: 0; max-height: 0; }
+  }
+
+  /* ── Payload spin (loader) ── */
+  .spin-loader {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Scroll-driven entrance animation ── */
+  .mask-reveal {
+    animation: maskRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+}
+
+@keyframes maskRevealUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ═══ Reduced motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .mask-reveal,
+  .marquee,
+  .marquee-reverse,
+  .animate-char-in,
+  .line-reveal,
+  .hero-fade,
+  .shimmer,
+  .pulse-attention,
+  .fade-in,
+  .rotate-bg,
+  .slide-down,
+  .slide-up,
+  .spin-loader {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ═══ Selection style ═══ */
+.landing-page ::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* ═══ Blueprint structural band ═══ */
+.bp-band {
+  position: relative;
+  width: 100%;
+  height: 1px;
+}
+
+.bp-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+}
+
+.bp-band::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--border);
+  transform: translate(-50%, -50%);
+}
+
+.bp-band--accent::before {
+  background: #007fae;
+}
+
+.bp-band--accent::after {
+  border-color: #007fae;
+}
+
+/* ═══ Blueprint corner ticks ═══ */
+.bp-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bp-ticks::before,
+.bp-ticks::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+}
+
+.bp-ticks::before {
+  top: 0;
+  left: 0;
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.bp-ticks::after {
+  top: 0;
+  right: 0;
+  border-right: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.bp-ticks-bottom::before {
+  bottom: 0;
+  left: 0;
+  top: auto;
+  border-left: 1px solid var(--border);
+  border-top: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.bp-ticks-bottom::after {
+  bottom: 0;
+  right: 0;
+  top: auto;
+  border-right: 1px solid var(--border);
+  border-top: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.bp-ticks--accent::before,
+.bp-ticks--accent::after {
+  border-color: #007fae;
+}
+
+.bp-ticks--accent.bp-ticks-bottom::before,
+.bp-ticks--accent.bp-ticks-bottom::after {
+  border-color: #007fae;
+}
+
+/* ═══ Blueprint annotation ═══ */
+.bp-annotation {
+  font-family: var(--font-jetbrains-mono), var(--font-geist-mono), monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+
+.bp-annotation--accent {
+  color: #007fae;
+  opacity: 1;
+}
+
+/* ═══ Smooth scroll ═══ */
+html {
+  scroll-behavior: smooth;
+}

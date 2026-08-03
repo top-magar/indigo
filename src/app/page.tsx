@@ -1,95 +1,117 @@
+import React from "react";
+import "./landing.css";
 import {
-    Navbar,
-    AnnouncementBar,
-    Hero,
-    LogoMarquee,
+  AnnouncementBar,
+  Navbar,
+  Hero,
+  SocialProof,
+  HowItWorks,
+  BentoGrid,
+  Infrastructure,
+  Metrics,
+  IntegrationsMarquee,
+  SolutionsRoles,
+  ComparisonRiver,
+  Developers,
+  Security,
+  Pricing,
+  Testimonials,
+  BlogInsights,
+  Faq,
+  CtaBanner,
+  Footer,
+  ScrollToTop,
 } from "@/components/landing";
-import dynamic from "next/dynamic";
-import type { Metadata } from "next";
 
-const Features = dynamic(() => import("@/components/landing/features").then(m => ({ default: m.Features })));
-const Showcase = dynamic(() => import("@/components/landing/showcase").then(m => ({ default: m.Showcase })));
-const Solutions = dynamic(() => import("@/components/landing/solutions").then(m => ({ default: m.Solutions })));
-const PullQuote = dynamic(() => import("@/components/landing/pull-quote").then(m => ({ default: m.PullQuote })));
-const Infrastructure = dynamic(() => import("@/components/landing/infrastructure").then(m => ({ default: m.Infrastructure })));
-const BentoGrid = dynamic(() => import("@/components/landing/bento-grid").then(m => ({ default: m.BentoGrid })));
-const HowItWorks = dynamic(() => import("@/components/landing/how-it-works").then(m => ({ default: m.HowItWorks })));
-const Testimonials = dynamic(() => import("@/components/landing/testimonials").then(m => ({ default: m.Testimonials })));
-const Pricing = dynamic(() => import("@/components/landing/pricing").then(m => ({ default: m.Pricing })));
-const FAQ = dynamic(() => import("@/components/landing/faq").then(m => ({ default: m.FAQ })));
-const CTA = dynamic(() => import("@/components/landing/cta").then(m => ({ default: m.CTA })));
-const Footer = dynamic(() => import("@/components/landing/footer").then(m => ({ default: m.Footer })));
-const ScrollToTop = dynamic(() => import("@/components/landing/scroll-to-top").then(m => ({ default: m.ScrollToTop })));
+/* ═══ Blueprint structural band between sections ═══ */
+function BlueprintBand() {
+  return <div className="bp-band" aria-hidden="true" />;
+}
 
-export const metadata: Metadata = {
-    title: "Indigo — Launch Your Online Store in Nepal | E-Commerce Platform",
-    description:
-        "Launch your online store in minutes. Accept eSewa, Khalti payments. Ship via Pathao. Built for 12,000+ Nepali businesses. Start free today.",
-    keywords: [
-        "ecommerce Nepal",
-        "online store Nepal",
-        "eSewa payment gateway",
-        "Khalti integration",
-        "sell online Nepal",
-        "Nepali ecommerce platform",
-        "Pathao delivery",
-        "multi-tenant marketplace",
-    ],
-    openGraph: {
-        title: "Indigo — Launch Your Online Store in Nepal",
-        description:
-            "The all-in-one e-commerce platform built for Nepal. Accept local payments, ship anywhere, grow your business.",
-        type: "website",
-    },
-    alternates: { canonical: "/" },
-};
-
-const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Indigo",
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    description:
-        "E-commerce platform for Nepal with eSewa, Khalti payments and Pathao delivery integration.",
-    offers: {
-        "@type": "AggregateOffer",
-        priceCurrency: "NPR",
-        lowPrice: "0",
-        highPrice: "6000",
-        offerCount: "3",
-    },
-    aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.8",
-        ratingCount: "12000",
-    },
-};
+function BlueprintBandAccent() {
+  return <div className="bp-band bp-band--accent" aria-hidden="true" />;
+}
 
 export default function LandingPage() {
-    return (
-        <div className="min-h-screen bg-background text-foreground">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
-            <AnnouncementBar />
-            <Navbar />
-            <Hero />
-            <LogoMarquee />
-            <Features />
-            <Showcase />
-            <Solutions />
-            <PullQuote />
-            <Infrastructure />
-            <BentoGrid />
-            <HowItWorks />
-            <Testimonials />
-            <Pricing />
-            <FAQ />
-            <CTA />
-            <Footer />
-            <ScrollToTop />
-        </div>
-    );
+  return (
+    <div className="landing-page relative min-h-screen bg-background text-foreground overflow-x-hidden antialiased">
+      {/* 01. Announcement & Navbar Header */}
+      <div className="relative z-50">
+        <AnnouncementBar />
+        <Navbar />
+      </div>
+
+      {/* Band: Below announcement bar */}
+      <BlueprintBand />
+
+      <main className="relative z-10">
+        {/* 02. Hero — Primary blueprint expression */}
+        <Hero />
+
+        {/* Band: Hero → SocialProof */}
+        <BlueprintBand />
+
+        {/* 03. Social Proof — Full-width horizontal structural band */}
+        <SocialProof />
+
+        {/* 04. How It Works — Blueprint step markers */}
+        <HowItWorks />
+
+        {/* 05. Features — Bordered feature grid */}
+        <BentoGrid />
+
+        {/* Band: Before infrastructure */}
+        <BlueprintBandAccent />
+
+        {/* 06. Infrastructure — Second-largest blueprint section */}
+        <Infrastructure />
+
+        {/* 07. Metrics — Full-width stat band */}
+        <Metrics />
+
+        {/* 08. Integrations — Dual marquee */}
+        <IntegrationsMarquee />
+
+        {/* 09. Solutions — Role-based value propositions */}
+        <SolutionsRoles />
+
+        {/* Band: Before comparison */}
+        <BlueprintBand />
+
+        {/* 10. Comparison — Major blueprint data section */}
+        <ComparisonRiver />
+
+        {/* 11. Developers — Code block focus */}
+        <Developers />
+
+        {/* 12. Security — Trust signals */}
+        <Security />
+
+        {/* 13. Pricing — 3-tier transparent pricing */}
+        <Pricing />
+
+        {/* 14. Testimonials — Auto-rotating merchant quotes */}
+        <Testimonials />
+
+        {/* 15. Blog — Latest insights */}
+        <BlogInsights />
+
+        {/* 16. FAQ — Expandable accordion */}
+        <Faq />
+
+        {/* Band: Around final CTA */}
+        <BlueprintBand />
+
+        {/* 17. Final CTA — Final major blueprint composition */}
+        <CtaBanner />
+      </main>
+
+      {/* Band: Above footer */}
+      <BlueprintBand />
+
+      {/* 18. Footer & Utilities */}
+      <Footer />
+      <ScrollToTop />
+    </div>
+  );
 }

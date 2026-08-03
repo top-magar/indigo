@@ -1,76 +1,90 @@
-/**
- * How It Works — Aceternity Timeline.
- */
-
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { Timeline } from "@/components/ui/aceternity/timeline";
+import { cn } from "@/lib/utils";
+import { useInView } from "@/hooks/use-in-view";
+import { GridPattern, TechnicalAnnotation, MeasurementLine } from "./blueprint-primitives";
 
-const data = [
-    {
-        title: "Create",
-        content: (
-            <div>
-                <p className="text-sm font-semibold text-foreground mb-1">Create your store</p>
-                <p className="text-sm text-muted-foreground">Pick a theme, add your products, and set prices. Takes under 5 minutes.</p>
-            </div>
-        ),
-    },
-    {
-        title: "Connect",
-        content: (
-            <div>
-                <p className="text-sm font-semibold text-foreground mb-1">Connect payments</p>
-                <p className="text-sm text-muted-foreground">Connect your payment provider or enable bank transfer. Start accepting money immediately.</p>
-            </div>
-        ),
-    },
-    {
-        title: "Ship",
-        content: (
-            <div>
-                <p className="text-sm font-semibold text-foreground mb-1">Set up shipping</p>
-                <p className="text-sm text-muted-foreground">Connect Pathao for one-click delivery. Auto labels and tracking included.</p>
-            </div>
-        ),
-    },
-    {
-        title: "Sell",
-        content: (
-            <div>
-                <p className="text-sm font-semibold text-foreground mb-1">Start selling</p>
-                <p className="text-sm text-muted-foreground">Share your store link. Orders flow in. Manage everything from one dashboard.</p>
-            </div>
-        ),
-    },
+const steps = [
+  {
+    num: "01",
+    title: "Design your storefront",
+    description:
+      "Use the visual page builder to create pixel-perfect pages without writing any code.",
+  },
+  {
+    num: "02",
+    title: "Add your products",
+    description:
+      "Import or create your catalog with variants, pricing, and media in minutes.",
+  },
+  {
+    num: "03",
+    title: "Start selling",
+    description:
+      "Go live with payments, shipping, and analytics built in and ready to scale.",
+  },
 ];
 
 export function HowItWorks() {
-    return (
-        <section className="py-24 sm:py-32 bg-muted/30">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
-                    <div className="max-w-2xl">
-                        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Getting started</p>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
-                            How to launch your store
-                        </h2>
-                        <p className="mt-4 text-base text-muted-foreground">
-                            Four steps. Five minutes. You&apos;re live.
-                        </p>
-                    </div>
-                    <Link href="/signup">
-                        <Button variant="outline" className="rounded-full gap-1.5">
-                            Get Started <ArrowRight className="w-3.5 h-3.5" />
-                        </Button>
-                    </Link>
-                </div>
+  const [ref, isVisible] = useInView<HTMLDivElement>();
 
-                <Timeline data={data} />
-            </div>
-        </section>
-    );
+  return (
+    <section id="how-it-works" className="relative py-24 lg:py-32 bg-background">
+      {/* Blueprint grid background */}
+      <div className="absolute inset-0 pointer-events-none text-foreground">
+        <GridPattern opacity={0.03} />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="flex flex-col space-y-16">
+          <div className="space-y-6 max-w-3xl">
+            <TechnicalAnnotation label="WORKFLOW" value="/ 3 STEPS" className="block mb-4" />
+            <span className="block font-payload-h6 text-muted-foreground">
+              How it works
+            </span>
+            <h2 className="font-payload-h2 text-foreground">
+              From idea to <br />
+              <span className="text-muted-foreground">live store</span>
+            </h2>
+          </div>
+
+          <div
+            ref={ref}
+            className="grid lg:grid-cols-3 gap-px bg-border border border-border"
+          >
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "bg-background p-10 lg:p-12 flex flex-col space-y-12 transition-all duration-500 relative",
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-5",
+                )}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                {/* Blueprint step marker with measurement line */}
+                <div className="flex items-center gap-4">
+                  <div className="font-mono text-sm text-[#007fae] font-medium">
+                    {step.num}
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className="hidden lg:block flex-1 h-px bg-border opacity-50" />
+                  )}
+                </div>
+                <div className="space-y-4">
+                  <h3 className="font-payload-h3 text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="font-payload-body text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

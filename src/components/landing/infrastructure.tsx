@@ -1,60 +1,140 @@
-/**
- * Infrastructure — Trust pillars with Framer Motion stagger.
- */
-
 "use client";
 
-import { motion } from "framer-motion";
-import { Zap, Shield, Server, Headphones, type LucideIcon } from "lucide-react";
-import { CardSpotlight } from "@/components/ui/aceternity/card-spotlight";
+import { cn } from "@/lib/utils";
+import { useInView } from "@/hooks/use-in-view";
+import {
+  GridPattern,
+  BlueprintCornerTicks,
+  TechnicalAnnotation,
+} from "./blueprint-primitives";
 
-const pillars: { icon: LucideIcon; title: string; description: string; stat: string; color: string }[] = [
-    { icon: Zap, title: "Built for speed", description: "Edge-optimized pages that load in under 2 seconds, even on 3G networks across Nepal.", stat: "<2s", color: "from-amber-500/10" },
-    { icon: Shield, title: "Secured by default", description: "SSL encryption, PCI-compliant payments, and automatic backups for every store.", stat: "PCI", color: "from-emerald-500/10" },
-    { icon: Server, title: "99.9% uptime", description: "Multi-region hosting ensures your store stays online, even during Dashain traffic spikes.", stat: "99.9%", color: "from-blue-500/10" },
-    { icon: Headphones, title: "Support when you need it", description: "WhatsApp support in Nepali and English. Priority response for Pro and Scale plans.", stat: "<1hr", color: "from-purple-500/10" },
+const infraCards = [
+  {
+    num: "01",
+    title: "Edge Network",
+    description: "200+ global PoPs for sub-50ms response times ensuring your storefront loads instantly anywhere.",
+    status: "ACTIVE",
+    size: "large",
+  },
+  {
+    num: "02",
+    title: "Auto-scaling",
+    description: "Handle 100x traffic spikes during flash sales without sweating over server provisioning.",
+    status: "READY",
+    size: "small",
+  },
+  {
+    num: "03",
+    title: "99.99% Uptime",
+    description: "SLA-backed reliability for mission-critical stores. We don't go down so your revenue doesn't stop.",
+    status: "MONITORED",
+    size: "small",
+  },
+  {
+    num: "04",
+    title: "Zero Code",
+    description: "Drag-and-drop your way to a highly converting storefront. Complete design freedom without writing a single line of code.",
+    status: "BUILT-IN",
+    size: "large",
+  },
 ];
 
 export function Infrastructure() {
-    return (
-        <section className="py-24 sm:py-32 bg-muted/10">
-            <div className="max-w-7xl mx-auto px-6">
-                <motion.div
-                    className="text-center max-w-3xl mx-auto mb-16"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                >
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Infrastructure</p>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
-                        Grow on a rock-solid foundation
-                    </h2>
-                    <p className="mt-4 text-base text-muted-foreground max-w-xl mx-auto">
-                        Your store runs on infrastructure built to support thousands of businesses across Nepal.
-                    </p>
-                </motion.div>
+  const [sectionRef, isVisible] = useInView<HTMLElement>();
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {pillars.map((p, i) => (
-                        <motion.div
-                            key={p.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.1 }}
-                        >
-                            <CardSpotlight className={`rounded-2xl border border-border/50 bg-gradient-to-b ${p.color} to-background p-6 text-center hover:border-border hover:-translate-y-2 transition-all duration-300 cursor-default h-full`}>
-                                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-foreground/5 mb-4">
-                                    <p.icon strokeWidth={1.5} className="w-5 h-5 text-foreground" />
-                                </div>
-                                <p className="text-3xl font-semibold text-foreground tabular-nums mb-1">{p.stat}</p>
-                                <h3 className="text-sm font-medium text-foreground mb-2 tracking-tight">{p.title}</h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
-                            </CardSpotlight>
-                        </motion.div>
-                    ))}
-                </div>
+  return (
+    <section
+      ref={sectionRef}
+      className="relative py-24 lg:py-32 border-b border-border bg-background overflow-hidden"
+    >
+      {/* Blueprint grid background */}
+      <div className="absolute inset-0 pointer-events-none text-foreground">
+        <GridPattern opacity={0.035} />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
+        <div
+          className={`transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
+        >
+          <TechnicalAnnotation
+            label="INFRASTRUCTURE"
+            value="/ NETWORK"
+            accent
+            className="block mb-6"
+          />
+          <span className="block font-payload-h6 text-muted-foreground mb-6">
+            Infrastructure
+          </span>
+          <h2 className="font-payload-h2 text-foreground mb-8">
+            Built for
+            <br />
+            <span className="text-muted-foreground">scale</span>
+          </h2>
+          <p className="font-payload-body-lg text-muted-foreground max-w-2xl mb-16">
+            Our globally distributed edge network brings your storefront closer
+            to your customers, delivering unparalleled speed and reliability.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 w-full">
+          {/* Corner ticks around the infrastructure system */}
+          <div className="relative">
+            <div className="absolute -inset-2 pointer-events-none hidden md:block">
+              <BlueprintCornerTicks color="rgba(0,127,174,0.4)" size={12} />
             </div>
-        </section>
-    );
+
+            {infraCards.map((card, i) => (
+              <div
+                key={card.num}
+                className={cn(
+                  "rounded-xl border border-border bg-secondary/50 p-6 lg:p-8 flex flex-col justify-between overflow-hidden relative group transition-all duration-500",
+                  card.size === "large" ? "md:col-span-4" : "md:col-span-2",
+                  i < 2 ? "mb-4 md:mb-0" : "",
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-5",
+                )}
+                style={{ transitionDelay: `${150 + i * 150}ms` }}
+              >
+                {/* Network status indicator — blue for active */}
+                <div className="absolute top-4 right-4 flex items-center gap-1.5">
+                  <span
+                    className={cn(
+                      "w-1.5 h-1.5 rounded-full",
+                      card.status === "ACTIVE" ? "bg-[#007fae]" : "bg-muted-foreground/40",
+                    )}
+                  />
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                    {card.status}
+                  </span>
+                </div>
+
+                <div
+                  className={cn(
+                    "relative z-10",
+                    card.size === "large" ? "mt-24 md:mt-40" : "mt-32",
+                  )}
+                >
+                  <div className="font-mono text-xs text-muted-foreground/60 mb-4 tracking-widest">
+                    {card.num}
+                  </div>
+                  <h3 className="font-payload-h3 text-foreground mb-3">
+                    {card.title}
+                  </h3>
+                  <p
+                    className={cn(
+                      "text-muted-foreground",
+                      card.size === "large" ? "font-payload-body-lg" : "font-payload-body",
+                    )}
+                  >
+                    {card.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

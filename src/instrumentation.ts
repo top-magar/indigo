@@ -59,9 +59,6 @@ async function registerNodejsInstrumentation() {
   // Initialize service providers (AWS, local, etc.) - only in Node.js runtime
   await initializeServiceProviders()
 
-  // Database connection warming (optional)
-  // Uncomment to pre-warm database connections on server start
-  // await warmDatabaseConnections()
 }
 
 /**
@@ -70,21 +67,6 @@ async function registerNodejsInstrumentation() {
  */
 async function registerEdgeInstrumentation() {
   console.log(`[Instrumentation] Edge runtime initialized`)
-}
-
-/**
- * Pre-warm database connections
- * Reduces cold start latency by establishing connections early
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function warmDatabaseConnections() {
-  try {
-    const { db } = await import("@/infrastructure/db")
-    await db.execute("SELECT 1")
-    console.log(`[Instrumentation] Database connection warmed`)
-  } catch (error) {
-    console.error(`[Instrumentation] Failed to warm database:`, error)
-  }
 }
 
 export const onRequestError = Sentry.captureRequestError;

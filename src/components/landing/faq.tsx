@@ -1,87 +1,92 @@
-/**
- * FAQ — Accordion with Framer Motion.
- */
-
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/shared/utils";
-import { motion } from "framer-motion";
-import { Plus, MessageCircle } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 const faqs = [
-    { q: "How much does it cost?", a: "Free forever for up to 50 products. Pro starts at Rs 2,500/month. No hidden fees." },
-    { q: "What payment methods are supported?", a: "All major Nepal payment methods including digital wallets, bank transfers, and international cards. Setup takes 5 minutes." },
-    { q: "How does shipping work?", a: "One-click Pathao booking. Auto labels, real-time tracking, SMS notifications to your customers." },
-    { q: "Do I need technical skills?", a: "No. Pick a theme, add products, connect payments. Your store is live. No code required." },
-    { q: "Can I use my own domain?", a: "Yes, on Pro and Scale plans. Connect your domain and we handle SSL automatically." },
-    { q: "What kind of support do you offer?", a: "Community support on free. Priority WhatsApp on Pro. Dedicated success manager on Scale." },
+  {
+    question: "How long does it take to launch a store?",
+    answer:
+      "With our quick-start templates, you can launch a basic store in under an hour. Custom designs and large product catalogs may take a few days to set up properly.",
+  },
+  {
+    question: "Can I use my own domain?",
+    answer:
+      "Yes, all premium plans allow you to connect your custom domain. We also provide a free indigo.store subdomain for all accounts.",
+  },
+  {
+    question: "What payment gateways do you support?",
+    answer:
+      "We support major global gateways like Stripe and PayPal, as well as local Nepali gateways including eSewa, Khalti, and IME Pay out of the box.",
+  },
+  {
+    question: "Is there a transaction fee?",
+    answer:
+      "We do not charge any additional transaction fees on our Growth and Enterprise plans. The Starter plan has a small 2% fee per transaction. Standard payment gateway fees still apply.",
+  },
+  {
+    question: "Can I migrate from Shopify or WooCommerce?",
+    answer:
+      "Absolutely. We offer a one-click migration tool for both Shopify and WooCommerce that imports your products, customers, and order history seamlessly.",
+  },
+  {
+    question: "Do you offer a free plan?",
+    answer:
+      "Our Starter plan is completely free and allows you to test the platform with up to 100 products. You only upgrade when you need advanced features.",
+  },
 ];
 
-export function FAQ() {
-    const [open, setOpen] = useState<number | null>(0);
+export function Faq() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-    return (
-        <section id="faq" className="py-24 sm:py-32 bg-background scroll-mt-28">
-            <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
-                <motion.div
-                    className="mb-20"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+  return (
+    <section className="py-24 lg:py-32 bg-background border-t border-border">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 lg:gap-8">
+        <div className="lg:col-span-5">
+          <span className="block font-payload-h6 text-muted-foreground mb-6">
+            FAQ
+          </span>
+          <h2 className="font-payload-h2 text-foreground sticky top-32">
+            Common <br />
+            <span className="text-muted-foreground">questions</span>
+          </h2>
+        </div>
+
+        <div className="lg:col-span-7">
+          <div className="border-t border-border">
+            {faqs.map((faq, i) => (
+              <div key={i} className="border-b border-border">
+                <button
+                  className="w-full py-5 flex items-center justify-between text-left focus:outline-none"
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 >
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">FAQ</p>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
-                        Common questions.
-                    </h2>
-                </motion.div>
-
-                <div className="divide-y divide-border/50">
-                    {faqs.map((faq, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 15 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.05 }}
-                        >
-                            <button
-                                onClick={() => setOpen(open === i ? null : i)}
-                                className="w-full flex items-center justify-between py-6 text-left group"
-                                aria-expanded={open === i}
-                            >
-                                <h3 className="text-base font-semibold text-foreground pr-8 group-hover:text-primary transition-colors duration-300">
-                                    {faq.q}
-                                </h3>
-                                <Plus
-                                    strokeWidth={1.5}
-                                    className={cn(
-                                        "w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-300",
-                                        open === i && "rotate-45"
-                                    )}
-                                />
-                            </button>
-                            <div className={cn(
-                                "overflow-hidden transition-all duration-300",
-                                open === i ? "max-h-40 pb-6" : "max-h-0"
-                            )}>
-                                <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">{faq.a}</p>
-                            </div>
-                        </motion.div>
-                    ))}
+                  <h3 className="font-payload-h3 text-foreground pr-8">
+                    {faq.question}
+                  </h3>
+                  <div className="flex-shrink-0 text-muted-foreground">
+                    {openIndex === i ? (
+                      <Minus className="w-4 h-4" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
+                  </div>
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    openIndex === i
+                      ? "max-h-96 pb-5 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="font-payload-body text-muted-foreground pr-10">
+                    {faq.answer}
+                  </p>
                 </div>
-
-                <div className="mt-16 pt-8 border-t border-border/30 text-center">
-                    <p className="text-sm text-muted-foreground mb-3">Still have questions?</p>
-                    <a
-                        href="mailto:hello@indigo.com.np"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/70 transition-colors"
-                    >
-                        <MessageCircle className="w-4 h-4" />
-                        Chat with us on WhatsApp
-                    </a>
-                </div>
-            </div>
-        </section>
-    );
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

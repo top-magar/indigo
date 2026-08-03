@@ -1,229 +1,289 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { ArrowRight, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Spotlight } from "@/components/ui/aceternity/spotlight";
-import { FlipWords } from "@/components/ui/aceternity/flip-words";
-import { NumberTicker } from "@/components/ui/aceternity/number-ticker";
+import {
+  GridPattern,
+  BlueprintCornerTicks,
+  TechnicalAnnotation,
+} from "./blueprint-primitives";
 
-const ROTATING_PHRASES = ["live in minutes", "built for Nepal", "ready to sell", "growing daily", "your next chapter"];
+/* ─── MediaStack: Storefront mock (rear layer) ─── */
+function StorefrontMock() {
+  return (
+    <div className="rounded-lg bg-[#141414] border border-white/8 overflow-hidden">
+      <div className="aspect-[4/3] bg-gradient-to-br from-white/8 via-white/3 to-transparent flex items-center justify-center">
+        <div className="w-14 h-14 rounded-xl bg-white/8 border border-white/8 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 text-white/40">
+            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M3 9h18" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M8 6l-2 2M13 6l-2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </div>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="h-3 w-3/4 rounded bg-white/12" />
+        <div className="h-2.5 w-1/2 rounded bg-white/8" />
+        <div className="flex items-center justify-between pt-1">
+          <div className="h-5 w-12 rounded bg-white/25" />
+          <div className="h-7 rounded-full bg-white text-[10px] font-mono font-medium text-black px-3 flex items-center">
+            Add to cart
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
-const stagger = { show: { transition: { staggerChildren: 0.1 } } };
+/* ─── MediaStack: Dashboard mock (front layer) ─── */
+function DashboardMock() {
+  const bars = [40, 65, 30, 80, 55, 70, 90, 60, 75, 45, 85, 65];
+  return (
+    <div className="rounded-lg bg-[#141414] border border-white/8 overflow-hidden">
+      {/* Window chrome */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-white/8">
+        <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
+        <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
+        <span className="w-2.5 h-2.5 rounded-full bg-white/12" />
+        <span className="ml-4 font-mono text-[10px] uppercase tracking-widest text-white/30">
+          dashboard.indigo.co
+        </span>
+      </div>
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-24 sm:w-32 border-r border-white/8 p-3 space-y-2 hidden sm:block">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className={`h-2.5 rounded ${i === 0 ? "bg-white/20" : "bg-white/8"}`}
+            />
+          ))}
+        </div>
+        {/* Main panel */}
+        <div className="flex-1 p-4 md:p-6 space-y-4">
+          <div className="flex items-start justify-between">
+            <div className="space-y-2">
+              <div className="h-2.5 w-24 rounded bg-white/12" />
+              <div className="h-6 w-16 rounded bg-white/30" />
+            </div>
+            <div className="h-7 rounded-full bg-white font-mono text-[10px] font-medium text-black px-3 flex items-center">
+              + Add product
+            </div>
+          </div>
+          {/* Chart */}
+          <div className="group/dashboard flex items-end gap-1.5 h-20 md:h-28">
+            {bars.map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-sm bg-white/15 group-hover/dashboard:bg-white/30 transition-colors"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+          {/* Rows */}
+          <div className="space-y-2.5">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="h-2.5 w-24 rounded bg-white/8" />
+                <div className="h-2.5 w-10 rounded bg-white/15" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
+/* ═══ Hero Section ═══ */
 export function Hero() {
-    const gridRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
-    useEffect(() => {
-        const grid = gridRef.current;
-        if (!grid) return;
-        const handleMove = (e: MouseEvent) => {
-            const rect = grid.getBoundingClientRect();
-            grid.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-            grid.style.setProperty("--my", `${e.clientY - rect.top}px`);
-        };
-        grid.addEventListener("mousemove", handleMove);
-        return () => grid.removeEventListener("mousemove", handleMove);
-    }, []);
+  const copyCommand = () => {
+    navigator.clipboard?.writeText("npx create-indigo-app");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-    return (
-        <section className="relative min-h-screen overflow-hidden bg-[#09090b]">
-            <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+  return (
+    <section
+      id="hero"
+      className="relative bg-background text-foreground overflow-hidden"
+    >
+      {/* ─── Background layers ─── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Blueprint grid (primary structural layer) */}
+        <GridPattern opacity={0.04} className="text-foreground" />
 
-            {/* Gradient mesh */}
-            <div className="absolute inset-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[oklch(0.45_0.15_270)] opacity-20 blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[oklch(0.50_0.18_185)] opacity-15 blur-[100px]" />
-                <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-[oklch(0.40_0.12_330)] opacity-10 blur-[80px]" />
+        {/* Diagonal blue light streaks */}
+        <div
+          className="absolute w-[600px] h-[1200px] opacity-20 blur-3xl"
+          style={{
+            background: "linear-gradient(135deg, transparent, #007fae 40%, transparent 60%)",
+            top: "-20%",
+            right: "10%",
+            transform: "rotate(-15deg)",
+          }}
+        />
+        <div
+          className="absolute w-[400px] h-[800px] opacity-10 blur-3xl"
+          style={{
+            background: "linear-gradient(135deg, transparent, #007fae 50%, transparent)",
+            top: "10%",
+            right: "30%",
+            transform: "rotate(-20deg)",
+          }}
+        />
+
+        {/* Noise overlay */}
+        <div className="absolute inset-0 noise-overlay opacity-20 mix-blend-overlay" />
+
+        {/* Fade into next section */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-background" />
+      </div>
+
+      {/* ─── Technical measurement: vertical line connecting copy to visual ─── */}
+      <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 w-px h-32 opacity-30" style={{ background: "var(--border)" }} />
+
+      {/* ─── Hero content ─── */}
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 pt-24 lg:pt-32 pb-10 lg:pb-16 grid lg:grid-cols-12 gap-12 lg:gap-0 items-center">
+        {/* Copy column */}
+        <div className="lg:col-span-5 flex flex-col gap-8">
+          {/* System annotation above headline */}
+          <TechnicalAnnotation
+            label="SYSTEM"
+            value="/ 01"
+            accent
+            className="hero-fade"
+          />
+
+          {/* Headline */}
+          <h1
+            className="hero-fade font-payload-h1 text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem] leading-[0.95] tracking-tight text-balance"
+            style={{ animationDelay: "0.1s" }}
+          >
+            The platform to build the modern store.
+          </h1>
+
+          {/* Subheadline */}
+          <p
+            className="hero-fade max-w-md text-lg text-muted-foreground"
+            style={{ animationDelay: "0.25s" }}
+          >
+            Launch a premium e-commerce storefront with zero code, unlimited
+            scale, and every tool built in.
+          </p>
+
+          {/* CTAs */}
+          <div
+            className="hero-fade flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+            style={{ animationDelay: "0.35s" }}
+          >
+            <Link href="/signup" className="flex-1 sm:flex-none">
+              <Button className="w-full sm:w-auto h-12 rounded-lg px-7 text-base font-medium group">
+                Start selling
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <Link href="/api/contact" className="flex-1 sm:flex-none">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto h-12 rounded-lg px-7 text-base"
+              >
+                Get a demo
+              </Button>
+            </Link>
+          </div>
+
+          {/* Terminal command */}
+          <div
+            className="hero-fade flex items-center gap-3"
+            style={{ animationDelay: "0.5s" }}
+          >
+            <button
+              onClick={copyCommand}
+              aria-label={copied ? "Copied create-indigo-app command" : "Copy create-indigo-app command to clipboard"}
+              aria-live="polite"
+              className="inline-flex items-center gap-2 font-mono text-[13px] text-muted-foreground hover:text-foreground transition-colors group"
+            >
+              <span className="text-foreground/30">$</span> npx create-indigo-app
+              {copied ? (
+                <Check size={13} className="text-[#007fae]" />
+              ) : (
+                <Copy
+                  size={13}
+                  className="text-foreground/30 group-hover:text-foreground/60 transition-colors"
+                />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Visual column — MediaStack with blueprint framing */}
+        <div className="lg:col-span-7">
+          <div className="relative aspect-[4/3] sm:aspect-[16/11] max-w-lg sm:max-w-none mx-auto w-full lg:-ml-10">
+            {/* Blueprint corner ticks around the media stack container */}
+            <div className="absolute -inset-4 sm:-inset-6 pointer-events-none">
+              <BlueprintCornerTicks color="rgba(0,127,174,0.4)" size={14} />
             </div>
 
-            {/* Animated grid */}
-            <div
-                ref={gridRef}
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-                    backgroundSize: "64px 64px",
-                    maskImage: `radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), black, transparent)`,
-                    WebkitMaskImage: `radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), black, transparent)`,
-                }}
+            {/* Technical annotation above the media stack */}
+            <TechnicalAnnotation
+              label="STORE ENGINE"
+              value="/ ACTIVE"
+              accent
+              className="absolute -top-6 left-0 z-20"
             />
 
-            {/* Content */}
-            <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20 md:pt-40 md:pb-32">
-                <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-                    <motion.div className="max-w-xl" variants={stagger} initial="hidden" animate="show">
-                        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white-50 px-3 py-1 mb-8">
-                            <span className="relative flex h-2 w-2">
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex h-2 w-2 rounded-full bg-success/100" />
-                            </span>
-                            <span className="text-xs text-white-600">12,000+ stores launched in Nepal</span>
-                        </motion.div>
+            {/* Technical annotation below the media stack */}
+            <TechnicalAnnotation
+              label="LIVE PREVIEW"
+              className="absolute -bottom-6 right-0 z-20"
+            />
 
-                        <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white mb-6">
-                            Your store,{" "}
-                            <span className="bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
-                                <FlipWords words={ROTATING_PHRASES} className="text-white" />
-                            </span>
-                        </motion.h1>
-
-                        <motion.p variants={fadeUp} className="text-lg text-white-400 leading-relaxed mb-10 max-w-md">
-                            The e-commerce platform built for Nepal. Accept eSewa, Khalti, ship with Pathao — everything works out of the box.
-                        </motion.p>
-
-                        <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start gap-3">
-                            <Link href="/signup">
-                                <Button size="lg" className="h-12 px-8 text-sm rounded-full gap-2 bg-white text-foreground hover:bg-white/90 font-medium landing-btn">
-                                    Start for free <ArrowRight className="w-4 h-4" />
-                                </Button>
-                            </Link>
-                            <Button variant="ghost" size="lg" className="h-12 px-6 text-sm rounded-full gap-2 text-white-600 hover:text-white hover:bg-white-50">
-                                <Play className="w-3.5 h-3.5 fill-current" /> Watch demo
-                            </Button>
-                        </motion.div>
-
-                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white-500">
-                            <span>No credit card</span>
-                            <span className="w-px h-3 bg-white-100" />
-                            <span>Free forever plan</span>
-                            <span className="w-px h-3 bg-white-100" />
-                            <span>Setup in 5 min</span>
-                        </motion.div>
-                    </motion.div>
-
-                    {/* Right — Dashboard visual */}
-                    <motion.div
-                        className="relative hidden lg:block"
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.3 }}
-                    >
-                        <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm overflow-hidden shadow-2xl shadow-black/40">
-                            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
-                                <div className="flex gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white-100" />
-                                </div>
-                                <div className="flex-1 flex justify-center">
-                                    <div className="flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-success/100" />
-                                        <span className="text-[10px] text-white-500 font-mono">yourstore.indigo.store</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="p-5 space-y-4">
-                                <div>
-                                    <p className="text-[10px] text-white-500 uppercase tracking-widest">Dashboard</p>
-                                    <p className="text-sm font-medium text-white-700 mt-1">Good morning, Aarati ✨</p>
-                                </div>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {[
-                                        { label: "Revenue", value: "Rs 47,200", change: "+12%", color: "text-success" },
-                                        { label: "Orders", value: "84", change: "+8%", color: "text-success" },
-                                        { label: "Visitors", value: "1,247", change: "+23%", color: "text-success" },
-                                    ].map((s) => (
-                                        <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-                                            <p className="text-[10px] uppercase tracking-wider text-white-500">{s.label}</p>
-                                            <p className="text-base font-semibold text-white-700 mt-1 tabular-nums">{s.value}</p>
-                                            <span className={`text-[10px] ${s.color}`}>{s.change}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <p className="text-[10px] text-white-500 uppercase tracking-wider">Revenue this week</p>
-                                        <p className="text-[10px] text-white-500">Rs 329,400</p>
-                                    </div>
-                                    <div className="flex items-end gap-1 h-20">
-                                        {[35, 55, 40, 70, 50, 85, 65, 78, 90, 68, 82, 95, 72, 88].map((h, i) => (
-                                            <motion.div
-                                                key={i}
-                                                className="flex-1 rounded-sm bg-gradient-to-t from-white/[0.06] to-white/[0.12]"
-                                                initial={{ height: 0 }}
-                                                animate={{ height: `${h}%` }}
-                                                transition={{ duration: 0.6, delay: 0.5 + i * 0.04, ease: "easeOut" }}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-[10px] text-white-500 uppercase tracking-wider">Recent orders</p>
-                                    {[
-                                        { name: "Aarati S.", amount: "Rs 2,450", method: "eSewa", status: "bg-success/100" },
-                                        { name: "Bikash K.", amount: "Rs 890", method: "Khalti", status: "bg-amber-500" },
-                                        { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
-                                    ].map((o) => (
-                                        <div key={o.name} className="flex items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
-                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[10px] font-medium text-white-500">{o.name.charAt(0)}</div>
-                                            <p className="text-xs font-medium text-white-500 flex-1">{o.name}</p>
-                                            <span className="text-[10px] text-white-500 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
-                                            <p className="text-xs font-medium text-white-500 tabular-nums">{o.amount}</p>
-                                            <div className={`w-1.5 h-1.5 rounded-full ${o.status}`} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                        <motion.div
-                            className="absolute -bottom-4 -left-8 rounded-xl border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-4 py-3 shadow-xl"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 1, duration: 0.5 }}
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-success/100/20 flex items-center justify-center">
-                                    <span className="text-success text-xs">₹</span>
-                                </div>
-                                <div>
-                                    <p className="text-xs font-medium text-white-700">New order received</p>
-                                    <p className="text-[10px] text-white-500">Rs 3,200 via eSewa · just now</p>
-                                </div>
-                            </div>
-                        </motion.div>
-                        <motion.div
-                            className="absolute -top-3 -right-4 rounded-lg border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-3 py-2 shadow-xl"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 1.2, duration: 0.5 }}
-                        >
-                            <div className="flex items-center gap-2">
-                                <div className="flex -space-x-1">
-                                    {["bg-green-500", "bg-purple-500", "bg-blue-500"].map((c, i) => (
-                                        <div key={i} className={`w-4 h-4 rounded-full ${c} border border-[#09090b]`} />
-                                    ))}
-                                </div>
-                                <span className="text-[10px] text-white-400">eSewa · Khalti · Cards</span>
-                            </div>
-                        </motion.div>
-                    </motion.div>
+            {/* Rear screenshot — storefront with faint engineering pattern */}
+            <div
+              className="absolute bottom-0 left-0 w-[56%] z-0 hero-fade"
+              style={{ animationDelay: "0.7s", animationDuration: "1.2s" }}
+            >
+              <div className="relative">
+                <div className="glass-frame rounded-xl p-2">
+                  <StorefrontMock />
                 </div>
+                {/* Faint engineering hatch on rear mock */}
+                <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none opacity-[0.06]">
+                  <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <pattern id="bp-hatch-hero" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <line x1="0" y1="0" x2="0" y2="12" stroke="white" strokeWidth="1" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#bp-hatch-hero)" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
-            {/* Social proof bar — NumberTicker */}
-            <div className="relative border-t border-white/[0.04]">
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {[
-                            { value: 12000, suffix: "+", label: "Stores launched" },
-                            { value: 2.1, suffix: "B+", prefix: "Rs ", label: "Payments processed", decimals: 1 },
-                            { value: 75, label: "Districts reached" },
-                            { value: 4.8, suffix: "★", label: "Average rating", decimals: 1 },
-                        ].map((s) => (
-                            <div key={s.label} className="text-center">
-                                <p className="text-xl md:text-2xl font-semibold text-white-700 tabular-nums">
-                                    {s.prefix}<NumberTicker value={s.value} decimalPlaces={s.decimals ?? 0} className="text-white-700" />{s.suffix}
-                                </p>
-                                <p className="text-xs text-white-500 mt-1">{s.label}</p>
-                            </div>
-                        ))}
-                    </div>
+            {/* Front screenshot — dashboard with corner ticks */}
+            <div
+              className="absolute top-0 right-0 w-[80%] z-10 hero-fade"
+              style={{ animationDelay: "0.4s", animationDuration: "1.0s" }}
+            >
+              <div className="relative">
+                <div className="glass-frame rounded-xl p-2">
+                  <DashboardMock />
                 </div>
+                {/* Corner ticks on the primary dashboard mockup */}
+                <div className="absolute -inset-2 pointer-events-none">
+                  <BlueprintCornerTicks color="rgba(0,127,174,0.6)" size={10} corners={["tl", "tr", "bl", "br"]} />
+                </div>
+              </div>
             </div>
-        </section>
-    );
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

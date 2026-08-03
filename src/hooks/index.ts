@@ -18,3 +18,4 @@ export { useSyncQueue, useSyncQueueStore, usePendingSyncCount, useIsSyncing, typ
 export { useChartInteraction, type UseChartInteractionOptions, type UseChartInteractionReturn } from "./use-chart-interaction";
 export { useCachedQuery, useIsStale, usePrefetch, getCacheEntry, setCacheEntry, invalidateCacheEntry, invalidateCacheByPrefix, clearAllCache, type CacheOptions, type CachedQueryResult } from "./use-cached-query";
 export { useSaveShortcut } from "./use-save-shortcut";
+export { useInView } from "./use-in-view";
