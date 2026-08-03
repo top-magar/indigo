@@ -34,7 +34,9 @@ export async function getAllPosts(): Promise<PostMeta[]> {
   }
 
   const files = fs.readdirSync(CONTENT_DIR)
-  const mdxFiles = files.filter((file) => file.endsWith(".mdx"))
+  const mdxFiles = files.filter(
+    (file) => !file.startsWith(".") && file.endsWith(".mdx"),
+  )
 
   const posts: PostMeta[] = []
 

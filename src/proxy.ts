@@ -11,13 +11,16 @@ const ADMIN_ROUTES = ["/dashboard/settings"];
 /** Routes that require platform_admin role */
 const PLATFORM_ADMIN_ROUTES = ["/admin"];
 
+const DEV_SCRIPT_POLICY = process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : "";
+
 const CSP_HEADER = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com",
+  `script-src 'self' 'unsafe-inline'${DEV_SCRIPT_POLICY} https://js.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.supabase.co https://esewa.com.np https://khalti.com https://api.pathao.com wss://*.supabase.co",
+  "worker-src 'self' blob:",
+  "connect-src 'self' https://*.supabase.co https://esewa.com.np https://khalti.com https://api.pathao.com https://va.vercel-scripts.com https://*.vercel-insights.com wss://*.supabase.co",
   "frame-src 'self' https://js.stripe.com https://esewa.com.np https://khalti.com",
 ].join("; ");
 
@@ -59,7 +62,9 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/api/newsletter") ||
     pathname.startsWith("/api/checkout") ||
     pathname.startsWith("/_next/") ||
+    pathname.startsWith("/_vercel/") ||
     pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js" ||
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml";
 

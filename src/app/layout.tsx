@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: "Indigo - E-Commerce Platform for Nepal",
     template: "%s | Indigo",
   },
-  description: "The e-commerce platform that grows with your business. Built for Nepal. Loved by merchants.",
+  description: "A visual storefront editor and connected commerce workspace built for Nepal.",
   keywords: ["e-commerce", "Nepal", "online store", "multi-tenant", "marketplace"],
   authors: [{ name: "Indigo" }],
   creator: "Indigo",
@@ -27,12 +27,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Indigo",
     title: "Indigo - E-Commerce Platform for Nepal",
-    description: "The e-commerce platform that grows with your business. Built for Nepal. Loved by merchants.",
+    description: "A visual storefront editor and connected commerce workspace built for Nepal.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Indigo - E-Commerce Platform for Nepal",
-    description: "The e-commerce platform that grows with your business. Built for Nepal. Loved by merchants.",
+    description: "A visual storefront editor and connected commerce workspace built for Nepal.",
   },
   robots: {
     index: true,
@@ -64,8 +64,8 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          {/* Vercel Analytics */}
-          <Analytics />
+          {/* The local self-hosted server does not expose Vercel's insights route. */}
+          {process.env.VERCEL ? <Analytics /> : null}
           {/* Global navigation progress bar */}
           <Suspense fallback={null}>
             <NavigationProgress />
@@ -77,4 +77,3 @@ export default function RootLayout({
     </html>
   );
 }
-

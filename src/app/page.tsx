@@ -1,117 +1,40 @@
-import React from "react";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./landing.css";
-import {
-  AnnouncementBar,
-  Navbar,
-  Hero,
-  SocialProof,
-  HowItWorks,
-  BentoGrid,
-  Infrastructure,
-  Metrics,
-  IntegrationsMarquee,
-  SolutionsRoles,
-  ComparisonRiver,
-  Developers,
-  Security,
-  Pricing,
-  Testimonials,
-  BlogInsights,
-  Faq,
-  CtaBanner,
-  Footer,
-  ScrollToTop,
-} from "@/components/landing";
+import { ProductionLanding } from "@/components/landing";
 
-/* ═══ Blueprint structural band between sections ═══ */
-function BlueprintBand() {
-  return <div className="bp-band" aria-hidden="true" />;
-}
+const indigoSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-indigo-sans",
+});
 
-function BlueprintBandAccent() {
-  return <div className="bp-band bp-band--accent" aria-hidden="true" />;
-}
+const indigoMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-indigo-mono",
+});
+
+export const metadata: Metadata = {
+  title: "Indigo - Storefront freedom for commerce in Nepal",
+  description:
+    "Design and publish a distinctive storefront with a connected catalog, orders, inventory, eSewa, and Khalti checkout.",
+  openGraph: {
+    title: "Indigo - Storefront freedom for commerce in Nepal",
+    description:
+      "A visual storefront editor and connected commerce workspace built for Nepal.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Indigo - Storefront freedom for commerce in Nepal",
+    description:
+      "A visual storefront editor and connected commerce workspace built for Nepal.",
+  },
+};
 
 export default function LandingPage() {
   return (
-    <div className="landing-page relative min-h-screen bg-background text-foreground overflow-x-hidden antialiased">
-      {/* 01. Announcement & Navbar Header */}
-      <div className="relative z-50">
-        <AnnouncementBar />
-        <Navbar />
-      </div>
-
-      {/* Band: Below announcement bar */}
-      <BlueprintBand />
-
-      <main className="relative z-10">
-        {/* 02. Hero — Primary blueprint expression */}
-        <Hero />
-
-        {/* Band: Hero → SocialProof */}
-        <BlueprintBand />
-
-        {/* 03. Social Proof — Full-width horizontal structural band */}
-        <SocialProof />
-
-        {/* 04. How It Works — Blueprint step markers */}
-        <HowItWorks />
-
-        {/* 05. Features — Bordered feature grid */}
-        <BentoGrid />
-
-        {/* Band: Before infrastructure */}
-        <BlueprintBandAccent />
-
-        {/* 06. Infrastructure — Second-largest blueprint section */}
-        <Infrastructure />
-
-        {/* 07. Metrics — Full-width stat band */}
-        <Metrics />
-
-        {/* 08. Integrations — Dual marquee */}
-        <IntegrationsMarquee />
-
-        {/* 09. Solutions — Role-based value propositions */}
-        <SolutionsRoles />
-
-        {/* Band: Before comparison */}
-        <BlueprintBand />
-
-        {/* 10. Comparison — Major blueprint data section */}
-        <ComparisonRiver />
-
-        {/* 11. Developers — Code block focus */}
-        <Developers />
-
-        {/* 12. Security — Trust signals */}
-        <Security />
-
-        {/* 13. Pricing — 3-tier transparent pricing */}
-        <Pricing />
-
-        {/* 14. Testimonials — Auto-rotating merchant quotes */}
-        <Testimonials />
-
-        {/* 15. Blog — Latest insights */}
-        <BlogInsights />
-
-        {/* 16. FAQ — Expandable accordion */}
-        <Faq />
-
-        {/* Band: Around final CTA */}
-        <BlueprintBand />
-
-        {/* 17. Final CTA — Final major blueprint composition */}
-        <CtaBanner />
-      </main>
-
-      {/* Band: Above footer */}
-      <BlueprintBand />
-
-      {/* 18. Footer & Utilities */}
-      <Footer />
-      <ScrollToTop />
+    <div className={`${indigoSans.variable} ${indigoMono.variable}`}>
+      <ProductionLanding />
     </div>
   );
 }

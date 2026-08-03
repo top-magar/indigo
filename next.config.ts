@@ -114,10 +114,11 @@ const nextConfig: NextConfig = {
     // TODO: Replace script 'unsafe-inline' with nonce-based CSP via proxy.ts
     const cspHeader = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
+      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://js.stripe.com https://va.vercel-scripts.com`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' blob: data: https: *.public.blob.vercel-storage.com images.unsplash.com",
       "media-src 'self' blob: https: *.public.blob.vercel-storage.com",
+      "worker-src 'self' blob:",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://*.vercel-insights.com",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
