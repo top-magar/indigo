@@ -73,17 +73,6 @@ export function DateRangePicker({
   disabled = false,
   isFreeTier = false,
 }: AnalyticsDateRangePickerProps) {
-  
-  // Free tier users can only see 7 days
-  if (isFreeTier) {
-    return (
-      <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border bg-muted text-muted-foreground">
-        <CalendarIcon className="size-4" />
-        <span className="text-sm">Last 7 days</span>
-      </div>
-    );
-  }
-
   // Convert analytics preset to DateRangePicker value
   const pickerValue = useMemo((): DateRangeValue => {
     const preset = ANALYTICS_TO_PICKER_PRESET[value];
@@ -128,6 +117,16 @@ export function DateRangePicker({
       onChange(analyticsPreset);
     }
   }, [onChange]);
+
+  // Free tier users can only see 7 days
+  if (isFreeTier) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border bg-muted text-muted-foreground">
+        <CalendarIcon className="size-4" />
+        <span className="text-sm">Last 7 days</span>
+      </div>
+    );
+  }
 
   return (
     <BaseDateRangePicker

@@ -57,6 +57,10 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
   const rowRef = useRef<HTMLDivElement>(null);
   const expandTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const expanded = expandedMap[el.id] ?? (depth < 2 || !!filter);
+  const [renaming, setRenaming] = useState(false);
+  const [renameVal, setRenameVal] = useState(el.name);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
 
   if (filter && !matchesChild(el, filter)) return null;
 
@@ -118,17 +122,12 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
 
   const toggleVis = (e: React.MouseEvent) => { e.stopPropagation(); dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, hidden: !el.hidden } } }); };
   const toggleLock = (e: React.MouseEvent) => { e.stopPropagation(); dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, locked: !el.locked } } }); };
-  const [renaming, setRenaming] = useState(false);
-  const [renameVal, setRenameVal] = useState(el.name);
   const commitRename = () => {
     if (renameVal.trim() && renameVal !== el.name) dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, name: renameVal.trim() } } });
     setRenaming(false);
   };
 
   const parentId = findParentId(elements, el.id);
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
 
   return (
     <div onDragLeave={onDragLeave}>

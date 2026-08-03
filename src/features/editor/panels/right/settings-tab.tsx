@@ -11,6 +11,7 @@ import ContentTab from "./content-tab";
 
 export default function SettingsTab() {
   const { state, dispatch } = useEditor();
+  const [tab, setTab] = useState<"design" | "content">("design");
   const selected = state.editor.selected;
   if (!selected) return null;
 
@@ -29,7 +30,6 @@ export default function SettingsTab() {
   const onUpdate = (el: El) => dispatch({ type: "UPDATE_ELEMENT", payload: { element: el } });
   const parentId = findParentId(state.editor.elements, selected.id);
   const isBody = selected.type === "__body";
-  const [tab, setTab] = useState<"design" | "content">("design");
 
   return (
     <div className="flex flex-1 flex-col min-h-0 overflow-hidden">
