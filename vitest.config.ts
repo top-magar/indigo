@@ -11,6 +11,7 @@ export default defineConfig({
       '**/resources/**',
       '**/.next/**',
       '**/e2e/**',
+      '**/._*',
     ],
   },
   resolve: {
