@@ -39,11 +39,11 @@ export async function savePage(page: {
   if (page.activePageId) {
     const [updated] = await db.update(editorPages)
       .set({ data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
-      .where(and(eq(editorPages.id, page.activePageId), eq(editorPages.projectId, page.id)))
+      .where(and(eq(editorPages.id, page.activePageId), eq(editorPages.projectId, page.id), eq(editorPages.tenantId, tenantId)))
       .returning();
     // Also update project timestamp
     await db.update(editorProjects).set({ updatedAt: new Date() })
-      .where(eq(editorProjects.id, page.id));
+      .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)));
     revalidatePath('/dashboard/pages');
     return updated;
   }
@@ -258,7 +258,7 @@ export async function updatePage(pageId: string, data: { name?: string; slug?: s
   if (data.data) updates.data = safeJsonParse(data.data);
 
   const [updated] = await db.update(editorPages).set(updates)
-    .where(eq(editorPages.id, pageId)).returning();
+    .where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId))).returning();
   revalidatePath('/dashboard/pages');
   return updated;
 }
@@ -272,7 +272,7 @@ export async function deletePage2(pageId: string) {
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, tenantId)))
     .limit(1);
   if (!project) return;
-  await db.delete(editorPages).where(eq(editorPages.id, pageId));
+  await db.delete(editorPages).where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId)));
   revalidatePath('/dashboard/pages');
 }
 
@@ -282,8 +282,8 @@ export async function setHomepage(projectId: string, pageId: string) {
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
   if (!project) return;
   // Unset all pages, then set the target
-  await db.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
-  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.projectId, projectId)));
+  await db.update(editorPages).set({ isHomepage: false }).where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId)));
+  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId)));
   revalidatePath('/dashboard/pages');
 }
 
@@ -296,7 +296,7 @@ export async function updatePageSeo(pageId: string, seo: { seoTitle?: string; se
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
   if (!project) return;
-  await db.update(editorPages).set({ ...seo, updatedAt: new Date() }).where(eq(editorPages.id, pageId));
+  await db.update(editorPages).set({ ...seo, updatedAt: new Date() }).where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId)));
 }
 
 export type NavItem = { id: string; label: string; pageId?: string; href?: string; children?: NavItem[] };

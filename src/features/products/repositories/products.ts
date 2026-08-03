@@ -441,7 +441,7 @@ export class ProductRepository {
           ...data,
           updatedAt: new Date(),
         })
-        .where(eq(products.id, id))
+        .where(and(eq(products.id, id), eq(products.tenantId, tenantId)))
         .returning();
       
       return updated;
@@ -458,7 +458,7 @@ export class ProductRepository {
    */
   async delete(tenantId: string, id: string) {
     await withTenant(tenantId, async (tx) => {
-      await tx.delete(products).where(eq(products.id, id));
+      await tx.delete(products).where(and(eq(products.id, id), eq(products.tenantId, tenantId)));
     });
 
     // Invalidate caches after mutation

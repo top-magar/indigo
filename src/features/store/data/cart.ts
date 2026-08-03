@@ -286,11 +286,11 @@ export async function updateCartItem(
     }
 
     if (quantity <= 0) {
-      await db.delete(cartItems).where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId)));
+      await db.delete(cartItems).where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId), eq(cartItems.tenantId, tenantId)));
     } else {
       await db.update(cartItems)
         .set({ quantity, updatedAt: new Date() })
-        .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId)));
+        .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, item.cartId), eq(cartItems.tenantId, tenantId)));
     }
 
     // Recalculate totals
@@ -370,7 +370,7 @@ export async function clearCart(tenantId: string): Promise<{ success: boolean; e
   }
 
   try {
-    await db.delete(cartItems).where(eq(cartItems.cartId, cartId));
+    await db.delete(cartItems).where(and(eq(cartItems.cartId, cartId), eq(cartItems.tenantId, tenantId)));
 
     // Reset totals
     await db.update(carts)

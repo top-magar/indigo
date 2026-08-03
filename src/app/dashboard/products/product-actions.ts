@@ -202,6 +202,15 @@ export async function createVariant(input: CreateVariantInput) {
     const { tenantId } = await getAuthenticatedTenant();
 
     try {
+        const [product] = await db.select({ id: products.id })
+            .from(products)
+            .where(and(eq(products.id, input.productId), eq(products.tenantId, tenantId)))
+            .limit(1);
+
+        if (!product) {
+            return { success: false, error: "Product not found" };
+        }
+
         const [variant] = await db.insert(productVariants).values({
             tenantId,
             productId: input.productId,
@@ -311,7 +320,7 @@ export async function updateVariantStock(variantId: string, quantity: number, ac
 
             await db.update(inventoryLevels)
                 .set({ quantity: newQuantity, updatedAt: new Date() })
-                .where(eq(inventoryLevels.id, inventory.id));
+                .where(and(eq(inventoryLevels.id, inventory.id), eq(inventoryLevels.tenantId, tenantId)));
         } else {
             await db.insert(inventoryLevels).values({
                 tenantId,
@@ -323,7 +332,7 @@ export async function updateVariantStock(variantId: string, quantity: number, ac
 
         const [variant] = await db.select({ productId: productVariants.productId })
             .from(productVariants)
-            .where(eq(productVariants.id, variantId))
+            .where(and(eq(productVariants.id, variantId), eq(productVariants.tenantId, tenantId)))
             .limit(1);
 
         if (variant) {
