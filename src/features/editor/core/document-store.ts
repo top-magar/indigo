@@ -14,6 +14,8 @@ type DocumentState = {
   dirty: boolean;
   patches: Patch[];
   currentIndex: number;
+  liveBaseElements: El[] | null;
+  liveBaseDirty: boolean;
 };
 
 type DocumentActions = {
@@ -99,18 +101,36 @@ function replaceEl(tree: El[], el: El): El[] {
 
 // ─── History push ───────────────────────────────────────────
 
-function pushHistory(state: DocumentState, elements: El[]): Partial<DocumentState> {
-  const patch = createPatch(state.elements, elements);
-  if (patch.length === 0) return { elements, dirty: true };
+function appendHistory(
+  state: DocumentState,
+  before: El[],
+  after: El[],
+  dirtyWhenUnchanged = state.dirty,
+): Partial<DocumentState> {
+  const patch = createPatch(before, after);
+  if (patch.length === 0) {
+    return {
+      elements: after,
+      dirty: dirtyWhenUnchanged,
+      liveBaseElements: null,
+      liveBaseDirty: false,
+    };
+  }
 
   // Trim future patches (discard redo stack) and enforce max
   const kept = state.patches.slice(Math.max(0, state.currentIndex - MAX_HISTORY + 1), state.currentIndex);
   return {
-    elements,
+    elements: after,
     dirty: true,
     patches: [...kept, patch],
     currentIndex: kept.length + 1,
+    liveBaseElements: null,
+    liveBaseDirty: false,
   };
+}
+
+function pushHistory(state: DocumentState, elements: El[]): Partial<DocumentState> {
+  return appendHistory(state, state.elements, elements);
 }
 
 // ─── Store ──────────────────────────────────────────────────
@@ -120,6 +140,8 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
   dirty: false,
   patches: [],
   currentIndex: 0,
+  liveBaseElements: null,
+  liveBaseDirty: false,
 
   addElement: (containerId, element, index) => set(s => pushHistory(s, addEl(s.elements, containerId, element, index))),
 
@@ -130,12 +152,22 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
   },
 
   updateElementLive: (element) => {
-    set(s => ({ elements: updateEl(s.elements, element), dirty: true }));
+    set(s => ({
+      elements: updateEl(s.elements, element),
+      dirty: true,
+      liveBaseElements: s.liveBaseElements ?? s.elements,
+      liveBaseDirty: s.liveBaseElements ? s.liveBaseDirty : s.dirty,
+    }));
     const sel = useEditorStore.getState().selected;
     if (sel?.id === element.id) useEditorStore.getState().select(element);
   },
 
-  commitHistory: () => set(s => pushHistory(s, s.elements)),
+  commitHistory: () => set(s => appendHistory(
+    s,
+    s.liveBaseElements ?? s.elements,
+    s.elements,
+    s.liveBaseElements ? s.liveBaseDirty : s.dirty,
+  )),
 
   deleteElement: (id) => {
     set(s => pushHistory(s, deleteEl(s.elements, id)));
@@ -155,14 +187,26 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
 
   setElements: (elements) => set(s => pushHistory(s, elements)),
 
-  loadData: (elements) => set({ elements, dirty: false, patches: [], currentIndex: 0 }),
+  loadData: (elements) => set({
+    elements,
+    dirty: false,
+    patches: [],
+    currentIndex: 0,
+    liveBaseElements: null,
+    liveBaseDirty: false,
+  }),
 
   undo: () => {
     set(s => {
       if (s.currentIndex <= 0) return s;
       const patch = s.patches[s.currentIndex - 1];
       const elements = applyPatch(s.elements, patch, 'undo');
-      return { elements, currentIndex: s.currentIndex - 1 };
+      return {
+        elements,
+        currentIndex: s.currentIndex - 1,
+        liveBaseElements: null,
+        liveBaseDirty: false,
+      };
     });
     const sel = useEditorStore.getState().selected;
     if (sel) { const found = findEl(get().elements, sel.id); useEditorStore.getState().select(found ?? null); }
@@ -173,7 +217,12 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
       if (s.currentIndex >= s.patches.length) return s;
       const patch = s.patches[s.currentIndex];
       const elements = applyPatch(s.elements, patch, 'redo');
-      return { elements, currentIndex: s.currentIndex + 1 };
+      return {
+        elements,
+        currentIndex: s.currentIndex + 1,
+        liveBaseElements: null,
+        liveBaseDirty: false,
+      };
     });
     const sel = useEditorStore.getState().selected;
     if (sel) { const found = findEl(get().elements, sel.id); useEditorStore.getState().select(found ?? null); }
