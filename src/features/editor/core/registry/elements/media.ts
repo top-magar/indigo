@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { Image, Video, ImageIcon, Link2, CheckSquare, MapPin, CodeXml, Share2 } from 'lucide-react';
+import { Image, Video, ImageIcon, Link2, CheckSquare, MapPin, Share2 } from 'lucide-react';
 import { register } from '../types';
 
 register({ type: 'image', name: 'Image', icon: Image, color: '#22c55e', group: 'Media', isContainer: false,
@@ -20,8 +20,10 @@ register({ type: 'button', name: 'Button', icon: CheckSquare, color: '#2563eb', 
 register({ type: 'map', name: 'Map', icon: MapPin, color: '#16a34a', group: 'Media', isContainer: false,
   factory: () => ({ id: v4(), type: 'map', name: 'Map', styles: { width: '100%', height: '300px' }, content: { address: 'New York, NY', zoom: '13' } }) });
 
-register({ type: 'embed', name: 'Embed', icon: CodeXml, color: '#a855f7', group: 'Media', isContainer: false,
-  factory: () => ({ id: v4(), type: 'embed', name: 'Embed', styles: { padding: '16px', minHeight: '60px' }, content: { code: "<p style='color:#888;text-align:center'>Paste HTML here</p>" } }) });
+// NOTE: the 'embed' element type is defined canonically in ../elements/embed.tsx
+// (render + exportHTML). An older duplicate registration lived here and was
+// silently overwritten by import order — the exact fragility the registry
+// coverage test now guards against.
 
 register({ type: 'socialIcons', name: 'Social Icons', icon: Share2, color: '#14b8a6', group: 'Media', isContainer: false,
   factory: () => ({ id: v4(), type: 'socialIcons', name: 'Social Icons', styles: { display: 'flex', gap: '12px', justifyContent: 'center', padding: '16px', fontSize: '20px' }, content: { platforms: 'X,Facebook,Instagram,LinkedIn,YouTube' } }) });

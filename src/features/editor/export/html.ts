@@ -1,5 +1,8 @@
 import type { El } from '../core/types';
 import { getDef } from '../core/registry';
+import { parseCsv, parseItems, parseNumber } from '../lib/content-utils';
+import { safeUrl } from '@/shared/utils/safe-url';
+import type { ExportRendererType } from '../core/registry/renderer-manifests';
 
 /** Escape HTML entities to prevent XSS */
 function esc(s: string): string {
@@ -8,7 +11,7 @@ function esc(s: string): string {
 
 function cssify(styles: Record<string, unknown>): string {
   const UNSAFE_CSS = /expression|javascript:|url\s*\(|behavior:|\\-moz\\-binding|@import|@charset/i;
-  return Object.entries(styles).filter(([, v]) => v !== undefined && v !== '').filter(([, v]) => !UNSAFE_CSS.test(String(v))).map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${String(v).replace(/[;"<>{}\\]/g, '')}`).join(';');
+  return Object.entries(styles).filter(([, v]) => v !== undefined && v !== '').filter(([, v]) => !UNSAFE_CSS.test(String(v))).map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${String(v).replace(/[;\"<>{}\\]/g, '')}`).join(';');
 }
 
 const LAYOUT_KEYS = new Set(['display', 'flexDirection', 'gap', 'rowGap', 'columnGap', 'flexWrap', 'alignItems', 'justifyContent', 'justifyItems', 'gridTemplateColumns', 'gridTemplateRows']);
@@ -21,60 +24,84 @@ function splitContainerStyles(styles: Record<string, unknown>): { outer: Record<
   for (const [k, v] of Object.entries(styles)) {
     if (v === undefined || v === '') continue;
     if (LAYOUT_KEYS.has(k)) { inner[k] = v; hasLayout = true; }
-    else { outer[k] = v; if (k === 'padding' || k === 'paddingTop' || k === 'paddingRight' || k === 'paddingBottom' || k === 'paddingLeft' || k === 'background' || k === 'backgroundColor' || k === 'border' || k === 'borderRadius') hasVisual = true; }
+    else { outer[k] = v; if (['padding','paddingTop','paddingRight','paddingBottom','paddingLeft','background','backgroundColor','border','borderRadius'].includes(k)) hasVisual = true; }
   }
   return { outer, inner, needsSplit: hasLayout && hasVisual };
 }
 
-function renderEl(el: El, fonts: Set<string>): string {
+function containerHtml(el: El, fonts: Set<string>, did: string, tag: string, children: string): string {
   const style = cssify(el.styles as Record<string, unknown>);
-  const c = el.content as Record<string, string>;
-  const did = ` data-id="${el.id}"`;
-  if (el.styles.fontFamily) fonts.add(String(el.styles.fontFamily).split(',')[0].trim().replace(/['"]/g, ''));
+  const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>);
+  return needsSplit
+    ? `<${tag}${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${children}</div></${tag}>`
+    : `<${tag}${did} style="${style}">${children}</${tag}>`;
+}
 
-  // Check registry for custom exportHTML
+// ─── Per-type static export renderers ───────────────────────
+// Shared with the storefront/canvas coverage test. def.exportHTML takes
+// precedence when present; this map is the fallback for built-in types.
+
+const EXPORT_RENDERERS: Record<ExportRendererType, (el: El, fonts: Set<string>) => string> = {
+  text: (el, _f) => `<p data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</p>`,
+  heading: (el, _f) => `<h1 data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</h1>`,
+  subheading: (el, _f) => `<h2 data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</h2>`,
+  link: (el, _f) => { const href = safeUrl((el.content as Record<string,string>)?.href) ?? '#'; return `<a data-id="${el.id}" href="${esc(href)}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</a>`; },
+  button: (el, _f) => { const href = safeUrl((el.content as Record<string,string>)?.href) ?? '#'; return `<a data-id="${el.id}" href="${esc(href)}" style="${cssify(el.styles as Record<string, unknown>)};display:inline-block;text-decoration:none">${esc((el.content as Record<string,string>)?.innerText || '')}</a>`; },
+  image: (el, _f) => { const src = safeUrl((el.content as Record<string,string>)?.src) ?? ''; return `<img data-id="${el.id}" src="${esc(src)}" alt="${esc((el.content as Record<string,string>)?.alt || '')}" style="${cssify(el.styles as Record<string, unknown>)}" />`; },
+  video: (el, _f) => { const src = safeUrl((el.content as Record<string,string>)?.src) ?? ''; return `<iframe data-id="${el.id}" src="${esc(src)}" style="${cssify(el.styles as Record<string, unknown>)};border:0" allowfullscreen></iframe>`; },
+  divider: (el, _f) => `<hr data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}" />`,
+  spacer: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}"></div>`,
+  icon: (el, _f) => `<span data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '★')}</span>`,
+  badge: (el, _f) => `<span data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</span>`,
+  quote: (el, _f) => `<blockquote data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${esc((el.content as Record<string,string>)?.innerText || '')}</blockquote>`,
+  list: (el, _f) => `<ul data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${parseCsv((el.content as Record<string,string>)?.innerText).map(li => `<li>${esc(li)}</li>`).join('')}</ul>`,
+  code: (el, _f) => `<pre data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}"><code>${esc((el.content as Record<string,string>)?.innerText || '')}</code></pre>`,
+  embed: (el, _f) => `<div data-id="${el.id}" style="width:${el.styles.width || '100%'}">${esc((el.content as Record<string,string>)?.code || '')}</div>`,
+  map: (el, _f) => `<iframe data-id="${el.id}" src="https://maps.google.com/maps?q=${encodeURIComponent((el.content as Record<string,string>)?.address || '')}&z=${(el.content as Record<string,string>)?.zoom || '13'}&output=embed" style="${cssify(el.styles as Record<string, unknown>)};border:0" loading="lazy"></iframe>`,
+  gallery: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${parseCsv((el.content as Record<string,string>)?.images).map(src => `<img src="${esc(src)}" style="width:100%;object-fit:cover" />`).join('')}</div>`,
+  socialIcons: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${parseCsv((el.content as Record<string,string>)?.platforms).map(p => `<a href="#" style="opacity:0.7">${esc(p)}</a>`).join('')}</div>`,
+  accordion: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${parseItems((el.content as Record<string,string>)?.items).map(i => `<details><summary style="cursor:pointer;padding:12px 0;font-weight:600">${esc(i.title)}</summary><p style="padding:0 0 12px">${esc(i.body)}</p></details>`).join('')}</div>`,
+  tabs: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${parseItems((el.content as Record<string,string>)?.items).map((t, i) => `<div style="padding:16px${i > 0 ? ';display:none' : ''}"><h4>${esc(t.title)}</h4><p>${esc(t.body)}</p></div>`).join('')}</div>`,
+  countdown: (el, _f) => `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">Countdown to ${esc((el.content as Record<string,string>)?.targetDate || '')}</div>`,
+  starRating: (el, _f) => { const r = parseNumber((el.content as Record<string,string>)?.rating, 5); return `<div data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))} <span style="opacity:0.6">(${esc((el.content as Record<string,string>)?.reviews || '0')})</span></div>`; },
+  cartButton: (el, _f) => `<button data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">🛒 ${esc((el.content as Record<string,string>)?.innerText || 'Add to Cart')}</button>`,
+  // Container elements with semantic tags
+  navbar: (el, fonts) => { if (Array.isArray(el.content)) { const ch = el.content.map(child => renderEl(child, fonts)).join(''); return containerHtml(el, fonts, ` data-id="${el.id}"`, 'nav', ch); } return ''; },
+  header: (el, fonts) => { if (Array.isArray(el.content)) { const ch = el.content.map(child => renderEl(child, fonts)).join(''); return containerHtml(el, fonts, ` data-id="${el.id}"`, 'header', ch); } return ''; },
+  footer: (el, fonts) => { if (Array.isArray(el.content)) { const ch = el.content.map(child => renderEl(child, fonts)).join(''); return containerHtml(el, fonts, ` data-id="${el.id}"`, 'footer', ch); } return ''; },
+  section: (el, fonts) => { if (Array.isArray(el.content)) { const ch = el.content.map(child => renderEl(child, fonts)).join(''); return containerHtml(el, fonts, ` data-id="${el.id}"`, 'section', ch); } return ''; },
+  contactForm: (el, fonts) => { if (Array.isArray(el.content)) return `<form data-id="${el.id}" style="${cssify(el.styles as Record<string, unknown>)}">${el.content.map(child => renderEl(child, fonts)).join('')}</form>`; return ''; },
+};
+
+/** Types that render via def.exportHTML only (they need custom output). */
+const DEF_EXPORT_ONLY = new Set(["embed"]);
+
+function renderEl(el: El, fonts: Set<string>): string {
+  if (el.styles.fontFamily) fonts.add(String(el.styles.fontFamily).split(',')[0].trim().replace(/['"]/g, ''));
+  const did = ` data-id="${el.id}"`;
+  const style = cssify(el.styles as Record<string, unknown>);
+
+  // Element-provided export (e.g. plugins, embed).
   const def = getDef(el.type);
   if (def?.exportHTML) return def.exportHTML(el);
 
-  // Built-in leaf renderers
-  switch (el.type) {
-    case 'text': return `<p${did} style="${style}">${esc(c.innerText || '')}</p>`;
-    case 'heading': return `<h1${did} style="${style}">${esc(c.innerText || '')}</h1>`;
-    case 'subheading': return `<h2${did} style="${style}">${esc(c.innerText || '')}</h2>`;
-    case 'link': return `<a${did} href="${esc(c.href || '#')}" style="${style}">${esc(c.innerText || '')}</a>`;
-    case 'button': return `<a${did} href="${esc(c.href || '#')}" style="${style};display:inline-block;text-decoration:none">${esc(c.innerText || '')}</a>`;
-    case 'image': return `<img${did} src="${esc(c.src || '')}" alt="${esc(c.alt || '')}" style="${style}" />`;
-    case 'video': return `<iframe${did} src="${esc(c.src || '')}" style="${style};border:0" allowfullscreen></iframe>`;
-    case 'divider': return `<hr${did} style="${style}" />`;
-    case 'spacer': return `<div${did} style="${style}"></div>`;
-    case 'icon': case 'badge': return `<span${did} style="${style}">${esc(c.innerText || '')}</span>`;
-    case 'quote': return `<blockquote${did} style="${style}">${esc(c.innerText || '')}</blockquote>`;
-    case 'list': return `<ul${did} style="${style}">${(c.innerText || '').split('\n').map(li => `<li>${esc(li)}</li>`).join('')}</ul>`;
-    case 'code': return `<pre${did} style="${style}"><code>${esc(c.innerText || '')}</code></pre>`;
-    case 'embed': return ''; // embed disabled for security — raw HTML injection vector
-    case 'map': return `<iframe${did} src="https://maps.google.com/maps?q=${encodeURIComponent(c.address || '')}&z=${c.zoom || '13'}&output=embed" style="${style};border:0" loading="lazy"></iframe>`;
-    case 'gallery': return `<div${did} style="${style}">${(c.images || '').split(',').map(src => `<img src="${esc(src.trim())}" style="width:100%;object-fit:cover" />`).join('')}</div>`;
-    case 'socialIcons': return `<div${did} style="${style}">${(c.platforms || '').split(',').map(p => `<a href="#" style="opacity:0.7">${esc(p.trim())}</a>`).join('')}</div>`;
-    case 'accordion': { let items: { title: string; body: string }[] = []; try { items = JSON.parse(c.items || '[]'); } catch { /* skip */ } return `<div${did} style="${style}">${items.map(i => `<details><summary style="cursor:pointer;padding:12px 0;font-weight:600">${esc(i.title)}</summary><p style="padding:0 0 12px">${esc(i.body)}</p></details>`).join('')}</div>`; }
-    case 'tabs': { let items: { title: string; body: string }[] = []; try { items = JSON.parse(c.items || '[]'); } catch { /* skip */ } return `<div${did} style="${style}">${items.map((t, i) => `<div style="padding:16px${i > 0 ? ';display:none' : ''}"><h4>${esc(t.title)}</h4><p>${esc(t.body)}</p></div>`).join('')}</div>`; }
-    case 'countdown': return `<div${did} style="${style}">Countdown to ${esc(c.targetDate || '')}</div>`;
-    case 'starRating': { const r = parseFloat(c.rating || '5'); return `<div${did} style="${style}">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))} <span style="opacity:0.6">(${esc(c.reviews || '0')})</span></div>`; }
-    case 'cartButton': return `<button${did} style="${style}">🛒 ${esc(c.innerText || 'Add to Cart')}</button>`;
-    case 'navbar': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<nav${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></nav>` : `<nav${did} style="${style}">${ch}</nav>`; } break;
-    case 'header': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<header${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></header>` : `<header${did} style="${style}">${ch}</header>`; } break;
-    case 'footer': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<footer${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></footer>` : `<footer${did} style="${style}">${ch}</footer>`; } break;
-    case 'section': if (Array.isArray(el.content)) { const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>); const ch = el.content.map(child => renderEl(child, fonts)).join(''); return needsSplit ? `<section${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${ch}</div></section>` : `<section${did} style="${style}">${ch}</section>`; } break;
-    case 'contactForm': if (Array.isArray(el.content)) return `<form${did} style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</form>`; break;
-    default: break;
-  }
-  // Container fallback — split visual/layout like canvas does
+  // Per-type renderer.
+  const renderer = (EXPORT_RENDERERS as Record<string, ((el: El, fonts: Set<string>) => string) | undefined>)[el.type];
+  if (renderer) return renderer(el, fonts);
+
+  // Container fallback — split visual/layout like canvas does.
   if (Array.isArray(el.content)) {
-    const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>);
     const children = el.content.map(child => renderEl(child, fonts)).join('');
+    const { outer, inner, needsSplit } = splitContainerStyles(el.styles as Record<string, unknown>);
     if (needsSplit) return `<div${did} style="${cssify(outer)}"><div style="${cssify(inner)}">${children}</div></div>`;
     return `<div${did} style="${style}">${children}</div>`;
   }
-  return `<div${did} style="${style}">${esc(c.innerText || '')}</div>`;
+  return `<div${did} style="${style}">${esc((el.content as Record<string, string>)?.innerText || '')}</div>`;
+}
+
+/** All leaf types handled by this export (for the coverage test). */
+export function getExportHandledTypes(): string[] {
+  return Object.keys(EXPORT_RENDERERS);
 }
 
 export function generateHTML(elements: El[], options: { title: string; description?: string; ogImage?: string }): string {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import type { El } from '../types';
 import { resolveStyles } from '../types';
 import { useDocumentStore } from '../document-store';
@@ -10,6 +10,9 @@ import { MIcon } from '../../ui/m-icon';
 import { registry } from './types';
 import { useEditor } from '../provider';
 import { formatPrice } from '@/shared/currency';
+import { parseCsv, parseItems, parseNumber } from '../../lib/content-utils';
+import { safeUrl } from '@/shared/utils/safe-url';
+import type { CanvasRendererType } from './renderer-manifests';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -42,7 +45,7 @@ function TextRenderer({ element }: { element: El }) {
   const content = c(element);
   const bound = useBoundValue(element);
   const text = bound ?? content.innerText;
-  
+
   return (
     <W element={element}>
       <p
@@ -68,19 +71,21 @@ function TextRenderer({ element }: { element: El }) {
 function LinkRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
   const bound = useBoundValue(element);
-  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ color: 'inherit' }}>{bound ?? (c(element).innerText || 'Link')}</a></W>;
+  const href = safeUrl(c(element).href);
+  return <W element={element}><a href={preview ? (href ?? undefined) : undefined} style={{ color: 'inherit' }}>{bound ?? (c(element).innerText || 'Link')}</a></W>;
 }
 
 function ButtonRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
   const bound = useBoundValue(element);
-  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>{bound ?? (c(element).innerText || 'Button')}</a></W>;
+  const href = safeUrl(c(element).href);
+  return <W element={element}><a href={preview ? (href ?? undefined) : undefined} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>{bound ?? (c(element).innerText || 'Button')}</a></W>;
 }
 
 function ImageRenderer({ element }: { element: El }) {
   const content = c(element);
   const bound = useBoundValue(element);
-  const src = bound || content.src;
+  const src = safeUrl(bound || content.src);
   return (
     <W element={element}>
       {src ? (
@@ -96,7 +101,8 @@ function ImageRenderer({ element }: { element: El }) {
 }
 
 function VideoRenderer({ element }: { element: El }) {
-  return <W element={element}><iframe src={c(element).src} className="w-full aspect-video border-0" allowFullScreen /></W>;
+  const src = safeUrl(c(element).src);
+  return <W element={element}><iframe src={src ?? undefined} className="w-full aspect-video border-0" allowFullScreen /></W>;
 }
 
 function DividerRenderer({ element }: { element: El }) {
@@ -105,7 +111,7 @@ function DividerRenderer({ element }: { element: El }) {
 
 function SpacerRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
-  return <W element={element}>{!preview && <span className="text-[10px] text-muted-foreground/40 absolute inset-0 flex items-center justify-center">{parseInt(String(element.styles.height)) || 48}px</span>}</W>;
+  return <W element={element}>{!preview && <span className="text-[10px] text-muted-foreground/40 absolute inset-0 flex items-center justify-center">{parseNumber(String(element.styles.height), 48)}px</span>}</W>;
 }
 
 function QuoteRenderer({ element }: { element: El }) {
@@ -142,7 +148,7 @@ function EmbedRenderer({ element }: { element: El }) {
 }
 
 function SocialIconsRenderer({ element }: { element: El }) {
-  return <W element={element}>{(c(element).platforms || '').split(',').map((p, i) => <a key={i} href="#" className="opacity-70 hover:opacity-100">{p.trim()}</a>)}</W>;
+  return <W element={element}>{parseCsv(c(element).platforms).map((p, i) => <a key={i} href="#" className="opacity-70 hover:opacity-100">{p}</a>)}</W>;
 }
 
 function MapRenderer({ element }: { element: El }) {
@@ -152,19 +158,17 @@ function MapRenderer({ element }: { element: El }) {
 
 function GalleryRenderer({ element }: { element: El }) {
   /* eslint-disable @next/next/no-img-element */
-  return <W element={element}>{(c(element).images || '').split(',').map((src, i) => <img key={i} src={src.trim()} alt="" className="w-full object-cover" />)}</W>;
+  return <W element={element}>{parseCsv(c(element).images).map((src, i) => <img key={i} src={src} alt="" className="w-full object-cover" />)}</W>;
 }
 
 function AccordionRenderer({ element }: { element: El }) {
-  let items: { title: string; body: string }[] = [];
-  try { items = JSON.parse(c(element).items || '[]'); } catch { /* bad JSON */ }
+  const items = parseItems(c(element).items);
   return <W element={element}><div>{items.map((item, i) => <details key={i} className="border-b border-current/10"><summary className="cursor-pointer py-3 font-medium">{item.title}</summary><p className="pb-3 opacity-70">{item.body}</p></details>)}</div></W>;
 }
 
 function TabsRenderer({ element }: { element: El }) {
   const [active, setActive] = useState(0);
-  let items: { title: string; body: string }[] = [];
-  try { items = JSON.parse(c(element).items || '[]'); } catch { /* bad JSON */ }
+  const items = parseItems(c(element).items);
   return (
     <W element={element}>
       <div className="flex border-b border-current/10">{items.map((t, i) => <button key={i} onClick={() => setActive(i)} className={`px-4 py-2 text-sm font-medium ${i === active ? 'border-b-2 border-primary' : 'opacity-50'}`}>{t.title}</button>)}</div>
@@ -186,7 +190,7 @@ function CountdownRenderer({ element }: { element: El }) {
 
 function StarRatingRenderer({ element }: { element: El }) {
   const content = c(element);
-  const rating = parseFloat(content.rating || '5');
+  const rating = parseNumber(content.rating, 5);
   const reviews = content.reviews || '0';
   const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? '★' : i < rating ? '★' : '☆');
   return <W element={element}><span>{stars.join('')}</span><span style={{ marginLeft: 4, opacity: 0.6 }}>({reviews})</span></W>;
@@ -197,23 +201,31 @@ function CartButtonRenderer({ element }: { element: El }) {
   return <W element={element}><span>🛒</span><span>{bound ?? (c(element).innerText || 'Add to Cart')}</span></W>;
 }
 
-// ─── Register renderers ─────────────────────────────────────
+// ─── Shared canvas renderer map ─────────────────────────────
+// Explicit, typed, and audited: element defs may provide their own `render`
+// (e.g. plugins, HTML embed); this map is the fallback for built-in leaves.
+// Registration is strict — an unknown type key is a bug and fails loudly,
+// and the registry coverage test enforces that every leaf type is rendered.
 
-const renderers: Record<string, (props: { element: El }) => ReactNode> = {
+export const CANVAS_RENDERERS: Record<CanvasRendererType, (props: { element: El }) => ReactNode> = {
   text: TextRenderer, heading: TextRenderer, subheading: TextRenderer,
   link: LinkRenderer, button: ButtonRenderer,
   image: ImageRenderer, video: VideoRenderer,
   divider: DividerRenderer, spacer: SpacerRenderer,
   quote: QuoteRenderer, badge: BadgeRenderer,
   list: ListRenderer, code: CodeRenderer, icon: IconRenderer,
-  embed: EmbedRenderer, socialIcons: SocialIconsRenderer,
+  socialIcons: SocialIconsRenderer,
   map: MapRenderer, gallery: GalleryRenderer,
   accordion: AccordionRenderer, tabs: TabsRenderer, countdown: CountdownRenderer,
   starRating: StarRatingRenderer, cartButton: CartButtonRenderer,
 };
 
-// Attach renderers to existing registry entries
-for (const [type, render] of Object.entries(renderers)) {
+// Attach renderers to registry entries. Element-provided `render` wins
+// (plugins, embed) — the shared map only fills gaps.
+for (const [type, render] of Object.entries(CANVAS_RENDERERS)) {
   const def = registry.get(type);
-  if (def) def.render = render;
+  if (!def) {
+    throw new Error(`[editor] Canvas renderer registered for unknown element type "${type}". Fix the CANVAS_RENDERERS map or register the element.`);
+  }
+  if (!def.render) def.render = render;
 }

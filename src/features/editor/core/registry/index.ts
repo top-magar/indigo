@@ -1,24 +1,13 @@
-// Import element definitions first (they register themselves via types.ts)
-import './elements/layout';
-import './elements/typography';
-import './elements/media';
-import './elements/interactive';
-import './elements/embed';
-import './elements/navigation';
-import './elements/forms';
-import './elements/blocks';
-import './elements/ecommerce';
-import './elements/marketing';
-import './renderers';
-import { registerPlugins } from '@/plugins';
+// Element definitions first (they register themselves), then canvas renderers.
+// Renderer registration is explicit and strict — see renderers.tsx.
+import "./server-bootstrap";
+import "./renderers";
 
-registerPlugins();
+import type { El } from "../types";
+import { registry, type ElementDef } from "./types";
 
-import type { El } from '../types';
-import { registry, type ElementDef } from './types';
-
-export { register } from './types';
-export type { ElementDef } from './types';
+export { register } from "./types";
+export type { ElementDef } from "./types";
 
 export function getDef(type: string) { return registry.get(type); }
 export function isContainer(type: string) { return type === '__body' || (registry.get(type)?.isContainer ?? false); }

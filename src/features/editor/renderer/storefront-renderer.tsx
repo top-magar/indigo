@@ -1,20 +1,19 @@
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { ThemeProvider } from "@/components/store/theme-provider"
 import type { ThemeConfig } from "@/features/editor/lib/theme-utils"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { formatPrice } from "@/shared/currency"
 import type { EditorDocumentV2 } from "../core/document-v2"
-import type { El } from "../core/types"
+import type { El, StorefrontProduct } from "../core/types"
+import { registry, type StorefrontRenderProps } from "../core/registry/types"
+// Registers every element def + plugin without importing canvas client renderers.
+import "../core/registry/server-bootstrap"
+import { parseCsv, parseItems, parseNumber } from "../lib/content-utils"
+import { safeUrl } from "@/shared/utils/safe-url"
+import { MotionWrapper } from "../canvas/motion-wrapper"
+import type { StorefrontRendererType } from "../core/registry/renderer-manifests"
 
-export type StorefrontProduct = {
-  id: string
-  name: string
-  slug: string
-  description?: string | null
-  price: string
-  compareAtPrice?: string | null
-  images?: Array<{ url: string; alt?: string }> | null
-}
+export type { StorefrontProduct }
 
 export type StorefrontRenderContext = {
   store: { name: string; slug: string }
@@ -33,6 +32,8 @@ type RendererProps = {
   mode?: "canvas" | "preview" | "live"
   themeConfig?: Partial<ThemeConfig> | null
 }
+
+type ElementProps = { element: El; context: StorefrontRenderContext; mode: NonNullable<RendererProps["mode"]>; product?: StorefrontProduct }
 
 function kebabCase(value: string) {
   return value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
@@ -99,7 +100,7 @@ function ProductTile({ product, context, mode }: { product: StorefrontProduct; c
         <div className="aspect-[4/5] overflow-hidden rounded-lg bg-muted">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={image.url} alt={image.alt || product.name} className="size-full object-cover" />
+            <img src={safeUrl(image.url) ?? ""} alt={image.alt || product.name} className="size-full object-cover" />
           ) : (
             <div className="flex size-full items-center justify-center px-4 text-center text-sm text-muted-foreground">No product image</div>
           )}
@@ -119,113 +120,204 @@ function ProductTile({ product, context, mode }: { product: StorefrontProduct; c
   )
 }
 
-import { MotionWrapper } from "../canvas/motion-wrapper"
+// ─── Shared helpers for renderers ───────────────────────────
 
-// ... inside StorefrontRenderer ...
+const elProps = (element: El) => ({ style: element.styles as CSSProperties, "data-storefront-element": element.id })
 
-function Element({ element, context, mode, product }: { element: El; context: StorefrontRenderContext; mode: RendererProps["mode"]; product?: StorefrontProduct }) {
-  if (element.hidden) return null
-  const content = Array.isArray(element.content) ? null : element.content
-  const children = Array.isArray(element.content)
-    ? element.content.map((child) => <Element key={child.id} element={child} context={context} mode={mode} product={product} />)
+function renderChildren(props: ElementProps): ReactNode {
+  return Array.isArray(props.element.content)
+    ? props.element.content.map((child) => <Element key={child.id} element={child} context={props.context} mode={props.mode} product={props.product} />)
     : null
-  const value = boundValue(element, context, product)
-  const text = value ?? content?.innerText ?? ""
-  const style = element.styles as CSSProperties
-  const common = { style, "data-storefront-element": element.id }
+}
 
-  let rendered: React.ReactNode = null;
+function contentOf(element: El) {
+  return Array.isArray(element.content) ? null : element.content
+}
 
-  if (element.type === "__body") rendered = <div {...common}>{children}</div>
-  else if (["heading", "h1"].includes(element.type)) rendered = <h1 {...common}>{text || children}</h1>
-  else if (["h2", "sectionHeading"].includes(element.type)) rendered = <h2 {...common}>{text || children}</h2>
-  else if (["h3"].includes(element.type)) rendered = <h3 {...common}>{text || children}</h3>
-  else if (["text", "paragraph", "badge", "label"].includes(element.type)) rendered = <p {...common}>{text}</p>
-  else if (element.type === "image") {
-    const src = value || content?.src
-    rendered = src
+// ─── Per-type storefront renderers ──────────────────────────
+// Single source of truth for the live storefront. Element defs (including
+// plugins) may provide their own `storefrontRender` — the registry coverage
+// test enforces that every registered leaf type is handled here or by a def.
+// These functions are server-safe: no hooks, RSC compatible.
+
+const STOREFRONT_RENDERERS: Record<StorefrontRendererType, (props: ElementProps) => ReactNode> = {
+  __body: ({ element, ...props }) => <div {...elProps(element)}>{renderChildren({ element, ...props })}</div>,
+
+  heading: (props) => <h1 {...elProps(props.element)}>{renderTextOrChildren(props)}</h1>,
+  h1: (props) => <h1 {...elProps(props.element)}>{renderTextOrChildren(props)}</h1>,
+  subheading: (props) => <h2 {...elProps(props.element)}>{renderTextOrChildren(props)}</h2>,
+  h2: (props) => <h2 {...elProps(props.element)}>{renderTextOrChildren(props)}</h2>,
+  sectionHeading: (props) => <h2 {...elProps(props.element)}>{renderTextOrChildren(props)}</h2>,
+  h3: (props) => <h3 {...elProps(props.element)}>{renderTextOrChildren(props)}</h3>,
+  text: (props) => <p {...elProps(props.element)}>{renderText(props)}</p>,
+  paragraph: (props) => <p {...elProps(props.element)}>{renderText(props)}</p>,
+  label: (props) => <p {...elProps(props.element)}>{renderText(props)}</p>,
+  badge: (props) => <span {...elProps(props.element)}>{renderText(props)}</span>,
+
+  image: (props) => {
+    const src = safeUrl(boundOrContent(props, "src"))
+    return src
       // eslint-disable-next-line @next/next/no-img-element
-      ? <img {...common} src={src} alt={content?.alt || element.name} />
-      : <div {...common} aria-label={`${element.name}: no image selected`} />
-  }
-  else if (element.type === "divider") rendered = <hr {...common} />
-  else if (element.type === "input") rendered = <input {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
-  else if (element.type === "textarea") rendered = <textarea {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
-  else if (element.type === "link") rendered = <a {...common} href={content?.href || "#"}>{text || children}</a>
-  else if (element.type === "button") {
-    rendered = content?.href
-      ? <a {...common} href={content.href}>{text}</a>
-      : <button {...common} type="button">{text}</button>
-  }
-  else if (element.type === "addToCart" && product) {
-    rendered = <AddToCartButton productId={product.id} productName={product.name} price={Number(product.price)} image={product.images?.[0]?.url} text={text || "Add to cart"} style={style} />
-  }
-  else if (element.type === "productGrid" && element.repeat) {
-    let productIds = element.repeat.resourceId ? context.collections?.[element.repeat.resourceId] : undefined
-    if (!element.repeat.resourceId && context.activeCollection) {
+      ? <img {...elProps(props.element)} src={src} alt={contentOf(props.element)?.alt || props.element.name} />
+      : <div {...elProps(props.element)} aria-label={`${props.element.name}: no image selected`} />
+  },
+  divider: (props) => <hr {...elProps(props.element)} />,
+  input: (props) => <input {...elProps(props.element)} aria-label={contentOf(props.element)?.label || props.element.name} placeholder={contentOf(props.element)?.placeholder} />,
+  textarea: (props) => <textarea {...elProps(props.element)} aria-label={contentOf(props.element)?.label || props.element.name} placeholder={contentOf(props.element)?.placeholder} />,
+  link: (props) => <a {...elProps(props.element)} href={safeUrl(contentOf(props.element)?.href) ?? "#"}>{renderTextOrChildren(props)}</a>,
+  button: (props) => {
+    const href = safeUrl(contentOf(props.element)?.href)
+    return href
+      ? <a {...elProps(props.element)} href={href}>{renderText(props)}</a>
+      : <button {...elProps(props.element)} type="button">{renderText(props)}</button>
+  },
+  addToCart: (props) => {
+    if (!props.product) return null
+    return <AddToCartButton productId={props.product.id} productName={props.product.name} price={Number(props.product.price)} image={props.product.images?.[0]?.url} text={renderText(props) || "Add to cart"} style={props.element.styles} />
+  },
+  productGrid: (props) => {
+    const { element, context, mode } = props
+    let productIds = element.repeat?.resourceId ? context.collections?.[element.repeat.resourceId] : undefined
+    if (!element.repeat?.resourceId && context.activeCollection) {
       productIds = context.collections?.[context.activeCollection.id]
     }
     const repeatedProducts = productIds ? context.products.filter((item) => productIds.includes(item.id)) : context.products
-    rendered = (
-      <div {...common}>
-        {repeatedProducts.slice(0, element.repeat.limit ?? 12).map((item) => (
+    return (
+      <div {...elProps(element)}>
+        {repeatedProducts.slice(0, element.repeat?.limit ?? 12).map((item) => (
           Array.isArray(element.content) && element.content.length > 0
             ? <div key={item.id}>{element.content.map((child) => <Element key={child.id} element={child} context={context} mode={mode} product={item} />)}</div>
             : <ProductTile key={item.id} product={item} context={context} mode={mode} />
         ))}
       </div>
     )
-  }
-  else if (element.type === "navigation") {
-    rendered = <nav {...common} aria-label={element.name}>{context.navigation?.map((item) => <a key={item.id} href={item.href}>{item.label}</a>)}</nav>
-  }
-  else if (element.type === "video") rendered = <iframe {...common} src={content?.src} allowFullScreen />
-  else if (element.type === "spacer") rendered = <div {...common} />
-  else if (element.type === "quote") rendered = <blockquote {...common}>{text}</blockquote>
-  else if (element.type === "list") rendered = <ul {...common} style={{ ...style, listStyleType: style.listStyleType as string || 'disc' }}>{(text || '').split('\n').map((li, i) => <li key={i}>{li}</li>)}</ul>
-  else if (element.type === "code") rendered = <pre {...common}><code>{text}</code></pre>
-  else if (element.type === "icon") rendered = <span {...common}>{text || '★'}</span>
-  else if (element.type === "embed") rendered = <div {...common}>⚠️ HTML embeds disabled for security</div>
-  else if (element.type === "socialIcons") rendered = <div {...common}>{(content?.platforms || '').split(',').map((p: string, i: number) => <a key={i} href="#" style={{ opacity: 0.7 }}>{p.trim()}</a>)}</div>
-  else if (element.type === "map") rendered = <iframe {...common} src={`https://maps.google.com/maps?q=${encodeURIComponent(content?.address || '')}&z=${content?.zoom || '13'}&output=embed`} loading="lazy" />
-  else if (element.type === "gallery") rendered = <div {...common}>{(content?.images || '').split(',').map((src: string, i: number) => <img key={i} src={src.trim()} alt="" style={{ width: '100%', objectFit: 'cover' }} />)}</div>
-  else if (element.type === "accordion") {
-    let items: { title: string; body: string }[] = [];
-    try { items = JSON.parse(content?.items || '[]'); } catch { /* bad JSON */ }
-    rendered = <div {...common}>{items.map((item, i) => <details key={i} style={{ borderBottom: '1px solid currentColor', opacity: 0.9 }}><summary style={{ cursor: 'pointer', padding: '12px 0', fontWeight: 500 }}>{item.title}</summary><p style={{ paddingBottom: '12px', opacity: 0.7 }}>{item.body}</p></details>)}</div>
-  }
-  else if (element.type === "tabs") {
-    let items: { title: string; body: string }[] = [];
-    try { items = JSON.parse(content?.items || '[]'); } catch { /* bad JSON */ }
-    rendered = <div {...common} data-tabs={content?.items}>
-      {/* Fallback to simple list if client-side JS isn't rendering it */}
-      {items.map((item, i) => <div key={i}><strong>{item.title}</strong><p>{item.body}</p></div>)}
+  },
+  navigation: (props) => (
+    <nav {...elProps(props.element)} aria-label={props.element.name}>
+      {props.context.navigation?.map((item) => <a key={item.id} href={safeUrl(item.href) ?? "/"}>{item.label}</a>)}
+    </nav>
+  ),
+  video: (props) => <iframe {...elProps(props.element)} src={safeUrl(contentOf(props.element)?.src) ?? undefined} allowFullScreen />,
+  spacer: (props) => <div {...elProps(props.element)} />,
+  quote: (props) => <blockquote {...elProps(props.element)}>{renderText(props)}</blockquote>,
+  list: (props) => {
+    const { element } = props
+    const text = renderText(props)
+    return <ul {...elProps(element)} style={{ ...(element.styles as CSSProperties), listStyleType: (element.styles.listStyleType as string) || 'disc' }}>{(text || '').split('\n').map((li, i) => <li key={i}>{li}</li>)}</ul>
+  },
+  code: (props) => <pre {...elProps(props.element)}><code>{renderText(props)}</code></pre>,
+  icon: (props) => <span {...elProps(props.element)}>{renderText(props) || '★'}</span>,
+  embed: (props) => <div {...elProps(props.element)}>⚠️ HTML embeds disabled for security</div>,
+  socialIcons: (props) => (
+    <div {...elProps(props.element)}>
+      {parseCsv(contentOf(props.element)?.platforms).map((p: string, i: number) => <a key={i} href="#" style={{ opacity: 0.7 }}>{p}</a>)}
     </div>
-  }
-  else if (element.type === "countdown") {
-    rendered = <div {...common} data-countdown={content?.targetDate}>
-      {/* Fallback */}
-      <div>{new Date(content?.targetDate || Date.now()).toLocaleDateString()}</div>
+  ),
+  map: (props) => (
+    <iframe {...elProps(props.element)} src={`https://maps.google.com/maps?q=${encodeURIComponent(contentOf(props.element)?.address || '')}&z=${contentOf(props.element)?.zoom || '13'}&output=embed`} loading="lazy" />
+  ),
+  gallery: (props) => (
+    <div {...elProps(props.element)}>
+      {parseCsv(contentOf(props.element)?.images).map((src: string, i: number) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={i} src={safeUrl(src) ?? ""} alt="" style={{ width: '100%', objectFit: 'cover' }} />
+      ))}
     </div>
-  }
-  else if (element.type === "starRating") {
-    const rating = parseFloat(content?.rating || '5');
-    const reviews = content?.reviews || '0';
-    const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? '★' : i < rating ? '★' : '☆');
-    rendered = <div {...common}><span>{stars.join('')}</span><span style={{ marginLeft: 4, opacity: 0.6 }}>({reviews})</span></div>
-  }
-  else if (element.type === "cartButton") {
-    rendered = <button {...common}>🛒 {text || 'Add to Cart'}</button>
-  }
-  else {
-    rendered = <div {...common}>{children ?? text}</div>
+  ),
+  accordion: (props) => {
+    const items = parseItems(contentOf(props.element)?.items)
+    return (
+      <div {...elProps(props.element)}>
+        {items.map((item, i) => (
+          <details key={i} style={{ borderBottom: '1px solid currentColor', opacity: 0.9 }}>
+            <summary style={{ cursor: 'pointer', padding: '12px 0', fontWeight: 500 }}>{item.title}</summary>
+            <p style={{ paddingBottom: '12px', opacity: 0.7 }}>{item.body}</p>
+          </details>
+        ))}
+      </div>
+    )
+  },
+  tabs: (props) => {
+    const items = parseItems(contentOf(props.element)?.items)
+    return (
+      <div {...elProps(props.element)} data-tabs={contentOf(props.element)?.items}>
+        {/* Static fallback: full tabbed behavior is hydrated client-side where available */}
+        {items.map((item, i) => <div key={i}><strong>{item.title}</strong><p>{item.body}</p></div>)}
+      </div>
+    )
+  },
+  countdown: (props) => (
+    <div {...elProps(props.element)} data-countdown={contentOf(props.element)?.targetDate}>
+      <div>{new Date(contentOf(props.element)?.targetDate || Date.now()).toLocaleDateString()}</div>
+    </div>
+  ),
+  starRating: (props) => {
+    const rating = parseNumber(contentOf(props.element)?.rating, 5)
+    const reviews = contentOf(props.element)?.reviews || '0'
+    const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? '★' : i < rating ? '★' : '☆')
+    return <div {...elProps(props.element)}><span>{stars.join('')}</span><span style={{ marginLeft: 4, opacity: 0.6 }}>({reviews})</span></div>
+  },
+  cartButton: (props) => <button {...elProps(props.element)}>🛒 {renderText(props) || 'Add to Cart'}</button>,
+}
+
+/** Bound value if the element has a data binding, else the field from content. */
+function boundOrContent(props: ElementProps, field: string): string | undefined {
+  const bound = boundValue(props.element, props.context, props.product)
+  return bound ?? contentOf(props.element)?.[field]
+}
+
+/** Text value for a leaf element: binding wins, then innerText. */
+function renderText(props: ElementProps): string {
+  const bound = boundValue(props.element, props.context, props.product)
+  return bound ?? contentOf(props.element)?.innerText ?? ""
+}
+
+/** Text for heading-like leaves, falling back to children for hybrid containers. */
+function renderTextOrChildren(props: ElementProps): ReactNode {
+  const text = renderText(props)
+  return text || renderChildren(props)
+}
+
+// Legacy storefront-only types kept for compatibility with older documents.
+const LEGACY_STOREFRONT_TYPES = new Set(["h1", "h2", "h3", "paragraph", "label", "sectionHeading", "addToCart", "productTile"])
+
+/** Types the storefront handles explicitly (used by the coverage test). */
+export function getStorefrontHandledTypes(): string[] {
+  return Object.keys(STOREFRONT_RENDERERS).filter((type) => !LEGACY_STOREFRONT_TYPES.has(type))
+}
+
+function Element({ element, context, mode, product }: ElementProps) {
+  if (element.hidden) return null
+
+  const children = renderChildren({ element, context, mode, product })
+  const common = elProps(element)
+
+  // 1. Explicit per-type renderer.
+  const explicit = (STOREFRONT_RENDERERS as Record<string, ((props: ElementProps) => ReactNode) | undefined>)[element.type]
+  if (explicit) {
+    const rendered = explicit({ element, context, mode, product })
+    if (element.animations && element.animations.preset !== 'none') {
+      return <MotionWrapper animations={element.animations}>{rendered}</MotionWrapper>
+    }
+    return rendered
   }
 
+  // 2. Plugin/element-provided storefront renderer.
+  const def = registry.get(element.type)
+  if (def?.storefrontRender) {
+    const rendered = def.storefrontRender({ element, context, mode, product })
+    if (element.animations && element.animations.preset !== 'none') {
+      return <MotionWrapper animations={element.animations}>{rendered}</MotionWrapper>
+    }
+    return rendered
+  }
+
+  // 3. Generic fallback: containers render children, leaves render text.
+  const fallback = <div {...common}>{children ?? renderText({ element, context, mode, product })}</div>
   if (element.animations && element.animations.preset !== 'none') {
-    return <MotionWrapper animations={element.animations}>{rendered}</MotionWrapper>
+    return <MotionWrapper animations={element.animations}>{fallback}</MotionWrapper>
   }
-
-  return rendered;
+  return fallback
 }
 
 export function StorefrontRenderer({ document, context, mode = "live", themeConfig }: RendererProps) {

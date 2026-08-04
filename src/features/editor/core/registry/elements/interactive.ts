@@ -1,6 +1,6 @@
 import React from 'react';
 import { v4 } from 'uuid';
-import { ChevronDown, Rows3, Timer, Code } from 'lucide-react';
+import { ChevronDown, Rows3, Timer } from 'lucide-react';
 import { register } from '../types';
 
 register({ type: 'accordion', name: 'Accordion', icon: ChevronDown, color: '#f97316', group: 'Interactive', isContainer: false,
@@ -20,19 +20,7 @@ register({ type: 'tabs', name: 'Tabs', icon: Rows3, color: '#fb923c', group: 'In
 register({ type: 'countdown', name: 'Countdown', icon: Timer, color: '#e11d48', group: 'Interactive', isContainer: false,
   factory: () => ({ id: v4(), type: 'countdown', name: 'Countdown', styles: { display: 'flex', justifyContent: 'center', gap: '16px', padding: '24px', fontSize: '32px', fontWeight: '700', textAlign: 'center' }, content: { targetDate: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 16) } }) });
 
-register({ type: 'embed', name: 'Embed Code', icon: Code, color: '#10b981', group: 'Interactive', isContainer: false,
-  factory: () => ({ id: v4(), type: 'embed', name: 'Embed Code', styles: { width: '100%', minHeight: '50px' }, content: { code: '<div style="padding: 20px; background: #eee; text-align: center; border-radius: 4px;">Custom HTML Block</div>' } }),
-  render: ({ element }) => {
-    const code = (element.content as any).code || '';
-    return React.createElement('div', {
-      style: element.styles as React.CSSProperties,
-      dangerouslySetInnerHTML: { __html: code }
-    });
-  },
-  exportHTML: (el) => {
-    const code = (el.content as any).code || '';
-    // Simply return the raw code, wrapping in styles if needed
-    // Assuming styles will be handled by the generic exporter for inline styles
-    return code;
-  }
-});
+// NOTE: the 'embed' element type is defined canonically in ./embed.tsx
+// (render + exportHTML). Older duplicate registrations lived here and in
+// ./media.ts — they were silently overwritten by import order, which is the
+// exact fragility the registry coverage test now guards against.

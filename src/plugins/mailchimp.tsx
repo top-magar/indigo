@@ -1,6 +1,7 @@
-import React from "react";
-import { createPlugin } from "./sdk";
-import { Mail } from "lucide-react";
+import React from 'react';
+import { createPlugin } from './sdk';
+import { Mail } from 'lucide-react';
+import { safeUrl } from '@/shared/utils/safe-url';
 
 export const mailchimpPlugin = createPlugin({
   id: "mailchimp_subscribe",

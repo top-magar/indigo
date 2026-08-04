@@ -1,7 +1,17 @@
 import type { CSSProperties } from "react";
 
 import type { EditorBinding, EditorDevice } from "./document-v2";
-import type { StorefrontProduct } from "../renderer/storefront-renderer";
+
+/** A product as surfaced to the editor canvas and storefront renderer. */
+export type StorefrontProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  price: string;
+  compareAtPrice?: string | null;
+  images?: Array<{ url: string; alt?: string }> | null;
+};
 
 export type Device = EditorDevice;
 

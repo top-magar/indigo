@@ -9,23 +9,27 @@ export function addEl(tree: El[], containerId: string, el: El, index?: number): 
       else arr.push(el);
       return { ...n, content: arr };
     }
-    if (Array.isArray(n.content)) return { ...n, content: addEl(n.content, containerId, el, index) };
-    return n;
+    if (!Array.isArray(n.content)) return n;          // leaf — no change possible
+    const next = addEl(n.content, containerId, el, index);
+    return next === n.content ? n : { ...n, content: next };
   });
 }
 
 export function updateEl(tree: El[], updated: El): El[] {
   return tree.map((n) => {
     if (n.id === updated.id) return updated;
-    if (Array.isArray(n.content)) return { ...n, content: updateEl(n.content, updated) };
-    return n;
+    if (!Array.isArray(n.content)) return n;            // leaf — no match, no change
+    const next = updateEl(n.content, updated);
+    return next === n.content ? n : { ...n, content: next };
   });
 }
 
 export function deleteEl(tree: El[], id: string): El[] {
-  return tree.filter((n) => n.id !== id).map((n) => {
-    if (Array.isArray(n.content)) return { ...n, content: deleteEl(n.content, id) };
-    return n;
+  const filtered = tree.filter((n) => n.id !== id);
+  return filtered.map((n) => {
+    if (!Array.isArray(n.content)) return n;             // leaf — unchanged
+    const next = deleteEl(n.content, id);
+    return next === n.content ? n : { ...n, content: next };
   });
 }
 
@@ -49,6 +53,7 @@ export function moveEl(tree: El[], elId: string, targetContainerId: string, inde
   if (!el) return tree;
   const target = findEl(tree, targetContainerId);
   if (!target || !Array.isArray(target.content)) return tree;
+  // Fast path: el and target are the same container — just reorder.
   return addEl(deleteEl(tree, elId), targetContainerId, el, index);
 }
 
@@ -96,6 +101,18 @@ export function cloneEl(el: El): El {
   const id = v4();
   if (Array.isArray(el.content)) return { ...el, id, name: el.name + " copy", content: el.content.map(cloneEl) };
   return { ...el, id, name: el.name + " copy" };
+}
+
+export function countElements(tree: El[]): number {
+  let count = 0;
+  const walk = (nodes: El[]) => {
+    for (const n of nodes) {
+      count++;
+      if (Array.isArray(n.content)) walk(n.content);
+    }
+  };
+  walk(tree);
+  return count;
 }
 
 export const defaultBody: El = { id: "__body", type: "__body", name: "Body", styles: { display: "flex", flexDirection: "column", gap: "0px", minHeight: "100vh", width: "100%" }, content: [] };

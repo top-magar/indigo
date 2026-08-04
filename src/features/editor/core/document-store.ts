@@ -42,7 +42,37 @@ type DocumentActions = {
   failSave: (message: string, conflict?: boolean) => void;
 };
 
-// ─── Patch helpers ──────────────────────────────────────────
+// ─── Patch helpers ──────────────────────────────────────
+
+/**
+ * Fast structural equality — exits early on the first mismatch.
+ * Used as a short-circuit before the full JSON.stringify comparison
+ * in createPatch. For typical small edits this avoids allocating
+ * the full JSON strings for every node in the tree.
+ */
+function fastEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (a === null || b === null || typeof a !== "object" || typeof b !== "object") return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (let i = 0; i < keysA.length; i++) {
+    const k = keysA[i];
+    if (!(k in (b as Record<string, unknown>))) return false;
+    const va = (a as Record<string, unknown>)[k];
+    const vb = (b as Record<string, unknown>)[k];
+    // Fast leaf: primitives and references.
+    if (va === vb) continue;
+    // Fast leaf: both objects — recurse only on the value pair, not full-stringify.
+    if (typeof va === "object" && va !== null && typeof vb === "object" && vb !== null) {
+      if (!fastEqual(va, vb)) return false;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
 
 function flattenTree(tree: El[]): Map<string, El> {
   const map = new Map<string, El>();
@@ -67,7 +97,7 @@ function createPatch(before: El[], after: El[]): Patch {
     const aEl = aMap.get(id);
     if (!aEl) {
       patch.push({ id, before: bEl, after: null });
-    } else if (JSON.stringify(bEl) !== JSON.stringify(aEl)) {
+    } else if (!fastEqual(bEl, aEl)) {
       patch.push({ id, before: bEl, after: aEl });
     }
   }

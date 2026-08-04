@@ -13,7 +13,8 @@ import { tenants } from "@/db/schema/tenants"
 import { users } from "@/db/schema/users"
 import { authorizedAction, requireTenantUser } from "@/lib/auth"
 import type { Transaction } from "@/infrastructure/db"
-import { editorDocumentV2Schema, migrateEditorDocument, type EditorDocumentV2 } from "../core/document-v2"
+import { editorDocumentV2Schema, migrateEditorDocument, type EditorDocumentV2 } from "../core/document-v2";
+import { safeUrl } from "@/shared/utils/safe-url";
 import type {
   LoadEditorSessionResult,
   PageLeaseResult,
@@ -153,6 +154,14 @@ async function getPublicationIssues(
         const href = element.content.href
         if (href?.startsWith("#page:") && !pageSlugs.has(href.slice(6))) {
           issues.push({ code: "link", pageId: page.id, elementId: element.id, message: `Fix the broken page link in ${element.name}.` })
+        }
+        // URL scheme validation for every URL-like content field. This covers
+        // built-in href/src values and plugin endpoints/actions/URLs.
+        for (const [field, value] of Object.entries(element.content)) {
+          if (!/^(href|src|url|endpoint|action)$/i.test(field) || !value) continue
+          if (!safeUrl(value)) {
+            issues.push({ code: "link", pageId: page.id, elementId: element.id, message: `The ${field} in ${element.name} uses an unsafe URL scheme.` })
+          }
         }
       }
     })

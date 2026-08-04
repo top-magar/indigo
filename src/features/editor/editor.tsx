@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { updatePageSeo } from "./lib/queries";
 import { publishSite, validatePublication } from "./lib/session-actions";
 import type { El, EditorProps } from "./core/types";
-import { getAncestorPath } from "./core/tree-helpers";
+import { getAncestorPath, countElements } from "./core/tree-helpers";
 import { cn } from "@/shared/utils";
 import Recursive from "./canvas/recursive";
 import SnapDistances from "./canvas/overlays/snap-distances";
@@ -176,10 +176,16 @@ function EditorInner() {
           onOpenCommand={() => setShowCommands(true)}
         />
 
-      {saveStatus === 'error' && (
+      {(saveStatus === 'error' || saveStatus === 'conflict') && (
         <div role="status" className="flex h-9 shrink-0 items-center justify-center gap-2 border-b border-destructive/30 bg-destructive/10 px-4 text-xs text-destructive">
-          <span>{saveError || "Couldn’t save"}</span>
-          <button type="button" onClick={() => void retrySave()} className="h-7 rounded-md px-2 font-medium hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Retry</button>
+          <span>{saveError || (saveStatus === 'conflict' ? "This page was changed in another editor. Your local changes aren't saved yet." : "Couldn’t save")}</span>
+          {saveStatus === 'error' && <button type="button" onClick={() => void retrySave()} className="h-7 rounded-md px-2 font-medium hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Retry</button>}
+          {saveStatus === 'conflict' && (
+            <>
+              <button type="button" onClick={() => { downloadHTML(elements, { title: pageTitle, description: metaDescription, ogImage }); }} className="h-7 rounded-md border border-destructive/20 px-2 font-medium hover:bg-destructive/10">Download my copy</button>
+              <button type="button" onClick={() => window.location.reload()} className="h-7 rounded-md px-2 font-medium hover:bg-destructive/10">Reload</button>
+            </>
+          )}
         </div>
       )}
       {lease.state.status === 'blocked' && (
@@ -247,7 +253,7 @@ function EditorInner() {
               <button className={cn("hover:text-sidebar-foreground transition-colors", i === arr.length - 1 && "text-sidebar-foreground font-medium")} onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}>{el.name}</button>
             </span>
           ))}
-          <span className="ml-auto text-[10px] text-sidebar-foreground/20 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
+          <span className="ml-auto text-[10px] text-sidebar-foreground/20 tabular-nums shrink-0">{countElements(elements)} elements</span>
         </div>
       )}
 

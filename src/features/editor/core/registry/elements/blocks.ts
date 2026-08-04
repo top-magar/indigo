@@ -37,7 +37,7 @@ register({ type: 'testimonial', name: 'Testimonial', icon: Quote, color: '#f59e0
   ] as El[] }) });
 
 register({ type: 'pricing', name: 'Pricing', icon: CreditCard, color: '#d97706', group: 'Sections', isContainer: true,
-  factory: () => ({ id: v4(), type: 'container', name: 'Pricing Card', styles: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '40px', textAlign: 'center', border: '1px solid #e5e7eb', borderRadius: '16px', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'pricing', name: 'Pricing Card', styles: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '40px', textAlign: 'center', border: '1px solid #e5e7eb', borderRadius: '16px', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Plan', styles: { fontSize: '20px', fontWeight: '600' }, content: { innerText: 'Pro Plan' } },
     { id: v4(), type: 'container', name: 'Price Row', styles: { display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '4px' }, content: [
       { id: v4(), type: 'text', name: 'Price', styles: { fontSize: '56px', fontWeight: '800', lineHeight: '1' }, content: { innerText: '$49' } },
@@ -68,7 +68,7 @@ register({ type: 'stats', name: 'Stats', icon: Heading1, color: '#3b82f6', group
       { id: v4(), type: 'text', name: 'Num', styles: { fontSize: '48px', fontWeight: '800', lineHeight: '1', color: '#6366f1' }, content: { innerText: num } },
       { id: v4(), type: 'text', name: 'Label', styles: { fontSize: '14px', fontWeight: '500', opacity: '0.5' }, content: { innerText: label } },
     ] as El[] });
-    return { id: v4(), type: 'container', name: 'Stats', styles: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '40px', padding: '64px 24px', textAlign: 'center', width: '100%' }, content: [
+    return { id: v4(), type: 'stats', name: 'Stats', styles: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '40px', padding: '64px 24px', textAlign: 'center', width: '100%' }, content: [
       stat('10K+', 'Active Users'), stat('99.9%', 'Uptime'), stat('150+', 'Countries'), stat('4.9', 'Star Rating'),
     ] as El[] };
   } });

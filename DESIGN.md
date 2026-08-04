@@ -39,6 +39,17 @@ This is a merchant workbench, not a graphics application. Default controls use c
 
 Below 1280px, the canvas becomes a storefront preview and advanced layout manipulation is disabled with a clear status message. Merchants can still change content, reorder sections, save, validate, and publish.
 
+## Collaboration Model
+
+The current editor deliberately uses **single-writer collaboration**, not real-time co-editing:
+
+- A page lease grants one editor session write access for 90 seconds and renews every 30 seconds.
+- Other sessions see who holds the lease and can explicitly take over. The takeover action is audited as an editor event.
+- Optimistic server revisions remain the final write guard; a conflict never silently overwrites either editor.
+- On conflict, the losing session can download its current page as HTML before reloading the server version.
+
+Real-time multi-writer collaboration (presence cursors, CRDT/OT document merging, per-element awareness) is **not in scope for v2**. It should be reconsidered only when observed simultaneous-edit frequency justifies the operational cost. Any future design must preserve the existing immutable publish snapshot and server-revision contracts; leases may then narrow to publish-level or destructive-operation locks.
+
 ## Content Voice
 
 Use direct merchant language: Add section, Connect collection, Store navigation, Preview store, Check before publishing, Publish changes, Restore this version. Avoid internal implementation terms such as nodes, JSON, schema, hydration, or CSS in default controls.
