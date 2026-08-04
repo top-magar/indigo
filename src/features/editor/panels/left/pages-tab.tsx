@@ -36,7 +36,7 @@ interface PageItem {
 
 type View = "list" | "templates" | "settings";
 
-export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: string; name: string; data: string | null }) => void }) {
+export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: string; name: string; slug?: string; data: string | null; serverRevision?: number }) => void }) {
   const { pageId, activePageId: _initialPageId } = useEditor();
   const activePageId = useEditorStore(s => s.currentPageId) ?? _initialPageId;
   const [pages, setPages] = useState<PageItem[]>([]);
@@ -61,7 +61,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
   const handleSelect = async (page: PageItem) => {
     const all = await getProjectPages(pageId);
     const found = all.find(p => p.id === page.id);
-    onPageChange({ id: page.id, name: page.name, data: found ? JSON.stringify(found.data) : null });
+    onPageChange({ id: page.id, name: page.name, slug: page.slug, data: found ? JSON.stringify(found.data) : null, serverRevision: found?.serverRevision ?? 0 });
   };
 
   const handleCreateFromTemplate = async (templateId: string) => {
@@ -77,7 +77,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
         await updatePage(page.id, { data: JSON.stringify(elements) });
       }
       await load();
-      onPageChange({ id: page.id, name: page.name, data: elements.length > 0 ? JSON.stringify(elements) : null });
+      onPageChange({ id: page.id, name: page.name, slug: page.slug, data: elements.length > 0 ? JSON.stringify(elements) : null, serverRevision: page.serverRevision });
     }
     setCreating(false);
     setView("list");

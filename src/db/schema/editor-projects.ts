@@ -13,6 +13,8 @@ export const editorProjects = pgTable("editor_projects", {
   themeConfig: jsonb("theme_config"),
   headerData: jsonb("header_data"),
   footerData: jsonb("footer_data"),
+  activePublishedVersionId: uuid("active_published_version_id"),
+  publicationVersion: integer("publication_version").default(0).notNull(),
   views: integer("views").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

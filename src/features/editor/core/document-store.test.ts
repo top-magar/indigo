@@ -85,4 +85,29 @@ describe("editor document store history", () => {
     expect(getBox().styles.width).toBe("160px");
     expect(getBox().styles.paddingTop).toBe("24px");
   });
+
+  it("acknowledges only the revision captured by an in-flight save", () => {
+    useDocumentStore.getState().updateElement({
+      ...getBox(),
+      styles: { ...getBox().styles, width: "120px" },
+    });
+    const capturedRevision = useDocumentStore.getState().localRevision;
+
+    useDocumentStore.getState().updateElement({
+      ...getBox(),
+      styles: { ...getBox().styles, width: "160px" },
+    });
+    useDocumentStore.getState().acknowledgeSave(capturedRevision, 4);
+
+    const pending = useDocumentStore.getState();
+    expect(pending.serverRevision).toBe(4);
+    expect(pending.acknowledgedLocalRevision).toBe(capturedRevision);
+    expect(pending.localRevision).toBeGreaterThan(capturedRevision);
+    expect(pending.dirty).toBe(true);
+    expect(pending.saveStatus).toBe("unsaved");
+
+    pending.acknowledgeSave(pending.localRevision, 5);
+    expect(useDocumentStore.getState().dirty).toBe(false);
+    expect(useDocumentStore.getState().saveStatus).toBe("saved");
+  });
 });

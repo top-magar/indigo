@@ -6,6 +6,8 @@ import { tenants } from "@/db/schema/tenants"
 import { eq, and, sql } from "drizzle-orm"
 import { redirect, notFound } from "next/navigation"
 import DOMPurify from "isomorphic-dompurify"
+import { loadPublishedStorefront } from "@/features/editor/renderer/load-publication"
+import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
 
 export default async function CatchAllPage({
   params,
@@ -20,6 +22,11 @@ export default async function CatchAllPage({
   const [tenant] = await db.select({ id: tenants.id })
     .from(tenants).where(eq(tenants.slug, slug)).limit(1)
   if (!tenant) notFound()
+
+  const structuredPublication = await loadPublishedStorefront(tenant.id, pageSlug)
+  if (structuredPublication) {
+    return <StorefrontRenderer document={structuredPublication.page.document} context={structuredPublication.context} mode="live" />
+  }
 
   // Try to resolve as an editor page
   const [project] = await db.select({ id: editorProjects.id })

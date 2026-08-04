@@ -95,7 +95,7 @@ register({ type: 'checkoutSummary', name: 'Order Summary', icon: CreditCard, col
 // ─── Product Detail (extracted from @commercn/product-detail-01) ──
 register({ type: 'productDetail', name: 'Product Detail', icon: Package, color: '#10b981', group: 'E-Commerce', isContainer: true,
   factory: () => ({ id: v4(), type: 'productDetail', name: 'Product Detail', styles: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', padding: '48px 24px', width: '100%', maxWidth: '1200px', margin: '0 auto' },
-    responsiveStyles: { Tablet: { gridTemplateColumns: '1fr', gap: '32px', padding: '32px 16px' }, Mobile: { gridTemplateColumns: '1fr', gap: '24px', padding: '24px 16px' } },
+    responsiveStyles: { tablet: { gridTemplateColumns: '1fr', gap: '32px', padding: '32px 16px' }, mobile: { gridTemplateColumns: '1fr', gap: '24px', padding: '24px 16px' } },
     content: [
     // Left: Image gallery
     { id: v4(), type: 'container', name: 'Image Gallery', styles: { display: 'flex', gap: '8px' }, content: [

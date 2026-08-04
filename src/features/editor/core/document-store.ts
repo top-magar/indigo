@@ -12,6 +12,11 @@ export type Patch = { id: string; before: El | null; after: El | null }[];
 type DocumentState = {
   elements: El[];
   dirty: boolean;
+  localRevision: number;
+  acknowledgedLocalRevision: number;
+  serverRevision: number;
+  saveStatus: 'saved' | 'unsaved' | 'saving' | 'error' | 'conflict';
+  saveError: string | null;
   patches: Patch[];
   currentIndex: number;
   liveBaseElements: El[] | null;
@@ -28,10 +33,13 @@ type DocumentActions = {
   reorderElement: (elId: string, direction: 'up' | 'down') => void;
   duplicateElement: (elId: string, containerId: string) => void;
   setElements: (elements: El[]) => void;
-  loadData: (elements: El[]) => void;
+  loadData: (elements: El[], serverRevision?: number) => void;
   undo: () => void;
   redo: () => void;
   setDirty: (dirty: boolean) => void;
+  markSaving: () => void;
+  acknowledgeSave: (localRevision: number, serverRevision: number) => void;
+  failSave: (message: string, conflict?: boolean) => void;
 };
 
 // ─── Patch helpers ──────────────────────────────────────────
@@ -122,6 +130,9 @@ function appendHistory(
   return {
     elements: after,
     dirty: true,
+    localRevision: state.localRevision + 1,
+    saveStatus: 'unsaved',
+    saveError: null,
     patches: [...kept, patch],
     currentIndex: kept.length + 1,
     liveBaseElements: null,
@@ -138,6 +149,11 @@ function pushHistory(state: DocumentState, elements: El[]): Partial<DocumentStat
 export const useDocumentStore = create<DocumentState & DocumentActions>()((set, get) => ({
   elements: [defaultBody],
   dirty: false,
+  localRevision: 0,
+  acknowledgedLocalRevision: 0,
+  serverRevision: 0,
+  saveStatus: 'saved',
+  saveError: null,
   patches: [],
   currentIndex: 0,
   liveBaseElements: null,
@@ -155,6 +171,9 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
     set(s => ({
       elements: updateEl(s.elements, element),
       dirty: true,
+      localRevision: s.localRevision + 1,
+      saveStatus: 'unsaved',
+      saveError: null,
       liveBaseElements: s.liveBaseElements ?? s.elements,
       liveBaseDirty: s.liveBaseElements ? s.liveBaseDirty : s.dirty,
     }));
@@ -187,9 +206,14 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
 
   setElements: (elements) => set(s => pushHistory(s, elements)),
 
-  loadData: (elements) => set({
+  loadData: (elements, serverRevision = 0) => set({
     elements,
     dirty: false,
+    localRevision: 0,
+    acknowledgedLocalRevision: 0,
+    serverRevision,
+    saveStatus: 'saved',
+    saveError: null,
     patches: [],
     currentIndex: 0,
     liveBaseElements: null,
@@ -204,6 +228,10 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
       return {
         elements,
         currentIndex: s.currentIndex - 1,
+        dirty: true,
+        localRevision: s.localRevision + 1,
+        saveStatus: 'unsaved',
+        saveError: null,
         liveBaseElements: null,
         liveBaseDirty: false,
       };
@@ -220,6 +248,10 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
       return {
         elements,
         currentIndex: s.currentIndex + 1,
+        dirty: true,
+        localRevision: s.localRevision + 1,
+        saveStatus: 'unsaved',
+        saveError: null,
         liveBaseElements: null,
         liveBaseDirty: false,
       };
@@ -228,5 +260,27 @@ export const useDocumentStore = create<DocumentState & DocumentActions>()((set, 
     if (sel) { const found = findEl(get().elements, sel.id); useEditorStore.getState().select(found ?? null); }
   },
 
-  setDirty: (dirty) => set({ dirty }),
+  setDirty: (dirty) => set(s => dirty
+    ? { dirty: true, localRevision: s.localRevision + 1, saveStatus: 'unsaved', saveError: null }
+    : { dirty: false, acknowledgedLocalRevision: s.localRevision, saveStatus: 'saved', saveError: null }),
+
+  markSaving: () => set({ saveStatus: 'saving', saveError: null }),
+
+  acknowledgeSave: (localRevision, serverRevision) => set(s => {
+    const acknowledgedLocalRevision = Math.max(s.acknowledgedLocalRevision, localRevision);
+    const dirty = s.localRevision > acknowledgedLocalRevision;
+    return {
+      acknowledgedLocalRevision,
+      serverRevision,
+      dirty,
+      saveStatus: dirty ? 'unsaved' : 'saved',
+      saveError: null,
+    };
+  }),
+
+  failSave: (message, conflict = false) => set({
+    dirty: true,
+    saveStatus: conflict ? 'conflict' : 'error',
+    saveError: message,
+  }),
 }));

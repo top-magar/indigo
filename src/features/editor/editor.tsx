@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
-import { MIcon } from "./ui/m-icon";
 import { toast } from "sonner";
-import { savePage, publishPage, updatePageSeo } from "./lib/queries";
+import { updatePageSeo } from "./lib/queries";
+import { publishSite, validatePublication } from "./lib/session-actions";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
 import { cn } from "@/shared/utils";
@@ -20,96 +20,91 @@ import { LeftPanel, RightPanel } from "./panels";
 import { DragOverlayProvider } from "./canvas/drag-overlay";
 import { useCanvas } from "./canvas/use-canvas";
 import { useShortcuts } from "./core/use-shortcuts";
-import { downloadHTML, generateHTML } from "./export/html";
+import { downloadHTML } from "./export/html";
 import ShortcutsOverlay from "./toolbar/shortcuts-overlay";
+import { useRevisionAutosave } from "./core/use-revision-autosave";
+import { usePageLease } from "./core/use-page-lease";
+import { AddSectionDialog } from "./panels/left/add-section-dialog";
+import { EditorCommandPalette } from "./toolbar/command-palette";
+import { trackEditorEvent } from "./lib/editor-analytics";
 
 export default function Editor(props: EditorProps) {
   return <EditorProvider {...props}><EditorInner /></EditorProvider>;
 }
 
 function EditorInner() {
-  const { state, dispatch, pageId, pageName, tenantId, activePageId, themeConfig } = useEditor();
+  const { state, dispatch, pageId, activePageId, activePageName, activePageSlug, themeConfig, currency } = useEditor();
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
 
   const dirty = state.editor.dirty;
   const setDirty = useDocumentStore.getState().setDirty;
-  const [saving, setSaving] = useState(false);
   const [clipboard, setClipboard] = useState<El | null>(null);
   const [styleClipboard, setStyleClipboard] = useState<CSSProperties | null>(null);
-  const [pageTitle, setPageTitle] = useState(pageName);
+  const [pageTitle, setPageTitle] = useState(activePageName);
+  const [pageSlug, setPageSlug] = useState(activePageSlug);
   const [metaDescription, setMetaDescription] = useState("");
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [showCommands, setShowCommands] = useState(false);
   const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(activePageId ?? null);
-  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
+  const { saveStatus, saveError, saveNow, retrySave } = useRevisionAutosave({
+    projectId: pageId,
+    pageId: currentSubPageId,
+    pageName: pageTitle,
+    pageSlug,
+    currency,
+  });
+  const lease = usePageLease(pageId, currentSubPageId);
+  useEffect(() => { trackEditorEvent({ name: "editor_entered" }); }, []);
 
-  const currentPageRef = useRef(currentSubPageId);
-  currentPageRef.current = currentSubPageId;
-
-  const { canvasRef, canvasRefObj, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
+  const { canvasRef, canvasRefObj, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
 
   const handlePreview = () => {
-    const html = generateHTML(elements, { title: pageTitle, description: metaDescription, ogImage });
-    const blob = new Blob([html], { type: "text/html" });
-    window.open(URL.createObjectURL(blob), "_blank");
+    if (!currentSubPageId) return;
+    trackEditorEvent({ name: "storefront_previewed", viewport: device });
+    window.open(`/editor/preview?project=${pageId}&page=${currentSubPageId}`, "_blank", "noopener,noreferrer");
   };
 
-  // Auto-save — debounced 2s after last change, retry with backoff, save on unmount
-  const pageTitleRef = useRef(pageTitle);
-  pageTitleRef.current = pageTitle;
-  const savingRef = useRef(false);
-  const retryCount = useRef(0);
-
-  const doSave = useCallback(async () => {
-    if (savingRef.current) return;
-    savingRef.current = true;
-    setSaving(true);
-    try {
-      const freshElements = useDocumentStore.getState().elements;
-      await savePage({ id: pageId, name: pageTitleRef.current, content: JSON.stringify(freshElements), activePageId: currentPageRef.current });
-      if (mountedRef.current) setDirty(false);
-      retryCount.current = 0;
-    } catch {
-      retryCount.current++;
-    } finally {
-      savingRef.current = false;
-      if (mountedRef.current) setSaving(false);
-    }
-  }, [pageId, setDirty]);
-
-  useEffect(() => {
-    if (!dirty || savingRef.current) return;
-    const delay = retryCount.current > 0 ? Math.min(30000, 2000 * 2 ** retryCount.current) : 2000;
-    autoSaveTimer.current = setTimeout(doSave, delay);
-    return () => { if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current); };
-  }, [dirty, doSave]);
-
-  // Save on unmount (navigate away)
-  useEffect(() => () => {
-    if (useDocumentStore.getState().dirty) {
-      const els = useDocumentStore.getState().elements;
-      savePage({ id: pageId, name: pageTitleRef.current, content: JSON.stringify(els), activePageId: currentPageRef.current });
-    }
-  }, [pageId]);
-
   const handleSave = async () => {
-    try {
-      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements), activePageId: currentSubPageId });
-      toast.success("Saved"); setDirty(false);
-    } catch { toast.error("Could not save"); }
+    if (lease.state.status === 'blocked') {
+      toast.error(`This page is being edited by ${lease.state.holderName}`);
+      return;
+    }
+    const saved = await saveNow();
+    if (saved) toast.success("Changes saved");
+    else toast.error(useDocumentStore.getState().saveError || "Couldn’t save");
   };
 
   const handlePublish = async () => {
-    try {
-      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements), activePageId: currentSubPageId });
-      setDirty(false);
-      await publishPage({ id: pageId, name: pageTitle });
-      toast.success("Saved and published");
-    } catch { toast.error("Could not publish"); }
+    if (lease.state.status === 'blocked') {
+      toast.error(`This page is being edited by ${lease.state.holderName}`);
+      return;
+    }
+    const saved = await saveNow();
+    if (!saved) {
+      toast.error("Save the latest changes before publishing");
+      return;
+    }
+    const validation = await validatePublication(pageId);
+    if (!validation.ok) {
+      toast.error(validation.message);
+      return;
+    }
+    if (!validation.ready) {
+      trackEditorEvent({ name: "publication_validation_failed", issueCount: validation.issues.length });
+      toast.error(validation.issues[0]?.message || "Resolve the publication checklist first");
+      return;
+    }
+    const published = await publishSite(pageId);
+    if (!published.ok) {
+      toast.error(published.message);
+      return;
+    }
+    toast.success(`Published version ${published.version}`);
+    trackEditorEvent({ name: "site_published", version: published.version });
   };
 
   const handleExportHTML = () => {
@@ -119,12 +114,13 @@ function EditorInner() {
 
   const baseKeyDown = useShortcuts({ selected, elements, clipboard, setClipboard, styleClipboard, setStyleClipboard, dispatch, setDirty, setZoom, handleSave, zoomReset, zoomToFit, zoomToRect });
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setShowCommands(true); return; }
     if (e.key === "?" && !(e.target as HTMLElement).matches("input,textarea,[contenteditable]")) { setShowShortcuts(s => !s); return; }
     baseKeyDown(e);
   }, [baseKeyDown]);
 
   const body = elements[0];
-  const deviceWidth = device === "Desktop" ? "100vw" : device === "Tablet" ? 768 : 420;
+  const deviceWidth = device === "desktop" ? "100vw" : device === "tablet" ? 768 : 390;
 
   const seoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveSeo = useCallback((field: string, value: string) => {
@@ -135,48 +131,64 @@ function EditorInner() {
     }, 1000);
   }, [currentSubPageId]);
 
-  const handlePageSwitch = useCallback(async (page: { id: string; name: string; data: string | null }) => {
-    // Save current page first if dirty
-    const isDirty = useDocumentStore.getState().dirty;
-    if (isDirty && currentPageRef.current) {
-      const freshElements = useDocumentStore.getState().elements;
-      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentPageRef.current });
-      useDocumentStore.getState().setDirty(false);
+  const handlePageSwitch = useCallback(async (page: { id: string; name: string; slug?: string; data: string | null; serverRevision?: number }) => {
+    const saved = await saveNow();
+    if (!saved) {
+      toast.error("Retry saving before changing pages");
+      return;
     }
     // Switch page
     setCurrentSubPageId(page.id);
-    currentPageRef.current = page.id;
     useEditorStore.getState().setCurrentPageId(page.id);
     setPageTitle(page.name);
+    setPageSlug(page.slug ?? "");
     if (page.data) {
       try {
         const parsed = JSON.parse(page.data);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          dispatch({ type: 'LOAD_DATA', payload: { elements: parsed } });
+        const nextElements = Array.isArray(parsed) ? parsed : parsed?.schemaVersion === 2 ? parsed.root : null;
+        if (Array.isArray(nextElements) && nextElements.length > 0) {
+          useDocumentStore.getState().loadData(nextElements, page.serverRevision ?? 0);
           return;
         }
       } catch { /* invalid */ }
     }
-    dispatch({ type: 'LOAD_DATA', payload: { elements: [{ id: '__body', type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: [] }] } });
-  }, [dispatch, pageId, pageTitle]);
+    useDocumentStore.getState().loadData([{ id: '__body', type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: [] }], page.serverRevision ?? 0);
+  }, [saveNow]);
 
   return (
     <DragOverlayProvider>
     <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
       <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
-          dirty={dirty} saving={saving} zoom={zoom}
+          dirty={dirty} saving={saveStatus === 'saving'} zoom={zoom}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={zoomIn} onZoomOut={zoomOut} onZoomReset={zoomReset}
           onSave={handleSave} onPreview={handlePreview} onExportHTML={handleExportHTML} onPublish={handlePublish}
+          onOpenCommand={() => setShowCommands(true)}
         />
 
+      {saveStatus === 'error' && (
+        <div role="status" className="flex h-9 shrink-0 items-center justify-center gap-2 border-b border-destructive/30 bg-destructive/10 px-4 text-xs text-destructive">
+          <span>{saveError || "Couldn’t save"}</span>
+          <button type="button" onClick={() => void retrySave()} className="h-7 rounded-md px-2 font-medium hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Retry</button>
+        </div>
+      )}
+      {lease.state.status === 'blocked' && (
+        <div role="alert" className="flex min-h-10 shrink-0 items-center justify-center gap-3 border-b border-warning/40 bg-warning/10 px-4 text-xs text-foreground">
+          <span><strong>{lease.state.holderName}</strong> is editing this page. Editing is paused to prevent overwritten work.</span>
+          <button type="button" onClick={() => void lease.takeover()} className="h-8 rounded-md border bg-background px-3 font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Take over</button>
+        </div>
+      )}
+      <div className="hidden min-h-9 shrink-0 items-center justify-center border-b bg-muted/40 px-4 text-xs text-muted-foreground max-xl:flex">
+        Compact mode: content, section order, preview, save, and publish remain available. Layout editing requires a 1280px-wide window.
+      </div>
+
       <div className="flex flex-1 overflow-hidden min-h-0">
-        <LeftPanel onPageChange={handlePageSwitch} />
+        <LeftPanel onPageChange={handlePageSwitch} onAddSection={() => setShowLibrary(true)} />
 
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
-          <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
+          <div ref={canvasRef} onPointerDown={lease.state.status === 'blocked' ? undefined : onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor, lease.state.status === 'blocked' && "pointer-events-none opacity-70")} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
             <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z, ...(themeConfig ? { '--primary': themeConfig.primaryColor, backgroundColor: themeConfig.backgroundColor, color: themeConfig.textColor, fontFamily: `${themeConfig.bodyFont || 'Inter'}, system-ui, sans-serif` } : {}) } as React.CSSProperties}>
             {body && <Recursive element={body} />}
@@ -212,6 +224,8 @@ function EditorInner() {
       )}
 
       {showShortcuts && <ShortcutsOverlay onClose={() => setShowShortcuts(false)} />}
+      <AddSectionDialog open={showLibrary} onOpenChange={setShowLibrary} />
+      <EditorCommandPalette open={showCommands} onOpenChange={setShowCommands} onPreview={handlePreview} onPublish={() => void handlePublish()} onSave={() => void handleSave()} onOpenLibrary={() => setShowLibrary(true)} />
     </div>
     </DragOverlayProvider>
   );

@@ -56,6 +56,8 @@ export * from "./cod";
 export * from "./editor-projects";
 export * from "./editor-project-versions";
 export * from "./editor-pages";
+export * from "./editor-reusable-components";
+export * from "./editor-page-leases";
 export * from "./billing";
 export * from "./platform-invites";
 export * from "./tenant-kyc";

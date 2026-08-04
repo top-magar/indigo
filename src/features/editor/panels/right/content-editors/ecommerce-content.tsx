@@ -28,11 +28,11 @@ export function BindingSection({ selected, onUpdate }: { selected: El; onUpdate:
   };
 
   const setBinding = (field: string) => {
-    onUpdate({ ...selected, binding: { source: 'product', field, productId: binding?.productId } });
+    onUpdate({ ...selected, binding: { source: 'product', field, resourceId: binding?.source === 'product' ? binding.resourceId : undefined } });
   };
 
   const setProductId = (id: string) => {
-    onUpdate({ ...selected, binding: { source: 'product', field: binding?.field || 'name', productId: id } });
+    onUpdate({ ...selected, binding: { source: 'product', field: binding?.field || 'name', resourceId: id || undefined } });
   };
 
   const clearBinding = () => {
@@ -56,7 +56,7 @@ export function BindingSection({ selected, onUpdate }: { selected: El; onUpdate:
           <select value={binding.field} onChange={(e) => setBinding(e.target.value)} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
             {PRODUCT_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
           </select>
-          <select value={binding.productId || ''} onChange={(e) => setProductId(e.target.value)} onFocus={loadProducts} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
+          <select value={binding.source === 'product' ? binding.resourceId || '' : ''} onChange={(e) => setProductId(e.target.value)} onFocus={loadProducts} className="w-full h-8 rounded-md border border-sidebar-border bg-sidebar text-xs px-2">
             <option value="">All products (dynamic)</option>
             {loading && <option disabled>Loading...</option>}
             {products.map(p => <option key={p.id} value={p.id}>{p.name} — ${p.price}</option>)}

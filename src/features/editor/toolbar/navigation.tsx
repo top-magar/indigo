@@ -1,188 +1,151 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { MIcon } from "../ui/m-icon";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/shared/utils";
-import type { Device } from "../core/types";
-import { useEditor } from "../core/provider";
-import { k } from "../lib/keys";
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { cn } from "@/shared/utils"
+import { useEditor } from "../core/provider"
+import type { Device } from "../core/types"
+import { MIcon } from "../ui/m-icon"
 
-const devices: [Device, string, string][] = [
-  ["Desktop", "laptop_mac", "Desktop"],
-  ["Tablet", "tablet_mac", "Tablet"],
-  ["Mobile", "smartphone", "Mobile"],
-];
+const devices: Array<{ id: Device; icon: string; label: string }> = [
+  { id: "desktop", icon: "laptop_mac", label: "Desktop" },
+  { id: "tablet", icon: "tablet_mac", label: "Tablet" },
+  { id: "mobile", icon: "smartphone", label: "Mobile" },
+]
 
-interface Props {
-  pageTitle: string;
-  onPageTitleChange: (v: string) => void;
-  dirty: boolean;
-  saving: boolean;
-  zoom: number;
-  metaDescription: string;
-  onMetaDescriptionChange: (v: string) => void;
-  ogImage: string;
-  onOgImageChange: (v: string) => void;
-  onZoomIn: () => void;
-  onZoomOut: () => void;
-  onZoomReset?: () => void;
-  onSave: () => void;
-  onPreview: () => void;
-  onExportHTML: () => void;
-  onPublish: () => void;
+type Props = {
+  pageTitle: string
+  onPageTitleChange: (value: string) => void
+  dirty: boolean
+  saving: boolean
+  zoom: number
+  metaDescription: string
+  onMetaDescriptionChange: (value: string) => void
+  ogImage: string
+  onOgImageChange: (value: string) => void
+  onZoomIn: () => void
+  onZoomOut: () => void
+  onZoomReset?: () => void
+  onSave: () => void
+  onPreview: () => void
+  onExportHTML: () => void
+  onPublish: () => void
+  onOpenCommand: () => void
 }
 
-function Tip({ children, label }: { children: React.ReactNode; label: string }) {
-  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{label}</TooltipContent></Tooltip>;
-}
-
-function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean }) {
+function IconButton({ label, icon, onClick, disabled, active }: { label: string; icon: string; onClick?: () => void; disabled?: boolean; active?: boolean }) {
   return (
-    <Tip label={label}>
-      <button onClick={onClick} disabled={disabled}
-        className={cn("flex size-8 items-center justify-center rounded-md transition-all disabled:opacity-20",
-          active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground hover:bg-muted")}>
-        <MIcon name={icon} size={14} />
-      </button>
-    </Tip>
-  );
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" aria-label={label} onClick={onClick} disabled={disabled} className={cn(
+          "flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-30",
+          active && "bg-foreground text-background hover:bg-foreground hover:text-background",
+        )}>
+          <MIcon name={icon} size={14} />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
+  )
 }
 
 export default function EditorNavigation({
-  pageTitle, onPageTitleChange, dirty, saving, zoom,
-  metaDescription, onMetaDescriptionChange, ogImage, onOgImageChange,
-  onZoomIn, onZoomOut, onZoomReset, onSave, onPreview, onExportHTML, onPublish,
+  pageTitle,
+  onPageTitleChange,
+  dirty,
+  saving,
+  zoom,
+  metaDescription,
+  onMetaDescriptionChange,
+  ogImage,
+  onOgImageChange,
+  onZoomIn,
+  onZoomOut,
+  onZoomReset,
+  onSave,
+  onPreview,
+  onExportHTML,
+  onPublish,
+  onOpenCommand,
 }: Props) {
-  const { state, dispatch } = useEditor();
-  const device = state.editor.device;
-  const preview = state.editor.preview;
-  const canUndo = state.history.currentIndex > 0;
-  const canRedo = state.history.currentIndex < state.history.patchCount;
+  const { state, dispatch, pageName } = useEditor()
+  const canUndo = state.history.currentIndex > 0
+  const canRedo = state.history.currentIndex < state.history.patchCount
+  const saveLabel = saving ? "Saving" : dirty ? "Unsaved changes" : "Saved"
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <header className="flex h-11 items-center border-b border-border/50 bg-background pr-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
-
-        {/* ── Left ── */}
-        <div className="flex items-center gap-2 flex-1 min-w-0 h-full">
-          <div className="flex w-12 shrink-0 items-center justify-center h-full border-r border-sidebar-border">
-            <Tip label="Back to dashboard">
-              <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
-                <MIcon name="arrow_back" size={15} />
+    <TooltipProvider delayDuration={250}>
+      <header className="relative z-20 flex h-14 shrink-0 items-center gap-2 border-b bg-background px-3" onClick={(event) => event.stopPropagation()}>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/dashboard/pages" aria-label="Back to pages" className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                <MIcon name="arrow_back" size={14} />
               </Link>
-            </Tip>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Back to pages</TooltipContent>
+          </Tooltip>
+          <div className="hidden min-w-0 items-center gap-2 lg:flex">
+            <span className="max-w-36 truncate text-sm font-medium">{pageName}</span>
+            <MIcon name="chevron_right" size={13} className="text-muted-foreground" />
           </div>
-
           <input
-            className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-xs font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
+            aria-label="Page name"
             value={pageTitle}
-            onChange={(e) => onPageTitleChange(e.target.value)}
-            spellCheck={false}
+            onChange={(event) => onPageTitleChange(event.target.value)}
+            className="h-8 min-w-0 max-w-44 flex-1 rounded-md border border-transparent bg-transparent px-2 text-sm font-medium outline-none hover:border-border focus:border-ring"
           />
-
-          <span className="flex items-center gap-1 shrink-0">
-            {saving ? (
-              <MIcon name="sync" size={12} className="text-muted-foreground/40 animate-spin" />
-            ) : dirty ? (
-              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
-            ) : (
-              <MIcon name="cloud_done" size={12} className="text-emerald-500/50" />
-            )}
-          </span>
-        </div>
-
-        {/* ── Center ── */}
-        <div className="flex items-center gap-1 h-full">
-          <Btn icon="undo" label={`Undo ${k('⌘Z', 'Ctrl+Z')}`} onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
-          <Btn icon="redo" label={`Redo ${k('⌘⇧Z', 'Ctrl+Shift+Z')}`} onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
-
-          <div className="h-5 w-px bg-border/40 mx-1.5" />
-
-          <div className="flex items-center rounded-lg border border-border/40 p-0.5 gap-0 bg-muted/30">
-            {devices.map(([d, icon, label]) => (
-              <Tip key={d} label={label}>
-                <button onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
-                  className={cn("flex size-7 items-center justify-center rounded-md transition-all",
-                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground")}>
-                  <MIcon name={icon} size={13} />
-                </button>
-              </Tip>
-            ))}
+          <div role="status" aria-live="polite" className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
+            {saving ? <MIcon name="sync" size={13} className="animate-spin" /> : dirty ? <span className="size-2 rounded-full bg-warning" /> : <MIcon name="cloud_done" size={13} className="text-success" />}
+            <span>{saveLabel}</span>
           </div>
-
-          <div className="h-5 w-px bg-border/40 mx-1.5" />
-
-          <Btn icon="remove" label={`Zoom out ${k('⌘−', 'Ctrl+-')}`} onClick={onZoomOut} />
-          <Tip label={`Reset zoom ${k('⌘0', 'Ctrl+0')}`}>
-            <button onClick={onZoomReset} className="min-w-[40px] text-center text-[10px] font-mono text-muted-foreground/70 tabular-nums hover:text-foreground hover:bg-muted transition-colors rounded-md h-8 px-1">
-              {zoom}%
-            </button>
-          </Tip>
-          <Btn icon="add" label={`Zoom in ${k('⌘+', 'Ctrl++')}`} onClick={onZoomIn} />
         </div>
 
-        {/* ── Right ── */}
-        <div className="flex items-center gap-1 flex-1 justify-end min-w-0 h-full">
-          <Btn icon="visibility" label="Preview in new tab" onClick={onPreview} />
-          <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
+        <div className="flex items-center gap-1">
+          <IconButton label="Undo" icon="undo" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
+          <IconButton label="Redo" icon="redo" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
+          <div className="mx-1 hidden h-5 w-px bg-border sm:block" />
+          <div className="hidden items-center rounded-lg border bg-muted/40 p-0.5 sm:flex" aria-label="Storefront viewport">
+            {devices.map((device) => <IconButton key={device.id} label={`${device.label} viewport`} icon={device.icon} active={state.editor.device === device.id} onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: device.id } })} />)}
+          </div>
+        </div>
 
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-1">
+          <button type="button" onClick={onOpenCommand} className="hidden h-8 items-center gap-2 rounded-md border bg-background px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground md:flex">
+            <MIcon name="search" size={13} />
+            <span>Commands</span>
+            <kbd className="rounded border bg-muted px-1 py-0.5 font-sans text-[11px]">⌘K</kbd>
+          </button>
+          <IconButton label="Preview store" icon="visibility" onClick={onPreview} />
           <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
-                <MIcon name="tune" size={14} />
-              </button>
-            </PopoverTrigger>
+            <PopoverTrigger asChild><button type="button" aria-label="More editor actions" className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><MIcon name="more_horiz" size={15} /></button></PopoverTrigger>
             <PopoverContent align="end" className="w-80 p-0">
-              <div className="p-3 border-b border-border/40">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">SEO Preview</p>
+              <div className="border-b px-4 py-3">
+                <h3 className="text-sm font-semibold">Page settings</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">Search metadata and secondary editor actions.</p>
               </div>
-              {/* Google preview */}
-              <div className="px-3 py-2 bg-muted/30 border-b border-border/40">
-                <p className="text-xs text-blue-700 font-medium truncate leading-tight">{pageTitle || "Page Title"}</p>
-                <p className="text-xs text-emerald-700 truncate mt-0.5">yoursite.com/{pageTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}</p>
-                <p className="text-xs text-muted-foreground/70 line-clamp-2 mt-0.5 leading-relaxed">{metaDescription || "Add a meta description to improve search visibility…"}</p>
-              </div>
-              <div className="p-3 space-y-3">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Title</label>
-                    <span className={cn("text-[10px] tabular-nums", pageTitle.length > 60 ? "text-red-500" : "text-muted-foreground/40")}>{pageTitle.length}/60</span>
+              <div className="space-y-3 p-4">
+                <label className="block text-xs font-medium">Search description<Input value={metaDescription} onChange={(event) => onMetaDescriptionChange(event.target.value)} className="mt-1.5 h-9 text-xs" /></label>
+                <label className="block text-xs font-medium">Social image URL<Input value={ogImage} onChange={(event) => onOgImageChange(event.target.value)} className="mt-1.5 h-9 text-xs" /></label>
+                <div className="flex items-center justify-between border-t pt-3">
+                  <div className="flex items-center gap-1">
+                    <IconButton label="Zoom out" icon="remove" onClick={onZoomOut} />
+                    <button type="button" onClick={onZoomReset} className="h-8 min-w-12 rounded-md px-2 text-xs tabular-nums hover:bg-muted">{zoom}%</button>
+                    <IconButton label="Zoom in" icon="add" onClick={onZoomIn} />
                   </div>
-                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-xs" />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Description</label>
-                    <span className={cn("text-[10px] tabular-nums", metaDescription.length > 160 ? "text-red-500" : "text-muted-foreground/40")}>{metaDescription.length}/160</span>
-                  </div>
-                  <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)}
-                    className="w-full rounded-md border border-border/40 bg-transparent px-2 py-1.5 text-xs outline-none resize-none h-16 focus:border-primary/40 transition-colors" placeholder="Brief description for search engines…" />
-                </div>
-                <div>
-                  <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
-                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-xs" placeholder="https://…" />
-                  {ogImage && <img src={ogImage} alt="OG preview" className="mt-1.5 w-full h-20 object-cover rounded-md border border-border/40" />}
-                  <p className="text-[10px] text-muted-foreground/40 mt-1">1200×630px recommended</p>
+                  <button type="button" onClick={onExportHTML} className="h-8 rounded-md px-2 text-xs font-medium hover:bg-muted">Export HTML</button>
                 </div>
               </div>
             </PopoverContent>
           </Popover>
-
-          <div className="h-5 w-px bg-border/40 mx-0.5" />
-
-          <Btn icon="save" label={`Save ${k('⌘S', 'Ctrl+S')}`} onClick={onSave} disabled={!dirty && !saving} />
-
-          <Button size="sm" onClick={onPublish}
-            className="h-8 gap-2 px-3.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
-            Publish
-          </Button>
+          <Button variant="outline" size="sm" onClick={onSave} disabled={!dirty || saving} className="hidden h-8 sm:inline-flex">Save</Button>
+          <Button size="sm" onClick={onPublish} disabled={saving} className="h-8">Publish</Button>
+          <div className="ml-1 flex size-8 items-center justify-center rounded-full border bg-muted text-xs font-semibold" aria-label="One editor present">1</div>
         </div>
-
       </header>
     </TooltipProvider>
-  );
+  )
 }

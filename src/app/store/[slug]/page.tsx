@@ -13,6 +13,8 @@ import { DefaultHomepage } from "@/components/store/default-homepage"
 import { SectionRenderer } from "@/features/store/section-renderer"
 import { PasswordGate } from "@/features/store/password-gate"
 import DOMPurify from "isomorphic-dompurify"
+import { loadPublishedStorefront } from "@/features/editor/renderer/load-publication"
+import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
 
 /** Extract content between <body> tags from full HTML document */
 function extractBodyContent(html: string): string {
@@ -48,6 +50,11 @@ export default async function StorePage({
   }).from(tenants).where(eq(tenants.slug, slug)).limit(1)
 
   if (!tenant) notFound()
+
+  const structuredPublication = await loadPublishedStorefront(tenant.id)
+  if (structuredPublication) {
+    return <StorefrontRenderer document={structuredPublication.page.document} context={structuredPublication.context} mode="live" />
+  }
 
   // Fetch layout + theme
   let layout

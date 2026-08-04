@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 
-export type Device = "Desktop" | "Tablet" | "Mobile";
+import type { EditorBinding, EditorDevice } from "./document-v2";
+
+export type Device = EditorDevice;
 
 export type El = {
   id: string;
@@ -11,9 +13,9 @@ export type El = {
   responsiveStyles?: Partial<Record<Device, CSSProperties>>;
   content: El[] | Record<string, string>;
   /** Data binding — connects content to a product field */
-  binding?: { source: 'product'; field: string; productId?: string };
+  binding?: EditorBinding;
   /** Repeat children for each product in a collection */
-  repeat?: { source: 'products'; collectionId?: string; limit?: number };
+  repeat?: { source: 'collection'; resourceId?: string; limit?: number };
   /** Prevent editing/moving */
   locked?: boolean;
   /** Hide from canvas (still in tree) */
@@ -23,8 +25,8 @@ export type El = {
 /** Resolve styles for a given device: base styles + device overrides */
 export function resolveStyles(el: El, device: Device): CSSProperties {
   if (!el.responsiveStyles) return el.styles;
-  // Desktop = base styles only. Tablet/Mobile = base + overrides.
-  if (device === "Desktop") return el.styles;
+  // Desktop = base styles only. Tablet/mobile add overrides.
+  if (device === "desktop") return el.styles;
   return { ...el.styles, ...el.responsiveStyles[device] };
 }
 
@@ -36,5 +38,10 @@ export type EditorProps = {
   initialContent: string | null;
   activePageId?: string | null;
   activePageName?: string;
+  activePageSlug?: string;
   themeConfig?: Record<string, string> | null;
+  initialServerRevision?: number;
+  initialDocumentVersion?: number;
+  siteSlug?: string | null;
+  currency?: string;
 };

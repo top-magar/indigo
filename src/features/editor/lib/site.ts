@@ -1,182 +1,173 @@
-'use server';
+"use server"
 
-import { db } from '@/infrastructure/db';
-import { editorProjects } from '@/db/schema/editor-projects';
-import { editorPages } from '@/db/schema/editor-pages';
-import { tenants } from '@/db/schema/tenants';
-import { eq, asc } from 'drizzle-orm';
-import { v4 } from 'uuid';
-import { requireUser } from '@/lib/auth';
+import { asc, eq } from "drizzle-orm"
+import { v4 } from "uuid"
+import { editorPages } from "@/db/schema/editor-pages"
+import { editorProjects } from "@/db/schema/editor-projects"
+import { tenants } from "@/db/schema/tenants"
+import { authorizedAction } from "@/lib/auth"
+import type { EditorDocumentV2 } from "../core/document-v2"
+import type { El } from "../core/types"
 
-/** Ensure tenant has exactly one site. Creates default pages if new. */
-export async function ensureTenantSite() {
-  const user = await requireUser();
-  const tenantId = user.tenantId;
-
-  // Check for existing site
-  const [existing] = await db.select({ id: editorProjects.id })
-    .from(editorProjects)
-    .where(eq(editorProjects.tenantId, tenantId))
-    .limit(1);
-
-  if (existing) return existing.id;
-
-  // Create site with tenant name
-  const [tenant] = await db.select({ name: tenants.name }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
-  const siteName = tenant?.name || 'My Store';
-  const siteSlug = siteName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const now = new Date();
-  const siteId = v4();
-  await db.insert(editorProjects).values({
-    id: siteId, tenantId, name: siteName, slug: siteSlug, data: [], createdAt: now, updatedAt: now,
-  }).onConflictDoNothing();
-
-  // Re-check in case another request created it
-  const [created] = await db.select({ id: editorProjects.id })
-    .from(editorProjects).where(eq(editorProjects.tenantId, tenantId)).limit(1);
-  if (!created) return siteId; // shouldn't happen
-  if (created.id !== siteId) return created.id; // another request won the race
-
-  // Create default pages
-  const body = (children: unknown[]) => [{ id: v4(), type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: children }];
-
-  const pages = [
-    {
-      name: 'Home', slug: 'home', order: 0, isHomepage: true,
-      data: body([
-        { id: v4(), type: 'hero', name: 'Hero', styles: { display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', padding: '96px 24px', textAlign: 'center', width: '100%', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }, content: [
-          { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '48px', fontWeight: '800', lineHeight: '1.1', color: '#ffffff', maxWidth: '640px' }, content: { innerText: 'Welcome to Our Store' } },
-          { id: v4(), type: 'text', name: 'Subtitle', styles: { fontSize: '18px', opacity: '0.7', color: '#ffffff', maxWidth: '480px' }, content: { innerText: 'Discover amazing products at great prices.' } },
-          { id: v4(), type: 'button', name: 'CTA', styles: { padding: '14px 36px', backgroundColor: '#10b981', color: '#ffffff', fontSize: '16px', fontWeight: '600', borderRadius: '8px', width: 'fit-content' }, content: { innerText: 'Shop Now', href: '#' } },
-        ] },
-        { id: v4(), type: 'shippingInfo', name: 'Trust Badges', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', padding: '48px 24px', width: '100%', maxWidth: '960px', margin: '0 auto' }, content: [
-          { id: v4(), type: 'container', name: 'Free Shipping', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '20px', borderRadius: '12px', backgroundColor: '#f8fafc', textAlign: 'center' }, content: [
-            { id: v4(), type: 'text', name: 'Icon', styles: { fontSize: '24px' }, content: { innerText: '🚚' } },
-            { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '14px', fontWeight: '600' }, content: { innerText: 'Free Shipping' } },
-            { id: v4(), type: 'text', name: 'Desc', styles: { fontSize: '12px', color: '#6b7280' }, content: { innerText: 'On orders over $50' } },
-          ] },
-          { id: v4(), type: 'container', name: 'Returns', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '20px', borderRadius: '12px', backgroundColor: '#f8fafc', textAlign: 'center' }, content: [
-            { id: v4(), type: 'text', name: 'Icon', styles: { fontSize: '24px' }, content: { innerText: '↩️' } },
-            { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '14px', fontWeight: '600' }, content: { innerText: '30-Day Returns' } },
-            { id: v4(), type: 'text', name: 'Desc', styles: { fontSize: '12px', color: '#6b7280' }, content: { innerText: 'Hassle-free returns' } },
-          ] },
-          { id: v4(), type: 'container', name: 'Secure', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '20px', borderRadius: '12px', backgroundColor: '#f8fafc', textAlign: 'center' }, content: [
-            { id: v4(), type: 'text', name: 'Icon', styles: { fontSize: '24px' }, content: { innerText: '🔒' } },
-            { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '14px', fontWeight: '600' }, content: { innerText: 'Secure Payment' } },
-            { id: v4(), type: 'text', name: 'Desc', styles: { fontSize: '12px', color: '#6b7280' }, content: { innerText: 'SSL encrypted' } },
-          ] },
-        ] },
-      ]),
+function starterPage(pageId: string, storeName: string, currency: string): EditorDocumentV2 {
+  const body: El = {
+    id: v4(),
+    type: "__body",
+    name: "Body",
+    styles: {
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
+      width: "100%",
+      fontFamily: "Inter, system-ui, sans-serif",
+      backgroundColor: "#ffffff",
+      color: "#18181b",
     },
-    {
-      name: 'About', slug: 'about', order: 1, isHomepage: false,
-      data: body([
-        { id: v4(), type: 'container', name: 'About Section', styles: { display: 'flex', flexDirection: 'column', gap: '16px', padding: '64px 24px', maxWidth: '720px', margin: '0 auto', width: '100%' }, content: [
-          { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '36px', fontWeight: '800', lineHeight: '1.2' }, content: { innerText: 'About Us' } },
-          { id: v4(), type: 'text', name: 'Story', styles: { fontSize: '16px', lineHeight: '1.8', color: '#4b5563' }, content: { innerText: 'We started with a simple idea: make great products accessible to everyone. Our team is passionate about quality, sustainability, and customer satisfaction. Every product in our store is carefully selected to meet our high standards.' } },
-          { id: v4(), type: 'text', name: 'Mission', styles: { fontSize: '16px', lineHeight: '1.8', color: '#4b5563' }, content: { innerText: 'Our mission is to provide an exceptional shopping experience with products you\'ll love, prices you\'ll appreciate, and service you can count on.' } },
-        ] },
-      ]),
-    },
-    {
-      name: 'Contact', slug: 'contact', order: 2, isHomepage: false,
-      data: body([
-        { id: v4(), type: 'container', name: 'Contact Section', styles: { display: 'flex', flexDirection: 'column', gap: '16px', padding: '64px 24px', maxWidth: '720px', margin: '0 auto', width: '100%' }, content: [
-          { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '36px', fontWeight: '800', lineHeight: '1.2' }, content: { innerText: 'Contact Us' } },
-          { id: v4(), type: 'text', name: 'Intro', styles: { fontSize: '16px', lineHeight: '1.8', color: '#4b5563' }, content: { innerText: 'Have a question or need help? We\'d love to hear from you. Reach out using any of the methods below.' } },
-          { id: v4(), type: 'text', name: 'Email', styles: { fontSize: '16px', color: '#111827' }, content: { innerText: '📧 support@yourstore.com' } },
-          { id: v4(), type: 'text', name: 'Phone', styles: { fontSize: '16px', color: '#111827' }, content: { innerText: '📞 +1 (555) 123-4567' } },
-          { id: v4(), type: 'text', name: 'Hours', styles: { fontSize: '14px', color: '#6b7280', marginTop: '8px' }, content: { innerText: 'Monday – Friday, 9am – 5pm EST' } },
-        ] },
-      ]),
-    },
-    {
-      name: 'Shop', slug: 'shop', order: 3, isHomepage: false,
-      data: body([
-        { id: v4(), type: 'container', name: 'Shop Header', styles: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '48px 24px 24px', width: '100%' }, content: [
-          { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '36px', fontWeight: '800' }, content: { innerText: 'All Products' } },
-          { id: v4(), type: 'text', name: 'Subtitle', styles: { fontSize: '16px', color: '#6b7280' }, content: { innerText: 'Browse our full collection' } },
-        ] },
-        { id: v4(), type: 'productGrid', name: 'Products', styles: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', padding: '24px', width: '100%' }, content: [
-          ...[['Classic T-Shirt', '$29.99'], ['Denim Jacket', '$89.99'], ['Running Shoes', '$119.99'], ['Leather Bag', '$149.99']].map(([name, price]) => ({
-            id: v4(), type: 'container', name: name as string, styles: { display: 'flex', flexDirection: 'column', gap: '12px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e5e7eb', backgroundColor: '#ffffff' }, content: [
-              { id: v4(), type: 'image', name: 'Image', styles: { width: '100%', height: '200px', objectFit: 'cover', backgroundColor: '#f3f4f6' }, content: { src: '', alt: name as string } },
-              { id: v4(), type: 'container', name: 'Info', styles: { display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px' }, content: [
-                { id: v4(), type: 'text', name: 'Name', styles: { fontSize: '14px', fontWeight: '600' }, content: { innerText: name as string } },
-                { id: v4(), type: 'text', name: 'Price', styles: { fontSize: '16px', fontWeight: '700', color: '#10b981' }, content: { innerText: price as string } },
-              ] },
-            ] })),
-        ] },
-      ]),
-    },
-  ];
-
-  const insertedPageIds: string[] = [];
-  for (const p of pages) {
-    const [inserted] = await db.insert(editorPages).values({
-      projectId: siteId, tenantId, name: p.name, slug: p.slug, order: p.order,
-      data: p.data, isHomepage: p.isHomepage, createdAt: now, updatedAt: now,
-    }).returning({ id: editorPages.id });
-    insertedPageIds.push(inserted.id);
+    content: [
+      {
+        id: v4(),
+        type: "container",
+        name: "Store introduction",
+        styles: {
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: "20px",
+          minHeight: "520px",
+          padding: "80px 6vw",
+          width: "100%",
+          backgroundColor: "#f4f4f5",
+        },
+        responsiveStyles: {
+          tablet: { minHeight: "440px", padding: "64px 32px" },
+          mobile: { minHeight: "380px", padding: "48px 20px" },
+        },
+        content: [
+          {
+            id: v4(),
+            type: "text",
+            name: "Store name",
+            styles: { fontSize: "56px", fontWeight: "700", lineHeight: "1.05", maxWidth: "760px" },
+            responsiveStyles: { tablet: { fontSize: "44px" }, mobile: { fontSize: "36px" } },
+            content: { innerText: storeName },
+            binding: { source: "store", field: "name" },
+          },
+          {
+            id: v4(),
+            type: "text",
+            name: "Introduction",
+            styles: { fontSize: "18px", lineHeight: "1.6", maxWidth: "600px", color: "#52525b" },
+            content: { innerText: "Introduce your store and what customers can discover here." },
+          },
+          {
+            id: v4(),
+            type: "button",
+            name: "Shop action",
+            styles: { width: "fit-content", padding: "12px 20px", borderRadius: "6px", backgroundColor: "#18181b", color: "#ffffff", fontWeight: "600" },
+            content: { innerText: "Shop products", href: "#" },
+          },
+        ],
+      },
+      {
+        id: v4(),
+        type: "productGrid",
+        name: "Featured products",
+        styles: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "24px", padding: "64px 6vw", width: "100%" },
+        responsiveStyles: {
+          tablet: { gridTemplateColumns: "repeat(2, minmax(0, 1fr))", padding: "48px 32px" },
+          mobile: { gridTemplateColumns: "1fr", padding: "40px 20px" },
+        },
+        content: [],
+        repeat: { source: "collection", limit: 8 },
+      },
+    ],
   }
 
-  // Set nav config with real page IDs
-  await db.update(editorProjects).set({
-    navConfig: pages.map((p, i) => ({ id: v4(), label: p.name, pageId: insertedPageIds[i] })),
-    headerData: [{
-      id: v4(), type: 'container', name: 'Header', styles: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', backgroundColor: '#000000', color: '#ffffff', width: '100%' }, content: [
-        { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '20px', fontWeight: '700', letterSpacing: '-0.02em', color: '#ffffff' }, content: { innerText: siteName } },
-        { id: v4(), type: 'container', name: 'Nav Links', styles: { display: 'flex', gap: '32px', alignItems: 'center' }, content:
-          pages.map(p => ({ id: v4(), type: 'link', name: p.name, styles: { fontSize: '14px', fontWeight: '500', color: '#ffffff', opacity: '0.7', textDecoration: 'none' }, content: { innerText: p.name, href: `#page:${p.slug}` } }))
-        },
-      ]
-    }],
-    footerData: [{
-      id: v4(), type: 'container', name: 'Footer', styles: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '48px 32px', backgroundColor: '#000000', color: '#ffffff', width: '100%', marginTop: 'auto' }, content: [
-        { id: v4(), type: 'container', name: 'Footer Top', styles: { display: 'flex', justifyContent: 'space-between', gap: '48px' }, content: [
-          { id: v4(), type: 'container', name: 'Brand', styles: { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1.5' }, content: [
-            { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '20px', fontWeight: '700', color: '#ffffff' }, content: { innerText: siteName } },
-            { id: v4(), type: 'text', name: 'Tagline', styles: { fontSize: '14px', opacity: '0.5', lineHeight: '1.6', maxWidth: '280px', color: '#ffffff' }, content: { innerText: 'Building the future, one product at a time.' } },
-          ] },
-          { id: v4(), type: 'container', name: 'Links', styles: { display: 'flex', flexDirection: 'column', gap: '10px', flex: '1' }, content:
-            pages.map(p => ({ id: v4(), type: 'link', name: p.name, styles: { fontSize: '14px', opacity: '0.6', color: '#ffffff', textDecoration: 'none' }, content: { innerText: p.name, href: `#page:${p.slug}` } }))
-          },
-        ] },
-        { id: v4(), type: 'divider', name: 'Divider', styles: { borderTop: '1px solid rgba(255,255,255,0.1)', width: '100%' }, content: {} },
-        { id: v4(), type: 'text', name: 'Copyright', styles: { fontSize: '13px', opacity: '0.35', textAlign: 'center', color: '#ffffff' }, content: { innerText: `© ${new Date().getFullYear()} ${siteName}. All rights reserved.` } },
-      ]
-    }],
-  }).where(eq(editorProjects.id, siteId));
-
-  return siteId;
+  return {
+    schemaVersion: 2,
+    page: { id: pageId, name: "Home", slug: "" },
+    root: [body],
+    settings: { currency, locale: "en-NP" },
+  }
 }
 
-/** Get the tenant's site ID */
+/** Ensure a tenant has one storefront project and a V2 starter page. */
+export async function ensureTenantSite() {
+  return authorizedAction(async (tx, tenantId) => {
+    const [existing] = await tx.select({ id: editorProjects.id }).from(editorProjects)
+      .where(eq(editorProjects.tenantId, tenantId)).limit(1)
+    if (existing) return existing.id
+
+    const [tenant] = await tx.select({
+      name: tenants.name,
+      slug: tenants.slug,
+      currency: tenants.displayCurrency,
+    }).from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+
+    const projectId = v4()
+    const pageId = v4()
+    const storeName = tenant?.name || "My Store"
+    const currency = tenant?.currency || "NPR"
+    const [created] = await tx.insert(editorProjects).values({
+      id: projectId,
+      tenantId,
+      name: storeName,
+      slug: tenant?.slug || null,
+      data: [],
+      navConfig: [{ id: v4(), label: "Home", pageId }],
+      headerData: [],
+      footerData: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }).onConflictDoNothing().returning({ id: editorProjects.id })
+
+    if (!created) {
+      const [winner] = await tx.select({ id: editorProjects.id }).from(editorProjects)
+        .where(eq(editorProjects.tenantId, tenantId)).limit(1)
+      if (!winner) throw new Error("Could not create storefront project")
+      return winner.id
+    }
+
+    await tx.insert(editorPages).values({
+      id: pageId,
+      projectId,
+      tenantId,
+      name: "Home",
+      slug: "",
+      order: 0,
+      data: starterPage(pageId, storeName, currency),
+      documentVersion: 2,
+      serverRevision: 0,
+      isHomepage: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    return projectId
+  })
+}
+
 export async function getTenantSiteId() {
-  const user = await requireUser();
-  const [site] = await db.select({ id: editorProjects.id })
-    .from(editorProjects)
-    .where(eq(editorProjects.tenantId, user.tenantId))
-    .limit(1);
-  return site?.id ?? null;
+  return authorizedAction(async (tx, tenantId) => {
+    const [site] = await tx.select({ id: editorProjects.id }).from(editorProjects)
+      .where(eq(editorProjects.tenantId, tenantId)).limit(1)
+    return site?.id ?? null
+  })
 }
 
-/** Get all pages for the tenant's site */
 export async function getTenantSitePages() {
-  const user = await requireUser();
-  const [site] = await db.select({ id: editorProjects.id, name: editorProjects.name, published: editorProjects.published, slug: editorProjects.slug })
-    .from(editorProjects)
-    .where(eq(editorProjects.tenantId, user.tenantId))
-    .limit(1);
-  if (!site) return { site: null, pages: [], tenantSlug: "" };
+  return authorizedAction(async (tx, tenantId) => {
+    const [site] = await tx.select({
+      id: editorProjects.id,
+      name: editorProjects.name,
+      published: editorProjects.published,
+      slug: editorProjects.slug,
+    }).from(editorProjects).where(eq(editorProjects.tenantId, tenantId)).limit(1)
+    if (!site) return { site: null, pages: [], tenantSlug: "" }
 
-  // Get tenant slug for store URLs
-  const [tenant] = await db.select({ slug: tenants.slug })
-    .from(tenants).where(eq(tenants.id, user.tenantId)).limit(1);
-
-  const pages = await db.select().from(editorPages)
-    .where(eq(editorPages.projectId, site.id))
-    .orderBy(asc(editorPages.order));
-
-  return { site, pages, tenantSlug: tenant?.slug || "" };
+    const [tenant, pages] = await Promise.all([
+      tx.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1),
+      tx.select().from(editorPages).where(eq(editorPages.projectId, site.id)).orderBy(asc(editorPages.order)),
+    ])
+    return { site, pages, tenantSlug: tenant[0]?.slug || "" }
+  })
 }

@@ -56,7 +56,9 @@ type EditorContextValue = {
   userId: string;
   activePageId: string | null;
   activePageName: string;
+  activePageSlug: string;
   themeConfig: Record<string, string> | null;
+  currency: string;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -126,7 +128,7 @@ export function useEditor() {
 
 type EditorProviderProps = EditorProps & { children: React.ReactNode };
 
-export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName, themeConfig }: EditorProviderProps) {
+export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName, activePageSlug, themeConfig, initialServerRevision = 0, currency = "NPR" }: EditorProviderProps) {
   useEffect(() => {
     if (initialContent) {
       try {
@@ -134,9 +136,12 @@ export function EditorProvider({ children, pageId, pageName, tenantId, userId, i
         if (Array.isArray(parsed) && parsed.length > 0) {
           const root = parsed[0];
           if (root && typeof root.id === 'string' && typeof root.type === 'string' && root.styles) {
-            useDocumentStore.getState().loadData(parsed as El[]);
+            useDocumentStore.getState().loadData(parsed as El[], initialServerRevision);
             return;
           }
+        } else if (parsed?.schemaVersion === 2 && Array.isArray(parsed.root) && parsed.root.length > 0) {
+          useDocumentStore.getState().loadData(parsed.root as El[], initialServerRevision);
+          return;
         }
       } catch { /* invalid JSON */ }
     }
@@ -148,15 +153,15 @@ export function EditorProvider({ children, pageId, pageName, tenantId, userId, i
       styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' },
       content: [],
     };
-    useDocumentStore.getState().loadData([body]);
-  }, [initialContent]);
+    useDocumentStore.getState().loadData([body], initialServerRevision);
+  }, [initialContent, initialServerRevision]);
 
   // Initialize currentPageId in store
   useEffect(() => {
     useEditorStore.getState().setCurrentPageId(activePageId ?? null);
   }, [activePageId]);
 
-  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home', themeConfig: themeConfig ?? null }), [pageId, pageName, tenantId, userId, activePageId, activePageName, themeConfig]);
+  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home', activePageSlug: activePageSlug ?? '', themeConfig: themeConfig ?? null, currency }), [pageId, pageName, tenantId, userId, activePageId, activePageName, activePageSlug, themeConfig, currency]);
 
   return <EditorContext.Provider value={ctx}>{children}</EditorContext.Provider>;
 }

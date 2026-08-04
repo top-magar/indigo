@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { cn } from "@/shared/utils";
 import { useEditor } from "../../core/provider";
@@ -20,20 +20,18 @@ export default function RightPanel() {
   const selected = state.editor.selected;
   const [collapsed, setCollapsed] = useState(false);
 
-  useEffect(() => { if (selected) setCollapsed(false); }, [selected]);
-
   const commitHistory = () => dispatch({ type: 'COMMIT_HISTORY' });
 
   return (
-    <div className={cn("flex h-full border-l border-sidebar-border transition-[width] duration-200", collapsed ? "w-10" : "w-64")} onBlur={commitHistory}>
+    <div className={cn("flex h-full border-l border-sidebar-border transition-[width] duration-200", collapsed ? "w-11" : "w-80")} onBlur={commitHistory}>
       {collapsed ? (
         <div className="flex w-10 flex-col items-center bg-sidebar py-2">
-          <button onClick={() => setCollapsed(false)} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors">
+          <button aria-label="Expand inspector" onClick={() => setCollapsed(false)} className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors">
             <MIcon name="chevron_left" size={16} />
           </button>
         </div>
       ) : (
-        <div className="flex w-64 flex-col overflow-hidden bg-sidebar">
+        <div className="flex w-80 flex-col overflow-hidden bg-sidebar">
           {/* Header */}
           <div className="flex h-10 items-center gap-2 border-b border-sidebar-border px-3 shrink-0">
             {selected ? (
@@ -47,7 +45,7 @@ export default function RightPanel() {
             ) : (
               <span className="text-xs text-muted-foreground/40 flex-1">No selection</span>
             )}
-            <button onClick={() => setCollapsed(true)} className="flex size-5 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground transition-colors shrink-0">
+            <button aria-label="Collapse inspector" onClick={() => setCollapsed(true)} className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors shrink-0">
               <MIcon name="chevron_right" size={12} />
             </button>
           </div>

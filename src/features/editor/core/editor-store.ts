@@ -27,7 +27,7 @@ export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) =>
   selected: null,
   hovered: null,
   dropTarget: null,
-  device: 'Desktop',
+  device: 'desktop',
   preview: false,
   zoom: 100,
   currentPageId: null,
