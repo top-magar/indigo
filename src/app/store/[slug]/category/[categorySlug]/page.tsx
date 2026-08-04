@@ -8,7 +8,7 @@ import { editorPages } from "@/db/schema/editor-pages"
 import { editorProjects } from "@/db/schema/editor-projects"
 import { eq, and } from "drizzle-orm"
 import { StorefrontRenderer, type StorefrontRenderContext, type StorefrontProduct } from "@/features/editor/renderer/storefront-renderer"
-import { parseEditorDocument } from "@/features/editor/core/document-v2"
+import { migrateEditorDocument, type EditorDocumentV2 } from "@/features/editor/core/document-v2"
 
 /**
  * Generate static params for all category pages
@@ -40,7 +40,7 @@ export default async function CategoryPage({
 
   // Parallel fetch: tenant and category at the same time
   const [tenantResult, categoryResult] = await Promise.all([
-    supabase.from("tenants").select("id, name").eq("slug", slug).single(),
+    supabase.from("tenants").select("id, name, currency").eq("slug", slug).single(),
     supabase.from("categories").select("*").eq("slug", categorySlug).single(),
   ])
 
@@ -110,20 +110,26 @@ export default async function CategoryPage({
 
       const context: StorefrontRenderContext = {
         store: { name: tenantResult.data?.name || slug, slug },
-        currency: "USD", // TODO: Get from store settings
+        currency: tenantResult.data?.currency || "USD",
         products: storefrontProducts,
         collections: { [category.id]: storefrontProducts.map(p => p.id) },
         activeCollection: { id: category.id, name: category.name, description: category.description }
       }
 
+      let document: EditorDocumentV2 | null = null
       try {
-        const document = parseEditorDocument({
-          schemaVersion: 2,
-          page: { id: "template", name: "Collection Template", slug: "template-collection" },
-          root: template.data,
-          settings: { currency: "USD", locale: "en-US" }
-        })
+        // Handles both legacy array data and v2 documents (after editor save)
+        document = migrateEditorDocument(
+          template.data,
+          { id: "template", name: "Collection Template", slug: "template-collection" },
+          tenantResult.data?.currency || "USD",
+        )
+      } catch (e) {
+        console.error("Failed to parse collection template", e)
+        // Fall back to hardcoded template
+      }
 
+      if (document) {
         return (
           <>
             <BreadcrumbJsonLd items={breadcrumbItems} />
@@ -133,9 +139,6 @@ export default async function CategoryPage({
             <StorefrontRenderer document={document} context={context} mode="live" />
           </>
         )
-      } catch (e) {
-        console.error("Failed to parse collection template", e)
-        // Fall back to hardcoded template
       }
     }
   }
