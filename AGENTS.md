@@ -165,3 +165,108 @@ These are real bugs found and fixed. Use as few-shot examples when auditing.
 **Orphaned data** — operations that create but don't clean up on failure:
 - Checkout created order but silently skipped payment when credentials missing
 - Khalti pidx stored outside transaction → callback can't find order
+
+---
+
+## Session Context (2026-08-05)
+
+> Written by Hermes Agent after a deep-dive session. **Source of truth** for what changed
+> and what's next. All agents: read this before making changes.
+
+### What was done this session
+
+Three commits on branch `codex/editor-merchant-workbench` (latest first):
+
+```
+e244b58a style(landing): apply Hermes Agent design language to Indigo landing
+2dd37b64 refactor(editor): harden renderer contracts, URL safety, and tree perf
+7cdf0c55 fix(storefront): support v2 collection-template documents on category pages
+```
+
+#### 1. Category page fixes (`7cdf0c55`)
+File: `src/app/store/[slug]/category/[categorySlug]/page.tsx`
+
+- **Lint fix**: moved JSX out of try/catch (4 `react-hooks/error-boundaries` errors → 0, CI unblocked)
+- **Currency fix**: `tenants.currency` now feeds `context.currency` + `settings.currency` (was hardcoded USD)
+- **v2 template shape fix**: `parseEditorDocument({root: template.data})` → `migrateEditorDocument(template.data)`. Without this, any merchant saving the collection template in the editor silently broke the live category page (v2 object put into a slot expecting a legacy array).
+
+#### 2. Editor hardening refactor (`2dd37b64`)
+21 files, +728/−220. The core of this session's editor work:
+
+| Fix | Files | What it solves |
+|---|---|---|
+| **renderer-manifests.ts** | +49 | Typed `Record<CanvasRendererType/StorefrontRendererType/ExportRendererType, Renderer>` — compile-time contract for the three parallel renderers |
+| **registry-coverage.test.ts** | +99 | 8 tests: every registered leaf must have canvas + storefront + export renderers (or explicit exclusion). Prevents the triple-renderer drift I flagged. |
+| **server-bootstrap.ts** | +27 | Server-safe registry bootstrap — storefront RSC never imports canvas client bundle (framer-motion, radix) |
+| **safe-url.ts** | +41 | URL scheme allowlist (`http/https/mailto/tel/relative/#page:`). Applied to canvas renderers, static export, plugins, AND publication validation in `session-actions.ts` (blocks unsafe URLs before publish). |
+| **content-utils.ts** | +41 | Shared `parseItems`/`parseCsv`/`parseNumber` — replaces the triplicated try/catch JSON parsing |
+| **fastEqual** in document-store.ts | +34 | Early-exit structural equality before JSON.stringify diffing (perf for large trees) |
+| **tree-helpers.ts** | +31 | Structural-sharing tree ops (`next === n.content ? n : {...}`) + `countElements` |
+| **Duplicate embed removed** | interactive.ts, media.ts | Was registered 3× via import-order-dependent overwrite |
+| **pricing/stats type bug** | blocks.ts | Factory emitted `type: 'container'` instead of own type |
+| **Conflict UX** | editor.tsx | "Download my copy" + "Reload" buttons when save conflicts |
+| **DESIGN.md** | +11 | Documents single-writer collaboration model, explicitly out-of-scope: real-time co-editing |
+
+Tests pass with this WIP: `registry-coverage.test.ts (8 tests)` now runs in CI.
+
+#### 3. Landing Hermes skin (`e244b58a`)
+Files: `landing.css` (+457), `landing-content.ts` (+3), `production-landing.tsx` (−1/+6)
+
+Transformed the Indigo marketing landing to match the Hermes Agent homepage design language:
+
+- **Canvas**: electric blue `#0000F2` (was ink `#080808`)
+- **Accent**: lime `#EDFF45` for CTAs, announcements, signal labels, diagram accents
+- **Display type**: UPPERCASE, weight 300, wide tracking (+0.02em) for h1/h2/h3
+- **Chrome**: UPPERCASE weight 800, 13px, +0.05em for nav/labels/buttons
+- **Hero**: three stacked display lines ("Build a store / no template / can contain.") via `titleLines: string[]` in `landing-content.ts`
+- **Buttons**: 2px radius, lime primary, hairline ghost variant
+- **Sheets**: translucent white panels `rgba(245,245,245,0.06)` on blue
+- **Product mockups** (editor demo, publish console, order route, payment switchboard): remain dark — they are screenshots of the product against the blue canvas
+- **Final CTA**: full lime band with blue text
+- **Announcement bar**: lime band with ink text
+- All 119 landing CSS classes covered; responsive breakpoints (1180/900/620) intact
+
+### Verification commands (run before committing anything)
+
+```bash
+pnpm run lint        # expect 0 errors, ~786 warnings (pre-existing)
+pnpm run test:run    # expect 71 tests pass (5 files)
+tsc --noEmit         # expect exit 0
+```
+
+### Current roadmap (prioritized)
+
+**P0 — Protect the money (1–2 sprints):**
+1. **Unit-test payment paths**: Stripe webhook (`src/app/api/webhooks/stripe/route.ts`), checkout route (`src/app/api/store/[slug]/checkout/route.ts`), eSewa/Khalti verification. Mock providers, assert order state transitions.
+2. **Unit-test 25 server-action files** (payments, verification, billing, shipping actions — zero coverage today).
+3. **Fix 35 React-compiler refs-during-render + 32 setState-in-effect warnings** (concentrated in `inventory-client.tsx` (25 alone), `motion-wrapper.tsx`, editor files).
+
+**P1 — Structural debt (ongoing):**
+4. **Continue Supabase→Drizzle migration**: 92 files still use raw Supabase client (`createClient`). Prioritize by tenant-scoping risk: storefront `product-data.ts`, dashboard categories/collections/media/team. Same batch-of-5 pattern as prior commits.
+5. **Resolve schema TODOs** — returns/store-credits (`orders/returns/actions.ts`, 12 TODOs), shipping zones, customer groups, discounts write path.
+6. **Implement or remove bulk email** — `bulk-actions/actions.ts:618` promises an action that no-ops.
+
+**P2 — Hygiene:**
+7. **A11y pass**: 39 unnamed buttons, 10 missing alt-text, 16 `<img>` (LCP).
+8. **API error-shape unification**: 5 legacy routes still return `{error}` + status (rest standardized on `{success, error}`).
+9. **Purge 482 unused-var warnings** — mostly dead code from refactors (e.g. `e2e/dashboard-collaboration.spec.ts` has 65 alone).
+10. **Add `og:image`** to the landing page (`page.tsx` metadata) — high-impact in Nepal where Facebook/Messenger shares dominate.
+
+### Working tree state
+
+Currently **clean** — all three commits are landed, no uncommitted files.
+
+Branch: `codex/editor-merchant-workbench`
+Dev server: user runs `pnpm dev` on port 3000 (`.env.local` present with Supabase credentials).
+
+### Architecture quick-reference for new agents
+
+**Data model**: `editor_projects` (1 per tenant) → `editor_pages` (multi-page sites) → `data` (JSONB v2 element tree). Publications: `editor_project_versions` (immutable snapshots). Page leases: `editor_page_leases` (90s TTL, 30s heartbeat).
+
+**Editor stores**: `document-store.ts` (elements, undo/redo, revision tracking) + `editor-store.ts` (selection, UI). Bridge in `provider.tsx`. Plugin SDK: `src/plugins/sdk.tsx` → `createPlugin()`.
+
+**Rendering**: Three parallel paths (canvas, storefront, static export) now compile-time-typed via `renderer-manifests.ts` and runtime-audited via `registry-coverage.test.ts`.
+
+**Auth**: `requireTenantUser()` → `user.tenantId`. `authorizedAction(tx, tenantId)`. Admin: `requireAdmin()`. All queries must filter by `tenantId` — no exceptions.
+
+**Supabase migration state**: ~296 raw `.from("string")` calls in 77 files vs 529 Drizzle calls. Migration commits should follow the existing "batch of 5" pattern.
