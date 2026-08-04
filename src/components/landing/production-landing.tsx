@@ -7,6 +7,7 @@ import {
   HeroDemo,
   LandingNavigation,
   LandingTelemetry,
+  StorefrontCompare,
 } from "./landing-interactions";
 
 function Crosshair({ className = "" }: { className?: string }) {
@@ -202,6 +203,14 @@ export function ProductionLanding() {
                 <LayerTree />
               </article>
             </div>
+
+            <div className="indigo-compare-band">
+              <div className="indigo-panel-copy">
+                <h3>Show the difference, not the feature list</h3>
+                <p>Move the divider to compare a fixed template storefront with an Indigo composition using the same product catalog.</p>
+              </div>
+              <StorefrontCompare />
+            </div>
           </div>
         </section>
 
@@ -213,6 +222,16 @@ export function ProductionLanding() {
               body="The path from product data to a branded storefront stays visible, reversible, and under the merchant's control."
             />
             <div className="indigo-workflow__track">
+              <svg className="indigo-workflow__beam" viewBox="0 0 1000 120" role="presentation" aria-hidden="true">
+                <path className="beam-base" d="M45 60H955" />
+                <path className="beam-active" d="M45 60H955" />
+                <g>
+                  <circle cx="45" cy="60" r="5" />
+                  <circle cx="348" cy="60" r="5" />
+                  <circle cx="652" cy="60" r="5" />
+                  <circle cx="955" cy="60" r="5" />
+                </g>
+              </svg>
               {landingContent.workflow.map((step, index) => (
                 <article key={step.title}>
                   <span>{String(index + 1).padStart(2, "0")}</span>

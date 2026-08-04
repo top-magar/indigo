@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { ArrowRight, Check, Menu, Minus, Plus, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import type { LandingAnalyticsEvent, LandingContent, LandingLink } from "./landing-content";
 
 const ATTRIBUTION_KEYS = [
@@ -162,6 +164,7 @@ export function HeroDemo({
 }) {
   const [activeId, setActiveId] = useState(variants[0].id);
   const [started, setStarted] = useState(false);
+  const reduceMotion = useReducedMotion();
   const active = variants.find((variant) => variant.id === activeId) ?? variants[0];
 
   const chooseVariant = (id: (typeof variants)[number]["id"]) => {
@@ -197,12 +200,23 @@ export function HeroDemo({
                 aria-selected={variant.id === activeId}
                 onClick={() => chooseVariant(variant.id)}
               >
+                {variant.id === activeId && (
+                  <motion.span
+                    layoutId="indigo-hero-layout-tab"
+                    className="indigo-editor-demo__tab-indicator"
+                    transition={
+                      reduceMotion
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 420, damping: 34 }
+                    }
+                  />
+                )}
                 <span className={`indigo-layout-icon indigo-layout-icon--${variant.id}`} aria-hidden="true">
                   <i />
                   <i />
                   <i />
                 </span>
-                {variant.label}
+                <span className="indigo-editor-demo__tab-label">{variant.label}</span>
               </button>
             ))}
           </div>
@@ -254,6 +268,87 @@ export function HeroDemo({
           <div className="indigo-control-row indigo-control-row--color"><span>Surface</span><i /></div>
           <div className="indigo-editor-demo__published"><Check aria-hidden="true" /> Changes saved</div>
         </aside>
+      </div>
+    </div>
+  );
+}
+
+export function StorefrontCompare() {
+  const [position, setPosition] = useState(58);
+
+  return (
+    <div
+      className="indigo-storefront-compare"
+      style={{ "--indigo-compare-position": `${position}%` } as CSSProperties}
+      role="group"
+      aria-label="Comparison between a rigid template storefront and an Indigo custom storefront"
+    >
+      <div className="indigo-storefront-compare__stage">
+        <div className="indigo-storefront-compare__pane indigo-storefront-compare__pane--template">
+          <header>
+            <strong>STANDARD TEMPLATE</strong>
+            <span>Theme 03</span>
+          </header>
+          <main>
+            <div className="indigo-template-hero">
+              <span />
+              <strong>Featured collection</strong>
+              <p>One hero, one grid, fixed rhythm.</p>
+            </div>
+            <div className="indigo-template-grid">
+              {[0, 1, 2, 3, 4, 5].map((item) => (
+                <span key={item} />
+              ))}
+            </div>
+          </main>
+        </div>
+
+        <div className="indigo-storefront-compare__pane indigo-storefront-compare__pane--indigo">
+          <header>
+            <strong>INDIGO COMPOSED</strong>
+            <span>Studio layout</span>
+          </header>
+          <main>
+            <div className="indigo-compare-artboard">
+              <div className="indigo-compare-artboard__copy">
+                <span>HANDWOVEN SERIES</span>
+                <strong>Objects made to travel.</strong>
+                <p>Editorial product story, catalog data, and checkout-ready blocks in one page.</p>
+              </div>
+              <div className="indigo-compare-artboard__media">
+                <Image
+                  src="/landing/indigo-woven-catalog.webp"
+                  alt="A woven tote and matching textile in an editorial product composition"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 768px) 88vw, 40vw"
+                />
+              </div>
+              <div className="indigo-compare-artboard__price">
+                <span>Woven carry / Ink</span>
+                <strong>NPR 8,400</strong>
+              </div>
+            </div>
+          </main>
+        </div>
+
+        <div className="indigo-storefront-compare__handle" aria-hidden="true">
+          <span />
+        </div>
+
+        <input
+          type="range"
+          min="22"
+          max="78"
+          value={position}
+          onChange={(event) => setPosition(Number(event.target.value))}
+          aria-label="Adjust storefront comparison"
+        />
+      </div>
+
+      <div className="indigo-storefront-compare__legend">
+        <span>Template constraint</span>
+        <span>Design without limits</span>
       </div>
     </div>
   );
