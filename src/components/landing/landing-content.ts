@@ -11,6 +11,8 @@ export type LandingContent = {
   };
   hero: {
     title: string;
+    /** Display lines — rendered stacked, uppercase (Hermes-style headline). */
+    titleLines: string[];
     body: string;
     primaryCta: LandingLink;
     secondaryCta: LandingLink;
@@ -59,6 +61,7 @@ export const landingContent = {
   },
   hero: {
     title: "Build a store no template can contain.",
+    titleLines: ["Build a store", "no template", "can contain."],
     body: "Indigo gives Nepal's merchants a visual storefront editor, connected catalog, orders, and local checkout in one system.",
     primaryCta: { label: "Start free", href: "/signup" },
     secondaryCta: { label: "See how it works", href: "#storefront" },

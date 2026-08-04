@@ -141,7 +141,11 @@ export function ProductionLanding() {
             <Crosshair className="is-top-right" />
             <div>
               <p className="indigo-hero__signal">Storefront system / Nepal</p>
-              <h1>{landingContent.hero.title}</h1>
+              <h1>
+                {landingContent.hero.titleLines.map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </h1>
             </div>
             <div className="indigo-hero__support">
               <p>{landingContent.hero.body}</p>

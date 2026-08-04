@@ -1389,3 +1389,460 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HERMES SKIN — visual language of hermes-agent.nousresearch.com
+   electric blue #0000F2 · off-white #F5F5F5 · lime #EDFF45
+   Display type: UPPERCASE, weight 300, wide tracking (editorial)
+   Chrome: UPPERCASE weight-800 micro-labels · 2px radii · hairline rules
+   Product mockups (editor demo, publish console, order route, switchboard)
+   stay dark — they are "screenshots" of the product on the blue canvas.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.landing-page {
+  --indigo-ink: #0000f2;
+  --indigo-panel: rgba(245, 245, 245, 0.07);
+  --indigo-panel-raised: rgba(245, 245, 245, 0.12);
+  --indigo-line: rgba(245, 245, 245, 0.3);
+  --indigo-line-soft: rgba(245, 245, 245, 0.14);
+  --indigo-white: #f5f5f5;
+  --indigo-muted: rgba(245, 245, 245, 0.62);
+  --indigo-blue: #edff45;
+  --indigo-blue-dark: #c9dd2e;
+  background: var(--indigo-ink);
+  color: var(--indigo-white);
+}
+
+.landing-page ::selection {
+  background: var(--indigo-blue);
+  color: var(--indigo-ink);
+}
+
+/* ─── Display type system ─────────────────────────────────── */
+.landing-page h1,
+.landing-page h2 {
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+.landing-page h3 {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* ─── Announcement — lime band ────────────────────────────── */
+.indigo-announcement {
+  background: var(--indigo-blue);
+  color: var(--indigo-ink);
+  border-bottom: 1px solid rgba(245, 245, 245, 0.25);
+}
+.indigo-announcement span,
+.indigo-announcement a {
+  color: var(--indigo-ink);
+}
+
+/* ─── Navigation — heavy-800 uppercase chrome ─────────────── */
+.indigo-nav {
+  background: rgba(0, 0, 242, 0.9);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.indigo-wordmark {
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+.indigo-wordmark__mark {
+  border-color: var(--indigo-blue);
+}
+.indigo-nav__links a,
+.indigo-text-link {
+  color: var(--indigo-white);
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+.indigo-nav__links a:hover,
+.indigo-text-link:hover {
+  color: var(--indigo-blue);
+}
+
+/* ─── Buttons — lime primary, hairline ghost, 2px radii ───── */
+.indigo-button {
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  background: var(--indigo-blue);
+  border-color: var(--indigo-blue);
+  color: var(--indigo-ink);
+}
+.indigo-button:hover {
+  transform: none;
+  background: var(--indigo-paper);
+  border-color: var(--indigo-paper);
+  color: var(--indigo-ink);
+}
+.indigo-button--ghost {
+  background: transparent;
+  border-color: rgba(245, 245, 245, 0.45);
+  color: var(--indigo-white);
+}
+.indigo-button--ghost:hover {
+  background: transparent;
+  border-color: var(--indigo-blue);
+  color: var(--indigo-blue);
+}
+.indigo-button--light {
+  background: var(--indigo-paper);
+  border-color: var(--indigo-paper);
+  color: var(--indigo-ink);
+}
+.indigo-button--light:hover {
+  background: var(--indigo-blue);
+  border-color: var(--indigo-blue);
+  color: var(--indigo-ink);
+}
+.indigo-icon-button {
+  border-radius: 2px;
+}
+.landing-page :is(a, button):focus-visible {
+  outline: 2px solid var(--indigo-blue);
+  outline-offset: 3px;
+}
+
+/* ─── Hero — flat electric blue, stacked headline ─────────── */
+.indigo-hero {
+  background: var(--indigo-ink);
+  background-image: none;
+}
+.indigo-hero__copy {
+  background: transparent;
+}
+.indigo-hero__signal {
+  color: var(--indigo-blue);
+}
+.indigo-hero h1 {
+  font-weight: 300;
+  letter-spacing: 0.012em;
+  line-height: 0.9;
+}
+.indigo-hero h1 span {
+  display: block;
+}
+.indigo-hero__support > p:first-child {
+  color: rgba(245, 245, 245, 0.85);
+}
+.indigo-hero__note {
+  color: rgba(245, 245, 245, 0.55);
+}
+.indigo-crosshair::before,
+.indigo-crosshair::after {
+  background: rgba(245, 245, 245, 0.4);
+}
+
+/* ─── Commerce proof ──────────────────────────────────────── */
+.indigo-commerce-proof article > span {
+  color: var(--indigo-blue);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.indigo-commerce-proof article strong {
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+.indigo-commerce-proof article p {
+  color: rgba(245, 245, 245, 0.65);
+}
+
+/* ─── Sheets become translucent white panels ──────────────── */
+.indigo-sheet {
+  background-color: transparent;
+}
+.indigo-sheet > .indigo-frame {
+  background: rgba(245, 245, 245, 0.06);
+  border-color: rgba(245, 245, 245, 0.18);
+}
+.indigo-section-heading h2 {
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+.indigo-section-heading p {
+  color: rgba(245, 245, 245, 0.7);
+}
+.indigo-section-heading.is-inverted p {
+  color: rgba(245, 245, 245, 0.65);
+}
+.indigo-panel-copy h3 {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.indigo-panel-copy p {
+  color: rgba(245, 245, 245, 0.7);
+}
+.indigo-operations .indigo-panel-copy p {
+  color: rgba(245, 245, 245, 0.65);
+}
+
+/* ─── System grid + blueprint diagram ─────────────────────── */
+.indigo-system-grid {
+  border-color: rgba(245, 245, 245, 0.18);
+}
+.indigo-system-grid article {
+  border-color: rgba(245, 245, 245, 0.18);
+}
+.indigo-responsive-blueprint {
+  background: rgba(245, 245, 245, 0.05);
+  border-color: rgba(245, 245, 245, 0.22);
+}
+.indigo-responsive-blueprint > svg {
+  stroke: rgba(245, 245, 245, 0.45);
+}
+.indigo-ruler {
+  color: rgba(245, 245, 245, 0.6);
+}
+.indigo-breakpoint {
+  border-color: rgba(245, 245, 245, 0.35);
+  background: rgba(245, 245, 245, 0.08);
+}
+.indigo-breakpoint header {
+  border-bottom-color: rgba(245, 245, 245, 0.25);
+}
+.indigo-breakpoint header i {
+  background: rgba(245, 245, 245, 0.55);
+}
+.indigo-breakpoint main div {
+  background: rgba(245, 245, 245, 0.2);
+}
+
+/* ─── Token system + layer tree ───────────────────────────── */
+.indigo-token-system__type strong {
+  color: var(--indigo-white);
+}
+.indigo-token-system__type p,
+.indigo-token-system__type span {
+  color: rgba(245, 245, 245, 0.6);
+}
+.indigo-token-system__scale em {
+  color: rgba(245, 245, 245, 0.6);
+}
+.indigo-token-system__palette span {
+  border-color: rgba(245, 245, 245, 0.45);
+  outline-color: rgba(245, 245, 245, 0.25);
+}
+.indigo-token-system__palette .is-ink {
+  background: #0000cc;
+}
+.indigo-layer-tree div {
+  border-color: rgba(245, 245, 245, 0.16);
+  color: var(--indigo-white);
+}
+.indigo-layer-tree em {
+  color: rgba(245, 245, 245, 0.55);
+}
+.indigo-layer-tree .is-active {
+  background: rgba(237, 255, 69, 0.14);
+  border-color: var(--indigo-blue);
+  color: var(--indigo-blue);
+}
+.indigo-layer-tree .is-active em {
+  color: var(--indigo-blue);
+}
+
+/* ─── Block library ───────────────────────────────────────── */
+.indigo-block-library article {
+  border-color: rgba(245, 245, 245, 0.16);
+  color: var(--indigo-white);
+}
+.indigo-block-library article em {
+  color: rgba(245, 245, 245, 0.55);
+}
+
+/* ─── Workflow — lime beam ────────────────────────────────── */
+.indigo-workflow__beam {
+  background: var(--indigo-blue);
+}
+.indigo-workflow__track p {
+  color: rgba(245, 245, 245, 0.65);
+}
+.indigo-workflow__track article > svg {
+  color: rgba(245, 245, 245, 0.5);
+}
+
+/* ─── Operations ──────────────────────────────────────────── */
+.indigo-operations {
+  background: var(--indigo-ink);
+}
+
+/* ─── Order route (dark product mockup) ───────────────────── */
+.indigo-order-route {
+  background-color: rgba(0, 0, 0, 0.35);
+  background-image:
+    linear-gradient(rgba(245, 245, 245, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 245, 245, 0.07) 1px, transparent 1px);
+  border-color: rgba(245, 245, 245, 0.22);
+}
+.indigo-order-route .route-base {
+  stroke: rgba(245, 245, 245, 0.4);
+}
+.indigo-order-route .route-active {
+  stroke: var(--indigo-blue);
+}
+.indigo-order-route__labels span {
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(245, 245, 245, 0.7);
+}
+.indigo-order-route__labels span.is-complete {
+  color: var(--indigo-blue);
+}
+.indigo-order-route__ticket {
+  border-color: rgba(245, 245, 245, 0.28);
+  background: rgba(245, 245, 245, 0.08);
+}
+.indigo-order-route__ticket span {
+  color: rgba(245, 245, 245, 0.55);
+}
+.indigo-order-route__ticket strong {
+  color: var(--indigo-blue);
+}
+.indigo-order-route__ticket em {
+  color: rgba(245, 245, 245, 0.6);
+}
+
+/* ─── Publish console (dark product mockup) ───────────────── */
+.indigo-publish-console {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(245, 245, 245, 0.22);
+}
+.indigo-publish-console__header {
+  border-bottom-color: rgba(245, 245, 245, 0.18);
+  color: rgba(245, 245, 245, 0.55);
+}
+.indigo-publish-console__header strong {
+  color: rgba(245, 245, 245, 0.8);
+}
+.indigo-publish-console__log p {
+  color: rgba(245, 245, 245, 0.7);
+}
+.indigo-publish-console__log p span {
+  color: rgba(245, 245, 245, 0.4);
+}
+.indigo-publish-console__result > span {
+  color: rgba(245, 245, 245, 0.5);
+}
+.indigo-publish-console__result strong {
+  color: var(--indigo-white);
+}
+.indigo-publish-console__result a {
+  color: var(--indigo-blue);
+}
+
+/* ─── Payment switchboard + inventory (dark mockups) ──────── */
+.indigo-payment-switchboard {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(245, 245, 245, 0.22);
+}
+.indigo-payment-switchboard .is-paper {
+  background: var(--indigo-paper);
+}
+.indigo-operations__inventory {
+  background: rgba(0, 0, 0, 0.35);
+  border-color: rgba(245, 245, 245, 0.22);
+}
+
+/* ─── Architecture diagram ────────────────────────────────── */
+.indigo-architecture-map svg path,
+.indigo-architecture-map svg circle {
+  stroke: rgba(245, 245, 245, 0.4);
+}
+.indigo-architecture-map svg .is-accent {
+  stroke: var(--indigo-blue);
+}
+.indigo-architecture-node {
+  border-color: rgba(245, 245, 245, 0.22);
+  background: rgba(245, 245, 245, 0.06);
+  color: var(--indigo-white);
+}
+.indigo-architecture-node span {
+  color: var(--indigo-blue);
+}
+.indigo-architecture-node em {
+  color: rgba(245, 245, 245, 0.6);
+}
+.indigo-architecture__facts {
+  color: rgba(245, 245, 245, 0.7);
+}
+
+/* ─── Offer / pricing ─────────────────────────────────────── */
+.indigo-offer__matrix div {
+  border-color: rgba(245, 245, 245, 0.16);
+}
+.indigo-offer__matrix strong {
+  font-weight: 300;
+}
+.indigo-offer__matrix em {
+  color: rgba(245, 245, 245, 0.55);
+}
+
+/* ─── Compare band (template pane stays light) ────────────── */
+.indigo-compare-artboard__copy p {
+  color: rgba(245, 245, 245, 0.65);
+}
+.indigo-storefront-compare__handle,
+.indigo-storefront-compare__handle span::before,
+.indigo-storefront-compare__handle span::after {
+  background: var(--indigo-blue);
+}
+
+/* ─── Final CTA — full lime band ──────────────────────────── */
+.indigo-final-cta {
+  background: var(--indigo-blue);
+  color: var(--indigo-ink);
+}
+.indigo-final-cta .indigo-section-heading p {
+  color: rgba(0, 0, 242, 0.75);
+}
+.indigo-final-cta .indigo-button {
+  background: var(--indigo-ink);
+  border-color: var(--indigo-ink);
+  color: var(--indigo-white);
+}
+.indigo-final-cta .indigo-button:hover {
+  background: #0000cc;
+  border-color: #0000cc;
+}
+
+/* ─── FAQ ─────────────────────────────────────────────────── */
+.indigo-faq__item {
+  border-color: rgba(245, 245, 245, 0.16);
+}
+.indigo-faq__item strong {
+  color: var(--indigo-white);
+}
+.indigo-faq__answer {
+  color: rgba(245, 245, 245, 0.7);
+}
+
+/* ─── Footer ──────────────────────────────────────────────── */
+.indigo-footer {
+  border-top-color: rgba(245, 245, 245, 0.18);
+}
+.indigo-footer__grid a {
+  color: var(--indigo-white);
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+.indigo-footer__grid a:hover {
+  color: var(--indigo-blue);
+}
+.indigo-footer__base {
+  color: rgba(245, 245, 245, 0.55);
+}
+.indigo-footer__brand strong {
+  color: var(--indigo-white);
+}
