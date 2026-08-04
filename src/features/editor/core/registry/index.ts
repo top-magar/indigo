@@ -3,12 +3,16 @@ import './elements/layout';
 import './elements/typography';
 import './elements/media';
 import './elements/interactive';
+import './elements/embed';
 import './elements/navigation';
 import './elements/forms';
 import './elements/blocks';
 import './elements/ecommerce';
 import './elements/marketing';
 import './renderers';
+import { registerPlugins } from '@/plugins';
+
+registerPlugins();
 
 import type { El } from '../types';
 import { registry, type ElementDef } from './types';
@@ -57,6 +61,6 @@ export function componentGroups(): { label: string; items: { type: string; label
     if (!groupMap.has(def.group)) groupMap.set(def.group, []);
     groupMap.get(def.group)!.push({ type: def.type, label: def.name, icon: def.icon, color: def.color });
   }
-  const order = ['Layout', 'Basic', 'Media', 'Sections', 'E-Commerce', 'Marketing', 'Navigation', 'Interactive', 'Forms'];
+  const order = ['Layout', 'Basic', 'Media', 'Sections', 'E-Commerce', 'Marketing', 'Navigation', 'Interactive', 'Forms', 'Plugins'];
   return order.filter(g => groupMap.has(g)).map(g => ({ label: g, items: groupMap.get(g)! }));
 }

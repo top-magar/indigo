@@ -47,6 +47,10 @@ export default function LeftPanel({ onPageChange, onAddSection }: LeftPanelProps
   const body = state.editor.elements[0]
   const sections = body && Array.isArray(body.content) ? body.content : []
 
+  const handleGlobalSection = (type: "header" | "footer") => {
+    // Placeholder for global section selection
+  };
+
   const loadPages = useCallback(async () => {
     setPages(await getProjectPages(pageId))
   }, [pageId])
@@ -104,7 +108,7 @@ export default function LeftPanel({ onPageChange, onAddSection }: LeftPanelProps
 
       <div className="flex-1 overflow-y-auto p-2">
         <div className="mb-1 px-2 py-1 text-xs font-medium text-muted-foreground">Global sections</div>
-        <button type="button" className="flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent">
+        <button type="button" onClick={() => handleGlobalSection("header")} className={cn("flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent", activePageId === "header" && "bg-sidebar-accent text-sidebar-accent-foreground")}>
           <MIcon name="web_asset" size={15} className="text-muted-foreground" />
           <span className="flex-1">Header</span>
           <span className="text-xs text-muted-foreground">Global</span>
@@ -184,7 +188,7 @@ export default function LeftPanel({ onPageChange, onAddSection }: LeftPanelProps
           <MIcon name="add" size={15} /> Add section
         </button>
 
-        <button type="button" className="mt-4 flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent">
+        <button type="button" onClick={() => handleGlobalSection("footer")} className={cn("mt-4 flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent", activePageId === "footer" && "bg-sidebar-accent text-sidebar-accent-foreground")}>
           <MIcon name="call_to_action" size={15} className="text-muted-foreground" />
           <span className="flex-1">Footer</span>
           <span className="text-xs text-muted-foreground">Global</span>

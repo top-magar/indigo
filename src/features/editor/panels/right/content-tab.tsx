@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import type { El } from "../../core/types";
+import { registry } from "../../core/registry/types";
 import { ContentField, fieldMeta, BindingSection, ContainerContent, EmptyState } from "./content-editors";
 
 export default function ContentTab({ selected, onUpdate }: { selected: El; onUpdate: (el: El) => void }) {
@@ -22,12 +23,20 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
           </div>
         )}
         <div className="divide-y divide-sidebar-border/20">
-          {filtered.map(([key, val]) => (
-            <div key={key} className="px-3 py-3">
-              <ContentField fieldKey={key} value={val}
-                onChange={(v) => onUpdate({ ...selected, content: { ...(content as Record<string, string>), [key]: v } })} />
-            </div>
-          ))}
+          {filtered.map(([key, val]) => {
+            const pluginDef = registry.get(selected.type)?.pluginProps?.[key];
+            const displayLabel = pluginDef?.label || fieldMeta[key]?.label || key;
+            return (
+              <div key={key} className="px-3 py-3">
+                <ContentField 
+                  fieldKey={key} 
+                  value={val}
+                  customLabel={displayLabel}
+                  onChange={(v) => onUpdate({ ...selected, content: { ...(content as Record<string, string>), [key]: v } })} 
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     );

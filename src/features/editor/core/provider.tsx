@@ -22,6 +22,7 @@ type EditorAction =
   | { type: 'TOGGLE_PREVIEW' }
   | { type: 'SET_HOVERED'; payload: { id: string | null } }
   | { type: 'SET_DROP_TARGET'; payload: { id: string | null } }
+  | { type: 'SET_EDITING_STATE'; payload: 'default' | 'hover' }
   | { type: 'LOAD_DATA'; payload: { elements: El[] } }
   | { type: 'SET_ELEMENTS'; payload: { elements: El[] } }
   | { type: 'UNDO' }
@@ -41,6 +42,7 @@ type EditorState = {
   dirty: boolean;
   clipboard: El | null;
   zoom: number;
+  editingState: 'default' | 'hover';
 };
 
 type HistoryState = { patchCount: number; currentIndex: number };
@@ -57,8 +59,12 @@ type EditorContextValue = {
   activePageId: string | null;
   activePageName: string;
   activePageSlug: string;
+  activePageSeoTitle: string | null;
+  activePageSeoDescription: string | null;
+  activePageOgImage: string | null;
   themeConfig: Record<string, string> | null;
   currency: string;
+  sampleProduct?: { id: string; name: string; price: number; compareAtPrice?: number | null; description?: string | null; slug: string; images: { url: string; alt: string }[] };
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -80,6 +86,7 @@ export function useEditor() {
   const device = useEditorStore(s => s.device);
   const preview = useEditorStore(s => s.preview);
   const zoom = useEditorStore(s => s.zoom);
+  const editingState = useEditorStore(s => s.editingState);
 
   const doc = useDocumentStore.getState();
   const ui = useEditorStore.getState();
@@ -99,6 +106,7 @@ export function useEditor() {
       case 'TOGGLE_PREVIEW': ui.togglePreview(); break;
       case 'SET_HOVERED': ui.hover(action.payload.id); break;
       case 'SET_DROP_TARGET': ui.setDropTarget(action.payload.id); break;
+      case 'SET_EDITING_STATE': ui.setEditingState(action.payload); break;
       case 'LOAD_DATA': doc.loadData(action.payload.elements); break;
       case 'SET_ELEMENTS': doc.setElements(action.payload.elements); break;
       case 'UNDO': {
@@ -117,18 +125,18 @@ export function useEditor() {
   }, [doc, ui]);
 
   const state: EditorStore = useMemo(() => ({
-    editor: { elements, selected, device, preview, hovered, dropTarget, dirty, clipboard: null, zoom },
+    editor: { elements, selected, device, preview, hovered, dropTarget, dirty, clipboard: null, zoom, editingState },
     history: { patchCount, currentIndex },
-  }), [elements, selected, device, preview, hovered, dropTarget, dirty, zoom, patchCount, currentIndex]);
+  }), [elements, selected, device, preview, hovered, dropTarget, dirty, zoom, editingState, patchCount, currentIndex]);
 
   return { state, dispatch, ...ctx };
 }
 
 // ─── Provider ───────────────────────────────────────────────
 
-type EditorProviderProps = EditorProps & { children: React.ReactNode };
+type EditorProviderProps = EditorProps & { children: React.ReactNode; sampleProduct?: any };
 
-export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName, activePageSlug, themeConfig, initialServerRevision = 0, currency = "NPR" }: EditorProviderProps) {
+export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent, activePageId, activePageName, activePageSlug, activePageSeoTitle, activePageSeoDescription, activePageOgImage, themeConfig, initialServerRevision = 0, currency = "NPR", sampleProduct }: EditorProviderProps) {
   useEffect(() => {
     if (initialContent) {
       try {
@@ -161,7 +169,7 @@ export function EditorProvider({ children, pageId, pageName, tenantId, userId, i
     useEditorStore.getState().setCurrentPageId(activePageId ?? null);
   }, [activePageId]);
 
-  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home', activePageSlug: activePageSlug ?? '', themeConfig: themeConfig ?? null, currency }), [pageId, pageName, tenantId, userId, activePageId, activePageName, activePageSlug, themeConfig, currency]);
+  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home', activePageSlug: activePageSlug ?? '', activePageSeoTitle: activePageSeoTitle ?? null, activePageSeoDescription: activePageSeoDescription ?? null, activePageOgImage: activePageOgImage ?? null, themeConfig: themeConfig ?? null, currency, sampleProduct }), [pageId, pageName, tenantId, userId, activePageId, activePageName, activePageSlug, activePageSeoTitle, activePageSeoDescription, activePageOgImage, themeConfig, currency, sampleProduct]);
 
   return <EditorContext.Provider value={ctx}>{children}</EditorContext.Provider>;
 }

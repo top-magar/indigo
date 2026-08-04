@@ -14,6 +14,8 @@ import { StoreFooter } from "@/components/store/store-footer"
 import { StoreShell } from "@/components/store/store-shell"
 import { retrieveCart } from "@/features/store/data/cart"
 import { CookieConsent } from "@/features/store/cookie-consent"
+import { ThemeProvider } from "@/components/store/theme-provider"
+import { type ThemeConfig, defaultThemeConfig } from "@/features/editor/lib/theme-utils"
 
 /** Cached tenant lookup via Drizzle (no RLS needed — public lookup by slug) */
 const getTenant = unstable_cache(
@@ -53,6 +55,19 @@ const getHomepageLayout = unstable_cache(
   },
   ["store-homepage-layout"],
   { revalidate: 300, tags: ["store-layout"] }
+)
+
+const getThemeConfigForTenant = unstable_cache(
+  async (tenantId: string) => {
+    const rows = await db.select({ themeConfig: editorProjects.themeConfig })
+      .from(editorProjects)
+      .where(eq(editorProjects.tenantId, tenantId))
+      .limit(1)
+    
+    return { ...defaultThemeConfig, ...(rows[0]?.themeConfig as Partial<ThemeConfig> | null) };
+  },
+  ["store-theme-config"],
+  { revalidate: 300, tags: ["store-theme"] }
 )
 
 export default async function StoreLayout({
@@ -112,7 +127,7 @@ export default async function StoreLayout({
     // Owner can preview — show banner below
   }
 
-  const [cats, cart, homepageLayout, navPages, paidPlanRows] = await Promise.all([
+  const [cats, cart, homepageLayout, navPages, paidPlanRows, themeConfig] = await Promise.all([
     getCategories(tenant.id),
     retrieveCart(tenant.id),
     getHomepageLayout(tenant.id),
@@ -129,6 +144,7 @@ export default async function StoreLayout({
     db.select({ id: subscriptions.id }).from(subscriptions)
       .where(and(eq(subscriptions.tenantId, tenant.id), eq(subscriptions.status, "active")))
       .limit(1),
+    getThemeConfigForTenant(tenant.id),
   ])
 
   const tenantSettings = (tenant.settings as Record<string, any>) ?? {}
@@ -138,24 +154,10 @@ export default async function StoreLayout({
   const cookieEnabled = themeOverrides.cookieConsent === true
   const cookieText = (themeOverrides.cookieText as string) || "We use cookies to improve your experience."
 
-  // Theme CSS variables from storefront settings — sanitized to prevent CSS injection
-  const sanitizeCss = (v: string, fallback: string) => {
-    const s = (v || fallback).replace(/[;{}()<>\\]/g, "").replace(/\/\*/g, "").replace(/\*\//g, "").trim()
-    return s || fallback
-  }
-  const sanitizeFont = (v: string, fallback: string) => {
-    const s = (v || fallback).replace(/[;{}()<>\\'"]/g, "").replace(/\/\*/g, "").trim()
-    return s || fallback
-  }
-  const primaryColor = sanitizeCss(sf.primaryColor as string, "#3b82f6")
-  const secondaryColor = sanitizeCss(sf.secondaryColor as string, "#8b5cf6")
-  const backgroundColor = sanitizeCss(sf.backgroundColor as string, "#ffffff")
-  const headingFont = sanitizeFont(sf.headingFont as string, "Inter")
-  const bodyFont = sanitizeFont(sf.bodyFont as string, "Inter")
+  // Storefront specific settings (announcement, footer text, etc.)
   const logoUrl = (sf.logoUrl as string) || tenant.logoUrl || ""
   const announcementBar = (sf.announcementBar as string) || ""
 
-  const cssVars = ""
   const fontsUrl = ""
   const hasPaidPlan = paidPlanRows.length > 0
 
@@ -167,7 +169,7 @@ export default async function StoreLayout({
   return (
     <CartProvider tenantId={tenant.id} initialCart={cart}>
       {fontsUrl && <link rel="stylesheet" href={fontsUrl} />}
-      {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
+      <ThemeProvider theme={themeConfig as ThemeConfig}>
       {/* Force light mode: override dark theme variables within store */}
       <div className="store-light" data-theme="light" style={{ colorScheme: "light" }}>
       <StoreShell
@@ -180,7 +182,7 @@ export default async function StoreLayout({
             </div>
           )}
           {announcementText && (
-            <div className="text-center py-2 px-4 text-sm font-medium text-white" style={{ backgroundColor: primaryColor }}>{announcementText}</div>
+            <div className="text-center py-2 px-4 text-sm font-medium text-white" style={{ backgroundColor: "var(--theme-primary)" }}>{announcementText}</div>
           )}
           <StoreHeader tenant={{ ...tenant as any, logoUrl }} categories={cats} navPages={navPages} />
         </>}
@@ -190,6 +192,7 @@ export default async function StoreLayout({
         <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
       </div>
+      </ThemeProvider>
     </CartProvider>
   )
 }

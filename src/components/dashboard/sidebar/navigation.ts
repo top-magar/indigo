@@ -13,6 +13,7 @@ import {
     ExternalLink,
     Gift,
     Warehouse,
+    Palette,
 } from "lucide-react";
 import type { NavGroup, NavItem } from "./types";
 
@@ -88,6 +89,13 @@ export function createNavigation(counts: {
                     href: "/dashboard/pages",
                     icon: Globe,
                     keywords: ["website", "pages", "editor", "builder", "storefront", "site"],
+                },
+                {
+                    id: "theme",
+                    title: "Theme",
+                    href: "/dashboard/storefront",
+                    icon: Palette,
+                    keywords: ["theme", "design", "colors", "fonts", "branding", "storefront"],
                 },
                 {
                     id: "media",

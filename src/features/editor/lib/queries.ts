@@ -167,31 +167,13 @@ export async function getNavConfig(projectId: string): Promise<NavItem[]> {
 
 // ─── Theme / Design Tokens ──────────────────────────────
 
-export type ThemeConfig = {
-  primaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  headingFont: string;
-  bodyFont: string;
-  borderRadius: string;
-  mode: 'light' | 'dark';
-};
-
-const defaultTheme: ThemeConfig = {
-  primaryColor: '#10b981',
-  backgroundColor: '#ffffff',
-  textColor: '#111827',
-  headingFont: 'Inter',
-  bodyFont: 'Inter',
-  borderRadius: '8px',
-  mode: 'light',
-};
+import { type ThemeConfig, defaultThemeConfig } from "./theme-utils";
 
 export async function getThemeConfig(projectId: string): Promise<ThemeConfig> {
   return authorizedAction(async (tx, tenantId) => {
     const [project] = await tx.select({ themeConfig: editorProjects.themeConfig }).from(editorProjects)
       .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
-    return { ...defaultTheme, ...(project?.themeConfig as Partial<ThemeConfig> | null) };
+    return { ...defaultThemeConfig, ...(project?.themeConfig as Partial<ThemeConfig> | null) };
   });
 }
 
@@ -199,7 +181,7 @@ export async function saveThemeConfig(projectId: string, theme: Partial<ThemeCon
   await authorizedAction(async (tx, tenantId) => {
     const [project] = await tx.select({ themeConfig: editorProjects.themeConfig }).from(editorProjects)
       .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
-    const current = { ...defaultTheme, ...(project?.themeConfig as Partial<ThemeConfig> | null) };
+    const current = { ...defaultThemeConfig, ...(project?.themeConfig as Partial<ThemeConfig> | null) };
     await tx.update(editorProjects).set({ themeConfig: { ...current, ...theme }, updatedAt: new Date() })
       .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
   });
@@ -220,6 +202,22 @@ export async function getHeaderFooter(projectId: string): Promise<{ header: unkn
     const [project] = await tx.select({ headerData: editorProjects.headerData, footerData: editorProjects.footerData })
       .from(editorProjects).where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
     return { header: project?.headerData as unknown[] | null, footer: project?.footerData as unknown[] | null };
+  });
+}
+
+export async function getProjectVersions(projectId: string) {
+  return authorizedAction(async (tx, tenantId) => {
+    const { editorProjectVersions } = await import("@/db/schema/editor-project-versions");
+    const { desc } = await import("drizzle-orm");
+    return tx.select({
+      id: editorProjectVersions.id,
+      version: editorProjectVersions.version,
+      label: editorProjectVersions.label,
+      createdAt: editorProjectVersions.createdAt,
+    })
+      .from(editorProjectVersions)
+      .where(and(eq(editorProjectVersions.projectId, projectId), eq(editorProjectVersions.tenantId, tenantId)))
+      .orderBy(desc(editorProjectVersions.version));
   });
 }
 

@@ -99,15 +99,16 @@ export const fieldMeta: Record<string, { icon: string; label: string }> = {
 
 // ─── Content Field ──────────────────────────────────────
 
-export function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: string; onChange: (v: string) => void }) {
+export function ContentField({ fieldKey, value, customLabel, onChange }: { fieldKey: string; value: string; customLabel?: string; onChange: (v: string) => void }) {
   const type = detectFieldType(fieldKey, value);
   const { icon, label } = fieldMeta[fieldKey] ?? { icon: 'edit', label: fieldKey };
+  const displayLabel = customLabel || label;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <MIcon name={icon} size={11} className="text-muted-foreground/40" />
-        <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
+        <span className="text-[10px] font-medium text-muted-foreground/70">{displayLabel}</span>
         <div className="flex-1" />
         {value && type !== 'image' && (
           <button onClick={() => onChange('')} className="text-muted-foreground/40 hover:text-destructive transition-colors"><MIcon name="close" size={9} /></button>

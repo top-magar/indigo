@@ -1,4 +1,6 @@
 import type { CSSProperties } from "react"
+import { ThemeProvider } from "@/components/store/theme-provider"
+import type { ThemeConfig } from "@/features/editor/lib/theme-utils"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { formatPrice } from "@/shared/currency"
 import type { EditorDocumentV2 } from "../core/document-v2"
@@ -21,12 +23,15 @@ export type StorefrontRenderContext = {
   collections?: Record<string, string[]>
   navigation?: Array<{ id: string; label: string; href: string }>
   cart?: { itemCount: number }
+  activeProduct?: StorefrontProduct
+  activeCollection?: { id: string; name: string; description?: string | null }
 }
 
 type RendererProps = {
   document: EditorDocumentV2
   context: StorefrontRenderContext
   mode?: "canvas" | "preview" | "live"
+  themeConfig?: Partial<ThemeConfig> | null
 }
 
 function kebabCase(value: string) {
@@ -66,10 +71,14 @@ function boundValue(element: El, context: StorefrontRenderContext, product?: Sto
     if (binding.field === "currency") return context.currency
   }
   if (binding.source === "cart" && binding.field === "itemCount") return String(context.cart?.itemCount ?? 0)
+  if (binding.source === "collection") {
+    if (binding.field === "name") return context.activeCollection?.name ?? null
+    if (binding.field === "description") return context.activeCollection?.description ?? null
+  }
   if (binding.source === "product") {
     const selected = binding.resourceId
       ? context.products.find((item) => item.id === binding.resourceId)
-      : product
+      : (product ?? context.activeProduct)
     if (!selected) return null
     if (binding.field === "name") return selected.name
     if (binding.field === "slug") return selected.slug
@@ -110,6 +119,10 @@ function ProductTile({ product, context, mode }: { product: StorefrontProduct; c
   )
 }
 
+import { MotionWrapper } from "../canvas/motion-wrapper"
+
+// ... inside StorefrontRenderer ...
+
 function Element({ element, context, mode, product }: { element: El; context: StorefrontRenderContext; mode: RendererProps["mode"]; product?: StorefrontProduct }) {
   if (element.hidden) return null
   const content = Array.isArray(element.content) ? null : element.content
@@ -121,34 +134,39 @@ function Element({ element, context, mode, product }: { element: El; context: St
   const style = element.styles as CSSProperties
   const common = { style, "data-storefront-element": element.id }
 
-  if (element.type === "__body") return <div {...common}>{children}</div>
-  if (["heading", "h1"].includes(element.type)) return <h1 {...common}>{text || children}</h1>
-  if (["h2", "sectionHeading"].includes(element.type)) return <h2 {...common}>{text || children}</h2>
-  if (["h3"].includes(element.type)) return <h3 {...common}>{text || children}</h3>
-  if (["text", "paragraph", "badge", "label"].includes(element.type)) return <p {...common}>{text}</p>
-  if (element.type === "image") {
+  let rendered: React.ReactNode = null;
+
+  if (element.type === "__body") rendered = <div {...common}>{children}</div>
+  else if (["heading", "h1"].includes(element.type)) rendered = <h1 {...common}>{text || children}</h1>
+  else if (["h2", "sectionHeading"].includes(element.type)) rendered = <h2 {...common}>{text || children}</h2>
+  else if (["h3"].includes(element.type)) rendered = <h3 {...common}>{text || children}</h3>
+  else if (["text", "paragraph", "badge", "label"].includes(element.type)) rendered = <p {...common}>{text}</p>
+  else if (element.type === "image") {
     const src = value || content?.src
-    return src
+    rendered = src
       // eslint-disable-next-line @next/next/no-img-element
       ? <img {...common} src={src} alt={content?.alt || element.name} />
       : <div {...common} aria-label={`${element.name}: no image selected`} />
   }
-  if (element.type === "divider") return <hr {...common} />
-  if (element.type === "input") return <input {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
-  if (element.type === "textarea") return <textarea {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
-  if (element.type === "link") return <a {...common} href={content?.href || "#"}>{text || children}</a>
-  if (element.type === "button") {
-    return content?.href
+  else if (element.type === "divider") rendered = <hr {...common} />
+  else if (element.type === "input") rendered = <input {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
+  else if (element.type === "textarea") rendered = <textarea {...common} aria-label={content?.label || element.name} placeholder={content?.placeholder} />
+  else if (element.type === "link") rendered = <a {...common} href={content?.href || "#"}>{text || children}</a>
+  else if (element.type === "button") {
+    rendered = content?.href
       ? <a {...common} href={content.href}>{text}</a>
       : <button {...common} type="button">{text}</button>
   }
-  if (element.type === "addToCart" && product) {
-    return <AddToCartButton productId={product.id} productName={product.name} price={Number(product.price)} image={product.images?.[0]?.url} text={text || "Add to cart"} style={style} />
+  else if (element.type === "addToCart" && product) {
+    rendered = <AddToCartButton productId={product.id} productName={product.name} price={Number(product.price)} image={product.images?.[0]?.url} text={text || "Add to cart"} style={style} />
   }
-  if (element.type === "productGrid" && element.repeat) {
-    const productIds = element.repeat.resourceId ? context.collections?.[element.repeat.resourceId] : undefined
+  else if (element.type === "productGrid" && element.repeat) {
+    let productIds = element.repeat.resourceId ? context.collections?.[element.repeat.resourceId] : undefined
+    if (!element.repeat.resourceId && context.activeCollection) {
+      productIds = context.collections?.[context.activeCollection.id]
+    }
     const repeatedProducts = productIds ? context.products.filter((item) => productIds.includes(item.id)) : context.products
-    return (
+    rendered = (
       <div {...common}>
         {repeatedProducts.slice(0, element.repeat.limit ?? 12).map((item) => (
           Array.isArray(element.content) && element.content.length > 0
@@ -158,26 +176,73 @@ function Element({ element, context, mode, product }: { element: El; context: St
       </div>
     )
   }
-  if (element.type === "navigation") {
-    return <nav {...common} aria-label={element.name}>{context.navigation?.map((item) => <a key={item.id} href={item.href}>{item.label}</a>)}</nav>
+  else if (element.type === "navigation") {
+    rendered = <nav {...common} aria-label={element.name}>{context.navigation?.map((item) => <a key={item.id} href={item.href}>{item.label}</a>)}</nav>
+  }
+  else if (element.type === "video") rendered = <iframe {...common} src={content?.src} allowFullScreen />
+  else if (element.type === "spacer") rendered = <div {...common} />
+  else if (element.type === "quote") rendered = <blockquote {...common}>{text}</blockquote>
+  else if (element.type === "list") rendered = <ul {...common} style={{ ...style, listStyleType: style.listStyleType as string || 'disc' }}>{(text || '').split('\n').map((li, i) => <li key={i}>{li}</li>)}</ul>
+  else if (element.type === "code") rendered = <pre {...common}><code>{text}</code></pre>
+  else if (element.type === "icon") rendered = <span {...common}>{text || '★'}</span>
+  else if (element.type === "embed") rendered = <div {...common}>⚠️ HTML embeds disabled for security</div>
+  else if (element.type === "socialIcons") rendered = <div {...common}>{(content?.platforms || '').split(',').map((p: string, i: number) => <a key={i} href="#" style={{ opacity: 0.7 }}>{p.trim()}</a>)}</div>
+  else if (element.type === "map") rendered = <iframe {...common} src={`https://maps.google.com/maps?q=${encodeURIComponent(content?.address || '')}&z=${content?.zoom || '13'}&output=embed`} loading="lazy" />
+  else if (element.type === "gallery") rendered = <div {...common}>{(content?.images || '').split(',').map((src: string, i: number) => <img key={i} src={src.trim()} alt="" style={{ width: '100%', objectFit: 'cover' }} />)}</div>
+  else if (element.type === "accordion") {
+    let items: { title: string; body: string }[] = [];
+    try { items = JSON.parse(content?.items || '[]'); } catch { /* bad JSON */ }
+    rendered = <div {...common}>{items.map((item, i) => <details key={i} style={{ borderBottom: '1px solid currentColor', opacity: 0.9 }}><summary style={{ cursor: 'pointer', padding: '12px 0', fontWeight: 500 }}>{item.title}</summary><p style={{ paddingBottom: '12px', opacity: 0.7 }}>{item.body}</p></details>)}</div>
+  }
+  else if (element.type === "tabs") {
+    let items: { title: string; body: string }[] = [];
+    try { items = JSON.parse(content?.items || '[]'); } catch { /* bad JSON */ }
+    rendered = <div {...common} data-tabs={content?.items}>
+      {/* Fallback to simple list if client-side JS isn't rendering it */}
+      {items.map((item, i) => <div key={i}><strong>{item.title}</strong><p>{item.body}</p></div>)}
+    </div>
+  }
+  else if (element.type === "countdown") {
+    rendered = <div {...common} data-countdown={content?.targetDate}>
+      {/* Fallback */}
+      <div>{new Date(content?.targetDate || Date.now()).toLocaleDateString()}</div>
+    </div>
+  }
+  else if (element.type === "starRating") {
+    const rating = parseFloat(content?.rating || '5');
+    const reviews = content?.reviews || '0';
+    const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? '★' : i < rating ? '★' : '☆');
+    rendered = <div {...common}><span>{stars.join('')}</span><span style={{ marginLeft: 4, opacity: 0.6 }}>({reviews})</span></div>
+  }
+  else if (element.type === "cartButton") {
+    rendered = <button {...common}>🛒 {text || 'Add to Cart'}</button>
+  }
+  else {
+    rendered = <div {...common}>{children ?? text}</div>
   }
 
-  return <div {...common}>{children ?? text}</div>
+  if (element.animations && element.animations.preset !== 'none') {
+    return <MotionWrapper animations={element.animations}>{rendered}</MotionWrapper>
+  }
+
+  return rendered;
 }
 
-export function StorefrontRenderer({ document, context, mode = "live" }: RendererProps) {
+export function StorefrontRenderer({ document, context, mode = "live", themeConfig }: RendererProps) {
   const css = responsiveCss(document.root)
   return (
-    <div data-storefront-renderer data-render-mode={mode} className="min-h-full bg-background text-foreground">
-      {css ? <style>{css}</style> : null}
-      {document.root.map((element) => <Element key={element.id} element={element} context={context} mode={mode} />)}
-    </div>
+    <ThemeProvider theme={themeConfig ?? null} className="min-h-full">
+      <div data-storefront-renderer data-render-mode={mode} className="min-h-full bg-background text-foreground">
+        {css ? <style>{css}</style> : null}
+        {document.root.map((element) => <Element key={element.id} element={element} context={context} mode={mode} />)}
+      </div>
+    </ThemeProvider>
   )
 }
 
 export function isPublicationSnapshot(value: unknown): value is {
   schemaVersion: 2
-  project: { id: string; name: string; slug: string | null; navConfig?: unknown }
+  project: { id: string; name: string; slug: string | null; navConfig?: unknown; themeConfig?: unknown }
   pages: Array<{ id: string; name: string; slug: string; isHomepage: boolean | null; visible: boolean; document: EditorDocumentV2 }>
 } {
   if (!value || typeof value !== "object") return false

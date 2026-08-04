@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { db } from "@/infrastructure/db";
 import { tenantKyc } from "@/db/schema/tenant-kyc";
 import { eq } from "drizzle-orm";
@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Verification | Settings" };
 
 export default async function VerificationPage() {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const [kyc] = await db.select().from(tenantKyc).where(eq(tenantKyc.tenantId, user.tenantId)).limit(1);
 
   return (

@@ -1,6 +1,6 @@
 "use server";
 
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { db } from "@/infrastructure/db";
 import { plans } from "@/db/schema/billing";
 import { eq } from "drizzle-orm";
@@ -13,7 +13,7 @@ const requestSchema = z.object({
 });
 
 export async function requestUpgrade(input: z.infer<typeof requestSchema>): Promise<{ success?: boolean; error?: string; paymentInfo?: { planName: string; amount: string; cycle: string } }> {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const parsed = requestSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Invalid input" };
 

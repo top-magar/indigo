@@ -14,6 +14,11 @@ const PRODUCT_FIELDS = [
   { value: "slug", label: "Slug" },
 ];
 
+const COLLECTION_FIELDS = [
+  { value: "name", label: "Collection Name" },
+  { value: "description", label: "Description" },
+];
+
 export function BindingSection({ selected, onUpdate }: { selected: El; onUpdate: (el: El) => void }) {
   const [products, setProducts] = useState<{ id: string; name: string; price: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,12 +32,18 @@ export function BindingSection({ selected, onUpdate }: { selected: El; onUpdate:
     setLoading(false);
   };
 
-  const setBinding = (field: string) => {
-    onUpdate({ ...selected, binding: { source: 'product', field, resourceId: binding?.source === 'product' ? binding.resourceId : undefined } });
+  const setBindingSource = (source: "product" | "collection") => {
+    onUpdate({ ...selected, binding: { source, field: "name", resourceId: undefined } });
+  };
+
+  const setBindingField = (field: string) => {
+    if (!binding) return;
+    onUpdate({ ...selected, binding: { source: binding.source, field, resourceId: (binding as any).resourceId } as any });
   };
 
   const setProductId = (id: string) => {
-    onUpdate({ ...selected, binding: { source: 'product', field: binding?.field || 'name', resourceId: id || undefined } });
+    if (binding?.source !== "product") return;
+    onUpdate({ ...selected, binding: { source: 'product', field: binding.field || 'name', resourceId: id || undefined } });
   };
 
   const clearBinding = () => {
@@ -51,21 +62,37 @@ export function BindingSection({ selected, onUpdate }: { selected: El; onUpdate:
         <div className="space-y-1">
           <div className="flex items-center gap-1 h-6 px-2 rounded-md bg-primary/10 text-primary text-[10px] font-medium">
             <MIcon name="link" size={11} />
-            <span>product.{binding.field}</span>
+            <span>{binding.source}.{binding.field}</span>
           </div>
-          <select value={binding.field} onChange={(e) => setBinding(e.target.value)} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
-            {PRODUCT_FIELDS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+          
+          <select value={binding.source} onChange={(e) => setBindingSource(e.target.value as "product" | "collection")} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
+            <option value="product">Product Data</option>
+            <option value="collection">Collection Data</option>
           </select>
-          <select value={binding.source === 'product' ? binding.resourceId || '' : ''} onChange={(e) => setProductId(e.target.value)} onFocus={loadProducts} className="w-full h-8 rounded-md border border-sidebar-border bg-sidebar text-xs px-2">
-            <option value="">All products (dynamic)</option>
-            {loading && <option disabled>Loading...</option>}
-            {products.map(p => <option key={p.id} value={p.id}>{p.name} — ${p.price}</option>)}
+          
+          <select value={binding.field} onChange={(e) => setBindingField(e.target.value)} className="w-full h-6 rounded-md border border-sidebar-border bg-sidebar text-[10px] px-1">
+            {(binding.source === "collection" ? COLLECTION_FIELDS : PRODUCT_FIELDS).map(f => (
+              <option key={f.value} value={f.value}>{f.label}</option>
+            ))}
           </select>
+
+          {binding.source === "product" && (
+            <select value={binding.resourceId || ''} onChange={(e) => setProductId(e.target.value)} onFocus={loadProducts} className="w-full h-8 rounded-md border border-sidebar-border bg-sidebar text-xs px-2">
+              <option value="">All products (dynamic)</option>
+              {loading && <option disabled>Loading...</option>}
+              {products.map(p => <option key={p.id} value={p.id}>{p.name} — ${p.price}</option>)}
+            </select>
+          )}
         </div>
       ) : (
-        <button onClick={() => setBinding('name')} className="flex w-full items-center justify-center gap-1 h-6 rounded-md border border-dashed border-sidebar-border text-[10px] text-muted-foreground/40 hover:text-foreground hover:border-primary/40 transition-colors">
-          <MIcon name="link" size={11} /> Bind to Product
-        </button>
+        <div className="flex gap-1">
+          <button onClick={() => setBindingSource('product')} className="flex-1 flex items-center justify-center gap-1 h-6 rounded-md border border-dashed border-sidebar-border text-[10px] text-muted-foreground/40 hover:text-foreground hover:border-primary/40 transition-colors">
+            <MIcon name="link" size={11} /> Product
+          </button>
+          <button onClick={() => setBindingSource('collection')} className="flex-1 flex items-center justify-center gap-1 h-6 rounded-md border border-dashed border-sidebar-border text-[10px] text-muted-foreground/40 hover:text-foreground hover:border-primary/40 transition-colors">
+            <MIcon name="link" size={11} /> Collection
+          </button>
+        </div>
       )}
     </div>
   );

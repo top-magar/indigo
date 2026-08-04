@@ -9,6 +9,7 @@ import { cn } from "@/shared/utils"
 import { useEditor } from "../core/provider"
 import type { Device } from "../core/types"
 import { MIcon } from "../ui/m-icon"
+import { VersionHistory } from "./version-history"
 
 const devices: Array<{ id: Device; icon: string; label: string }> = [
   { id: "desktop", icon: "laptop_mac", label: "Desktop" },
@@ -22,6 +23,8 @@ type Props = {
   dirty: boolean
   saving: boolean
   zoom: number
+  seoTitle: string
+  onSeoTitleChange: (value: string) => void
   metaDescription: string
   onMetaDescriptionChange: (value: string) => void
   ogImage: string
@@ -58,6 +61,8 @@ export default function EditorNavigation({
   dirty,
   saving,
   zoom,
+  seoTitle,
+  onSeoTitleChange,
   metaDescription,
   onMetaDescriptionChange,
   ogImage,
@@ -71,7 +76,7 @@ export default function EditorNavigation({
   onPublish,
   onOpenCommand,
 }: Props) {
-  const { state, dispatch, pageName } = useEditor()
+  const { state, dispatch, pageId, pageName } = useEditor()
   const canUndo = state.history.currentIndex > 0
   const canRedo = state.history.currentIndex < state.history.patchCount
   const saveLabel = saving ? "Saving" : dirty ? "Unsaved changes" : "Saved"
@@ -128,15 +133,27 @@ export default function EditorNavigation({
                 <p className="mt-0.5 text-xs text-muted-foreground">Search metadata and secondary editor actions.</p>
               </div>
               <div className="space-y-3 p-4">
+                <label className="block text-xs font-medium">SEO Title<Input value={seoTitle} onChange={(event) => onSeoTitleChange(event.target.value)} className="mt-1.5 h-9 text-xs" /></label>
                 <label className="block text-xs font-medium">Search description<Input value={metaDescription} onChange={(event) => onMetaDescriptionChange(event.target.value)} className="mt-1.5 h-9 text-xs" /></label>
                 <label className="block text-xs font-medium">Social image URL<Input value={ogImage} onChange={(event) => onOgImageChange(event.target.value)} className="mt-1.5 h-9 text-xs" /></label>
                 <div className="flex items-center justify-between border-t pt-3">
                   <div className="flex items-center gap-1">
                     <IconButton label="Zoom out" icon="remove" onClick={onZoomOut} />
-                    <button type="button" onClick={onZoomReset} className="h-8 min-w-12 rounded-md px-2 text-xs tabular-nums hover:bg-muted">{zoom}%</button>
+                    <button type="button" aria-label="Zoom reset" onClick={onZoomReset} className="h-8 min-w-12 rounded-md px-2 text-xs tabular-nums hover:bg-muted">{zoom}%</button>
                     <IconButton label="Zoom in" icon="add" onClick={onZoomIn} />
                   </div>
                   <button type="button" onClick={onExportHTML} className="h-8 rounded-md px-2 text-xs font-medium hover:bg-muted">Export HTML</button>
+                </div>
+                <div className="border-t pt-3">
+                  <VersionHistory projectId={pageId} />
+                </div>
+                <div className="flex items-center gap-2 border-t pt-3 sm:hidden">
+                  <Button variant="outline" size="sm" onClick={onSave} disabled={!dirty || saving} className="h-8 flex-1">Save</Button>
+                </div>
+                <div className="flex items-center gap-2 border-t pt-3 md:hidden">
+                  <Button variant="outline" size="sm" onClick={onOpenCommand} className="h-8 flex-1 flex items-center justify-center gap-2">
+                    <MIcon name="search" size={14} /> Commands
+                  </Button>
                 </div>
               </div>
             </PopoverContent>

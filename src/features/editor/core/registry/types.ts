@@ -11,6 +11,7 @@ export type ElementDef = {
   factory: () => El;
   render?: ComponentType<{ element: El }>;
   exportHTML?: (el: El) => string;
+  pluginProps?: Record<string, any>;
 };
 
 export const registry = new Map<string, ElementDef>();

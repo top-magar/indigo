@@ -9,6 +9,9 @@ import DOMPurify from "isomorphic-dompurify"
 import { loadPublishedStorefront } from "@/features/editor/renderer/load-publication"
 import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
 
+export const revalidate = 600
+
+
 export default async function CatchAllPage({
   params,
 }: {
@@ -91,4 +94,45 @@ export default async function CatchAllPage({
   }
 
   notFound()
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; catchAll: string[] }>
+}) {
+  const { slug, catchAll } = await params
+  const pageSlug = catchAll[0]
+
+  const [tenant] = await db.select({ id: tenants.id, name: tenants.name, description: tenants.description })
+    .from(tenants).where(eq(tenants.slug, slug)).limit(1)
+
+  if (!tenant) return { title: "Page Not Found" }
+
+  const structuredPublication = await loadPublishedStorefront(tenant.id, pageSlug)
+  if (structuredPublication) {
+    const page = structuredPublication.page.document.page
+    const title = page.seoTitle || page.name
+    const description = page.seoDescription || tenant.description || undefined
+    const ogImage = page.ogImage || undefined
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: "website" as const,
+        ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        ...(ogImage ? { images: [ogImage] } : {}),
+      },
+    }
+  }
+
+  return { title: "Page Not Found" }
 }

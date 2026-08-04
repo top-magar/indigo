@@ -85,7 +85,7 @@ async function loadPublicationDocuments(tx: Transaction, tenantId: string, proje
     ogImage: page.ogImage,
     document: migrateEditorDocument(
       page.data,
-      { id: page.id, name: page.name, slug: page.slug },
+      { id: page.id, name: page.name, slug: page.slug, seoTitle: page.seoTitle, seoDescription: page.seoDescription, ogImage: page.ogImage },
       tenant[0]?.currency ?? "NPR",
     ),
   }))
@@ -196,7 +196,7 @@ export async function loadEditorSession(input: z.infer<typeof loadSchema>): Prom
 
     let document: EditorDocumentV2
     try {
-      document = migrateEditorDocument(page.data, { id: page.id, name: page.name, slug: page.slug }, tenant[0]?.currency ?? "NPR")
+      document = migrateEditorDocument(page.data, { id: page.id, name: page.name, slug: page.slug, seoTitle: page.seoTitle, seoDescription: page.seoDescription, ogImage: page.ogImage }, tenant[0]?.currency ?? "NPR")
     } catch {
       return { ok: false, code: "blocked", message: "This page could not be migrated safely." }
     }
@@ -249,6 +249,9 @@ export async function saveDraft(input: z.infer<typeof saveSchema>): Promise<Save
         lastSavedBy: user.id,
         name: parsed.data.document.page.name,
         slug: parsed.data.document.page.slug,
+        seoTitle: parsed.data.document.page.seoTitle,
+        seoDescription: parsed.data.document.page.seoDescription,
+        ogImage: parsed.data.document.page.ogImage,
         updatedAt: new Date(),
       }).where(and(
         eq(editorPages.id, parsed.data.pageId),
@@ -339,6 +342,12 @@ export async function publishSite(projectId: string): Promise<PublishSiteResult>
         updatedAt: publishedAt,
       }).where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)))
 
+      const { revalidatePath } = await import("next/cache")
+      const [tenant] = await tx.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+      if (tenant?.slug) {
+        revalidatePath(`/store/${tenant.slug}`, "layout")
+      }
+
       return { ok: true, versionId: snapshot.id, version, publishedAt: publishedAt.toISOString(), slug }
     })
   } catch {
@@ -364,6 +373,13 @@ export async function rollbackPublication(projectId: string, versionId: string):
       published: true,
       updatedAt: restoredAt,
     }).where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)))
+
+    const { revalidatePath } = await import("next/cache")
+    const [tenant] = await tx.select({ slug: tenants.slug }).from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+    if (tenant?.slug) {
+      revalidatePath(`/store/${tenant.slug}`, "layout")
+    }
+
     return { ok: true, versionId: version.id, version: version.version, restoredAt: restoredAt.toISOString() }
   })
 }

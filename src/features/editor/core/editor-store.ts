@@ -11,6 +11,7 @@ type EditorUIState = {
   preview: boolean;
   zoom: number;
   currentPageId: string | null;
+  editingState: 'default' | 'hover';
 };
 
 type EditorUIActions = {
@@ -21,6 +22,7 @@ type EditorUIActions = {
   togglePreview: () => void;
   setZoom: (zoom: number) => void;
   setCurrentPageId: (id: string | null) => void;
+  setEditingState: (state: 'default' | 'hover') => void;
 };
 
 export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) => ({
@@ -31,6 +33,7 @@ export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) =>
   preview: false,
   zoom: 100,
   currentPageId: null,
+  editingState: 'default',
 
   select: (element) => set({ selected: element }),
   hover: (id) => set({ hovered: id }),
@@ -39,4 +42,5 @@ export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) =>
   togglePreview: () => set(s => ({ preview: !s.preview })),
   setZoom: (zoom) => set({ zoom }),
   setCurrentPageId: (id) => set({ currentPageId: id }),
+  setEditingState: (state) => set({ editingState: state }),
 }));

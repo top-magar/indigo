@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Search, FileText, Home, Eye, MoreHorizontal,
-  Pencil, Globe, Trash2, Type, ExternalLink, Plus,
+  Pencil, Globe, Trash2, Type, ExternalLink, Plus, Layout,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -17,7 +17,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deletePage, renamePage, createPage } from "./actions";
+import { deletePage, renamePage, createPage, createProductTemplate, createCollectionTemplate } from "./actions";
 import type { EditorPage } from "@/db/schema/editor-pages";
 
 type Site = { id: string; name: string; published: boolean | null; slug: string | null };
@@ -87,6 +87,26 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
     });
   };
 
+  const handleCustomizeProductTemplate = () => {
+    startTransition(async () => {
+      const result = await createProductTemplate(site.id);
+      if (result.error) { toast.error(result.error); return; }
+      if (result.id) {
+        window.open(`/editor?project=${site.id}&page=${result.id}`, '_blank');
+      }
+    });
+  };
+
+  const handleCustomizeCollectionTemplate = () => {
+    startTransition(async () => {
+      const result = await createCollectionTemplate(site.id);
+      if (result.error) { toast.error(result.error); return; }
+      if (result.id) {
+        window.open(`/editor?project=${site.id}&page=${result.id}`, '_blank');
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -94,12 +114,19 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
           <h1 className="text-lg font-semibold tracking-tight">Pages</h1>
           <p className="text-xs text-muted-foreground">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
         </div>
-        <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="size-3.5" /> New Page
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleCustomizeCollectionTemplate}>
+            <Layout className="size-3.5 mr-1" /> Collection Template
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleCustomizeProductTemplate}>
+            <Layout className="size-3.5 mr-1" /> Product Template
+          </Button>
+          <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <Plus className="size-3.5" /> New Page
+              </Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Page</DialogTitle>
@@ -118,6 +145,7 @@ export function PagesClient({ site, pages, tenantSlug }: { site: Site; pages: Ed
             </form>
           </DialogContent>
         </Dialog>
+      </div>
       </div>
 
       <div className="relative max-w-sm">

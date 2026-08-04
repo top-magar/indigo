@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { db } from "@/infrastructure/db";
 import { plans, payments, invoices as invoicesTable } from "@/db/schema/billing";
@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Plan & Billing | Settings" };
 
 export default async function MerchantBillingPage() {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const limits = await getTenantPlanLimits(user.tenantId);
 
   const [allPlans, recentPayments, recentInvoices] = await Promise.all([

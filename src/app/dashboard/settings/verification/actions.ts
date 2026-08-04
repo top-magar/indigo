@@ -1,6 +1,6 @@
 "use server";
 
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { db } from "@/infrastructure/db";
 import { tenantKyc } from "@/db/schema/tenant-kyc";
 import { eq } from "drizzle-orm";
@@ -17,7 +17,7 @@ const kycSchema = z.object({
 });
 
 export async function submitVerification(formData: FormData): Promise<{ success?: boolean; error?: string }> {
-  const user = await requireUser();
+  const user = await requireTenantUser();
 
   const parsed = kycSchema.safeParse({
     fullName: formData.get("fullName"),

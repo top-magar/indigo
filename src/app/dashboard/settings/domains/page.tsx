@@ -1,11 +1,11 @@
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import DomainsClient from "./domains-client";
 
 export default async function DomainsPage() {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const limits = await getTenantPlanLimits(user.tenantId);
 
   if (limits.planName === "Free") {

@@ -11,6 +11,9 @@ type RevisionAutosaveOptions = {
   pageId: string | null
   pageName: string
   pageSlug: string
+  seoTitle?: string | null
+  seoDescription?: string | null
+  ogImage?: string | null
   currency: string
   delay?: number
 }
@@ -20,6 +23,9 @@ export function useRevisionAutosave({
   pageId,
   pageName,
   pageSlug,
+  seoTitle,
+  seoDescription,
+  ogImage,
   currency,
   delay = 1500,
 }: RevisionAutosaveOptions) {
@@ -27,17 +33,17 @@ export function useRevisionAutosave({
   const acknowledgedLocalRevision = useDocumentStore((state) => state.acknowledgedLocalRevision)
   const saveStatus = useDocumentStore((state) => state.saveStatus)
   const saveError = useDocumentStore((state) => state.saveError)
-  const optionsRef = useRef({ projectId, pageId, pageName, pageSlug, currency })
+  const optionsRef = useRef({ projectId, pageId, pageName, pageSlug, seoTitle, seoDescription, ogImage, currency })
   const savePromiseRef = useRef<Promise<boolean> | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
-    optionsRef.current = { projectId, pageId, pageName, pageSlug, currency }
-  }, [currency, pageId, pageName, pageSlug, projectId])
+    optionsRef.current = { projectId, pageId, pageName, pageSlug, seoTitle, seoDescription, ogImage, currency }
+  }, [currency, pageId, pageName, pageSlug, seoTitle, seoDescription, ogImage, projectId])
 
   const drainQueue = useCallback((): Promise<boolean> => {
     if (savePromiseRef.current) return savePromiseRef.current
 
-    const run = async () => {
+      const run = async () => {
       while (true) {
         const state = useDocumentStore.getState()
         const options = optionsRef.current
@@ -47,12 +53,31 @@ export function useRevisionAutosave({
         const capturedServerRevision = state.serverRevision
         const document: EditorDocumentV2 = {
           schemaVersion: 2,
-          page: { id: options.pageId, name: options.pageName.trim() || "Untitled page", slug: options.pageSlug },
+          page: {
+            id: options.pageId,
+            name: options.pageName.trim() || "Untitled page",
+            slug: options.pageSlug,
+            seoTitle: options.seoTitle,
+            seoDescription: options.seoDescription,
+            ogImage: options.ogImage,
+          },
           root: state.elements,
           settings: { currency: options.currency, locale: "en-NP" },
         }
 
         state.markSaving()
+
+        if (options.pageId === "header" || options.pageId === "footer") {
+          try {
+            const { saveHeaderFooter } = await import("../lib/queries");
+            await saveHeaderFooter(options.projectId, options.pageId as "header" | "footer", JSON.stringify(state.elements));
+            useDocumentStore.getState().acknowledgeSave(capturedLocalRevision, capturedServerRevision);
+          } catch (error) {
+            useDocumentStore.getState().failSave("Failed to save global section", false);
+          }
+          continue;
+        }
+
         const result = await saveDraft({
           projectId: options.projectId,
           pageId: options.pageId,

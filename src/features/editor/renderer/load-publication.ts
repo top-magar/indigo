@@ -62,6 +62,6 @@ export async function loadPublishedStorefront(tenantId: string, pageSlug?: strin
         href: item.isHomepage ? `/store/${tenant.slug}` : `/store/${tenant.slug}/${item.slug}`,
       })),
     }
-    return { page, context }
+    return { page, context, project: version.data.project }
   })
 }

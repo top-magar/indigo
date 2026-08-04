@@ -86,7 +86,7 @@ export async function createShippingZone(formData: FormData) {
 
         if (countryError) {
           // Rollback zone creation
-          await supabase.from("shipping_zones").delete().eq("id", zone.id)
+          await supabase.from("shipping_zones").delete().eq("id", zone.id).eq("tenant_id", tenantId)
           return { success: false, error: countryError.message }
         }
       }
@@ -139,7 +139,7 @@ export async function updateShippingZone(formData: FormData) {
     try {
       const countries = JSON.parse(countriesJson) as { code: string; name: string }[]
       
-      // Delete existing countries
+      // Delete existing countries (they are joined to zone_id which we are authorized for, but adding tenant_id if available would be safer)
       await supabase
         .from("shipping_zone_countries")
         .delete()

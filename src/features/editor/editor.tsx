@@ -11,6 +11,7 @@ import Recursive from "./canvas/recursive";
 import SnapDistances from "./canvas/overlays/snap-distances";
 import PixelGrid from "./canvas/overlays/pixel-grid";
 import GridEditor from "./canvas/overlays/grid-editor";
+import { HoverStylesInjector } from "./canvas/hover-styles-injector";
 import Marquee from "./canvas/overlays/marquee";
 import { EditorProvider, useEditor } from "./core/provider";
 import { useDocumentStore } from "./core/document-store";
@@ -20,6 +21,8 @@ import { LeftPanel, RightPanel } from "./panels";
 import { DragOverlayProvider } from "./canvas/drag-overlay";
 import { useCanvas } from "./canvas/use-canvas";
 import { useShortcuts } from "./core/use-shortcuts";
+import { ThemeProvider } from "@/components/store/theme-provider";
+import type { ThemeConfig } from "./lib/theme-utils";
 import { downloadHTML } from "./export/html";
 import ShortcutsOverlay from "./toolbar/shortcuts-overlay";
 import { useRevisionAutosave } from "./core/use-revision-autosave";
@@ -33,7 +36,7 @@ export default function Editor(props: EditorProps) {
 }
 
 function EditorInner() {
-  const { state, dispatch, pageId, activePageId, activePageName, activePageSlug, themeConfig, currency } = useEditor();
+  const { state, dispatch, pageId, activePageId, activePageName, activePageSlug, activePageSeoTitle, activePageSeoDescription, activePageOgImage, themeConfig, currency } = useEditor();
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
@@ -44,8 +47,9 @@ function EditorInner() {
   const [styleClipboard, setStyleClipboard] = useState<CSSProperties | null>(null);
   const [pageTitle, setPageTitle] = useState(activePageName);
   const [pageSlug, setPageSlug] = useState(activePageSlug);
-  const [metaDescription, setMetaDescription] = useState("");
-  const [ogImage, setOgImage] = useState("");
+  const [seoTitle, setSeoTitle] = useState(activePageSeoTitle ?? "");
+  const [metaDescription, setMetaDescription] = useState(activePageSeoDescription ?? "");
+  const [ogImage, setOgImage] = useState(activePageOgImage ?? "");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showCommands, setShowCommands] = useState(false);
@@ -55,6 +59,9 @@ function EditorInner() {
     pageId: currentSubPageId,
     pageName: pageTitle,
     pageSlug,
+    seoTitle,
+    seoDescription: metaDescription,
+    ogImage,
     currency,
   });
   const lease = usePageLease(pageId, currentSubPageId);
@@ -161,6 +168,7 @@ function EditorInner() {
       <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saveStatus === 'saving'} zoom={zoom}
+          seoTitle={seoTitle} onSeoTitleChange={(v) => { setSeoTitle(v); setDirty(true); saveSeo('seoTitle', v); }}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={zoomIn} onZoomOut={zoomOut} onZoomReset={zoomReset}
@@ -190,19 +198,39 @@ function EditorInner() {
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
           <div ref={canvasRef} onPointerDown={lease.state.status === 'blocked' ? undefined : onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor, lease.state.status === 'blocked' && "pointer-events-none opacity-70")} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
-            <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z, ...(themeConfig ? { '--primary': themeConfig.primaryColor, backgroundColor: themeConfig.backgroundColor, color: themeConfig.textColor, fontFamily: `${themeConfig.bodyFont || 'Inter'}, system-ui, sans-serif` } : {}) } as React.CSSProperties}>
-            {body && <Recursive element={body} />}
-            {(() => {
-              const isDragging = !!state.editor.dropTarget;
-              const hasSel = !!selected;
-              const isGrid = hasSel && selected.styles.display === "grid";
-              return (<>
-                {!isDragging && hasSel && <SnapDistances />}
-                {!isDragging && isGrid && <GridEditor />}
-                <PixelGrid zoom={zoom} />
-              </>);
-            })()}
-          </div>
+            {themeConfig ? (
+              <ThemeProvider theme={themeConfig as ThemeConfig}>
+                <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z } as React.CSSProperties}>
+                  <HoverStylesInjector elements={state.editor.elements} />
+                  {body && <Recursive element={body} />}
+                  {(() => {
+                    const isDragging = !!state.editor.dropTarget;
+                    const hasSel = !!selected;
+                    const isGrid = hasSel && selected.styles.display === "grid";
+                    return (<>
+                      {!isDragging && hasSel && <SnapDistances />}
+                      {!isDragging && isGrid && <GridEditor />}
+                      <PixelGrid zoom={zoom} />
+                    </>);
+                  })()}
+                </div>
+              </ThemeProvider>
+            ) : (
+              <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z } as React.CSSProperties}>
+                <HoverStylesInjector elements={state.editor.elements} />
+                {body && <Recursive element={body} />}
+                {(() => {
+                  const isDragging = !!state.editor.dropTarget;
+                  const hasSel = !!selected;
+                  const isGrid = hasSel && selected.styles.display === "grid";
+                  return (<>
+                    {!isDragging && hasSel && <SnapDistances />}
+                    {!isDragging && isGrid && <GridEditor />}
+                    <PixelGrid zoom={zoom} />
+                  </>);
+                })()}
+              </div>
+            )}
           </div>
           <Marquee canvasRef={canvasRefObj} />
           </div>

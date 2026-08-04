@@ -15,12 +15,21 @@ export default function SettingsTab() {
   const selected = state.editor.selected;
   if (!selected) return null;
 
+  const editingState = state.editor.editingState;
   const device = state.editor.device;
-  const resolved = device === "desktop" ? selected.styles : { ...selected.styles, ...selected.responsiveStyles?.[device] };
+  let resolved: any;
+  if (editingState === "hover") {
+    resolved = selected.hoverStyles ?? {};
+  } else {
+    resolved = device === "desktop" ? selected.styles : { ...selected.styles, ...selected.responsiveStyles?.[device] };
+  }
+  
   const s = resolved as Record<string, unknown>;
   const get = (p: string) => String(s[p] ?? "");
   const set = (p: string, v: string) => {
-    if (device === "desktop") {
+    if (editingState === "hover") {
+      dispatch({ type: "UPDATE_ELEMENT_LIVE", payload: { element: { ...selected, hoverStyles: { ...(selected.hoverStyles || {}), [p]: v } as CSSProperties } } });
+    } else if (device === "desktop") {
       dispatch({ type: "UPDATE_ELEMENT_LIVE", payload: { element: { ...selected, styles: { ...selected.styles, [p]: v } as CSSProperties } } });
     } else {
       const prev = selected.responsiveStyles ?? {};
@@ -43,18 +52,51 @@ export default function SettingsTab() {
         {!isBody && <button aria-label="Delete element" className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" onClick={() => dispatch({ type: "DELETE_ELEMENT", payload: { id: selected.id } })}><MIcon name="delete" size={13} /></button>}
       </div>
 
+      {/* State Toggle (Default / Hover) */}
+      {tab !== "content" && !isBody && (
+        <div className="px-3 py-2 border-b border-sidebar-border bg-sidebar shrink-0">
+          <div className="flex bg-sidebar-accent/50 p-0.5 rounded-lg border border-sidebar-border/30">
+            <button 
+              onClick={() => dispatch({ type: "SET_EDITING_STATE", payload: "default" } as any)} 
+              className={cn("flex-1 text-[10px] font-medium h-6 rounded-md transition-all", editingState === "default" ? "bg-sidebar shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+            >
+              Default
+            </button>
+            <button 
+              onClick={() => dispatch({ type: "SET_EDITING_STATE", payload: "hover" } as any)} 
+              className={cn("flex-1 text-[10px] font-medium h-6 rounded-md transition-all flex items-center justify-center gap-1", editingState === "hover" ? "bg-sidebar shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+            >
+              Hover
+              {editingState === "hover" && <span className="size-1.5 rounded-full bg-primary" />}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex border-b border-sidebar-border shrink-0">
         {(["content", "layout", "style", "advanced"] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={cn("min-w-0 flex-1 h-9 px-1 text-xs font-medium capitalize transition-colors", tab === t ? "text-foreground border-b-2 border-primary" : "text-muted-foreground hover:text-foreground")}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={cn(
+            "min-w-0 flex-1 h-9 px-1 text-xs font-medium capitalize transition-colors",
+            tab === t ? "text-foreground border-b-2 border-primary" : "text-muted-foreground hover:text-foreground",
+            t !== "content" && "hidden xl:block"
+          )}>{t}</button>
         ))}
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
-        {tab === "content" && <ContentTab selected={selected} onUpdate={onUpdate} />}
-        {tab === "layout" && <DesignTab mode="layout" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
-        {tab === "style" && <DesignTab mode="style" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
-        {tab === "advanced" && <DesignTab mode="advanced" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
+        <div className={cn(tab !== "content" && "xl:hidden")}>
+          <ContentTab selected={selected} onUpdate={onUpdate} />
+        </div>
+        <div className={cn("hidden", tab === "content" && "hidden", tab === "layout" && "xl:block")}>
+          {tab === "layout" && <DesignTab mode="layout" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
+        </div>
+        <div className={cn("hidden", tab === "content" && "hidden", tab === "style" && "xl:block")}>
+          {tab === "style" && <DesignTab mode="style" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
+        </div>
+        <div className={cn("hidden", tab === "content" && "hidden", tab === "advanced" && "xl:block")}>
+          {tab === "advanced" && <DesignTab mode="advanced" get={get} set={set} selected={selected} onUpdate={onUpdate} />}
+        </div>
       </div>
     </div>
   );

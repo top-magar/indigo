@@ -3,6 +3,12 @@ import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"
 import { getAllTenantSlugs, getCategorySlugsForTenant } from "@/features/store/data/tenants"
 import { BreadcrumbJsonLd, ItemListJsonLd } from "@/shared/seo"
+import { db } from "@/infrastructure/db"
+import { editorPages } from "@/db/schema/editor-pages"
+import { editorProjects } from "@/db/schema/editor-projects"
+import { eq, and } from "drizzle-orm"
+import { StorefrontRenderer, type StorefrontRenderContext, type StorefrontProduct } from "@/features/editor/renderer/storefront-renderer"
+import { parseEditorDocument } from "@/features/editor/core/document-v2"
 
 /**
  * Generate static params for all category pages
@@ -34,7 +40,7 @@ export default async function CategoryPage({
 
   // Parallel fetch: tenant and category at the same time
   const [tenantResult, categoryResult] = await Promise.all([
-    supabase.from("tenants").select("id").eq("slug", slug).single(),
+    supabase.from("tenants").select("id, name").eq("slug", slug).single(),
     supabase.from("categories").select("*").eq("slug", categorySlug).single(),
   ])
 
@@ -74,6 +80,65 @@ export default async function CategoryPage({
     image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : undefined,
     position: index + 1,
   }))
+
+  // Check if a dynamic template exists
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects).where(eq(editorProjects.tenantId, tenant.id)).limit(1)
+  
+  if (project) {
+    const [template] = await db
+      .select({ data: editorPages.data })
+      .from(editorPages)
+      .where(and(
+        eq(editorPages.projectId, project.id),
+        eq(editorPages.slug, "template-collection")
+      ))
+      .limit(1)
+
+    if (template) {
+      // Map database products to StorefrontProduct shape
+      const storefrontProducts: StorefrontProduct[] = (products || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        price: p.price.toString(),
+        compareAtPrice: p.compare_at_price?.toString(),
+        images: Array.isArray(p.images) && p.images.length > 0 
+          ? (p.images as string[]).map(url => ({ url })) 
+          : null
+      }))
+
+      const context: StorefrontRenderContext = {
+        store: { name: tenantResult.data?.name || slug, slug },
+        currency: "USD", // TODO: Get from store settings
+        products: storefrontProducts,
+        collections: { [category.id]: storefrontProducts.map(p => p.id) },
+        activeCollection: { id: category.id, name: category.name, description: category.description }
+      }
+
+      try {
+        const document = parseEditorDocument({
+          schemaVersion: 2,
+          page: { id: "template", name: "Collection Template", slug: "template-collection" },
+          root: template.data,
+          settings: { currency: "USD", locale: "en-US" }
+        })
+
+        return (
+          <>
+            <BreadcrumbJsonLd items={breadcrumbItems} />
+            {itemListItems.length > 0 && (
+              <ItemListJsonLd name={category.name} description={category.description || undefined} url={categoryUrl} items={itemListItems} />
+            )}
+            <StorefrontRenderer document={document} context={context} mode="live" />
+          </>
+        )
+      } catch (e) {
+        console.error("Failed to parse collection template", e)
+        // Fall back to hardcoded template
+      }
+    }
+  }
 
   return (
     <>

@@ -16,6 +16,8 @@ import DOMPurify from "isomorphic-dompurify"
 import { loadPublishedStorefront } from "@/features/editor/renderer/load-publication"
 import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
 
+
+
 /** Extract content between <body> tags from full HTML document */
 function extractBodyContent(html: string): string {
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -53,7 +55,7 @@ export default async function StorePage({
 
   const structuredPublication = await loadPublishedStorefront(tenant.id)
   if (structuredPublication) {
-    return <StorefrontRenderer document={structuredPublication.page.document} context={structuredPublication.context} mode="live" />
+    return <StorefrontRenderer document={structuredPublication.page.document} context={structuredPublication.context} mode="live" themeConfig={structuredPublication.project.themeConfig as import("@/features/editor/lib/theme-utils").ThemeConfig | null} />
   }
 
   // Fetch layout + theme
@@ -186,19 +188,38 @@ export async function generateMetadata({
 
   if (!tenant) return { title: "Store Not Found" }
 
-  const layoutRows = await db.select({ themeOverrides: storeLayouts.themeOverrides })
-    .from(storeLayouts)
-    .where(and(eq(storeLayouts.tenantId, tenant.id), eq(storeLayouts.isHomepage, true)))
-    .limit(1)
+  let title: string | undefined
+  let description: string | undefined
+  let ogImage: string | undefined
+  let ogTitle: string | undefined
+  let ogDescription: string | undefined
+  let faviconUrl = "/favicon.ico"
+  let twitterCard = "summary_large_image"
 
-  const theme = layoutRows[0]?.themeOverrides as Record<string, unknown> | undefined
-  const seo = theme?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string; twitterCard?: "summary" | "summary_large_image" } | undefined
-  const title = (theme?.seoTitle as string) || seo?.title || tenant.name
-  const description = (theme?.seoDescription as string) || seo?.description || tenant.description || `Shop at ${tenant.name}`
-  const ogImage = (theme?.ogImage as string) || seo?.ogImage
-  const ogTitle = seo?.ogTitle || title
-  const ogDescription = seo?.ogDescription || description
-  const faviconUrl = (theme?.faviconUrl as string) || "/favicon.ico"
+  const structuredPublication = await loadPublishedStorefront(tenant.id)
+  if (structuredPublication) {
+    const page = structuredPublication.page.document.page
+    title = page.seoTitle || page.name
+    description = page.seoDescription || tenant.description || undefined
+    ogImage = page.ogImage || undefined
+    ogTitle = title
+    ogDescription = description
+  } else {
+    const layoutRows = await db.select({ themeOverrides: storeLayouts.themeOverrides })
+      .from(storeLayouts)
+      .where(and(eq(storeLayouts.tenantId, tenant.id), eq(storeLayouts.isHomepage, true)))
+      .limit(1)
+
+    const theme = layoutRows[0]?.themeOverrides as Record<string, unknown> | undefined
+    const seo = theme?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string; twitterCard?: "summary" | "summary_large_image" } | undefined
+    title = (theme?.seoTitle as string) || seo?.title || tenant.name
+    description = (theme?.seoDescription as string) || seo?.description || tenant.description || `Shop at ${tenant.name}`
+    ogImage = (theme?.ogImage as string) || seo?.ogImage
+    ogTitle = seo?.ogTitle || title
+    ogDescription = seo?.ogDescription || description
+    faviconUrl = (theme?.faviconUrl as string) || faviconUrl
+    twitterCard = seo?.twitterCard || twitterCard
+  }
 
   return {
     title,
@@ -211,7 +232,7 @@ export async function generateMetadata({
       ...(ogImage ? { images: [{ url: ogImage }] } : {}),
     },
     twitter: {
-      card: seo?.twitterCard || "summary_large_image",
+      card: twitterCard,
       title: ogTitle,
       description: ogDescription,
       ...(ogImage ? { images: [ogImage] } : {}),

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { getTenantPlanLimits } from "@/lib/plan-limits";
 import { getPaymentSettings } from "./actions";
 import { PaymentsSettingsClient } from "./payments-settings-client";
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PaymentsSettingsPage() {
-  const user = await requireUser();
+  const user = await requireTenantUser();
   const limits = await getTenantPlanLimits(user.tenantId);
 
   const { settings, error } = await getPaymentSettings();

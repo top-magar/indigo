@@ -8,6 +8,8 @@ import { useEditorStore } from '../editor-store';
 import ElementWrapper from '../../canvas/element-wrapper';
 import { MIcon } from '../../ui/m-icon';
 import { registry } from './types';
+import { useEditor } from '../provider';
+import { formatPrice } from '@/shared/currency';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -17,27 +19,46 @@ function W({ element, children }: { element: El; children: ReactNode }) {
 }
 function c(el: El) { return el.content as Record<string, string>; }
 
+function useBoundValue(el: El) {
+  const { sampleProduct, currency } = useEditor();
+  const binding = el.binding;
+  if (!binding) return null;
+  if (binding.source === "product" && sampleProduct) {
+    if (binding.field === "name") return sampleProduct.name;
+    if (binding.field === "slug") return sampleProduct.slug;
+    if (binding.field === "description") return sampleProduct.description ?? "";
+    if (binding.field === "price") return formatPrice(sampleProduct.price, currency);
+    if (binding.field === "compareAtPrice") return sampleProduct.compareAtPrice ? formatPrice(sampleProduct.compareAtPrice, currency) : "";
+    if (binding.field === "images[0]") return sampleProduct.images?.[0]?.url ?? "";
+  }
+  return null;
+}
+
 // ─── Text (contentEditable) ─────────────────────────────────
 
 function TextRenderer({ element }: { element: El }) {
   const selected = useEditorStore(s => s.selected);
   const isSel = selected?.id === element.id;
   const content = c(element);
+  const bound = useBoundValue(element);
+  const text = bound ?? content.innerText;
+  
   return (
     <W element={element}>
       <p
-        contentEditable={isSel}
+        contentEditable={isSel && !bound}
         suppressContentEditableWarning
         spellCheck={false}
         className="outline-none min-h-[1em]"
-        style={{ whiteSpace: 'pre-wrap', cursor: isSel ? 'text' : 'default' }}
+        style={{ whiteSpace: 'pre-wrap', cursor: isSel && !bound ? 'text' : 'default', opacity: bound && !isSel ? 0.8 : 1 }}
         onBlur={(e) => {
-          const text = e.currentTarget.innerText;
-          if (text !== content.innerText) {
-            useDocumentStore.getState().updateElement({ ...element, content: { ...content, innerText: text } });
+          if (bound) return;
+          const newText = e.currentTarget.innerText;
+          if (newText !== content.innerText) {
+            useDocumentStore.getState().updateElement({ ...element, content: { ...content, innerText: newText } });
           }
         }}
-      >{content.innerText}</p>
+      >{text}</p>
     </W>
   );
 }
@@ -46,21 +67,25 @@ function TextRenderer({ element }: { element: El }) {
 
 function LinkRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
-  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ color: 'inherit' }}>{c(element).innerText || 'Link'}</a></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ color: 'inherit' }}>{bound ?? (c(element).innerText || 'Link')}</a></W>;
 }
 
 function ButtonRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
-  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>{c(element).innerText || 'Button'}</a></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><a href={preview ? c(element).href : undefined} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>{bound ?? (c(element).innerText || 'Button')}</a></W>;
 }
 
 function ImageRenderer({ element }: { element: El }) {
   const content = c(element);
+  const bound = useBoundValue(element);
+  const src = bound || content.src;
   return (
     <W element={element}>
-      {content.src ? (
+      {src ? (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img src={content.src} alt={content.alt || element.name} className="block w-full" />
+        <img src={src} alt={content.alt || element.name} className="block w-full" />
       ) : (
         <div className="flex w-full flex-col items-center justify-center gap-2 bg-muted/50 py-12 text-muted-foreground">
           <MIcon name="image" size={24} /><span className="text-xs">Add image</span>
@@ -84,15 +109,18 @@ function SpacerRenderer({ element }: { element: El }) {
 }
 
 function QuoteRenderer({ element }: { element: El }) {
-  return <W element={element}><blockquote>{c(element).innerText}</blockquote></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><blockquote>{bound ?? c(element).innerText}</blockquote></W>;
 }
 
 function BadgeRenderer({ element }: { element: El }) {
-  return <W element={element}><span>{c(element).innerText || 'Badge'}</span></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><span>{bound ?? (c(element).innerText || 'Badge')}</span></W>;
 }
 
 function ListRenderer({ element }: { element: El }) {
-  return <W element={element}><ul style={{ listStyleType: element.styles.listStyleType as string || 'disc' }}>{(c(element).innerText || '').split('\n').map((li, i) => <li key={i}>{li}</li>)}</ul></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><ul style={{ listStyleType: element.styles.listStyleType as string || 'disc' }}>{((bound || c(element).innerText) || '').split('\n').map((li, i) => <li key={i}>{li}</li>)}</ul></W>;
 }
 
 function CodeRenderer({ element }: { element: El }) {
@@ -165,7 +193,8 @@ function StarRatingRenderer({ element }: { element: El }) {
 }
 
 function CartButtonRenderer({ element }: { element: El }) {
-  return <W element={element}><span>🛒</span><span>{c(element).innerText || 'Add to Cart'}</span></W>;
+  const bound = useBoundValue(element);
+  return <W element={element}><span>🛒</span><span>{bound ?? (c(element).innerText || 'Add to Cart')}</span></W>;
 }
 
 // ─── Register renderers ─────────────────────────────────────

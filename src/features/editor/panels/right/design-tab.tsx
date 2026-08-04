@@ -4,6 +4,7 @@ import type { El } from "../../core/types";
 import type { StyleProps } from "./shared";
 import { Section, SelectField } from "./shared";
 import { RadiusMenu, FillMenu, StrokeMenu, ShadowMenu, BlurMenu, TypographyMenu, LayoutMenu, PositionMenu } from "./menus";
+import { AnimationSettings } from "./animation-settings";
 
 const textTypes = new Set(["text","heading","subheading","quote","code","list","badge","icon","footer","button","link","navbar"]);
 const simpleTypes = new Set(["divider","spacer"]);
@@ -58,6 +59,13 @@ export default function DesignTab({ get, set, selected, onUpdate, mode = "layout
 
       {/* 10. Effects (opacity/blur/transform) */}
       {mode === "advanced" && !isSimple && !isBody && <BlurMenu get={get} set={set} />}
+
+      {/* 11. Animations / Interactions */}
+      {mode === "advanced" && !isSimple && !isBody && (
+        <Section title="Animations" icon="animation" defaultOpen={false}>
+          <AnimationSettings />
+        </Section>
+      )}
     </div>
   );
 }

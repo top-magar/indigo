@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireUser } from "@/lib/auth";
+import { requireTenantUser } from "@/lib/auth";
 import { NotificationsPageClient } from "./notifications-client";
 
 export const metadata: Metadata = {
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
 };
 
 export default async function NotificationsPage() {
-  await requireUser();
+  await requireTenantUser();
   return <NotificationsPageClient />;
 }

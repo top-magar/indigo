@@ -8,6 +8,8 @@ import { getAllTenantSlugs, getProductSlugsForTenant } from "@/features/store/da
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/shared/seo"
 import { ProductReviews } from "./product-reviews"
+import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
+import type { EditorDocumentV2 } from "@/features/editor/core/document-v2"
 
 /**
  * Generate static params for all product detail pages
@@ -137,6 +139,17 @@ export default async function ProductPage({
   // Verify product belongs to tenant
   if (product.tenant_id !== tenant.id) notFound()
 
+  // Fetch the product template if it exists
+  const { data: templateData } = await supabase
+    .from("editor_pages")
+    .select("data")
+    .eq("tenant_id", tenant.id)
+    .eq("slug", "__product_template")
+    .eq("published", true)
+    .maybeSingle()
+
+  const productTemplate = templateData?.data as EditorDocumentV2 | undefined
+
   // Build URLs for JSON-LD
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
   const productUrl = `${baseUrl}/store/${slug}/products/${productSlug}`
@@ -189,12 +202,35 @@ export default async function ProductPage({
           </a>
         </div>
       )}
-      <ProductDetail
-        product={product}
-        relatedProducts={[]}
-        storeSlug={slug}
-        currency={tenant.currency}
-      />
+      
+      {productTemplate ? (
+        <StorefrontRenderer
+          document={productTemplate}
+          context={{
+            store: { name: tenant.name, slug: slug },
+            currency: tenant.currency || "USD",
+            products: [], // We pass the active product specifically
+            activeProduct: {
+              id: product.id,
+              name: product.name,
+              slug: product.slug,
+              description: product.description,
+              price: product.price,
+              compareAtPrice: product.compare_at_price,
+              images: Array.isArray(product.images) 
+                ? product.images.map((img: any) => ({ url: img.url || img, alt: img.alt || product.name })) 
+                : [],
+            },
+          }}
+        />
+      ) : (
+        <ProductDetail
+          product={product}
+          relatedProducts={[]}
+          storeSlug={slug}
+          currency={tenant.currency}
+        />
+      )}
       {/* Reviews Section */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <Suspense fallback={<div className="h-40" />}>

@@ -41,6 +41,7 @@ export default async function EditorPreviewPage({
           })),
         }}
         mode="preview"
+        themeConfig={session.project.themeConfig as import("@/features/editor/lib/theme-utils").ThemeConfig | null}
       />
     </main>
   )

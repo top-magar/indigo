@@ -45,6 +45,9 @@ export const editorDocumentV2Schema = z.object({
     id: z.string().uuid(),
     name: z.string().trim().min(1).max(120),
     slug: z.string().max(160),
+    seoTitle: z.string().nullable().optional(),
+    seoDescription: z.string().nullable().optional(),
+    ogImage: z.string().nullable().optional(),
   }),
   root: z.array(editorElementSchema).min(1),
   settings: z.object({

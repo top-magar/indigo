@@ -256,6 +256,7 @@ export async function addProductToCollection(collectionId: string, productId: st
         const { error } = await supabase
             .from("collection_products")
             .insert({
+                tenant_id: tenantId,
                 collection_id: collectionId,
                 product_id: productId,
                 position,
