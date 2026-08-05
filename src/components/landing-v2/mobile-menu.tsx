@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, X, ArrowRight, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { heroContent } from "@/data/landing/hero";
 import type { MobileMenuGroup } from "@/data/landing/navigation";
 
 export function MobileMenu({ items }: { items: MobileMenuGroup[] }) {
@@ -67,11 +68,11 @@ export function MobileMenu({ items }: { items: MobileMenuGroup[] }) {
         ))}
 
         <div className="lv2-mobile-menu__ctas">
-          <a href="#demo" className="lv2-btn lv2-btn--ghost" onClick={() => setOpen(false)}>
-            Request Demo
+          <a href={heroContent.primary.href} className="lv2-btn lv2-btn--ghost" onClick={() => setOpen(false)}>
+            {heroContent.primary.label}
           </a>
-          <a href="#waitlist" className="lv2-btn lv2-btn--primary" onClick={() => setOpen(false)}>
-            Join Waitlist
+          <a href={heroContent.secondary.href} className="lv2-btn lv2-btn--primary" onClick={() => setOpen(false)}>
+            {heroContent.secondary.label}
           </a>
         </div>
       </div>

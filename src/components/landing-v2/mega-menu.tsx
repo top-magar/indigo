@@ -34,7 +34,7 @@ export function MegaMenu({ item }: { item: MegaMenuItem }) {
   }, [open]);
 
   return (
-    <div className="relative" onMouseLeave={() => setOpen(false)}>
+    <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button
         ref={triggerRef}
         className={cn("lv2-nav__trigger", open && "text-lv2-fg bg-lv2-panel-2")}

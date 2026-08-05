@@ -28,11 +28,11 @@ export type LogoDatum = {
 };
 
 export const heroContent: HeroContent = {
-  badge: { label: "Run your store 10× smarter", href: "#overview" },
+  badge: { label: "Run your store 10× smarter", href: "#metrics" },
   headline: ["Smarter Commerce", "Starts with Live Data"],
   body: "Track every storefront visit, checkout, and campaign from one place. Indigo gives Nepali merchants live analytics, structured pages, and payments that actually connect.",
-  primary: { label: "Request Demo", href: "/demo" },
-  secondary: { label: "Join Waitlist", href: "/waitlist" },
+  primary: { label: "Request Demo", href: "/signup" },
+  secondary: { label: "Join Waitlist", href: "#pricing" },
   note: "No credit card required. Free plan available.",
 };
 

@@ -69,8 +69,8 @@ export function IntegrationsSection() {
             Don’t see your tool? Use the REST API and webhooks to connect anything in minutes.
           </p>
           <div style={{ display: "flex", gap: 10 }}>
-            <a href="#docs" className="lv2-btn lv2-btn--ghost lv2-btn--sm">View API Docs</a>
-            <a href="#integration-request" className="lv2-btn lv2-btn--primary lv2-btn--sm">Request Integration</a>
+            <a href="/docs" className="lv2-btn lv2-btn--ghost lv2-btn--sm">View API Docs</a>
+            <a href="/contact" className="lv2-btn lv2-btn--primary lv2-btn--sm">Request Integration</a>
           </div>
         </div>
       </div>

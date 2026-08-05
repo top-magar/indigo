@@ -43,7 +43,7 @@ export function Header() {
           {navigationItems.map((item) => (
             <MegaMenu key={item.key} item={item} />
           ))}
-          <Link href="#overview" className="lv2-nav__link">
+          <Link href="#metrics" className="lv2-nav__link">
             Overview
           </Link>
         </nav>
