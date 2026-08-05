@@ -175,13 +175,18 @@ These are real bugs found and fixed. Use as few-shot examples when auditing.
 
 ### What was done this session
 
-Three commits on branch `codex/editor-merchant-workbench` (latest first):
+Six commits on branch `codex/editor-merchant-workbench` (latest first):
 
 ```
+bcb40b0b test(payments): cover Stripe webhook order-state transitions
+5143cdc5 test(payments): cover eSewa and Khalti integration logic
+d56c3de5 docs: add session handoff context for Codex/Claude/Antigravity agents
 e244b58a style(landing): apply Hermes Agent design language to Indigo landing
 2dd37b64 refactor(editor): harden renderer contracts, URL safety, and tree perf
 7cdf0c55 fix(storefront): support v2 collection-template documents on category pages
 ```
+
+The two `test(payments)` commits are detailed in the roadmap section below.
 
 #### 1. Category page fixes (`7cdf0c55`)
 File: `src/app/store/[slug]/category/[categorySlug]/page.tsx`
@@ -237,7 +242,10 @@ tsc --noEmit         # expect exit 0
 ### Current roadmap (prioritized)
 
 **P0 — Protect the money (1–2 sprints):**
-1. **Unit-test payment paths**: Stripe webhook (`src/app/api/webhooks/stripe/route.ts`), checkout route (`src/app/api/store/[slug]/checkout/route.ts`), eSewa/Khalti verification. Mock providers, assert order state transitions.
+1. **Unit-test payment paths** — ✅ DONE for integration + webhook:
+   - `src/__tests__/payments.test.ts` (24 tests): eSewa HMAC signature/initiate/verify (fetch mocked), Khalti initiate/verify, sandbox↔production endpoint selection.
+   - `src/__tests__/stripe-webhook.test.ts` (14 tests): signature rejection, succeeded→paid/confirmed, failed→failed, refunded full/partial, idempotency, tenant-scoped lookups, 500 on DB error.
+   - **Still open**: checkout route POST (`src/app/api/store/[slug]/checkout/route.ts`) — `calculateShipping`/`calculateTax` are unexported and the route imports db/rate-limit/email/whatsapp; either export the two pure functions or mock the db chain. Also unexported: `verifySignature` (eSewa HMAC + timingSafeEqual) in `src/app/api/store/[slug]/payment/esewa/route.ts`. Note: `critical-paths.test.ts` re-implements logic inline (tests copies) — prefer importing real code in new tests.
 2. **Unit-test 25 server-action files** (payments, verification, billing, shipping actions — zero coverage today).
 3. **Fix 35 React-compiler refs-during-render + 32 setState-in-effect warnings** (concentrated in `inventory-client.tsx` (25 alone), `motion-wrapper.tsx`, editor files).
 
