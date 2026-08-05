@@ -14,7 +14,7 @@ export function FinalCtaSection() {
           numbered={false}
           eyebrow="Take the next step"
           headline={<>Move faster with<br />data confidence</>}
-          body="Spin up a store, connect payments, and start seeing live analytics from day one. Sample copy until launch messaging is finalized."
+          body="Spin up a store, connect payments, and start seeing live analytics from day one — no credit card required."
           align="center"
           id="final-cta-title"
         />

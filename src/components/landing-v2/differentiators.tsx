@@ -1,50 +1,185 @@
-import { Check } from "lucide-react";
-import { sectionData } from "@/data/landing/section-data";
-import { SectionHeading } from "./section-heading";
-import { Badge } from "./badge";
+"use client";
 
-const layouts: Record<string, string> = {
-  "visual-editor": "lv2-bento__card--lg",
-  "local-first-payments": "lv2-bento__card--lg",
-  "connected-operations": "",
-};
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { SectionHeading } from "./section-heading";
+import { EASE } from "./motion/reveal";
+
+const STREAM_EVENTS = ["page_view", "add_to_cart", "checkout_start", "purchase", "button_click", "search"];
+
+function StreamingDemo() {
+  const [rows, setRows] = useState(() => STREAM_EVENTS.slice(0, 4).map((e, i) => ({ type: e, id: i })));
+  const reduced = useMemo(
+    () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
+    [],
+  );
+  useEffect(() => {
+    if (reduced) return;
+    let next = rows.length;
+    const t = setInterval(() => {
+      setRows((prev) => [{ type: STREAM_EVENTS[next % STREAM_EVENTS.length], id: next }, ...prev].slice(0, 4));
+      next += 1;
+    }, 2600);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced]);
+
+  return (
+    <div className="lv2-mini-window">
+      <div className="lv2-mini-window__bar"><i /><i /><i /></div>
+      <div>
+        <AnimatePresence initial={false}>
+          {rows.map((row, i) => (
+            <motion.div
+              key={row.id}
+              className="lv2-event-row"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span>{row.type}</span>
+              <em>{i === 0 ? "now" : `${i}s`}</em>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+function AIDemo() {
+  const [active, setActive] = useState(0);
+  return (
+    <div className="lv2-ai-demo">
+      <div className="lv2-ai-demo__chart">
+        <svg viewBox="0 0 100 32" width="100%" height="32" preserveAspectRatio="none">
+          <motion.path
+            d="M0,28 L10,22 L20,18 L30,14 L40,10 L50,8 L60,12 L70,16 L80,20 L90,24 L100,28"
+            fill="none"
+            stroke="var(--lv2-highlight)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: EASE, delay: 0.2 }}
+          />
+        </svg>
+      </div>
+      <div className="lv2-ai-demo__stats">
+        <div className="lv2-ai-demo__stat">
+          <strong>Accuracy</strong>
+          <span>94.2%</span>
+        </div>
+        <div className="lv2-ai-demo__stat">
+          <strong>Models</strong>
+          <span>12</span>
+        </div>
+      </div>
+      <div className="lv2-ai-demo__tabs">
+        {["Churn", "Conversion", "Growth"].map((tab, i) => (
+          <button
+            type="button"
+            key={tab}
+            className={active === i ? "lv2-ai-demo__tab lv2-ai-demo__tab--active" : "lv2-ai-demo__tab"}
+            onClick={() => setActive(i)}
+            aria-pressed={active === i}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BuilderDemo() {
+  const [dragging, setDragging] = useState(false);
+  return (
+    <div className="lv2-builder">
+      <div className="lv2-builder__zone" onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)}>
+        <AnimatePresence>
+          {dragging ? (
+            <motion.div
+              className="lv2-builder__drop"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              Drop widget here
+            </motion.div>
+          ) : (
+            <div className="lv2-builder__placeholder">
+              <div className="lv2-kpi"><div className="lv2-kpi__label">Sessions</div><div className="lv2-kpi__value">9,182</div></div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+function EnterpriseDemo() {
+  return (
+    <div className="lv2-enterprise">
+      <div className="lv2-enterprise__shield">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
+        </svg>
+      </div>
+      <div className="lv2-enterprise__label">SOC 2 Type II</div>
+      <div className="lv2-enterprise__note">Bank-grade encryption</div>
+    </div>
+  );
+}
+
+function PerformanceDemo() {
+  return (
+    <div className="lv2-perf">
+      <div className="lv2-perf__value">3×</div>
+      <div className="lv2-perf__label">Faster queries</div>
+      <div className="lv2-perf__note">Optimized at scale</div>
+    </div>
+  );
+}
+
+const demos = [
+  { id: "stream", title: "Real-time", subtitle: "Stream insights as they happen", visual: <StreamingDemo /> },
+  { id: "ai", title: "AI-Powered", subtitle: "Predictive intelligence", visual: <AIDemo /> },
+  { id: "builder", title: "Custom", subtitle: "Drag & drop builder", visual: <BuilderDemo /> },
+  { id: "enterprise", title: "Enterprise", subtitle: "SOC 2 Type II", visual: <EnterpriseDemo /> },
+  { id: "perf", title: "Performance", subtitle: "3x faster queries", visual: <PerformanceDemo /> },
+];
 
 export function DifferentiatorsSection() {
-  const section = sectionData.differentiators;
-
   return (
     <section id="differentiators" className="lv2-section" aria-labelledby="differentiators-title">
       <div className="lv2-container">
         <SectionHeading
-          index={section.index}
-          total={section.total}
-          label={section.label}
-          eyebrow={section.eyebrow}
-          headline={<>Everything you need.<br />Nothing you don’t.</>}
-          body={section.body}
+          index={5}
+          total={10}
+          label="Differentiators"
+          eyebrow="Built different"
+          headline={<>Everything you need.<br />Nothing you don&apos;t.</>}
+          body="A focused set of powerful capabilities, designed to work together seamlessly. No bloat, no complexity — just clarity."
           id="differentiators-title"
         />
 
-        <div className="lv2-bento">
-          {section.differentiators.map((item) => (
-            <article
-              key={item.id}
-              className={`lv2-card lv2-bento__card ${layouts[item.id] ?? ""} lv2-card--hover`}
+        <div className="lv2-diff-grid">
+          {demos.map((demo, i) => (
+            <motion.article
+              key={demo.id}
+              className="lv2-diff-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, ease: EASE, delay: i * 0.08 }}
             >
-              <Badge variant="accent">Indigo</Badge>
-              <h3 style={{ marginTop: 14 }}>{item.title}</h3>
-              <p style={{ marginTop: 8, color: "var(--lv2-muted)", fontSize: 14.5 }}>{item.description}</p>
-              {item.points?.length ? (
-                <ul style={{ margin: "16px 0 0", display: "flex", flexDirection: "column", gap: 10, padding: 0, listStyle: "none" }}>
-                  {item.points.map((point) => (
-                    <li key={point} style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--lv2-fg-soft)", fontSize: 14 }}>
-                      <Check aria-hidden style={{ width: 16, height: 16, color: "var(--lv2-success)" }} />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </article>
+              <div className="lv2-diff-card__visual">{demo.visual}</div>
+              <div className="lv2-diff-card__title">{demo.title}</div>
+              <div className="lv2-diff-card__subtitle">{demo.subtitle}</div>
+            </motion.article>
           ))}
         </div>
       </div>

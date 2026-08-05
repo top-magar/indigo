@@ -1,5 +1,3 @@
-"use client";
-
 import { NavigationShell } from "./index";
 import { HeroSection } from "./hero";
 import { LogoMarquee } from "./logo-marquee";
@@ -16,6 +14,10 @@ import { FaqSection } from "./faq";
 import { FinalCtaSection } from "./final-cta";
 import { Footer } from "./footer";
 
+/**
+ * Server Component shell — composes client islands (header, hero dashboard,
+ * pricing toggle, marquees, FAQ, footer newsletter) with static sections.
+ */
 export function LandingV2Page() {
   return (
     <NavigationShell>

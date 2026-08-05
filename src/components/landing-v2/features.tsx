@@ -1,4 +1,197 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { SectionHeading } from "./section-heading";
+import { EASE } from "./motion/reveal";
+
+/* ─── Event stream (cycling) ─────────────────────────────────────────── */
+
+const STREAM_EVENTS = ["page_view", "add_to_cart", "checkout_start", "purchase", "button_click", "search"];
+
+function EventStreamVisual() {
+  const [rows, setRows] = useState(() => STREAM_EVENTS.slice(0, 4).map((e, i) => ({ type: e, id: i })));
+  const reduced = useMemo(
+    () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
+    [],
+  );
+  useEffect(() => {
+    if (reduced) return;
+    let next = rows.length;
+    const t = setInterval(() => {
+      setRows((prev) => [{ type: STREAM_EVENTS[next % STREAM_EVENTS.length], id: next }, ...prev].slice(0, 4));
+      next += 1;
+    }, 2600);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced]);
+
+  return (
+    <div className="lv2-mini-window">
+      <div className="lv2-mini-window__bar"><i /><i /><i /></div>
+      <div>
+        <AnimatePresence initial={false}>
+          {rows.map((row, i) => (
+            <motion.div
+              key={row.id}
+              className="lv2-event-row"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span>{row.type}</span>
+              <em>{i === 0 ? "now" : `${i}s`}</em>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Conversion funnel (selectable stages) ──────────────────────────── */
+
+const FUNNEL = [
+  { label: "Visitors", count: "10,000", pct: 100 },
+  { label: "Product views", count: "6,200", pct: 62 },
+  { label: "Add to cart", count: "2,400", pct: 24 },
+  { label: "Purchases", count: "890", pct: 9 },
+];
+
+function FunnelVisual() {
+  const [active, setActive] = useState<number | null>(null);
+  return (
+    <div className="lv2-funnel">
+      {FUNNEL.map((stage, i) => {
+        const drop = i === 0 ? null : 100 - Math.round((FUNNEL[i].pct / FUNNEL[i - 1].pct) * 100);
+        return (
+          <button
+            type="button"
+            key={stage.label}
+            className={`lv2-funnel__stage ${active === i ? "lv2-funnel__stage--active" : ""}`}
+            onMouseEnter={() => setActive(i)}
+            onFocus={() => setActive(i)}
+            onMouseLeave={() => setActive(null)}
+            onBlur={() => setActive(null)}
+            onClick={() => setActive(active === i ? null : i)}
+            aria-pressed={active === i}
+            aria-label={`${stage.label}: ${stage.count} (${stage.pct}% of visitors)`}
+          >
+            <span>{stage.label}</span>
+            <strong>{stage.count}</strong>
+            <div className="lv2-funnel__track">
+              <motion.div
+                className="lv2-funnel__bar"
+                initial={{ width: 0 }}
+                whileInView={{ width: `${stage.pct}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: EASE, delay: i * 0.1 }}
+              />
+            </div>
+            <em>{stage.pct}%</em>
+            <AnimatePresence>
+              {active === i && drop !== null ? (
+                <motion.span
+                  className="lv2-funnel__drop"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  −{drop}% drop-off
+                </motion.span>
+              ) : null}
+            </AnimatePresence>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Heatmap (pointer response) ─────────────────────────────────────── */
+
+function HeatmapVisual() {
+  const [hot, setHot] = useState(2);
+  return (
+    <div className="lv2-heat" onMouseLeave={() => setHot(2)}>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <motion.i
+          key={i}
+          className={i === hot ? "lv2-heat__cell lv2-heat__cell--hot" : "lv2-heat__cell"}
+          onMouseEnter={() => setHot(i)}
+          onFocus={() => setHot(i)}
+          animate={{ opacity: i === hot ? 1 : undefined }}
+          transition={{ duration: 0.2 }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Cohort matrix (cell tooltip) ───────────────────────────────────── */
+
+const COHORT = [
+  { week: "Jan", cells: ["92%", "74%", "68%", "51%"] },
+  { week: "Feb", cells: ["88%", "70%", "54%", "42%"] },
+  { week: "Mar", cells: ["90%", "73%", "62%", "47%"] },
+];
+
+function CohortVisual() {
+  const [tip, setTip] = useState<{ x: number; y: number; label: string; value: string } | null>(null);
+  return (
+    <div className="lv2-cohort-wrap" onMouseLeave={() => setTip(null)}>
+      <table className="lv2-cohort">
+        <thead>
+          <tr>
+            <th>Week</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th>
+          </tr>
+        </thead>
+        <tbody>
+          {COHORT.map((row) => (
+            <tr key={row.week}>
+              <td>{row.week}</td>
+              {row.cells.map((value, i) => {
+                const heat = i < 1 ? 1 : i < 2 ? 2 : i < 3 ? 2 : 3;
+                return (
+                  <td
+                    key={i}
+                    data-hot={heat}
+                    onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, label: `${row.week} · Week ${i + 1}`, value })}
+                    onFocus={(e) => {
+                      const rect = (e.target as HTMLElement).getBoundingClientRect();
+                      setTip({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, label: `${row.week} · Week ${i + 1}`, value });
+                    }}
+                    tabIndex={0}
+                  >
+                    {value}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <AnimatePresence>
+        {tip ? (
+          <motion.div
+            className="lv2-cohort-tip"
+            style={{ left: Math.min(tip.x + 12, window.innerWidth - 180), top: tip.y + 12 }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <strong>{tip.label}</strong>
+            <span>{tip.value} retained</span>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────── */
 
 const cards = [
   {
@@ -6,46 +199,21 @@ const cards = [
     title: "Event stream",
     description: "Watch every page view, add-to-cart, checkout, and campaign event as it happens.",
     size: "lg" as const,
-    visual: (
-      <div className="lv2-mini-window">
-        <div className="lv2-mini-window__bar"><i /><i /><i /></div>
-        <div>
-          <div className="lv2-event-row"><span>page_view</span><em>1s</em></div>
-          <div className="lv2-event-row"><span>add_to_cart</span><em>2s</em></div>
-          <div className="lv2-event-row"><span>checkout_start</span><em>3s</em></div>
-          <div className="lv2-event-row"><span>purchase</span><em>4s</em></div>
-        </div>
-      </div>
-    ),
+    visual: <EventStreamVisual />,
   },
   {
     id: "conversion-funnels",
     title: "Conversion funnels",
-    description: "See where shoppers drop off and which steps influence the purchase decision.",
+    description: "See where shoppers drop off — hover or tap a stage to inspect the loss.",
     size: "sm" as const,
-    visual: (
-      <div className="lv2-funnel">
-        <div className="lv2-funnel__stage"><span>10,000</span><div className="lv2-funnel__bar" style={{ width: "100%" }} /><em>100%</em></div>
-        <div className="lv2-funnel__stage"><span>6,200</span><div className="lv2-funnel__bar" style={{ width: "62%" }} /><em>62%</em></div>
-        <div className="lv2-funnel__stage"><span>2,400</span><div className="lv2-funnel__bar" style={{ width: "24%" }} /><em>24%</em></div>
-        <div className="lv2-funnel__stage"><span>890</span><div className="lv2-funnel__bar" style={{ width: "9%" }} /><em>9%</em></div>
-      </div>
-    ),
+    visual: <FunnelVisual />,
   },
   {
     id: "heatmaps",
     title: "Heatmaps",
     description: "See where people tap, scroll, and hesitate before buying.",
     size: "sm" as const,
-    visual: (
-      <div className="lv2-heat">
-        <i />
-        <i />
-        <i />
-        <i />
-        <i />
-      </div>
-    ),
+    visual: <HeatmapVisual />,
   },
   {
     id: "dashboards",
@@ -73,8 +241,8 @@ const cards = [
     visual: (
       <div className="lv2-integrations-grid">
         {["eSewa", "Khalti", "Slack", "Stripe"].map((name) => (
-          <div className="lv2-integration" key={name}>
-            <div className="lv2-integration__logo">{name.charAt(0)}</div>
+          <div className="lv2-bento-integration" key={name}>
+            <div className="lv2-bento-integration__logo">{name.charAt(0)}</div>
             <div>
               <strong>{name}</strong>
               <small>Connected</small>
@@ -89,20 +257,7 @@ const cards = [
     title: "Cohort analysis",
     description: "Track repeat purchase behaviour and retention cohorts over time.",
     size: "lg" as const,
-    visual: (
-      <table className="lv2-cohort">
-        <thead>
-          <tr>
-            <th>Week</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Jan</td><td data-hot="1">92%</td><td data-hot="2">74%</td><td data-hot="2">68%</td><td data-hot="3">51%</td></tr>
-          <tr><td>Feb</td><td data-hot="1">88%</td><td data-hot="2">70%</td><td data-hot="3">54%</td><td data-hot="3">42%</td></tr>
-          <tr><td>Mar</td><td data-hot="1">90%</td><td data-hot="2">73%</td><td data-hot="2">62%</td><td data-hot="3">47%</td></tr>
-        </tbody>
-      </table>
-    ),
+    visual: <CohortVisual />,
   },
 ];
 
@@ -120,15 +275,19 @@ export function FeaturesSection() {
           id="features-title"
         />
         <div className="lv2-bento">
-          {cards.map((card) => (
-            <article
+          {cards.map((card, i) => (
+            <motion.article
               key={card.id}
-              className={card.size === "lg" ? "lv2-card lv2-bento__card lv2-bento__card--lg lv2-card--hover" : card.size === "sm" ? "lv2-card lv2-bento__card lv2-bento__card--sm lv2-card--hover" : "lv2-card lv2-bento__card lv2-card--hover"}
+              className={`lv2-card lv2-bento__card ${card.size === "lg" ? "lv2-bento__card--lg" : "lv2-bento__card--sm"} lv2-card--hover`}
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, ease: EASE, delay: (i % 3) * 0.08 }}
             >
               <div className="lv2-card-title">{card.title}</div>
               <p>{card.description}</p>
               <div className="lv2-bento__visual">{card.visual}</div>
-            </article>
+            </motion.article>
           ))}
         </div>
       </div>

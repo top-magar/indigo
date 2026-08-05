@@ -1,5 +1,5 @@
 import { Check, X } from "lucide-react";
-import { sectionData } from "@/data/landing/section-data";
+import { comparisonRows } from "@/data/landing/core";
 import { SectionHeading } from "./section-heading";
 
 function CellValue({ value, good }: { value: boolean | string; good: boolean }) {
@@ -19,18 +19,16 @@ function CellValue({ value, good }: { value: boolean | string; good: boolean }) 
 }
 
 export function ComparisonSection() {
-  const section = sectionData.comparison;
-
   return (
     <section id="comparison" className="lv2-section" aria-labelledby="comparison-title">
       <div className="lv2-container">
         <SectionHeading
-          index={section.index}
-          total={section.total}
-          label={section.label}
-          eyebrow={section.eyebrow}
-          headline={<>Indigo vs.<br />templated platforms</>}
-          body={section.body}
+          index={6}
+          total={10}
+          label="Comparison"
+          eyebrow="Why choose us"
+          headline={<>The smarter alternative<br />to templated platforms</>}
+          body="Indigo replaces fragmented page builders, disconnected checkout tools, and manual reporting with one structured commerce workspace."
           id="comparison-title"
         />
 
@@ -40,23 +38,23 @@ export function ComparisonSection() {
               <span className="lv2-compare__label">Feature</span>
             </div>
             <div className="lv2-compare__product">
-              <span className="lv2-compare__label">{section.indigoLabel}</span>
-              <strong>AI-powered and built-in</strong>
-            </div>
-            <div>
-              <span className="lv2-compare__label">{section.alternativeLabel}</span>
+              <span className="lv2-compare__label">Templated platforms</span>
               <strong>Fragmented setup</strong>
+            </div>
+            <div className="lv2-compare__product lv2-compare__product--us">
+              <span className="lv2-compare__label">Indigo</span>
+              <strong>Connected by default</strong>
             </div>
           </div>
           <div>
-            {section.rows.map((row) => (
+            {comparisonRows.map((row) => (
               <div className="lv2-compare__row" key={row.feature}>
                 <div className="lv2-compare__cell lv2-compare__cell--dim">{row.feature}</div>
-                <div className="lv2-compare__cell lv2-compare__cell--good">
-                  <CellValue value={row.indigo} good />
-                </div>
                 <div className="lv2-compare__cell lv2-compare__cell--dim">
-                  <CellValue value={row.alternative} good={false} />
+                  <CellValue value={row.them} good={false} />
+                </div>
+                <div className="lv2-compare__cell lv2-compare__cell--good">
+                  <CellValue value={row.us} good />
                 </div>
               </div>
             ))}

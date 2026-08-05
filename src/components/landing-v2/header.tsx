@@ -73,6 +73,9 @@ export function Header() {
 export function NavigationShell({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "contents" }}>
+      <a href="#main-content" className="lv2-skip-link">
+        Skip to content
+      </a>
       <Header />
       <MobileMenu items={mobileMenu} />
       <main id="main-content">{children}</main>

@@ -1,7 +1,10 @@
+"use client";
+
 import { Check } from "lucide-react";
 import { healthMetrics } from "@/data/landing/core";
 import { SectionHeading } from "./section-heading";
-import { Badge } from "./badge";
+import { motion } from "framer-motion";
+import { EASE } from "./motion/reveal";
 
 const useCases = [
   {
@@ -12,7 +15,7 @@ const useCases = [
       <div className="lv2-card lv2-dashboard" style={{ margin: 0 }}>
         <div className="lv2-dash-panel__head" style={{ padding: "14px 16px 0" }}>
           <strong>Live dashboard</strong>
-          <Badge variant="accent"><span className="lv2-dot" aria-hidden /> Live</Badge>
+          <span className="lv2-live-badge"><span className="lv2-dot lv2-dot--pulse" /> Live</span>
         </div>
         <div style={{ padding: "10px 16px 16px" }}>
           <div className="lv2-kpi-row" style={{ gridTemplateColumns: "1fr 1fr" }}>
@@ -29,7 +32,7 @@ const useCases = [
                 <div className="lv2-health-row" key={row.label}>
                   <span>{row.label}</span>
                   <strong>{row.value}</strong>
-                  <Badge variant={row.state === "Healthy" ? "success" : "warning"}>{row.state}</Badge>
+                  <span className={`lv2-badge lv2-badge--${row.state === "Healthy" ? "success" : "warning"}`}>{row.state}</span>
                 </div>
               ))}
             </div>
@@ -47,7 +50,7 @@ const useCases = [
         <div className="lv2-dash-panel" style={{ margin: 16 }}>
           <div className="lv2-dash-panel__head">
             <strong>Weekly digest</strong>
-            <Badge variant="success">Scheduled</Badge>
+            <span className="lv2-badge lv2-badge--success">Scheduled</span>
           </div>
           <div className="lv2-health-row"><span>Recipients</span><strong>Merchant + ops team</strong></div>
           <div className="lv2-health-row"><span>Next delivery</span><strong>Monday 08:00 NPT</strong></div>
@@ -65,7 +68,7 @@ const useCases = [
         <div className="lv2-dash-panel" style={{ margin: 16 }}>
           <div className="lv2-dash-panel__head">
             <strong>Channel breakdown</strong>
-            <Badge variant="accent">+18.2% WoW</Badge>
+            <span className="lv2-badge lv2-badge--accent">+18.2% WoW</span>
           </div>
           <div className="lv2-bars">
             {[
@@ -75,10 +78,18 @@ const useCases = [
               { label: "Email", value: 72 },
               { label: "Direct", value: 55 },
               { label: "Referral", value: 34 },
-            ].map((row) => (
+            ].map((row, i) => (
               <div className="lv2-bars__row" key={row.label}>
                 <span>{row.label}</span>
-                <div className="lv2-bars__track"><div className="lv2-bars__fill" style={{ width: `${row.value}%` }} /></div>
+                <div className="lv2-bars__track">
+                  <motion.div
+                    className="lv2-bars__fill"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${row.value}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: EASE, delay: i * 0.08 }}
+                  />
+                </div>
                 <strong>{row.value}%</strong>
               </div>
             ))}
