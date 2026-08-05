@@ -147,3 +147,6 @@ SESSION*.md
 skills/
 skills-lock.json
 .playwright-mcp/
+
+# Local agent artifacts
+.hermes/
