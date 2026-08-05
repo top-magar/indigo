@@ -9,9 +9,6 @@ import DOMPurify from "isomorphic-dompurify"
 import { loadPublishedStorefront } from "@/features/editor/renderer/load-publication"
 import { StorefrontRenderer } from "@/features/editor/renderer/storefront-renderer"
 
-export const revalidate = 600
-
-
 export default async function CatchAllPage({
   params,
 }: {
