@@ -18,13 +18,20 @@ function SectionHeading({
   title,
   body,
   invert = false,
+  marker,
 }: {
   title: React.ReactNode;
   body: string;
   invert?: boolean;
+  marker?: { index: string; label: string };
 }) {
   return (
     <div className={`indigo-section-heading ${invert ? "is-inverted" : ""}`}>
+      {marker && (
+        <p className="indigo-section-marker">
+          <b>[ {marker.index} ]</b> · {marker.label}
+        </p>
+      )}
       <h2>{title}</h2>
       <p>{body}</p>
     </div>
@@ -141,11 +148,7 @@ export function ProductionLanding() {
             <Crosshair className="is-top-right" />
             <div>
               <p className="indigo-hero__signal">Storefront system / Nepal</p>
-              <h1>
-                {landingContent.hero.titleLines.map((line) => (
-                  <span key={line}>{line}</span>
-                ))}
-              </h1>
+              <h1>{landingContent.hero.title}</h1>
             </div>
             <div className="indigo-hero__support">
               <p>{landingContent.hero.body}</p>
@@ -169,7 +172,12 @@ export function ProductionLanding() {
         </section>
 
         <section className="indigo-commerce-proof" aria-label="Commerce capabilities">
-          <div className="indigo-frame indigo-commerce-proof__grid">
+          <div className="indigo-frame">
+            <div className="indigo-section-heading">
+              <p className="indigo-section-marker"><b>[ 01 of 07 ]</b> · Metrics</p>
+              <h2>Measurable from the first order.</h2>
+            </div>
+            <div className="indigo-commerce-proof__grid">
             {landingContent.commerceProof.map((proof) => (
               <article key={proof.label}>
                 <span>{proof.label}</span>
@@ -177,12 +185,14 @@ export function ProductionLanding() {
                 <p>{proof.detail}</p>
               </article>
             ))}
+            </div>
           </div>
         </section>
 
         <section id="storefront" className="indigo-sheet indigo-storefront-system">
           <div className="indigo-frame">
             <SectionHeading
+              marker={{ index: "02 of 07", label: "Storefront System" }}
               title={<>Design freedom,<br />held together by a system.</>}
               body="Indigo behaves like a design tool and a commerce platform at the same time. Every visual decision remains connected to responsive structure and live product data."
             />
@@ -222,6 +232,7 @@ export function ProductionLanding() {
           <div className="indigo-frame">
             <SectionHeading
               invert
+              marker={{ index: "03 of 07", label: "Publish Workflow" }}
               title={<>One catalog.<br />A storefront ready to publish.</>}
               body="The path from product data to a branded storefront stays visible, reversible, and under the merchant's control."
             />
@@ -265,6 +276,7 @@ export function ProductionLanding() {
           <div className="indigo-frame">
             <SectionHeading
               invert
+              marker={{ index: "04 of 07", label: "Operations" }}
               title={<>The storefront is only half the system.</>}
               body="Orders, payments, inventory, and customers move through the same tenant-isolated workspace behind every Indigo store."
             />
@@ -298,6 +310,7 @@ export function ProductionLanding() {
         <section id="architecture" className="indigo-sheet indigo-architecture">
           <div className="indigo-frame">
             <SectionHeading
+              marker={{ index: "05 of 07", label: "Architecture" }}
               title={<>A visual workflow<br />with a real application underneath.</>}
               body="Indigo connects editor pages, product data, commerce operations, server-rendered storefronts, and domain routing instead of exporting a disconnected mockup."
             />
@@ -313,6 +326,7 @@ export function ProductionLanding() {
         <section id="pricing" className="indigo-offer">
           <div className="indigo-frame indigo-offer__grid">
             <div className="indigo-offer__copy">
+              <p className="indigo-section-marker"><b>[ 06 of 07 ]</b> · Pricing</p>
               <h2>{landingContent.offer.title}</h2>
               <p>{landingContent.offer.body}</p>
               <CampaignLink className="indigo-button" link={landingContent.offer.cta} event="signup_started">
@@ -334,7 +348,10 @@ export function ProductionLanding() {
 
         <section id="faq" className="indigo-sheet indigo-faq">
           <div className="indigo-frame indigo-faq__grid">
-            <div><h2>Questions before you build.</h2><p>Direct answers about the current Indigo product.</p></div>
+            <div>
+              <p className="indigo-section-marker"><b>[ 07 of 07 ]</b> · FAQ</p>
+              <h2>Questions before you build.</h2><p>Direct answers about the current Indigo product.</p>
+            </div>
             <FaqList faq={landingContent.faq} />
           </div>
         </section>

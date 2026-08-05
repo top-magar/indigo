@@ -1391,231 +1391,335 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   HERMES SKIN — visual language of hermes-agent.nousresearch.com
-   electric blue #0000F2 · off-white #F5F5F5 · lime #EDFF45
-   Display type: UPPERCASE, weight 300, wide tracking (editorial)
-   Chrome: UPPERCASE weight-800 micro-labels · 2px radii · hairline rules
-   Product mockups (editor demo, publish console, order route, switchboard)
-   stay dark — they are "screenshots" of the product on the blue canvas.
+   CYPON SKIN — visual language of the Cypon Analytics landing
+   (cypon-analytics.nextjsshop-preview.workers.dev)
+   canvas #09090b · panels #18181b · accent indigo-600 #4f39f6
+   Display type: Geist Sans (already loaded), weight 600, tight tracking,
+   sentence case · numbered section markers [ 01 of 07 ] · metric stat cards
    ═══════════════════════════════════════════════════════════════════════ */
 
 .landing-page {
-  --indigo-ink: #0000f2;
-  --indigo-panel: rgba(245, 245, 245, 0.07);
-  --indigo-panel-raised: rgba(245, 245, 245, 0.12);
-  --indigo-line: rgba(245, 245, 245, 0.3);
-  --indigo-line-soft: rgba(245, 245, 245, 0.14);
-  --indigo-white: #f5f5f5;
-  --indigo-muted: rgba(245, 245, 245, 0.62);
-  --indigo-blue: #edff45;
-  --indigo-blue-dark: #c9dd2e;
+  --indigo-ink: #09090b;
+  --indigo-panel: #18181b;
+  --indigo-panel-raised: #27272a;
+  --indigo-line: #27272a;
+  --indigo-line-soft: #1f1f23;
+  --indigo-paper: #18181b;
+  --indigo-paper-muted: #1f1f23;
+  --indigo-paper-line: #27272a;
+  --indigo-white: #ffffff;
+  --indigo-muted: #a1a1a1;
+  --indigo-blue: #4f39f6;
+  --indigo-blue-dark: #432dd7;
+  --indigo-coral: #7d87ff;
+  --indigo-green: #34d399;
+  --indigo-purple: #a78bfa;
   background: var(--indigo-ink);
   color: var(--indigo-white);
 }
 
 .landing-page ::selection {
   background: var(--indigo-blue);
-  color: var(--indigo-ink);
+  color: var(--indigo-white);
 }
 
-/* ─── Display type system ─────────────────────────────────── */
+/* ─── Typography — sentence case, semibold, tight ─────────── */
 .landing-page h1,
 .landing-page h2 {
-  text-transform: uppercase;
-  font-weight: 300;
-  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 .landing-page h3 {
-  text-transform: uppercase;
+  text-transform: none;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: -0.01em;
 }
 
-/* ─── Announcement — lime band ────────────────────────────── */
+/* ─── Announcement — quiet dark bar with indigo accent ────── */
 .indigo-announcement {
-  background: var(--indigo-blue);
-  color: var(--indigo-ink);
-  border-bottom: 1px solid rgba(245, 245, 245, 0.25);
+  min-height: 32px;
+  background: #0f0f12;
+  border-bottom: 1px solid var(--indigo-line-soft);
+  color: var(--indigo-muted);
 }
-.indigo-announcement span,
-.indigo-announcement a {
-  color: var(--indigo-ink);
+.indigo-announcement span {
+  color: var(--indigo-coral);
+  font-weight: 600;
 }
 
-/* ─── Navigation — heavy-800 uppercase chrome ─────────────── */
+/* ─── Navigation — dark blur, indigo hover ────────────────── */
 .indigo-nav {
-  background: rgba(0, 0, 242, 0.9);
+  background: rgba(9, 9, 11, 0.85);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
 .indigo-wordmark {
-  text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 .indigo-wordmark__mark {
   border-color: var(--indigo-blue);
+  background: var(--indigo-blue);
 }
 .indigo-nav__links a,
 .indigo-text-link {
-  color: var(--indigo-white);
-  text-transform: uppercase;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.05em;
+  color: var(--indigo-muted);
+  text-transform: none;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
 }
 .indigo-nav__links a:hover,
 .indigo-text-link:hover {
-  color: var(--indigo-blue);
+  color: var(--indigo-white);
 }
 
-/* ─── Buttons — lime primary, hairline ghost, 2px radii ───── */
+/* ─── Buttons — indigo filled, 10px radius ────────────────── */
 .indigo-button {
-  border-radius: 2px;
-  text-transform: uppercase;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  min-height: 44px;
+  border-radius: 10px;
+  text-transform: none;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
   background: var(--indigo-blue);
   border-color: var(--indigo-blue);
-  color: var(--indigo-ink);
+  color: var(--indigo-white);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  transition: background-color 160ms ease-out, border-color 160ms ease-out;
 }
 .indigo-button:hover {
   transform: none;
-  background: var(--indigo-paper);
-  border-color: var(--indigo-paper);
-  color: var(--indigo-ink);
+  background: var(--indigo-blue-dark);
+  border-color: var(--indigo-blue-dark);
+  color: var(--indigo-white);
 }
 .indigo-button--ghost {
   background: transparent;
-  border-color: rgba(245, 245, 245, 0.45);
+  border-color: var(--indigo-line);
   color: var(--indigo-white);
+  box-shadow: none;
 }
 .indigo-button--ghost:hover {
-  background: transparent;
-  border-color: var(--indigo-blue);
-  color: var(--indigo-blue);
+  background: var(--indigo-panel-raised);
+  border-color: var(--indigo-panel-raised);
+  color: var(--indigo-white);
 }
 .indigo-button--light {
-  background: var(--indigo-paper);
-  border-color: var(--indigo-paper);
-  color: var(--indigo-ink);
+  background: var(--indigo-white);
+  border-color: var(--indigo-white);
+  color: var(--indigo-blue-dark);
+  box-shadow: none;
 }
 .indigo-button--light:hover {
-  background: var(--indigo-blue);
-  border-color: var(--indigo-blue);
-  color: var(--indigo-ink);
+  background: #f0f0f2;
+  border-color: #f0f0f2;
+  color: var(--indigo-blue-dark);
 }
 .indigo-icon-button {
-  border-radius: 2px;
+  border-radius: 10px;
 }
 .landing-page :is(a, button):focus-visible {
-  outline: 2px solid var(--indigo-blue);
+  outline: 2px solid var(--indigo-coral);
   outline-offset: 3px;
 }
 
-/* ─── Hero — flat electric blue, stacked headline ─────────── */
+/* ─── Hero — dark canvas, bold headline, dashboard card ───── */
 .indigo-hero {
   background: var(--indigo-ink);
-  background-image: none;
+  background-image:
+    linear-gradient(to bottom, #2563eb0d 1px, transparent 1px),
+    linear-gradient(to right, #2563eb0d 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 .indigo-hero__copy {
   background: transparent;
 }
 .indigo-hero__signal {
-  color: var(--indigo-blue);
+  color: var(--indigo-coral);
+  font-family: var(--font-indigo-sans), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0;
 }
 .indigo-hero h1 {
-  font-weight: 300;
-  letter-spacing: 0.012em;
-  line-height: 0.9;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: 62px;
 }
 .indigo-hero h1 span {
-  display: block;
+  display: inline;
 }
 .indigo-hero__support > p:first-child {
-  color: rgba(245, 245, 245, 0.85);
+  color: var(--indigo-muted);
+  font-size: 17px;
 }
 .indigo-hero__note {
-  color: rgba(245, 245, 245, 0.55);
+  color: #737373;
+  font-family: var(--font-indigo-sans), sans-serif;
+  font-size: 12px;
 }
 .indigo-crosshair::before,
 .indigo-crosshair::after {
-  background: rgba(245, 245, 245, 0.4);
+  background: rgba(255, 255, 255, 0.22);
 }
 
-/* ─── Commerce proof ──────────────────────────────────────── */
+/* ─── Editor demo — dashboard screenshot card ─────────────── */
+.indigo-editor-demo {
+  border: 1px solid var(--indigo-line);
+  border-radius: 14px;
+  background: var(--indigo-panel);
+  box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.7);
+  overflow: hidden;
+}
+.indigo-editor-demo__bar {
+  background: #131316;
+  border-bottom: 1px solid var(--indigo-line-soft);
+}
+.indigo-editor-demo__rail {
+  border-right: 1px solid var(--indigo-line-soft);
+  background: #131316;
+}
+.indigo-editor-demo__canvas {
+  background: #101013;
+  border-color: var(--indigo-line-soft);
+}
+.indigo-editor-demo__inspector {
+  border-left: 1px solid var(--indigo-line-soft);
+  background: #131316;
+}
+.indigo-live-status {
+  color: var(--indigo-muted);
+}
+.indigo-editor-demo__layers .is-selected {
+  background: rgb(79 57 246 / 0.16);
+  color: var(--indigo-coral);
+}
+
+/* ─── Commerce proof — metric stat cards ──────────────────── */
+.indigo-commerce-proof {
+  border-block: 1px solid var(--indigo-line-soft);
+  background: var(--indigo-ink);
+}
+.indigo-commerce-proof article {
+  min-height: 200px;
+}
 .indigo-commerce-proof article > span {
-  color: var(--indigo-blue);
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  color: var(--indigo-muted);
+  font-family: var(--font-indigo-sans), sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
 }
 .indigo-commerce-proof article strong {
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--indigo-white);
 }
 .indigo-commerce-proof article p {
-  color: rgba(245, 245, 245, 0.65);
+  color: #737373;
+  font-size: 14px;
 }
 
-/* ─── Sheets become translucent white panels ──────────────── */
+/* ─── Sheets — dark cards with hairline borders ───────────── */
 .indigo-sheet {
-  background-color: transparent;
+  background-color: var(--indigo-ink);
 }
 .indigo-sheet > .indigo-frame {
-  background: rgba(245, 245, 245, 0.06);
-  border-color: rgba(245, 245, 245, 0.18);
+  background: var(--indigo-panel);
+  border-color: var(--indigo-line);
+  border-radius: 18px;
+  margin-block: 48px;
+}
+.indigo-section-heading {
+  padding: 48px 48px 0;
 }
 .indigo-section-heading h2 {
-  font-weight: 300;
-  letter-spacing: 0.02em;
+  font-size: 40px;
+  line-height: 1.08;
+  max-width: 20ch;
 }
 .indigo-section-heading p {
-  color: rgba(245, 245, 245, 0.7);
+  color: var(--indigo-muted);
+  font-size: 16px;
+  max-width: 52ch;
 }
 .indigo-section-heading.is-inverted p {
-  color: rgba(245, 245, 245, 0.65);
+  color: var(--indigo-muted);
+}
+.indigo-panel-copy {
+  padding: 28px 28px 0;
 }
 .indigo-panel-copy h3 {
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 18px;
 }
 .indigo-panel-copy p {
-  color: rgba(245, 245, 245, 0.7);
+  color: var(--indigo-muted);
+  font-size: 14px;
 }
 .indigo-operations .indigo-panel-copy p {
-  color: rgba(245, 245, 245, 0.65);
+  color: var(--indigo-muted);
 }
 
-/* ─── System grid + blueprint diagram ─────────────────────── */
+/* ─── Section markers — [ 01 of 07 ] · Label ──────────────── */
+.indigo-section-marker {
+  margin: 0 0 14px;
+  font-family: var(--font-indigo-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: #737373;
+}
+.indigo-section-marker b {
+  color: var(--indigo-coral);
+  font-weight: 600;
+}
+
+/* ─── System grid — card grid with hairline dividers ──────── */
 .indigo-system-grid {
-  border-color: rgba(245, 245, 245, 0.18);
+  border-top: 1px solid var(--indigo-line-soft);
+  border-left: 1px solid var(--indigo-line-soft);
+  margin-inline: 24px;
+  border-radius: 14px;
+  overflow: hidden;
 }
 .indigo-system-grid article {
-  border-color: rgba(245, 245, 245, 0.18);
+  border-color: var(--indigo-line-soft);
+  background: #141417;
 }
 .indigo-responsive-blueprint {
-  background: rgba(245, 245, 245, 0.05);
-  border-color: rgba(245, 245, 245, 0.22);
+  background: #101013;
+  border-color: var(--indigo-line);
+  border-radius: 10px;
+  margin: 24px;
+  inset: auto 24px 24px 24px;
 }
 .indigo-responsive-blueprint > svg {
-  stroke: rgba(245, 245, 245, 0.45);
+  stroke: #3f3f46;
+}
+.indigo-responsive-blueprint > svg .is-accent {
+  stroke: var(--indigo-coral);
+  stroke-dasharray: 4 5;
 }
 .indigo-ruler {
-  color: rgba(245, 245, 245, 0.6);
+  color: #52525b;
 }
 .indigo-breakpoint {
-  border-color: rgba(245, 245, 245, 0.35);
-  background: rgba(245, 245, 245, 0.08);
+  border-color: #3f3f46;
+  background: var(--indigo-panel);
 }
 .indigo-breakpoint header {
-  border-bottom-color: rgba(245, 245, 245, 0.25);
+  border-bottom-color: #3f3f46;
 }
 .indigo-breakpoint header i {
-  background: rgba(245, 245, 245, 0.55);
+  background: #52525b;
 }
 .indigo-breakpoint main div {
-  background: rgba(245, 245, 245, 0.2);
+  background: #3f3f46;
 }
 
 /* ─── Token system + layer tree ───────────────────────────── */
@@ -1624,224 +1728,267 @@ html {
 }
 .indigo-token-system__type p,
 .indigo-token-system__type span {
-  color: rgba(245, 245, 245, 0.6);
+  color: var(--indigo-muted);
 }
 .indigo-token-system__scale em {
-  color: rgba(245, 245, 245, 0.6);
+  color: var(--indigo-muted);
 }
 .indigo-token-system__palette span {
-  border-color: rgba(245, 245, 245, 0.45);
-  outline-color: rgba(245, 245, 245, 0.25);
+  border-color: var(--indigo-line);
+  outline-color: var(--indigo-line-soft);
 }
 .indigo-token-system__palette .is-ink {
-  background: #0000cc;
+  background: #09090b;
+}
+.indigo-token-system__palette .is-paper {
+  background: #e4e4e7;
+}
+.indigo-token-system__palette .is-blue {
+  background: var(--indigo-blue);
+}
+.indigo-token-system__palette .is-coral {
+  background: var(--indigo-coral);
 }
 .indigo-layer-tree div {
-  border-color: rgba(245, 245, 245, 0.16);
+  border-color: var(--indigo-line-soft);
   color: var(--indigo-white);
 }
 .indigo-layer-tree em {
-  color: rgba(245, 245, 245, 0.55);
+  color: var(--indigo-muted);
 }
 .indigo-layer-tree .is-active {
-  background: rgba(237, 255, 69, 0.14);
+  background: rgb(79 57 246 / 0.16);
   border-color: var(--indigo-blue);
-  color: var(--indigo-blue);
+  color: var(--indigo-coral);
 }
 .indigo-layer-tree .is-active em {
-  color: var(--indigo-blue);
+  color: var(--indigo-coral);
 }
 
 /* ─── Block library ───────────────────────────────────────── */
 .indigo-block-library article {
-  border-color: rgba(245, 245, 245, 0.16);
+  border-color: var(--indigo-line-soft);
+  background: #131316;
   color: var(--indigo-white);
 }
 .indigo-block-library article em {
-  color: rgba(245, 245, 245, 0.55);
+  color: var(--indigo-muted);
 }
 
-/* ─── Workflow — lime beam ────────────────────────────────── */
+/* ─── Workflow — indigo beam ──────────────────────────────── */
+.indigo-workflow {
+  background: var(--indigo-ink);
+}
 .indigo-workflow__beam {
-  background: var(--indigo-blue);
+  background: linear-gradient(90deg, var(--indigo-blue-dark), var(--indigo-blue), var(--indigo-coral));
 }
 .indigo-workflow__track p {
-  color: rgba(245, 245, 245, 0.65);
+  color: var(--indigo-muted);
 }
 .indigo-workflow__track article > svg {
-  color: rgba(245, 245, 245, 0.5);
+  color: #52525b;
 }
 
-/* ─── Operations ──────────────────────────────────────────── */
+/* ─── Operations — dark cards with product mockups ────────── */
 .indigo-operations {
   background: var(--indigo-ink);
 }
-
-/* ─── Order route (dark product mockup) ───────────────────── */
+.indigo-operations__route,
+.indigo-operations__payments,
+.indigo-operations__inventory {
+  background: var(--indigo-panel);
+  border: 1px solid var(--indigo-line);
+  border-radius: 14px;
+}
 .indigo-order-route {
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: #101013;
   background-image:
-    linear-gradient(rgba(245, 245, 245, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 245, 245, 0.07) 1px, transparent 1px);
-  border-color: rgba(245, 245, 245, 0.22);
+    linear-gradient(#1f1f23 1px, transparent 1px),
+    linear-gradient(90deg, #1f1f23 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-color: var(--indigo-line);
+  border-radius: 10px;
+  margin: 24px;
 }
 .indigo-order-route .route-base {
-  stroke: rgba(245, 245, 245, 0.4);
+  stroke: #3f3f46;
 }
 .indigo-order-route .route-active {
-  stroke: var(--indigo-blue);
+  stroke: var(--indigo-coral);
 }
 .indigo-order-route__labels span {
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(245, 245, 245, 0.7);
+  background: #131316;
+  color: var(--indigo-muted);
 }
 .indigo-order-route__labels span.is-complete {
-  color: var(--indigo-blue);
+  color: var(--indigo-coral);
 }
 .indigo-order-route__ticket {
-  border-color: rgba(245, 245, 245, 0.28);
-  background: rgba(245, 245, 245, 0.08);
-}
-.indigo-order-route__ticket span {
-  color: rgba(245, 245, 245, 0.55);
+  border-color: var(--indigo-line);
+  background: #131316;
 }
 .indigo-order-route__ticket strong {
-  color: var(--indigo-blue);
-}
-.indigo-order-route__ticket em {
-  color: rgba(245, 245, 245, 0.6);
-}
-
-/* ─── Publish console (dark product mockup) ───────────────── */
-.indigo-publish-console {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(245, 245, 245, 0.22);
-}
-.indigo-publish-console__header {
-  border-bottom-color: rgba(245, 245, 245, 0.18);
-  color: rgba(245, 245, 245, 0.55);
-}
-.indigo-publish-console__header strong {
-  color: rgba(245, 245, 245, 0.8);
-}
-.indigo-publish-console__log p {
-  color: rgba(245, 245, 245, 0.7);
-}
-.indigo-publish-console__log p span {
-  color: rgba(245, 245, 245, 0.4);
-}
-.indigo-publish-console__result > span {
-  color: rgba(245, 245, 245, 0.5);
-}
-.indigo-publish-console__result strong {
   color: var(--indigo-white);
 }
-.indigo-publish-console__result a {
-  color: var(--indigo-blue);
+.indigo-order-route__ticket em {
+  color: var(--indigo-green);
 }
-
-/* ─── Payment switchboard + inventory (dark mockups) ──────── */
+.indigo-publish-console {
+  background: #101013;
+  border-color: var(--indigo-line);
+  border-radius: 10px;
+  margin: 24px;
+}
+.indigo-publish-console__header {
+  border-bottom-color: var(--indigo-line-soft);
+  color: var(--indigo-muted);
+}
+.indigo-publish-console__log p {
+  color: var(--indigo-muted);
+}
+.indigo-publish-console__log p span {
+  color: #52525b;
+}
+.indigo-publish-console__result a {
+  color: var(--indigo-coral);
+}
 .indigo-payment-switchboard {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(245, 245, 245, 0.22);
+  background: #101013;
+  border-color: var(--indigo-line);
+  border-radius: 10px;
+  margin: 24px;
 }
 .indigo-payment-switchboard .is-paper {
-  background: var(--indigo-paper);
-}
-.indigo-operations__inventory {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(245, 245, 245, 0.22);
+  background: #e4e4e7;
 }
 
 /* ─── Architecture diagram ────────────────────────────────── */
 .indigo-architecture-map svg path,
 .indigo-architecture-map svg circle {
-  stroke: rgba(245, 245, 245, 0.4);
+  stroke: #3f3f46;
 }
 .indigo-architecture-map svg .is-accent {
-  stroke: var(--indigo-blue);
+  stroke: var(--indigo-coral);
 }
 .indigo-architecture-node {
-  border-color: rgba(245, 245, 245, 0.22);
-  background: rgba(245, 245, 245, 0.06);
+  border-color: var(--indigo-line);
+  background: #131316;
   color: var(--indigo-white);
+  border-radius: 10px;
 }
 .indigo-architecture-node span {
-  color: var(--indigo-blue);
+  color: var(--indigo-coral);
 }
 .indigo-architecture-node em {
-  color: rgba(245, 245, 245, 0.6);
+  color: var(--indigo-muted);
 }
 .indigo-architecture__facts {
-  color: rgba(245, 245, 245, 0.7);
+  color: var(--indigo-muted);
 }
 
 /* ─── Offer / pricing ─────────────────────────────────────── */
+.indigo-offer__copy h2 {
+  font-size: 40px;
+  line-height: 1.08;
+}
+.indigo-offer__copy p {
+  color: var(--indigo-muted);
+}
 .indigo-offer__matrix div {
-  border-color: rgba(245, 245, 245, 0.16);
+  border-color: var(--indigo-line);
+  background: var(--indigo-panel);
+  border-radius: 14px;
 }
-.indigo-offer__matrix strong {
-  font-weight: 300;
+.indigo-offer__matrix div:first-child {
+  border-color: var(--indigo-blue);
+  box-shadow: 0 0 0 1px var(--indigo-blue);
 }
-.indigo-offer__matrix em {
-  color: rgba(245, 245, 245, 0.55);
+.indigo-offer__matrix span {
+  color: var(--indigo-coral);
+  font-weight: 500;
+}
+.indigo-offer__matrix p {
+  color: var(--indigo-muted);
+}
+.indigo-offer__matrix svg {
+  color: var(--indigo-green);
 }
 
-/* ─── Compare band (template pane stays light) ────────────── */
+/* ─── Compare band — indigo handle ────────────────────────── */
+.indigo-compare-band {
+  background: #101013;
+  border-top: 1px solid var(--indigo-line-soft);
+}
 .indigo-compare-artboard__copy p {
-  color: rgba(245, 245, 245, 0.65);
+  color: var(--indigo-muted);
 }
 .indigo-storefront-compare__handle,
 .indigo-storefront-compare__handle span::before,
 .indigo-storefront-compare__handle span::after {
-  background: var(--indigo-blue);
+  background: var(--indigo-coral);
+}
+.indigo-storefront-compare__handle span {
+  border-color: var(--indigo-coral);
+  background: #131316;
 }
 
-/* ─── Final CTA — full lime band ──────────────────────────── */
+/* ─── Final CTA — indigo band ─────────────────────────────── */
 .indigo-final-cta {
-  background: var(--indigo-blue);
-  color: var(--indigo-ink);
-}
-.indigo-final-cta .indigo-section-heading p {
-  color: rgba(0, 0, 242, 0.75);
-}
-.indigo-final-cta .indigo-button {
-  background: var(--indigo-ink);
-  border-color: var(--indigo-ink);
+  background: linear-gradient(135deg, var(--indigo-blue) 0%, var(--indigo-blue-dark) 100%);
   color: var(--indigo-white);
 }
+.indigo-final-cta .indigo-section-heading p {
+  color: rgb(255 255 255 / 0.75);
+}
+.indigo-final-cta .indigo-button {
+  background: var(--indigo-white);
+  border-color: var(--indigo-white);
+  color: var(--indigo-blue-dark);
+}
 .indigo-final-cta .indigo-button:hover {
-  background: #0000cc;
-  border-color: #0000cc;
+  background: #f0f0f2;
+  border-color: #f0f0f2;
 }
 
 /* ─── FAQ ─────────────────────────────────────────────────── */
+.indigo-faq__grid {
+  padding: 48px;
+}
+.indigo-faq__grid > div:first-child h2 {
+  font-size: 40px;
+  line-height: 1.08;
+}
+.indigo-faq__grid > div:first-child p {
+  color: var(--indigo-muted);
+}
 .indigo-faq__item {
-  border-color: rgba(245, 245, 245, 0.16);
+  border-color: var(--indigo-line-soft);
+  background: #131316;
+  border-radius: 10px;
 }
 .indigo-faq__item strong {
   color: var(--indigo-white);
 }
 .indigo-faq__answer {
-  color: rgba(245, 245, 245, 0.7);
+  color: var(--indigo-muted);
 }
 
 /* ─── Footer ──────────────────────────────────────────────── */
 .indigo-footer {
-  border-top-color: rgba(245, 245, 245, 0.18);
+  border-top-color: var(--indigo-line-soft);
 }
 .indigo-footer__grid a {
-  color: var(--indigo-white);
-  text-transform: uppercase;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.05em;
+  color: var(--indigo-muted);
+  text-transform: none;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
 }
 .indigo-footer__grid a:hover {
-  color: var(--indigo-blue);
+  color: var(--indigo-white);
 }
 .indigo-footer__base {
-  color: rgba(245, 245, 245, 0.55);
+  color: #737373;
 }
 .indigo-footer__brand strong {
   color: var(--indigo-white);
