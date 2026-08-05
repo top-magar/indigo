@@ -18,3 +18,6 @@ export { BlogSection } from "./blog";
 export { FaqSection } from "./faq";
 export { FinalCtaSection } from "./final-cta";
 export { Footer } from "./footer";
+export { Frame, EdgeNode } from "./frame";
+export { HatchDivider } from "./hatch-divider";
+export { PointCloud } from "./point-cloud";

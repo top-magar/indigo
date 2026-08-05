@@ -42,7 +42,7 @@ export function PricingSection() {
             return (
               <motion.div
                 key={plan.id}
-                className={`lv2-pricing-card ${plan.popular ? "lv2-pricing-card--popular" : ""}`}
+                className={`lv2-pricing-card ${plan.popular ? "lv2-pricing-card--popular lv2-frame lv2-frame--purple" : ""}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}

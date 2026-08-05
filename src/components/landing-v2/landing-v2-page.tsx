@@ -13,27 +13,43 @@ import { BlogSection } from "./blog";
 import { FaqSection } from "./faq";
 import { FinalCtaSection } from "./final-cta";
 import { Footer } from "./footer";
+import { HatchDivider } from "./hatch-divider";
 
 /**
  * Server Component shell — composes client islands (header, hero dashboard,
  * pricing toggle, marquees, FAQ, footer newsletter) with static sections.
+ *
+ * Hatch dividers between sections form the engineering rhythm of the
+ * technical construction grid.
  */
 export function LandingV2Page() {
   return (
     <NavigationShell>
       <HeroSection />
       <LogoMarquee />
+      <HatchDivider />
       <MetricsSection />
+      <HatchDivider />
       <FeaturesSection />
+      <HatchDivider />
       <IntegrationsSection />
+      <HatchDivider />
       <UseCasesSection />
+      <HatchDivider />
       <DifferentiatorsSection />
+      <HatchDivider />
       <ComparisonSection />
+      <HatchDivider />
       <PricingSection />
+      <HatchDivider />
       <TestimonialsSection />
+      <HatchDivider />
       <BlogSection />
+      <HatchDivider />
       <FaqSection />
+      <HatchDivider />
       <FinalCtaSection />
+      <HatchDivider />
       <Footer />
     </NavigationShell>
   );

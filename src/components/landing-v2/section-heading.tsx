@@ -50,11 +50,12 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const marker = (
     <p className="lv2-section-heading__marker">
-      <b>
-        [ {pad(index)} of {pad(total)} ]
-      </b>
-      {" · "}
-      {label}
+      <span className="lv2-section-heading__sq" aria-hidden />
+      <b>{pad(index)}</b>
+      <span className="lv2-section-heading__div" aria-hidden>
+        /
+      </span>
+      <span className="lv2-section-heading__label">{label}</span>
     </p>
   );
 

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { heroContent } from "@/data/landing/hero";
 import { DashboardPreview } from "./dashboard-preview";
 import { SectionHeading } from "./section-heading";
+import { Frame } from "./frame";
 import { EASE } from "./motion/reveal";
 
 const stage = {
@@ -17,20 +18,23 @@ export function HeroSection() {
   return (
     <section className="lv2-hero lv2-grid-bg" aria-labelledby="hero-heading">
       <div className="lv2-hero__glow" aria-hidden />
-      <div className="lv2-container" style={{ textAlign: "center", position: "relative" }}>
+      <div className="lv2-container" style={{ position: "relative" }}>
         <motion.div
           initial="hidden"
           animate="visible"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
         >
           <motion.div variants={stage}>
+            <a href={heroContent.badge.href} className="lv2-hero__badge">
+              <span className="lv2-dot" aria-hidden />
+              {heroContent.badge.label}
+            </a>
             <SectionHeading
               index={1}
               total={8}
               label="Overview"
               numbered={false}
               as="h1"
-              eyebrow={heroContent.badge.label}
               headline={
                 <>
                   {heroContent.headline[0]}
@@ -39,11 +43,11 @@ export function HeroSection() {
                 </>
               }
               body={heroContent.body}
-              align="center"
+              align="left"
               id="hero-heading"
             />
           </motion.div>
-          <motion.div variants={stage} className="lv2-hero__ctas" style={{ justifyContent: "center" }}>
+          <motion.div variants={stage} className="lv2-hero__ctas">
             <Link href={heroContent.primary.href} className="lv2-btn lv2-btn--primary lv2-btn--lg">
               {heroContent.primary.label}
               <ArrowRight aria-hidden />
@@ -65,7 +69,9 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 1, ease: EASE, delay: 0.45 }}
       >
-        <DashboardPreview />
+        <Frame nodes>
+          <DashboardPreview />
+        </Frame>
       </motion.div>
     </section>
   );
