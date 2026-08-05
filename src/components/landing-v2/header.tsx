@@ -11,6 +11,7 @@ import {
 } from "@/data/landing/navigation";
 import { MegaMenu } from "./mega-menu";
 import { MobileMenu } from "./mobile-menu";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -49,6 +50,7 @@ export function Header() {
         </nav>
 
         <div className="lv2-header__actions">
+          <ThemeToggle />
           <a
             href="https://github.com"
             target="_blank"

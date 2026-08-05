@@ -3831,3 +3831,100 @@
     transition: none;
   }
 }
+
+/* ═══ Light theme ──────────────────────────────────────────────────────
+   The landing ships dark-first (reference look). The ThemeToggle sets
+   <html data-theme="light">; this block re-maps every token so the whole
+   page flips without touching component CSS. */
+
+[data-theme="light"] .lv2-page {
+  --lv2-bg: #ffffff;
+  --lv2-surface-1: #fafafa;
+  --lv2-surface-2: #f4f4f5;
+  --lv2-surface-3: #ececee;
+  --lv2-panel: #ffffff;
+  --lv2-panel-2: #fafafa;
+  --lv2-panel-3: #f4f4f5;
+  --lv2-fg: #09090b;
+  --lv2-fg-soft: #3f3f46;
+  --lv2-muted: #52525b;
+  --lv2-muted-dark: #71717a;
+  --lv2-faint: #a1a1aa;
+  --lv2-border: rgba(9, 9, 11, 0.09);
+  --lv2-border-strong: rgba(9, 9, 11, 0.16);
+  --lv2-line: #e4e4e7;
+  --lv2-line-soft: #ececee;
+  --lv2-accent: #4f39f6;
+  --lv2-accent-hover: #4338ca;
+  --lv2-accent-soft: rgba(79, 57, 246, 0.08);
+  --lv2-accent-border: rgba(79, 57, 246, 0.28);
+  --lv2-highlight: #4f39f6;
+  --lv2-accent-ink: #ffffff;
+  --lv2-success: #059669;
+  --lv2-warning: #b45309;
+  --lv2-danger: #dc2626;
+}
+
+[data-theme="light"] body {
+  background-color: #ffffff;
+}
+
+[data-theme="light"] .lv2-header {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+[data-theme="light"] .lv2-grid-bg {
+  background-image:
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px);
+}
+
+[data-theme="light"] .lv2-heat {
+  background:
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
+    var(--lv2-panel-3);
+}
+
+[data-theme="light"] .lv2-dashboard {
+  box-shadow: 0 40px 90px -30px rgb(9 9 11 / 0.25);
+}
+
+[data-theme="light"] .lv2-final-cta {
+  background: linear-gradient(180deg, var(--lv2-bg), #f2efff 60%, #eae6ff);
+}
+
+/* ─── Theme toggle button ─────────────────────────────────────────────── */
+
+.lv2-theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--lv2-border-strong);
+  background: var(--lv2-panel);
+  color: var(--lv2-fg-soft);
+  cursor: pointer;
+  transition: border-color 180ms var(--lv2-ease), color 180ms var(--lv2-ease), background 180ms var(--lv2-ease);
+}
+
+.lv2-theme-toggle:hover {
+  border-color: var(--lv2-accent-border);
+  color: var(--lv2-fg);
+  background: var(--lv2-accent-soft);
+}
+
+.lv2-theme-toggle:focus-visible {
+  outline: 2px solid var(--lv2-highlight);
+  outline-offset: 2px;
+}
+
+.lv2-theme-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lv2-theme-toggle--placeholder {
+  background: var(--lv2-panel);
+}
