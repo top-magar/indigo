@@ -81,9 +81,11 @@ src/
 │   └── store/             # Public storefront
 ├── components/
 │   ├── dashboard/         # Dashboard components
-│   ├── landing/           # Marketing site components
+│   ├── landing/           # Legacy marketing components (superseded)
+│   ├── landing-v2/        # Marketing landing page components
 │   ├── store/             # Storefront components
 │   └── ui/                # Base UI components
+├── data/landing/          # Landing page content (all editable copy/data)
 ├── db/                    # Database schema (Drizzle)
 ├── lib/                   # Utilities and services
 └── types/                 # TypeScript types
@@ -128,6 +130,7 @@ pnpm test:run     # Run tests once (no watch)
 - [Development Plan](docs/development-plan.md)
 - [Deployment Guide](docs/DEPLOYMENT.md)
 - [Supabase Integration](docs/SUPABASE-INTEGRATION.md)
+- [Marketing Landing Page](docs/landing-page.md) — content, theme, and component guide for the `/` landing site
 
 ## License
 
