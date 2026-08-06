@@ -3815,6 +3815,22 @@
   box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.35);
 }
 
+/* Hover bridge: the panel floats 8px below the trigger, and a real mouse
+   crossing that dead zone fires mouseleave on the wrapper, unmounting the
+   panel before the pointer can reach it. This invisible pseudo-element
+   spans the full panel width directly under the trigger so the hover path
+   is continuous (trigger → bridge → panel). */
+
+.lv2-nav__trigger::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(680px, calc(100vw - 32px));
+  height: 8px;
+}
+
 /* ─── Mobile menu ───────────────────────────────────────────────────── */
 
 .lv2-mobile-menu {
