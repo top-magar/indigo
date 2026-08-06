@@ -1129,7 +1129,7 @@
 
 .lv2-bento {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -1359,7 +1359,7 @@
 
 .lv2-integration-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -2061,7 +2061,7 @@
 
 @media (max-width: 1180px) {
   .lv2-container { --lv2-pad-x: 24px; }
-  .lv2-integration-grid { grid-template-columns: repeat(4, 1fr); }
+  .lv2-integration-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .lv2-footer__grid { grid-template-columns: 1.6fr 1fr 1fr; gap: 32px; }
   .lv2-kpi-row { grid-template-columns: repeat(2, 1fr); }
   .lv2-dash-grid { grid-template-columns: 1fr; }
@@ -2099,7 +2099,7 @@
   .lv2-hero__ctas .lv2-btn { width: 100%; }
   .lv2-metrics { grid-template-columns: 1fr; }
   .lv2-metric { border-top: 1px solid var(--lv2-border); padding: 24px; }
-  .lv2-integration-grid { grid-template-columns: repeat(2, 1fr); }
+  .lv2-integration-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lv2-kpi-row { grid-template-columns: repeat(2, 1fr); }
   .lv2-compare__head, .lv2-compare__row { grid-template-columns: 1fr; }
   .lv2-compare__head > div:first-child,
@@ -2587,7 +2587,7 @@
 /* Differentiators demos */
 .lv2-diff-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 14px;
 }
 .lv2-diff-card {
