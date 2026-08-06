@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Menu } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   navigationItems,
@@ -13,7 +13,13 @@ import { MegaMenu } from "./mega-menu";
 import { MobileMenu } from "./mobile-menu";
 import { ThemeToggle } from "./theme-toggle";
 
-export function Header() {
+export function Header({
+  mobileOpen,
+  onMobileToggle,
+}: {
+  mobileOpen: boolean;
+  onMobileToggle: () => void;
+}) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -66,6 +72,16 @@ export function Header() {
           <Link href="/signup" className="lv2-btn lv2-btn--primary lv2-btn--sm">
             Start Free
           </Link>
+          <button
+            className="lv2-burger"
+            aria-expanded={mobileOpen}
+            aria-controls="lv2-mobile-menu"
+            aria-haspopup="dialog"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            onClick={onMobileToggle}
+          >
+            {mobileOpen ? <X aria-hidden /> : <Menu aria-hidden />}
+          </button>
         </div>
       </div>
     </header>
@@ -73,13 +89,19 @@ export function Header() {
 }
 
 export function NavigationShell({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+
   return (
     <div style={{ display: "contents" }}>
       <a href="#main-content" className="lv2-skip-link">
         Skip to content
       </a>
-      <Header />
-      <MobileMenu items={mobileMenu} />
+      <Header
+        mobileOpen={mobileOpen}
+        onMobileToggle={() => setMobileOpen((value) => !value)}
+      />
+      <MobileMenu items={mobileMenu} open={mobileOpen} onClose={closeMobile} />
       <main id="main-content">{children}</main>
     </div>
   );

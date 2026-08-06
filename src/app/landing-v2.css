@@ -2071,6 +2071,7 @@
   .lv2-nav { display: none; }
   .lv2-burger { display: grid; }
   .lv2-header__actions .lv2-star-btn { display: none; }
+  .lv2-header__actions { margin-left: auto; }
   .lv2-section { padding-block: 96px; }
   .lv2-metrics { grid-template-columns: repeat(2, 1fr); }
   .lv2-metric { border-left: 0; border-top: 1px solid var(--lv2-border); padding: 28px; }
