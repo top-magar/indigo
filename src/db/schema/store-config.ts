@@ -19,7 +19,7 @@ export interface StoreLayoutSection {
 /**
  * Global styles for store theming
  * 
- * @see DESIGN-SYSTEM.md Section 4.2 (TenantTheme)
+ * @see docs/design-system.md (TenantTheme)
  */
 export interface StoreGlobalStyles {
   colors?: {
