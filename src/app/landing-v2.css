@@ -2085,6 +2085,10 @@
   .lv2-blog-grid { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
   .lv2-footer__grid { grid-template-columns: repeat(3, 1fr); }
   .lv2-footer__brand { grid-column: 1 / -1; }
+  .lv2-hero__visual { max-width: 100%; }
+  .lv2-dashboard { min-height: 420px; }
+  .lv2-dash-panel { display: none; }
+  .lv2-dash-panel:first-child { display: block; }
 }
 
 @media (max-width: 640px) {
@@ -2096,7 +2100,7 @@
   .lv2-metrics { grid-template-columns: 1fr; }
   .lv2-metric { border-top: 1px solid var(--lv2-border); padding: 24px; }
   .lv2-integration-grid { grid-template-columns: repeat(2, 1fr); }
-  .lv2-kpi-row { grid-template-columns: 1fr; }
+  .lv2-kpi-row { grid-template-columns: repeat(2, 1fr); }
   .lv2-compare__head, .lv2-compare__row { grid-template-columns: 1fr; }
   .lv2-compare__head > div:first-child,
   .lv2-compare__row > div:first-child { display: none; }
@@ -2109,6 +2113,10 @@
   .lv2-section-heading { margin-bottom: 40px; }
   .lv2-pricing-toggle { width: 100%; justify-content: center; }
   .lv2-plan { padding: 24px; }
+  .lv2-hero__visual { max-width: 100%; }
+  .lv2-dashboard { min-height: 320px; }
+  .lv2-dash-grid { display: none; }
+  .lv2-kpi-row { gap: 12px; }
 }
 
 /* ─── Dashboard extensions ──────────────────────────────────────────────── */
@@ -3046,6 +3054,12 @@
   .lv2-dash-grid {
     grid-template-columns: 1fr;
   }
+  .lv2-dash-panel {
+    display: none;
+  }
+  .lv2-dash-panel:first-child {
+    display: block;
+  }
   .lv2-diff-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -3118,6 +3132,11 @@
   .lv2-kpi-row {
     grid-template-columns: repeat(2, 1fr);
   }
+  .lv2-dashboard { min-height: 320px; }
+  .lv2-dashboard__body { min-height: 0; }
+  .lv2-dash-grid { display: none; }
+  .lv2-dash-panel { display: none; }
+  .lv2-ai-card { display: none; }
 }
 
 /* Final CTA — slow atmospheric drift (reduced-motion safe) */
