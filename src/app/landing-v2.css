@@ -2083,6 +2083,8 @@
   .lv2-dashboard__rail { display: none; }
   .lv2-pricing { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
   .lv2-blog-grid { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; }
+  .lv2-footer__grid { grid-template-columns: repeat(3, 1fr); }
+  .lv2-footer__brand { grid-column: 1 / -1; }
 }
 
 @media (max-width: 640px) {
