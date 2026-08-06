@@ -3064,13 +3064,42 @@
   .lv2-chart-tip {
     display: none;
   }
-  .lv2-compare__head,
-  .lv2-compare__row {
-    grid-template-columns: 1.2fr 0.8fr 1fr;
+  .lv2-compare {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .lv2-compare__cell {
-    padding: 12px 10px;
-    font-size: 12px;
+  .lv2-compare__head {
+    display: none;
+  }
+  .lv2-compare__row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: var(--lv2-panel);
+    border: 1px solid var(--lv2-border);
+    border-radius: var(--lv2-radius);
+  }
+  .lv2-compare__row > div {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    font-size: 14px;
+  }
+  .lv2-compare__cell--dim {
+    color: var(--lv2-muted);
+  }
+  .lv2-compare__cell:first-child {
+    font-weight: 600;
+    color: var(--lv2-fg);
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--lv2-border);
+    margin-bottom: 4px;
+  }
+  .lv2-compare__cell:last-child {
+    justify-content: flex-end;
   }
   .lv2-diff-grid {
     grid-template-columns: 1fr;
