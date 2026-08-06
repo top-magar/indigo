@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/callback", "/invite", "/suspended", "/api/health", "/api/revalidate", "/api/inngest"];
+const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/callback", "/invite", "/suspended", "/coming-soon", "/api/health", "/api/revalidate", "/api/inngest"];
 const STORE_PREFIX = "/store/";
 const API_STORE_PREFIX = "/api/store/";
 
@@ -54,6 +54,7 @@ export async function proxy(request: NextRequest) {
   // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
     PUBLIC_ROUTES.some((r) => pathname === r) ||
+    pathname.startsWith("/blog") ||
     pathname.startsWith(STORE_PREFIX) ||
     pathname.startsWith(API_STORE_PREFIX) ||
     pathname.startsWith("/p/") ||

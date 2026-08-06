@@ -94,23 +94,23 @@ export const navigationItems: MegaMenuItem[] = [
       {
         title: "Learn",
         links: [
-          { label: "Documentation", href: "/docs", description: "Setup, guides, and storefront reference", icon: "book" },
+          { label: "Documentation", href: "/coming-soon", description: "Setup, guides, and storefront reference", icon: "book" },
           { label: "Blog", href: "/blog", description: "Practical advice for commerce teams", icon: "scroll" },
-          { label: "Changelog", href: "/changelog", description: "Latest releases and ship notes", icon: "list" },
+          { label: "Changelog", href: "/coming-soon", description: "Latest releases and ship notes", icon: "list" },
         ],
       },
       {
         title: "Connect",
         links: [
-          { label: "Help Center", href: "/help", description: "Answers and troubleshooting", icon: "life-buoy" },
-          { label: "Community", href: "/community", description: "Join other founders and builders", icon: "users" },
-          { label: "Status", href: "/status", description: "Platform availability and incidents", icon: "activity" },
+          { label: "Help Center", href: "/coming-soon", description: "Answers and troubleshooting", icon: "life-buoy" },
+          { label: "Community", href: "/coming-soon", description: "Join other founders and builders", icon: "users" },
+          { label: "Status", href: "/coming-soon", description: "Platform availability and incidents", icon: "activity" },
         ],
       },
     ],
     featured: {
       label: "Download the commerce playbook",
-      href: "/playbook",
+      href: "/coming-soon",
       description: "Launch, optimize, and scale your storefront faster.",
       icon: "download",
     },
@@ -142,10 +142,10 @@ export const mobileMenu: MobileMenuGroup[] = [
     key: "resources",
     label: "Resources",
     links: [
-      { label: "Documentation", href: "/docs" },
+      { label: "Documentation", href: "/coming-soon" },
       { label: "Blog", href: "/blog" },
-      { label: "Changelog", href: "/changelog" },
-      { label: "Help Center", href: "/help" },
+      { label: "Changelog", href: "/coming-soon" },
+      { label: "Help Center", href: "/coming-soon" },
     ],
   },
 ];
