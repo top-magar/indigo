@@ -54,7 +54,7 @@ export const navigationItems: MegaMenuItem[] = [
     ],
     featured: {
       label: "What’s new in Indigo",
-      href: "#changelog",
+      href: "#blog",
       description: "Reusable sections, improved publish previews, and local checkout improvements.",
       icon: "star",
     },
