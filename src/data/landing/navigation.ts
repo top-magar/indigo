@@ -1,8 +1,29 @@
+export type MegaMenuIcon =
+  | "activity"
+  | "bar-chart"
+  | "book"
+  | "building"
+  | "credit-card"
+  | "download"
+  | "layers"
+  | "layout"
+  | "life-buoy"
+  | "list"
+  | "package"
+  | "scroll"
+  | "shopping-bag"
+  | "sparkles"
+  | "star"
+  | "store"
+  | "terminal"
+  | "users"
+  | "wallet";
+
 export type MegaMenuLink = {
   label: string;
   href: string;
   description?: string;
-  icon?: string;
+  icon?: MegaMenuIcon;
 };
 
 export type MegaMenuColumn = {

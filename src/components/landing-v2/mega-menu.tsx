@@ -1,9 +1,55 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  BookOpen,
+  Building2,
+  ChartColumn,
+  ChevronDown,
+  CreditCard,
+  Download,
+  Layers,
+  Layout,
+  LifeBuoy,
+  List,
+  Package,
+  ScrollText,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  Store,
+  Terminal,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { MegaMenuItem } from "@/data/landing/navigation";
+import type { MegaMenuItem, MegaMenuIcon } from "@/data/landing/navigation";
+
+/** Per-link icons from navigation data (kebab-case key → lucide icon). */
+const LINK_ICONS: Record<MegaMenuIcon, LucideIcon> = {
+  activity: Activity,
+  "bar-chart": ChartColumn,
+  book: BookOpen,
+  building: Building2,
+  "credit-card": CreditCard,
+  download: Download,
+  layers: Layers,
+  layout: Layout,
+  "life-buoy": LifeBuoy,
+  list: List,
+  package: Package,
+  scroll: ScrollText,
+  "shopping-bag": ShoppingBag,
+  sparkles: Sparkles,
+  star: Star,
+  store: Store,
+  terminal: Terminal,
+  users: Users,
+  wallet: Wallet,
+};
 
 type MegaMenuProps = {
   item: MegaMenuItem;
@@ -167,25 +213,28 @@ export function MegaMenu({ item, open, onOpenChange, index, total }: MegaMenuPro
               {item.columns.map((column) => (
                 <div key={column.title} className="lv2-mega__col">
                   <div className="lv2-mega__col-title">{column.title}</div>
-                  {column.links.map((link, linkIndex) => (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      className="lv2-mega__link"
-                      onClick={() => closeOnNavigate(link.href)}
-                    >
-                      <span className="lv2-mega__index" aria-hidden>
-                        {String(linkIndex + 1).padStart(2, "0")}
-                      </span>
-                      <span className="lv2-mega__icon" aria-hidden>
-                        <ArrowRight />
-                      </span>
-                      <span className="lv2-mega__text">
-                        <strong>{link.label}</strong>
-                        {link.description ? <span>{link.description}</span> : null}
-                      </span>
-                    </a>
-                  ))}
+                  {column.links.map((link, linkIndex) => {
+                    const Icon = (link.icon && LINK_ICONS[link.icon]) || ArrowRight;
+                    return (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        className="lv2-mega__link"
+                        onClick={() => closeOnNavigate(link.href)}
+                      >
+                        <span className="lv2-mega__index" aria-hidden>
+                          {String(linkIndex + 1).padStart(2, "0")}
+                        </span>
+                        <span className="lv2-mega__icon" aria-hidden>
+                          <Icon />
+                        </span>
+                        <span className="lv2-mega__text">
+                          <strong>{link.label}</strong>
+                          {link.description ? <span>{link.description}</span> : null}
+                        </span>
+                      </a>
+                    );
+                  })}
                 </div>
               ))}
             </div>
