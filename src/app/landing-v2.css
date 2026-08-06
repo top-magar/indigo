@@ -4054,3 +4054,9 @@
 .lv2-theme-toggle--placeholder {
   background: var(--lv2-panel);
 }
+
+/* ─── Anchor targets clear the sticky header ──────────────────────────── */
+
+.lv2-page [id] {
+  scroll-margin-top: 96px;
+}
