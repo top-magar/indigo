@@ -21,6 +21,7 @@ export function Header({
   onMobileToggle: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -47,8 +48,15 @@ export function Header({
         </Link>
 
         <nav className="lv2-nav" aria-label="Main">
-          {navigationItems.map((item) => (
-            <MegaMenu key={item.key} item={item} />
+          {navigationItems.map((item, i) => (
+            <MegaMenu
+              key={item.key}
+              item={item}
+              open={openKey === item.key}
+              onOpenChange={(open) => setOpenKey(open ? item.key : null)}
+              index={i}
+              total={navigationItems.length}
+            />
           ))}
           <Link href="#metrics" className="lv2-nav__link">
             Overview
