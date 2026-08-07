@@ -936,7 +936,7 @@
   position: relative;
   border: 1px solid var(--lv2-border-strong);
   border-radius: var(--lv2-radius-xl);
-  background: var(--lv2-panel-3);
+  background-color: var(--lv2-panel-3);
   box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.75);
   overflow: hidden;
   text-align: left;
@@ -3336,7 +3336,7 @@
 
 .lv2-hero {
   text-align: left;
-  background: transparent;
+  background-color: transparent;
   border-bottom: 1px solid var(--lv2-line);
 }
 
@@ -3955,6 +3955,14 @@
   background-image:
     linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px);
+}
+
+/* Dark rescue rule: outranks any later `background` shorthand (0,2,0) so the
+   blueprint grid always renders on .lv2-hero / .lv2-dashboard in dark mode. */
+[data-theme="dark"] .lv2-grid-bg {
+  background-image:
+    linear-gradient(to bottom, #2563eb0d 1px, transparent 1px),
+    linear-gradient(to right, #2563eb0d 1px, transparent 1px);
 }
 
 [data-theme="light"] .lv2-heat {
