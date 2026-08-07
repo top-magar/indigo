@@ -116,7 +116,7 @@ function Sparkline({ points, reduced }: { points: number[]; reduced: boolean }) 
 export function DashboardPreview() {
   const [range, setRange] = useState<RangeKey>("7d");
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  const [events, setEvents] = useState(EVENT_POOL.slice(0, 4).map((e, i) => ({ ...e, id: i })));
+  const [events, setEvents] = useState(() => EVENT_POOL.slice(0, 5));
   const svgRef = useRef<SVGSVGElement | null>(null);
   const data = RANGES[range];
 
@@ -125,15 +125,15 @@ export function DashboardPreview() {
     [],
   );
 
-  // Live event feed — new rows enter from the top, capped at 5.
+  // Live event feed — text-swap only (pinned rows, no mount/unmount → no flicker).
   useEffect(() => {
     if (reduced) return;
-    let nextId = events.length;
+    let nextId = EVENT_POOL.length;
     const timer = setInterval(() => {
       setEvents((prev) => {
         const pick = EVENT_POOL[nextId % EVENT_POOL.length];
         nextId += 1;
-        return [{ ...pick, id: nextId }, ...prev].slice(0, 5);
+        return [pick, ...prev.slice(0, 4)];
       });
     }, 3200);
     return () => clearInterval(timer);
@@ -331,21 +331,13 @@ export function DashboardPreview() {
                 </tr>
               </thead>
               <tbody>
-                <AnimatePresence initial={false}>
-                  {events.map((ev) => (
-                    <motion.tr
-                      key={ev.id}
-                      initial={{ opacity: 0, y: -14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.35 }}
-                    >
-                      <td><code>{ev.type}</code></td>
-                      <td>{ev.value}</td>
-                      <td>{ev.when}</td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
+                {events.map((ev, i) => (
+                  <tr key={i}>
+                    <td><code>{ev.type}</code></td>
+                    <td>{ev.value}</td>
+                    <td>{ev.when}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
