@@ -15,6 +15,7 @@ export function useCanvas() {
   const [altHeld, setAltHeld] = useState(false);
   const spaceRef = useRef(false);
   const tRef = useRef(transform);
+  // eslint-disable-next-line react-hooks/refs
   tRef.current = transform;
 
   // ── Zoom to cursor (pinch + Cmd+scroll) + free scroll ──

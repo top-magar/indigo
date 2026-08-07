@@ -1,0 +1,1 @@
+figd_ tokens must be passed via X-Figma-Token header, not Authorization

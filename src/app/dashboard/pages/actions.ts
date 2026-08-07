@@ -6,48 +6,11 @@ import { editorProjects } from "@/db/schema/editor-projects";
 import { eq, and, count } from "drizzle-orm";
 import { requireTenantUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { uniquePageSlug, isUniqueViolation } from "@/lib/page-utils";
 
 const slugify = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-/**
- * `editor_pages` carries unique(project_id, slug), so deriving a slug straight
- * from the page name fails with a 23505 the moment two pages share a name.
- * Resolve a free slug up front by suffixing -2, -3, ... The editor's own
- * createPage already does this; the two paths are consolidated separately.
- */
-async function uniquePageSlug(
-  projectId: string,
-  tenantId: string,
-  base: string,
-  excludeId?: string,
-): Promise<string> {
-  const desired = base || `page-${Date.now().toString(36)}`;
-  const rows = await db
-    .select({ id: editorPages.id, slug: editorPages.slug })
-    .from(editorPages)
-    .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId)));
-
-  const taken = new Set(rows.filter((row) => row.id !== excludeId).map((row) => row.slug));
-  if (!taken.has(desired)) return desired;
-
-  for (let suffix = 2; suffix < 1000; suffix += 1) {
-    const candidate = `${desired}-${suffix}`;
-    if (!taken.has(candidate)) return candidate;
-  }
-  return `${desired}-${Date.now().toString(36)}`;
-}
-
-/**
- * Postgres unique_violation. Still reachable as a race between the slug lookup
- * and the write, so callers degrade to a readable message instead of throwing
- * an unhandled rejection back through the server action.
- */
-function isUniqueViolation(error: unknown): boolean {
-  const code = (error as { code?: string })?.code
-    ?? ((error as { cause?: { code?: string } })?.cause)?.code;
-  return code === "23505";
-}
 
 export async function renamePage(id: string, name: string): Promise<{ success?: boolean; error?: string }> {
   const user = await requireTenantUser();
@@ -87,7 +50,7 @@ export async function deletePage(id: string): Promise<{ success?: boolean; error
   return { success: true };
 }
 
-export async function createPage(projectId: string, pageName?: string): Promise<{ success?: boolean; id?: string; error?: string }> {
+export async function createPage(projectId: string, pageName?: string): Promise<{ success?: boolean; id?: string; error?: string; page?: any }> {
   const user = await requireTenantUser();
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
@@ -113,11 +76,11 @@ export async function createPage(projectId: string, pageName?: string): Promise<
     .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, user.tenantId)));
   const nextOrder = existing.reduce((max, row) => Math.max(max, row.order ?? 0), -1) + 1;
 
-  let page: { id: string } | undefined;
+  let page: any;
   try {
     [page] = await db.insert(editorPages).values({
       projectId, tenantId: user.tenantId, name, slug, order: nextOrder, data: [], isHomepage: false,
-    }).returning({ id: editorPages.id });
+    }).returning();
   } catch (error) {
     if (isUniqueViolation(error)) {
       return { success: false, error: "A page with that name already exists" };
@@ -127,7 +90,7 @@ export async function createPage(projectId: string, pageName?: string): Promise<
   if (!page) return { success: false, error: "Failed to create page" };
 
   revalidatePath("/dashboard/pages");
-  return { id: page.id };
+  return { success: true, id: page.id, page };
 }
 
 export async function createProductTemplate(projectId: string): Promise<{ success?: boolean; id?: string; error?: string }> {

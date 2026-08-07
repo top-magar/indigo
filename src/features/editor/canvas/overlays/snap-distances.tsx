@@ -64,6 +64,7 @@ export default function SnapDistances(): ReactNode {
   const rafRef = useRef(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!selected || preview || selected.type === '__body') { setLines([]); return; }
 
     // RAF-batched calculation

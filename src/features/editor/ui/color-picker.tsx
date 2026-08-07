@@ -72,12 +72,12 @@ function useDrag(onDrag: (x: number, y: number) => void) {
 // ─── Sub-components ─────────────────────────────────────
 
 function SaturationValue({ hue, s, v, onChange }: { hue: number; s: number; v: number; onChange: (s: number, v: number) => void }) {
-  const drag = useDrag((x, y) => onChange(x, 1 - y));
+  const { ref, onDown, onMove, onUp } = useDrag((x, y) => onChange(x, 1 - y));
   const [r, g, b] = hsvToRgb(hue, 1, 1);
   return (
-    <div ref={drag.ref} className="relative w-full h-[140px] rounded-md cursor-crosshair touch-none select-none"
+    <div ref={ref} className="relative w-full h-[140px] rounded-md cursor-crosshair touch-none select-none"
       style={{ background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, rgb(${r},${g},${b}))` }}
-      onPointerDown={drag.onDown} onPointerMove={drag.onMove} onPointerUp={drag.onUp}>
+      onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}>
       <div className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.3)] pointer-events-none"
         style={{ left: `${s * 100}%`, top: `${(1 - v) * 100}%` }} />
     </div>
@@ -85,10 +85,10 @@ function SaturationValue({ hue, s, v, onChange }: { hue: number; s: number; v: n
 }
 
 function Slider({ value, bg, onChange }: { value: number; bg: string; onChange: (v: number) => void }) {
-  const drag = useDrag((x) => onChange(x));
+  const { ref, onDown, onMove, onUp } = useDrag((x) => onChange(x));
   return (
-    <div ref={drag.ref} className="relative h-3 rounded-full cursor-pointer touch-none select-none" style={{ background: bg }}
-      onPointerDown={drag.onDown} onPointerMove={drag.onMove} onPointerUp={drag.onUp}>
+    <div ref={ref} className="relative h-3 rounded-full cursor-pointer touch-none select-none" style={{ background: bg }}
+      onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}>
       <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 size-3.5 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.2)] pointer-events-none"
         style={{ left: `${value * 100}%` }} />
     </div>
@@ -112,7 +112,7 @@ function HarmonyWheel({ hue, s, v, onChange }: { hue: number; s: number; v: numb
     grd.addColorStop(0, 'rgba(255,255,255,1)'); grd.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, cx, r, 0, Math.PI * 2); ctx.fill();
   }, []);
-  const drag = useDrag((x, y) => {
+  const { ref, onDown, onMove, onUp } = useDrag((x, y) => {
     const px = x * 2 - 1, py = y * 2 - 1;
     onChange(((Math.atan2(py, px) * 180) / Math.PI + 360) % 360, Math.min(1, Math.sqrt(px * px + py * py)));
   });
@@ -122,8 +122,8 @@ function HarmonyWheel({ hue, s, v, onChange }: { hue: number; s: number; v: numb
   const cx2 = 50 + s * 50 * Math.cos(cRad), cy2 = 50 + s * 50 * Math.sin(cRad);
   return (
     <div className="flex items-center justify-center py-2">
-      <div ref={drag.ref} className="relative touch-none select-none cursor-crosshair" style={{ width: size, height: size }}
-        onPointerDown={drag.onDown} onPointerMove={drag.onMove} onPointerUp={drag.onUp}>
+      <div ref={ref} className="relative touch-none select-none cursor-crosshair" style={{ width: size, height: size }}
+        onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}>
         <canvas ref={canvasRef} width={size} height={size} className="rounded-full" />
         <div className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.3)] pointer-events-none" style={{ left: `${hx}%`, top: `${hy}%` }} />
         <div className="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/50 shadow-[0_0_0_1px_rgba(0,0,0,0.2)] pointer-events-none opacity-50" style={{ left: `${cx2}%`, top: `${cy2}%` }} />

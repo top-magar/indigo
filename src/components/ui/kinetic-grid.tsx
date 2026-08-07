@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, type ReactNode } from "react";
+import { useEffect, useRef, useCallback, useState, type ReactNode } from "react";
 import { cn } from "@/shared/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -26,7 +26,7 @@ const MAX_WARP = 24;
 const DOT_SPACING = 28;
 const LERP_SPEED = 0.08;
 
-const LINE_BASE = { r: 255, g: 255, b: 255, a: 0.13 };
+
 const NODE_BASE_RADIUS = 1.8;
 const NODE_ACTIVE_RADIUS = 3.2;
 
@@ -65,6 +65,7 @@ export default function KineticGrid({
   const targetMouseRef = useRef<Point>({ x: -9999, y: -9999 });
   const ripplesRef = useRef<Ripple[]>([]);
   const rafRef = useRef<number>(0);
+  const isAnimatingRef = useRef<boolean>(true);
   const sizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
 
   // ── Warp ────────────────────────────────────────────────────────────────────
@@ -140,6 +141,9 @@ export default function KineticGrid({
     [],
   );
 
+  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+
+
   // ── Draw ────────────────────────────────────────────────────────────────────
 
   const draw = useCallback(
@@ -153,31 +157,29 @@ export default function KineticGrid({
       const mouse = mouseRef.current;
       const ripples = ripplesRef.current;
 
+      const isLight = themeMode === "light";
+      const lineBase = isLight ? { r: 0, g: 0, b: 0, a: 0.06 } : { r: 255, g: 255, b: 255, a: 0.13 };
+      
       const theme = {
         default: {
-          bg: "#0a0a0e",
           lineActive: { r: 123, g: 97, b: 255, a: 0.9 },
           nodeActive: { r: 123, g: 97, b: 255, a: 1.0 },
           glow: "123,97,255",
           ripple: "140,120,255",
         },
         monochrome: {
-          bg: "#000000",
-          lineActive: { r: 255, g: 255, b: 255, a: 0.9 },
-          nodeActive: { r: 255, g: 255, b: 255, a: 1.0 },
-          glow: "255,255,255",
-          ripple: "255,255,255",
+          lineActive: isLight ? { r: 0, g: 0, b: 0, a: 0.9 } : { r: 255, g: 255, b: 255, a: 0.9 },
+          nodeActive: isLight ? { r: 0, g: 0, b: 0, a: 1.0 } : { r: 255, g: 255, b: 255, a: 1.0 },
+          glow: isLight ? "0,0,0" : "255,255,255",
+          ripple: isLight ? "0,0,0" : "255,255,255",
         },
       }[globalColor ?? "default"];
 
+      // Truly transparent background
       ctx.clearRect(0, 0, W, H);
 
-      // Background — transparent so the page bg shows through
-      ctx.fillStyle = theme.bg;
-      ctx.fillRect(0, 0, W, H);
-
       // Static background dot texture
-      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fillStyle = isLight ? "rgba(0,0,0,0.04)" : "rgba(255,255,255,0.04)";
       for (let x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
         for (let y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
           ctx.beginPath();
@@ -230,7 +232,7 @@ export default function KineticGrid({
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = lerpColor(LINE_BASE, theme.lineActive, t);
+        ctx.strokeStyle = lerpColor(lineBase, theme.lineActive, t);
         ctx.lineWidth = lerpN(0.8, 1.5, t);
         ctx.stroke();
       };
@@ -288,11 +290,8 @@ export default function KineticGrid({
           // Node fill
           ctx.beginPath();
           ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-          ctx.fillStyle = lerpColor(
-            { r: 255, g: 255, b: 255, a: 0.2 },
-            theme.nodeActive,
-            t,
-          );
+          const nodeBase = isLight ? { r: 0, g: 0, b: 0, a: 0.15 } : { r: 255, g: 255, b: 255, a: 0.2 };
+          ctx.fillStyle = lerpColor(nodeBase, theme.nodeActive, t);
           ctx.fill();
         }
       }
@@ -307,7 +306,7 @@ export default function KineticGrid({
         ctx.stroke();
       }
     },
-    [getWarpedPoint, globalColor],
+    [getWarpedPoint, globalColor, themeMode],
   );
 
   // ── Animation loop ──────────────────────────────────────────────────────────
@@ -321,16 +320,46 @@ export default function KineticGrid({
       m.y = lerpN(m.y, t.y, LERP_SPEED);
 
       draw(now);
+
+      const dx = Math.abs(m.x - t.x);
+      const dy = Math.abs(m.y - t.y);
+      if (dx < 0.1 && dy < 0.1 && ripplesRef.current.length === 0) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
       rafRef.current = requestAnimationFrame(animate);
     },
     [draw],
   );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => {
+      setThemeMode(root.dataset.theme === "light" ? "light" : "dark");
+      // Wake up loop to redraw in new theme
+      if (!isAnimatingRef.current) {
+        isAnimatingRef.current = true;
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    });
+    setThemeMode(root.dataset.theme === "light" ? "light" : "dark");
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, [animate]);
 
   // ── Setup ───────────────────────────────────────────────────────────────────
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const wakeUp = () => {
+      if (!isAnimatingRef.current) {
+        isAnimatingRef.current = true;
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
 
     const setSize = () => {
       const w = window.innerWidth;
@@ -342,6 +371,7 @@ export default function KineticGrid({
         mouseRef.current = { x: -9999, y: -9999 };
         targetMouseRef.current = { x: -9999, y: -9999 };
       }
+      wakeUp();
     };
 
     setSize();
@@ -349,6 +379,12 @@ export default function KineticGrid({
 
     const onMouseMove = (e: MouseEvent) => {
       targetMouseRef.current = { x: e.clientX, y: e.clientY };
+      wakeUp();
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      targetMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      wakeUp();
     };
 
     const onClick = (e: MouseEvent) => {
@@ -359,16 +395,28 @@ export default function KineticGrid({
         opacity: 1,
         born: performance.now(),
       });
+      wakeUp();
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      // Don't duplicate click ripples on touch devices (which also fire clicks)
+      targetMouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      wakeUp();
     };
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("click", onClick);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    isAnimatingRef.current = true;
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("resize", setSize);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("click", onClick);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchstart", onTouchStart);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -381,7 +429,6 @@ export default function KineticGrid({
     <div
       className={cn(
         "relative w-full min-h-screen overflow-hidden",
-        globalColor === "monochrome" ? "bg-black" : "bg-[#0a0a0e]",
         className,
       )}
     >

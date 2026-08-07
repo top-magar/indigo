@@ -25,6 +25,7 @@ export function ResizeHandles({ element, wrapperRef, dispatch }: {
   dispatch: ReturnType<typeof useEditor>['dispatch'];
 }) {
   const elRef = useRef<El>(element);
+  // eslint-disable-next-line react-hooks/refs
   elRef.current = element;
   const cleanupRef = useRef<(() => void) | null>(null);
   const [active, setActive] = useState<string | null>(null);

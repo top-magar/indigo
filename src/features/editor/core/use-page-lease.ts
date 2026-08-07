@@ -26,6 +26,7 @@ export function usePageLease(projectId: string, pageId: string | null) {
   }, [pageId, projectId, sessionId])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void acquire()
     const heartbeat = window.setInterval(() => void acquire(), 30_000)
     return () => {

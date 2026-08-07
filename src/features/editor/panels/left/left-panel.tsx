@@ -7,14 +7,13 @@ import { cn } from "@/shared/utils"
 import { useEditor } from "../../core/provider"
 import { useEditorStore } from "../../core/editor-store"
 import {
-  createPage,
-  deletePage2,
   getProjectPages,
   reorderProjectPages,
   setHomepage,
   setPageVisibility,
   updatePage,
 } from "../../lib/queries"
+import { createPage, deletePage } from "@/app/dashboard/pages/actions"
 import { MIcon } from "../../ui/m-icon"
 
 type PageItem = Awaited<ReturnType<typeof getProjectPages>>[number]
@@ -76,12 +75,12 @@ export default function LeftPanel({ onPageChange, onAddSection }: LeftPanelProps
   const addPage = async () => {
     const name = newPageName.trim()
     if (!name) return
-    const page = await createPage(pageId, name)
-    if (!page) return
+    const result = await createPage(pageId, name)
+    if (!result.success || !result.page) return
     setNewPageName("")
     setCreating(false)
     await loadPages()
-    selectPage(page)
+    selectPage(result.page)
   }
 
   const movePage = async (index: number, direction: -1 | 1) => {
@@ -152,7 +151,7 @@ export default function LeftPanel({ onPageChange, onAddSection }: LeftPanelProps
                     <IconButton label="Move page up" icon="arrow_upward" onClick={() => void movePage(index, -1)} disabled={index === 0} />
                     <IconButton label="Move page down" icon="arrow_downward" onClick={() => void movePage(index, 1)} disabled={index === pages.length - 1} />
                     {!page.isHomepage && <button type="button" onClick={() => void setHomepage(pageId, page.id).then(loadPages)} className="h-8 rounded-md px-2 text-xs hover:bg-sidebar-accent">Set home</button>}
-                    {pages.length > 1 && <IconButton label={`Delete ${page.name}`} icon="delete" onClick={() => void deletePage2(page.id).then(loadPages)} />}
+                    {pages.length > 1 && <IconButton label={`Delete ${page.name}`} icon="delete" onClick={() => void deletePage(page.id).then(loadPages)} />}
                   </div>
                 </div>
               )}

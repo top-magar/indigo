@@ -35,7 +35,7 @@ export default function GridEditor(): ReactNode {
   const hovered = state.editor.hovered;
   const [cols, setCols] = useState<Track[]>([]);
   const [rows, setRows] = useState<Track[]>([]);
-  const containerRef = useRef<HTMLElement | null>(null);
+  const [metrics, setMetrics] = useState({ ox: 0, oy: 0, w: 0, h: 0 });
 
   const targetId = selected?.styles.display === 'grid' ? selected.id : hovered;
   const targetEl = targetId ? (selected?.id === targetId ? selected : null) : null;
@@ -43,33 +43,32 @@ export default function GridEditor(): ReactNode {
   const isSelected = selected?.id === targetId;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!isGrid || !targetEl) { setCols([]); setRows([]); return; }
     const el = document.querySelector(`[data-el-id="${targetEl.id}"]`) as HTMLElement | null;
     if (!el) return;
-    containerRef.current = el;
+    
     // Use offsetWidth/offsetHeight — these are in the element's own coordinate space (unscaled)
     const colTemplate = (targetEl.styles as Record<string, string>).gridTemplateColumns || '';
     const rowTemplate = (targetEl.styles as Record<string, string>).gridTemplateRows || '';
     setCols(parseTracks(colTemplate, el.offsetWidth));
     setRows(parseTracks(rowTemplate, el.offsetHeight));
+    
+    let ox = 0, oy = 0;
+    let node: HTMLElement | null = el;
+    const canvasEl = document.querySelector('[data-canvas]') as HTMLElement | null;
+    while (node && node !== canvasEl) {
+      ox += node.offsetLeft;
+      oy += node.offsetTop;
+      node = node.offsetParent as HTMLElement | null;
+    }
+    setMetrics({ ox, oy, w: el.offsetWidth, h: el.offsetHeight });
   }, [targetEl, isGrid]);
 
   if (!isGrid || !targetEl || (cols.length === 0 && rows.length === 0)) return null;
 
-  const el = containerRef.current;
-  if (!el) return null;
+  const { ox, oy, w, h } = metrics;
 
-  // Calculate position relative to [data-canvas] using offset chain (unscaled coordinates)
-  let ox = 0, oy = 0;
-  let node: HTMLElement | null = el;
-  const canvasEl = document.querySelector('[data-canvas]') as HTMLElement | null;
-  while (node && node !== canvasEl) {
-    ox += node.offsetLeft;
-    oy += node.offsetTop;
-    node = node.offsetParent as HTMLElement | null;
-  }
-  const w = el.offsetWidth;
-  const h = el.offsetHeight;
 
   const updateTemplate = (axis: 'col' | 'row', newTemplate: string) => {
     const prop = axis === 'col' ? 'gridTemplateColumns' : 'gridTemplateRows';

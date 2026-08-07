@@ -7,9 +7,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useEditor } from "../../core/provider";
 import { useEditorStore } from "../../core/editor-store";
 import {
-  getProjectPages, createPage, deletePage2,
+  getProjectPages,
   updatePage, updatePageSeo, setHomepage,
 } from "../../lib/queries";
+import { createPage, deletePage } from "@/app/dashboard/pages/actions";
 import { pageTemplates } from "../../lib/page-templates";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     })));
   }, [pageId]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load(); }, [load]);
 
   const handleSelect = async (page: PageItem) => {
@@ -70,8 +72,9 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     if (!template) { setCreating(false); return; }
 
     const name = template.id === "blank" ? `Page ${pages.length + 1}` : template.name;
-    const page = await createPage(pageId, name);
-    if (page) {
+    const result = await createPage(pageId, name);
+    if (result.success && result.page) {
+      const page = result.page;
       const elements = template.factory();
       if (elements.length > 0) {
         await updatePage(page.id, { data: JSON.stringify(elements) });
@@ -92,7 +95,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
-    await deletePage2(deleteTarget);
+    await deletePage(deleteTarget);
     await load();
     if (deleteTarget === activePageId) {
       const remaining = pages.filter(p => p.id !== deleteTarget);

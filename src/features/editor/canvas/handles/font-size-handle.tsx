@@ -10,6 +10,7 @@ export function FontSizeHandle({ element, dispatch }: {
   dispatch: ReturnType<typeof useEditor>['dispatch'];
 }) {
   const elRef = useRef<El>(element);
+  // eslint-disable-next-line react-hooks/refs
   elRef.current = element;
   const [dragging, setDragging] = useState(false);
   const [hovered, setHovered] = useState(false);

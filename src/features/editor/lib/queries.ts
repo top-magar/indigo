@@ -10,6 +10,7 @@ import { collectionProducts, collections } from '@/db/schema/collections';
 import { plans, subscriptions } from '@/db/schema/billing';
 import { eq, and, asc, desc, sql, count } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { uniquePageSlug } from '@/lib/page-utils';
 
 function safeJsonParse(str: string, fallback: unknown = []): unknown {
   try { return JSON.parse(str); } catch { return fallback; }
@@ -50,56 +51,30 @@ export async function getProjectPages(projectId: string) {
     .orderBy(asc(editorPages.order)));
 }
 
-export async function createPage(projectId: string, name: string) {
-  return authorizedAction(async (tx, tenantId) => {
-    const [project] = await tx.select({ id: editorProjects.id }).from(editorProjects)
-      .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
-    if (!project) return null;
-
-    const [[subscription], [{ value: pageCount }], existing] = await Promise.all([
-      tx.select({ name: plans.name }).from(subscriptions).innerJoin(plans, eq(plans.id, subscriptions.planId))
-        .where(eq(subscriptions.tenantId, tenantId)).orderBy(desc(subscriptions.createdAt)).limit(1),
-      tx.select({ value: count() }).from(editorPages).where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId))),
-      tx.select({ order: editorPages.order }).from(editorPages)
-        .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId)))
-        .orderBy(desc(editorPages.order)).limit(1),
-    ]);
-    const maxPages = !subscription || subscription.name === 'Free' ? 2 : subscription.name === 'Growth' ? 10 : 999;
-    if (pageCount >= maxPages) return null;
-
-    const nextOrder = (existing[0]?.order ?? -1) + 1;
-    const slugBase = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'page';
-    const slug = nextOrder > 0 ? `${slugBase}-${nextOrder + 1}` : slugBase;
-    const [page] = await tx.insert(editorPages)
-      .values({ projectId, tenantId, name, slug, order: nextOrder, data: [], createdAt: new Date(), updatedAt: new Date() })
-      .returning();
-    revalidatePath('/dashboard/pages');
-    return page;
-  });
-}
-
 export async function updatePage(pageId: string, data: { name?: string; slug?: string; data?: string }) {
   return authorizedAction(async (tx, tenantId) => {
+    const [page] = await tx.select({ projectId: editorPages.projectId }).from(editorPages)
+      .where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId))).limit(1);
+    if (!page) return null;
+
     const updates: Record<string, unknown> = { updatedAt: new Date() };
+    
     if (data.name) {
       updates.name = data.name;
-      if (!data.slug) updates.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      if (!data.slug) {
+        const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        updates.slug = await uniquePageSlug(page.projectId, tenantId, slugify(data.name), pageId);
+      }
     }
-    if (data.slug) updates.slug = data.slug;
+    if (data.slug) {
+      updates.slug = await uniquePageSlug(page.projectId, tenantId, data.slug, pageId);
+    }
+    
     if (data.data) updates.data = safeJsonParse(data.data);
     const [updated] = await tx.update(editorPages).set(updates)
       .where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId))).returning();
     revalidatePath('/dashboard/pages');
     return updated ?? null;
-  });
-}
-
-export async function deletePage2(pageId: string) {
-  await authorizedAction(async (tx, tenantId) => {
-    const [{ value }] = await tx.select({ value: count() }).from(editorPages).where(eq(editorPages.tenantId, tenantId));
-    if (value <= 1) return;
-    await tx.delete(editorPages).where(and(eq(editorPages.id, pageId), eq(editorPages.tenantId, tenantId)));
-    revalidatePath('/dashboard/pages');
   });
 }
 

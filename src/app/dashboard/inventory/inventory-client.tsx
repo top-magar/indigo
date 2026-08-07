@@ -10,22 +10,13 @@ import {
     Package,
     Search,
     Download,
-    Upload,
     MoreHorizontal,
     Pencil,
     Plus,
     Minus,
-    AlertTriangle,
-    CheckCircle,
-    XCircle,
-    DollarSign,
     Image as ImageIcon,
-    Barcode,
-    Clock,
-    ArrowUp,
-    ArrowDown,
-    Filter,
     Settings,
+    Clock,
 } from "lucide-react";
 import {
     Table,
@@ -35,12 +26,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
 import {
     Select,
     SelectContent,
@@ -65,12 +54,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
@@ -117,7 +101,6 @@ export function InventoryClient({
     products,
     categories,
     stats,
-    recentMovements,
     totalCount,
     currentPage,
     pageSize,
@@ -126,21 +109,17 @@ export function InventoryClient({
 }: InventoryClientProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isActionPending, startTransition] = useTransition();
+    const [_, startTransition] = useTransition();
     
     // URL-based filter state management
     const {
         searchValue,
         setSearchValue,
         setFilter,
-        clearAll,
-        hasActiveFilters,
-        page,
-        pageSize: urlPageSize,
+        page: _page,
         setPage,
         setPageSize,
         isPending,
-        getFilter,
     } = useUrlFilters({ defaultPageSize: pageSize });
     
     const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
@@ -244,9 +223,6 @@ export function InventoryClient({
     };
 
     const pageCount = Math.ceil(totalCount / pageSize);
-    const stockHealthPercentage = stats.totalProducts > 0 
-        ? Math.round((stats.healthyStockCount / stats.totalProducts) * 100) 
-        : 0;
 
     return (
         <EntityListPage

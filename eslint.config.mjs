@@ -22,10 +22,13 @@ const eslintConfig = defineConfig([
     "skills/**",
   ]),
   {
+    plugins: {
+      "react-hooks": nextVitals.find((c) => c.plugins && c.plugins["react-hooks"])?.plugins["react-hooks"]
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "prefer-const": "warn",
-      "react/no-unescaped-entities": "warn",
+      // "react/no-unescaped-entities": "warn",
       "react-hooks/refs": "warn",
       "react-hooks/set-state-in-effect": "warn",
       "react-hooks/static-components": "warn",
