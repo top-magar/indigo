@@ -126,7 +126,7 @@ export const POST = withRateLimit("checkout", async function POST(
     const [cartData] = await db.select().from(carts).where(and(eq(carts.id, cartId), eq(carts.tenantId, tenant.id))).limit(1)
     if (!cartData) return NextResponse.json({ error: { message: "Cart not found" } }, { status: 400 })
 
-    const items = await db.select().from(cartItems).where(eq(cartItems.cartId, cartId))
+    const items = await db.select().from(cartItems).where(and(eq(cartItems.cartId, cartId), eq(cartItems.tenantId, tenant.id)))
     if (!items.length) return NextResponse.json({ error: { message: "Cart is empty" } }, { status: 400 })
 
     // Calculate totals
@@ -212,7 +212,7 @@ export const POST = withRateLimit("checkout", async function POST(
       }
 
       // Mark cart completed
-      await tx.update(carts).set({ status: "completed", updatedAt: new Date() }).where(eq(carts.id, cartId))
+      await tx.update(carts).set({ status: "completed", updatedAt: new Date() }).where(and(eq(carts.id, cartId), eq(carts.tenantId, tenant.id)))
 
       return created
     })
@@ -230,7 +230,7 @@ export const POST = withRateLimit("checkout", async function POST(
       const merchantCode = paySettings?.esewamerchantCode as string;
       const merchantSecret = paySettings?.esewaSecret as string;
       if (!merchantCode || !merchantSecret) {
-        await db.delete(orders).where(eq(orders.id, order.id));
+        await db.delete(orders).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
         return NextResponse.json({ error: { message: "eSewa is not configured for this store" } }, { status: 400 });
       }
       const { initiateEsewaPayment } = await import("@/infrastructure/payments/esewa");
@@ -254,7 +254,7 @@ export const POST = withRateLimit("checkout", async function POST(
       const paySettings = (settings as Record<string, unknown>).payments as Record<string, unknown> | undefined;
       const secretKey = paySettings?.khaltiSecretKey as string;
       if (!secretKey) {
-        await db.delete(orders).where(eq(orders.id, order.id));
+        await db.delete(orders).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
         return NextResponse.json({ error: { message: "Khalti is not configured for this store" } }, { status: 400 });
       }
       const { initiateKhaltiPayment } = await import("@/infrastructure/payments/khalti");
@@ -274,7 +274,7 @@ export const POST = withRateLimit("checkout", async function POST(
           paymentRedirectUrl = result.paymentUrl;
           await db.update(orders).set({ metadata: sql`COALESCE(${orders.metadata}, '{}'::jsonb) || ${JSON.stringify({ paymentMethod: "khalti", khaltiPidx: result.pidx })}::jsonb` }).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
         } else {
-          await db.delete(orders).where(eq(orders.id, order.id));
+          await db.delete(orders).where(and(eq(orders.id, order.id), eq(orders.tenantId, tenant.id)));
           return NextResponse.json({ error: { message: "Failed to initiate Khalti payment" } }, { status: 500 });
         }
     }

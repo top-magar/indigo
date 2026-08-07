@@ -3,7 +3,7 @@
 import { db } from "@/infrastructure/db";
 import { users } from "@/db/schema/users";
 import { platformInvites } from "@/db/schema/platform-invites";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { randomBytes } from "crypto";
@@ -75,17 +75,35 @@ export async function removePlatformMember(memberId: string): Promise<{ error?: 
   const user = await requirePermission("manage_team");
   if (memberId === user.id) return { error: "Cannot remove yourself" };
 
-  const [member] = await db.select({ id: users.id, email: users.email, platformRole: users.platformRole })
-    .from(users).where(eq(users.id, memberId)).limit(1);
+  const parsedId = z.string().uuid().safeParse(memberId);
+  if (!parsedId.success) return { error: "Invalid member ID" };
+
+  // Only actual platform members are targetable here. Without the platformRole
+  // filter, any merchant's user ID would resolve and get deleted below.
+  const [member] = await db.select({ id: users.id, email: users.email, platformRole: users.platformRole, tenantId: users.tenantId })
+    .from(users)
+    .where(and(eq(users.id, parsedId.data), isNotNull(users.platformRole)))
+    .limit(1);
   if (!member) return { error: "Member not found" };
   if (member.platformRole === "super_admin") return { error: "Cannot remove the owner" };
 
-  // Remove platform access — delete the user row entirely since they have no tenant
-  await db.delete(users).where(eq(users.id, memberId));
+  if (member.tenantId) {
+    // Dual-role account: they are also a merchant. Revoke platform access only —
+    // deleting the row would destroy their store account.
+    await db.update(users)
+      .set({ platformRole: null, updatedAt: new Date() })
+      .where(and(eq(users.id, parsedId.data), isNotNull(users.platformRole)));
+  } else {
+    // Pure platform user with no tenant — remove the row entirely.
+    await db.delete(users)
+      .where(and(eq(users.id, parsedId.data), isNotNull(users.platformRole), isNull(users.tenantId)));
+  }
 
   logAdminAction({
     actorId: user.id, actorEmail: user.email, action: "settings.update",
-    targetType: "user", targetId: memberId, targetName: `Removed ${member.email}`,
+    targetType: "user", targetId: memberId, targetName: member.tenantId
+      ? `Revoked platform access for ${member.email}`
+      : `Removed ${member.email}`,
   });
 
   revalidatePath("/admin/team");
@@ -104,13 +122,15 @@ export async function changeRole(memberId: string, newRole: string): Promise<{ e
   if (parsed.data.memberId === user.id) return { error: "Cannot change your own role" };
 
   const [member] = await db.select({ id: users.id, platformRole: users.platformRole })
-    .from(users).where(eq(users.id, parsed.data.memberId)).limit(1);
+    .from(users)
+    .where(and(eq(users.id, parsed.data.memberId), isNotNull(users.platformRole)))
+    .limit(1);
   if (!member) return { error: "Member not found" };
   if (member.platformRole === "super_admin") return { error: "Cannot change owner role" };
 
   await db.update(users)
     .set({ platformRole: parsed.data.newRole, updatedAt: new Date() })
-    .where(eq(users.id, parsed.data.memberId));
+    .where(and(eq(users.id, parsed.data.memberId), isNotNull(users.platformRole)));
 
   revalidatePath("/admin/team");
   return {};

@@ -176,32 +176,53 @@ export async function createFulfillment(input: CreateFulfillmentInput) {
     const { tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
-        const [fulfillment] = await db.insert(fulfillments).values({
-            tenantId, orderId: input.orderId, status: "pending",
-            trackingNumber: input.trackingNumber || null,
-            trackingUrl: input.trackingUrl || null,
-            shippingCarrier: input.shippingCarrier || null,
-        }).returning();
+        const result = await db.transaction(async (tx) => {
+            const [order] = await tx.select({ id: orders.id })
+                .from(orders)
+                .where(and(eq(orders.id, input.orderId), eq(orders.tenantId, tenantId)))
+                .limit(1);
 
-        if (!fulfillment) return { success: false, error: "Failed to create fulfillment" };
+            if (!order) return { success: false as const, error: "Order not found" };
 
-        const flValues = input.lines.map(line => ({
-            tenantId, fulfillmentId: fulfillment.id,
-            orderLineId: line.orderLineId, quantity: line.quantity,
-        }));
+            for (const line of input.lines) {
+                const [orderLine] = await tx.select({ id: orderItems.id })
+                    .from(orderItems)
+                    .where(and(eq(orderItems.id, line.orderLineId), eq(orderItems.orderId, input.orderId), eq(orderItems.tenantId, tenantId)))
+                    .limit(1);
+                if (!orderLine) return { success: false as const, error: "Order line not found" };
+            }
 
-        await db.insert(fulfillmentLines).values(flValues);
+            const [fulfillment] = await tx.insert(fulfillments).values({
+                tenantId, orderId: input.orderId, status: "pending",
+                trackingNumber: input.trackingNumber || null,
+                trackingUrl: input.trackingUrl || null,
+                shippingCarrier: input.shippingCarrier || null,
+            }).returning();
 
-        // Update order item quantities
-        for (const line of input.lines) {
-            await db.update(orderItems)
-                .set({ quantityFulfilled: sql`${orderItems.quantityFulfilled} + ${line.quantity}` })
-                .where(eq(orderItems.id, line.orderLineId));
-        }
+            if (!fulfillment) return { success: false as const, error: "Failed to create fulfillment" };
+
+            const flValues = input.lines.map(line => ({
+                tenantId, fulfillmentId: fulfillment.id,
+                orderLineId: line.orderLineId, quantity: line.quantity,
+            }));
+
+            await tx.insert(fulfillmentLines).values(flValues);
+
+            // Update order item quantities
+            for (const line of input.lines) {
+                await tx.update(orderItems)
+                    .set({ quantityFulfilled: sql`${orderItems.quantityFulfilled} + ${line.quantity}` })
+                    .where(and(eq(orderItems.id, line.orderLineId), eq(orderItems.orderId, input.orderId), eq(orderItems.tenantId, tenantId)));
+            }
+
+            return { success: true as const, data: fulfillment };
+        });
+
+        if (!result.success) return result;
 
         await addOrderEvent(input.orderId, "fulfillment_created", "Fulfillment created", userId, userName);
         revalidatePath(`/dashboard/orders/${input.orderId}`);
-        return { success: true, data: fulfillment };
+        return result;
     } catch (error) {
         log.error("Failed to create fulfillment:", error);
         return { success: false, error: "Failed to create fulfillment" };
@@ -255,7 +276,7 @@ export async function cancelFulfillment(fulfillmentId: string) {
         if (!f) return { success: false, error: "Fulfillment not found" };
 
         const fLines = await db.select({ orderLineId: fulfillmentLines.orderLineId, quantity: fulfillmentLines.quantity })
-            .from(fulfillmentLines).where(eq(fulfillmentLines.fulfillmentId, fulfillmentId));
+            .from(fulfillmentLines).where(and(eq(fulfillmentLines.fulfillmentId, fulfillmentId), eq(fulfillmentLines.tenantId, tenantId)));
 
         await db.update(fulfillments).set({ status: "cancelled", updatedAt: new Date() })
             .where(and(eq(fulfillments.id, fulfillmentId), eq(fulfillments.tenantId, tenantId)));
@@ -263,7 +284,7 @@ export async function cancelFulfillment(fulfillmentId: string) {
         for (const line of fLines) {
             await db.update(orderItems)
                 .set({ quantityFulfilled: sql`GREATEST(0, ${orderItems.quantityFulfilled} - ${line.quantity})` })
-                .where(eq(orderItems.id, line.orderLineId));
+                .where(and(eq(orderItems.id, line.orderLineId), eq(orderItems.tenantId, tenantId)));
         }
 
         await addOrderEvent(f.orderId, "fulfillment_cancelled", "Fulfillment cancelled", userId, userName);

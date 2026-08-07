@@ -9,27 +9,30 @@ import { revalidatePath } from "next/cache";
 
 export async function renamePage(id: string, name: string): Promise<{ success?: boolean; error?: string }> {
   const user = await requireTenantUser();
-  const [page] = await db.select({ projectId: editorPages.projectId, slug: editorPages.slug }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
+  const [page] = await db.select({ projectId: editorPages.projectId, slug: editorPages.slug }).from(editorPages)
+    .where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId))).limit(1);
   if (!page) return { success: false, error: "Page not found" };
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return { success: false, error: "Project not found or access denied" };
   if (page.slug === "template-product") return { success: false, error: "Cannot rename reserved templates" };
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  await db.update(editorPages).set({ name, slug, updatedAt: new Date() }).where(eq(editorPages.id, id));
+  await db.update(editorPages).set({ name, slug, updatedAt: new Date() })
+    .where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId)));
   revalidatePath("/dashboard/pages");
   return { success: true };
 }
 
 export async function deletePage(id: string): Promise<{ success?: boolean; error?: string }> {
   const user = await requireTenantUser();
-  const [page] = await db.select({ projectId: editorPages.projectId, isHomepage: editorPages.isHomepage, slug: editorPages.slug }).from(editorPages).where(eq(editorPages.id, id)).limit(1);
+  const [page] = await db.select({ projectId: editorPages.projectId, isHomepage: editorPages.isHomepage, slug: editorPages.slug }).from(editorPages)
+    .where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId))).limit(1);
   if (!page) return { success: false, error: "Page not found" };
   if (page.isHomepage || page.slug === "template-product") return { success: false, error: "Cannot delete homepage or reserved templates" };
   const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return { success: false, error: "Project not found or access denied" };
-  await db.delete(editorPages).where(eq(editorPages.id, id));
+  await db.delete(editorPages).where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId)));
   revalidatePath("/dashboard/pages");
   return { success: true };
 }
