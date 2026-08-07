@@ -739,6 +739,29 @@ export async function recordDiscountUsage(
     }
 
     try {
+        // Verify the discount belongs to this tenant before recording anything.
+        const [discount] = await db
+            .select({ id: discounts.id })
+            .from(discounts)
+            .where(and(eq(discounts.id, discountId), eq(discounts.tenantId, tenantId)))
+            .limit(1);
+
+        if (!discount) {
+            return { success: false, error: "Discount not found" };
+        }
+
+        if (voucherCodeId) {
+            const [voucherCode] = await db
+                .select({ id: voucherCodes.id })
+                .from(voucherCodes)
+                .where(and(eq(voucherCodes.id, voucherCodeId), eq(voucherCodes.tenantId, tenantId)))
+                .limit(1);
+
+            if (!voucherCode) {
+                return { success: false, error: "Voucher code not found" };
+            }
+        }
+
         // Record usage
         await db.insert(discountUsages).values({
             tenantId,
@@ -756,7 +779,7 @@ export async function recordDiscountUsage(
                 usedCount: sql`${discounts.usedCount} + 1`,
                 updatedAt: new Date(),
             })
-            .where(eq(discounts.id, discountId));
+            .where(and(eq(discounts.id, discountId), eq(discounts.tenantId, tenantId)));
 
         // Increment voucher code usage count if applicable
         if (voucherCodeId) {
@@ -766,7 +789,7 @@ export async function recordDiscountUsage(
                     usedCount: sql`${voucherCodes.usedCount} + 1`,
                     usedAt: new Date(),
                 })
-                .where(eq(voucherCodes.id, voucherCodeId));
+                .where(and(eq(voucherCodes.id, voucherCodeId), eq(voucherCodes.tenantId, tenantId)));
         }
 
         return { success: true };
