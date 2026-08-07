@@ -80,22 +80,6 @@ export const pricingPlans: PricingPlan[] = [
   },
 ];
 
-export interface ComparisonRow {
-  feature: string;
-  us: boolean | string;
-  them: boolean | string;
-}
-
-export const comparisonRows: ComparisonRow[] = [
-  { feature: "Visual page editor", us: true, them: true },
-  { feature: "Local gateways (eSewa, Khalti, IME Pay)", us: true, them: false },
-  { feature: "NPR-first checkout & reporting", us: true, them: false },
-  { feature: "Connected catalog across all pages", us: true, them: false },
-  { feature: "Custom domain on every plan", us: true, them: false },
-  { feature: "No per-transaction fees", us: "Growth+", them: false },
-  { feature: "Multi-store management", us: true, them: false },
-];
-
 export interface NewsletterResult {
   type: "success" | "error";
   message: string;

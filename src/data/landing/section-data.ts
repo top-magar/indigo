@@ -76,7 +76,14 @@ export type ComparisonRow = {
   indigo: boolean | string;
   /** Typical templated-platform behavior. */
   alternative: boolean | string;
+  /** Small clarifying note shown under the alternative cell. */
   note?: string;
+};
+
+export type ComparisonGroup = {
+  /** Category label, e.g. "Storefront". */
+  title: string;
+  rows: ComparisonRow[];
 };
 
 export type ComparisonSection = SectionMeta & {
@@ -84,7 +91,7 @@ export type ComparisonSection = SectionMeta & {
   indigoLabel: string;
   /** Label for the comparison column, e.g. "Templated platforms". */
   alternativeLabel: string;
-  rows: ComparisonRow[];
+  groups: ComparisonGroup[];
 };
 
 /* ─── Pricing ─────────────────────────────────────────────────────────── */
@@ -270,15 +277,42 @@ export const sectionData = {
     body: "Most store builders ship static templates and bolt commerce on afterward. Indigo starts from a structured commerce core.",
     indigoLabel: "Indigo",
     alternativeLabel: "Templated platforms",
-    rows: [
-      { feature: "Visual page editor", indigo: true, alternative: true },
-      { feature: "Local gateways (eSewa, Khalti, IME Pay)", indigo: true, alternative: false },
-      { feature: "NPR-first checkout & reporting", indigo: true, alternative: false },
-      { feature: "Connected catalog across all pages", indigo: true, alternative: false, note: "Templates often hard-code products" },
-      { feature: "Responsive preview in-editor", indigo: true, alternative: true },
-      { feature: "Custom domain on every plan", indigo: true, alternative: false, note: "Usually paywalled" },
-      { feature: "No per-transaction fees", indigo: "Growth+", alternative: false },
-      { feature: "Multi-store management", indigo: true, alternative: false },
+    groups: [
+      {
+        title: "Storefront",
+        rows: [
+          { feature: "Visual page editor", indigo: true, alternative: true },
+          { feature: "Responsive preview in-editor", indigo: true, alternative: true },
+          {
+            feature: "Connected catalog across all pages",
+            indigo: true,
+            alternative: false,
+            note: "Templates often hard-code products",
+          },
+          { feature: "Custom domain on every plan", indigo: true, alternative: false, note: "Usually paywalled" },
+        ],
+      },
+      {
+        title: "Commerce & payments",
+        rows: [
+          { feature: "Local gateways (eSewa, Khalti, IME Pay)", indigo: true, alternative: false },
+          { feature: "NPR-first checkout & reporting", indigo: true, alternative: false },
+          { feature: "No per-transaction fees", indigo: "Growth+", alternative: false, note: "2–3% per sale typical" },
+        ],
+      },
+      {
+        title: "Operations",
+        rows: [
+          { feature: "Multi-store management", indigo: true, alternative: false },
+          {
+            feature: "Live commerce analytics",
+            indigo: true,
+            alternative: "Weekly CSV export",
+            note: "Batch exports, no real-time view",
+          },
+          { feature: "Unified orders & inventory", indigo: true, alternative: false },
+        ],
+      },
     ],
   } satisfies ComparisonSection,
 
