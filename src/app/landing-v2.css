@@ -348,17 +348,18 @@
 .lv2-section-heading__headline {
   margin: 0;
   font-size: clamp(34px, 4.5vw, 56px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.06;
   text-wrap: balance;
 }
 
-/* Hero headline uses the display scale */
+/* Hero headline uses the display scale.
+   Metrics match the reference: 80px / 500 / -2px / 84px at desktop. */
 .lv2-hero .lv2-section-heading__headline {
   font-size: clamp(42px, 6.5vw, 80px);
-  letter-spacing: -0.03em;
-  line-height: 1.02;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 .lv2-section-heading p,
@@ -3211,53 +3212,28 @@
   );
 }
 
-/* ─── Section heading: purple square + mono uppercase in a tech box ─── */
+/* ─── Section heading: [ 01 of 08 ] · Label ───
+   Plain mono marker matching the reference treatment. Previously a bordered
+   chip with corner ticks and a purple square; the bracket form reads quieter
+   and lets the headline carry the section. */
 
 .lv2-section-heading__marker {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 6px 12px 6px 10px;
+  gap: 6px;
   margin-bottom: 22px;
-  border: 1px solid var(--lv2-line);
-  background: var(--lv2-panel-3);
   font-family: var(--font-indigo-mono), ui-monospace, monospace;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   color: var(--lv2-faint);
-  text-transform: uppercase;
+  text-transform: none;
 }
 
-/* mini corner ticks on the label box */
-.lv2-section-heading__marker::before,
-.lv2-section-heading__marker::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-color: var(--lv2-line-strong);
-  border-style: solid;
-}
-
-.lv2-section-heading__marker::before {
-  top: -1px;
-  left: -1px;
-  border-width: 1.5px 0 0 1.5px;
-}
-
-.lv2-section-heading__marker::after {
-  right: -1px;
-  bottom: -1px;
-  border-width: 0 1.5px 1.5px 0;
-}
-
-.lv2-section-heading__sq {
-  width: 5px;
-  height: 5px;
-  background: var(--lv2-accent);
-  flex: none;
+.lv2-section-heading__bracket,
+.lv2-section-heading__of {
+  color: var(--lv2-faint);
+  font-weight: 400;
 }
 
 .lv2-section-heading__marker b {
@@ -3976,11 +3952,13 @@
 }
 
 /* ═══ Light theme ──────────────────────────────────────────────────────
-   The landing ships dark-first (reference look). The ThemeToggle sets
-   <html data-theme="light">; this block re-maps every token so the whole
-   page flips without touching component CSS. */
+   The landing ships LIGHT by default, matching the reference. Light is applied
+   via `html:not([data-theme="dark"])` rather than a `[data-theme="light"]`
+   opt-in, so it reaches first paint with no JavaScript. The ThemeToggle sets
+   <html data-theme="dark"> to opt into the dark token set defined above. */
 
-[data-theme="light"] .lv2-page {
+html:not([data-theme="dark"]) .lv2-page {
+  color-scheme: light;
   --lv2-bg: #ffffff;
   --lv2-surface-1: #fafafa;
   --lv2-surface-2: #f4f4f5;
@@ -4008,32 +3986,32 @@
   --lv2-danger: #dc2626;
 }
 
-[data-theme="light"] body {
+html:not([data-theme="dark"]) body {
   background-color: #ffffff;
 }
 
-[data-theme="light"] .lv2-header {
+html:not([data-theme="dark"]) .lv2-header {
   background: rgba(255, 255, 255, 0.82);
 }
 
-[data-theme="light"] .lv2-grid-bg {
+html:not([data-theme="dark"]) .lv2-grid-bg {
   background-image:
     linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px);
 }
 
-[data-theme="light"] .lv2-heat {
+html:not([data-theme="dark"]) .lv2-heat {
   background:
     linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     var(--lv2-panel-3);
 }
 
-[data-theme="light"] .lv2-dashboard {
+html:not([data-theme="dark"]) .lv2-dashboard {
   box-shadow: 0 40px 90px -30px rgb(9 9 11 / 0.25);
 }
 
-[data-theme="light"] .lv2-final-cta {
+html:not([data-theme="dark"]) .lv2-final-cta {
   background: linear-gradient(180deg, var(--lv2-bg), #f2efff 60%, #eae6ff);
 }
 

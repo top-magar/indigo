@@ -46,13 +46,6 @@ const geistMono = Geist_Mono({
 export default function LandingV2Page() {
   return (
     <div className={`lv2-page ${geistSans.variable} ${geistMono.variable}`}>
-      {/* Pre-paint theme boot: sets <html data-theme> before the landing renders,
-          so the light/dark token set is correct on first paint (no FOUC). */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var s=localStorage.getItem("lv2-theme");var t=s||(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";}})();`,
-        }}
-      />
       <LandingV2 />
       <script
         type="application/ld+json"
