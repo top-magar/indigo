@@ -143,6 +143,7 @@ function collectWhereArguments(node) {
 // resolving it would mask a genuinely unscoped write.
 const PREDICATE_COMBINATORS = new Set(["and", "or", "not"]);
 
+/** @type {import("eslint").Rule.RuleModule} */
 export const requireTenantPredicate = {
   meta: {
     type: "problem",
