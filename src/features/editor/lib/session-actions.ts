@@ -15,6 +15,7 @@ import { authorizedAction, requireTenantUser } from "@/lib/auth"
 import type { Transaction } from "@/infrastructure/db"
 import { editorDocumentV2Schema, migrateEditorDocument, type EditorDocumentV2 } from "../core/document-v2";
 import { safeUrl } from "@/shared/utils/safe-url";
+import { recordEditorError, withEditorSpan } from "./telemetry";
 import type {
   LoadEditorSessionResult,
   PageLeaseResult,
@@ -249,51 +250,67 @@ export async function saveDraft(input: z.infer<typeof saveSchema>): Promise<Save
   }
 
   const user = await requireTenantUser()
-  try {
-    return await authorizedAction(async (tx, tenantId) => {
-      const [updated] = await tx.update(editorPages).set({
-        data: parsed.data.document,
-        documentVersion: 2,
-        serverRevision: sql`${editorPages.serverRevision} + 1`,
-        lastSavedBy: user.id,
-        name: parsed.data.document.page.name,
-        slug: parsed.data.document.page.slug,
-        seoTitle: parsed.data.document.page.seoTitle,
-        seoDescription: parsed.data.document.page.seoDescription,
-        ogImage: parsed.data.document.page.ogImage,
-        updatedAt: new Date(),
-      }).where(and(
-        eq(editorPages.id, parsed.data.pageId),
-        eq(editorPages.projectId, parsed.data.projectId),
-        eq(editorPages.tenantId, tenantId),
-        eq(editorPages.serverRevision, parsed.data.baseServerRevision),
-      )).returning({ revision: editorPages.serverRevision, savedAt: editorPages.updatedAt })
+  return withEditorSpan(
+    "editor.save_draft",
+    {
+      "editor.project_id": parsed.data.projectId,
+      "editor.page_id": parsed.data.pageId,
+      "editor.base_revision": parsed.data.baseServerRevision,
+      "editor.local_revision": parsed.data.localRevision,
+    },
+    async () => {
+      try {
+        return await authorizedAction(async (tx, tenantId) => {
+          const [updated] = await tx.update(editorPages).set({
+            data: parsed.data.document,
+            documentVersion: 2,
+            serverRevision: sql`${editorPages.serverRevision} + 1`,
+            lastSavedBy: user.id,
+            name: parsed.data.document.page.name,
+            slug: parsed.data.document.page.slug,
+            seoTitle: parsed.data.document.page.seoTitle,
+            seoDescription: parsed.data.document.page.seoDescription,
+            ogImage: parsed.data.document.page.ogImage,
+            updatedAt: new Date(),
+          }).where(and(
+            eq(editorPages.id, parsed.data.pageId),
+            eq(editorPages.projectId, parsed.data.projectId),
+            eq(editorPages.tenantId, tenantId),
+            eq(editorPages.serverRevision, parsed.data.baseServerRevision),
+          )).returning({ revision: editorPages.serverRevision, savedAt: editorPages.updatedAt })
 
-      if (!updated) {
-        const [current] = await tx.select({ revision: editorPages.serverRevision }).from(editorPages).where(and(
-          eq(editorPages.id, parsed.data.pageId),
-          eq(editorPages.projectId, parsed.data.projectId),
-          eq(editorPages.tenantId, tenantId),
-        )).limit(1)
-        return current
-          ? { ok: false, code: "conflict", message: "This page changed in another editor. Reload before saving.", serverRevision: current.revision }
-          : { ok: false, code: "not_found", message: "The page is no longer available." }
-      }
+          if (!updated) {
+            const [current] = await tx.select({ revision: editorPages.serverRevision }).from(editorPages).where(and(
+              eq(editorPages.id, parsed.data.pageId),
+              eq(editorPages.projectId, parsed.data.projectId),
+              eq(editorPages.tenantId, tenantId),
+            )).limit(1)
+            return current
+              ? { ok: false, code: "conflict", message: "This page changed in another editor. Reload before saving.", serverRevision: current.revision }
+              : { ok: false, code: "not_found", message: "The page is no longer available." }
+          }
 
-      await tx.update(editorProjects).set({ updatedAt: new Date() }).where(and(
-        eq(editorProjects.id, parsed.data.projectId),
-        eq(editorProjects.tenantId, tenantId),
-      ))
-      return {
-        ok: true,
-        acknowledgedLocalRevision: parsed.data.localRevision,
-        serverRevision: updated.revision,
-        savedAt: updated.savedAt.toISOString(),
+          await tx.update(editorProjects).set({ updatedAt: new Date() }).where(and(
+            eq(editorProjects.id, parsed.data.projectId),
+            eq(editorProjects.tenantId, tenantId),
+          ))
+          return {
+            ok: true,
+            acknowledgedLocalRevision: parsed.data.localRevision,
+            serverRevision: updated.revision,
+            savedAt: updated.savedAt.toISOString(),
+          }
+        })
+      } catch (error) {
+        // The friendly result is unchanged; the throw used to vanish entirely.
+        recordEditorError(error)
+        return { ok: false, code: "save_failed", message: "Couldn’t save. Retry." }
       }
-    })
-  } catch {
-    return { ok: false, code: "save_failed", message: "Couldn’t save. Retry." }
-  }
+    },
+    (result) => result.ok
+      ? { "editor.outcome": "saved", "editor.server_revision": result.serverRevision }
+      : { "editor.outcome": result.code },
+  )
 }
 
 export async function validatePublication(projectId: string): Promise<ValidatePublicationResult> {
@@ -397,45 +414,56 @@ export async function acquirePageLease(input: z.infer<typeof leaseSchema>): Prom
   const parsed = leaseSchema.safeParse(input)
   if (!parsed.success) return { ok: false, code: "invalid_input", message: "Invalid editor lease." }
   const user = await requireTenantUser()
-  return authorizedAction(async (tx, tenantId) => {
-    const [page] = await tx.select({ id: editorPages.id }).from(editorPages).where(and(
-      eq(editorPages.id, parsed.data.pageId),
-      eq(editorPages.projectId, parsed.data.projectId),
-      eq(editorPages.tenantId, tenantId),
-    )).limit(1)
-    if (!page) return { ok: false, code: "not_found", message: "The page is no longer available." }
-    const expiresAt = new Date(Date.now() + 90_000)
-    const [lease] = await tx.insert(editorPageLeases).values({
-      tenantId,
-      projectId: parsed.data.projectId,
-      pageId: parsed.data.pageId,
-      userId: user.id,
-      sessionId: parsed.data.sessionId,
-      expiresAt,
-      updatedAt: new Date(),
-    }).onConflictDoUpdate({
-      target: editorPageLeases.pageId,
-      set: { userId: user.id, sessionId: parsed.data.sessionId, expiresAt, updatedAt: new Date() },
-      setWhere: or(
-        lt(editorPageLeases.expiresAt, new Date()),
-        and(eq(editorPageLeases.userId, user.id), eq(editorPageLeases.sessionId, parsed.data.sessionId)),
-        parsed.data.takeover ? sql`true` : sql`false`,
-      ),
-    }).returning()
-    if (lease) return { ok: true, lease: { pageId: lease.pageId, sessionId: lease.sessionId, expiresAt: lease.expiresAt.toISOString() } }
+  return withEditorSpan(
+    "editor.acquire_lease",
+    {
+      "editor.project_id": parsed.data.projectId,
+      "editor.page_id": parsed.data.pageId,
+      "editor.takeover": Boolean(parsed.data.takeover),
+    },
+    () => authorizedAction(async (tx, tenantId) => {
+      const [page] = await tx.select({ id: editorPages.id }).from(editorPages).where(and(
+        eq(editorPages.id, parsed.data.pageId),
+        eq(editorPages.projectId, parsed.data.projectId),
+        eq(editorPages.tenantId, tenantId),
+      )).limit(1)
+      if (!page) return { ok: false, code: "not_found", message: "The page is no longer available." }
+      const expiresAt = new Date(Date.now() + 90_000)
+      const [lease] = await tx.insert(editorPageLeases).values({
+        tenantId,
+        projectId: parsed.data.projectId,
+        pageId: parsed.data.pageId,
+        userId: user.id,
+        sessionId: parsed.data.sessionId,
+        expiresAt,
+        updatedAt: new Date(),
+      }).onConflictDoUpdate({
+        target: editorPageLeases.pageId,
+        set: { userId: user.id, sessionId: parsed.data.sessionId, expiresAt, updatedAt: new Date() },
+        setWhere: or(
+          lt(editorPageLeases.expiresAt, new Date()),
+          and(eq(editorPageLeases.userId, user.id), eq(editorPageLeases.sessionId, parsed.data.sessionId)),
+          parsed.data.takeover ? sql`true` : sql`false`,
+        ),
+      }).returning()
+      if (lease) return { ok: true, lease: { pageId: lease.pageId, sessionId: lease.sessionId, expiresAt: lease.expiresAt.toISOString() } }
 
-    const [holder] = await tx.select({ name: users.fullName, email: users.email, expiresAt: editorPageLeases.expiresAt })
-      .from(editorPageLeases)
-      .innerJoin(users, eq(users.id, editorPageLeases.userId))
-      .where(and(eq(editorPageLeases.pageId, parsed.data.pageId), eq(editorPageLeases.tenantId, tenantId)))
-      .limit(1)
-    return {
-      ok: false,
-      code: "conflict",
-      message: "This page is open in another editor.",
-      holder: holder ? { name: holder.name || holder.email, expiresAt: holder.expiresAt.toISOString() } : undefined,
-    }
-  })
+      const [holder] = await tx.select({ name: users.fullName, email: users.email, expiresAt: editorPageLeases.expiresAt })
+        .from(editorPageLeases)
+        .innerJoin(users, eq(users.id, editorPageLeases.userId))
+        .where(and(eq(editorPageLeases.pageId, parsed.data.pageId), eq(editorPageLeases.tenantId, tenantId)))
+        .limit(1)
+      return {
+        ok: false,
+        code: "conflict",
+        message: "This page is open in another editor.",
+        holder: holder ? { name: holder.name || holder.email, expiresAt: holder.expiresAt.toISOString() } : undefined,
+      }
+    }),
+    (result) => result.ok
+      ? { "editor.outcome": "acquired" }
+      : { "editor.outcome": result.code, "editor.lease_contended": result.code === "conflict" },
+  )
 }
 
 export async function releasePageLease(input: Omit<z.infer<typeof leaseSchema>, "takeover">): Promise<{ ok: true } | { ok: false }> {
