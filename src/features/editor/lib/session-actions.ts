@@ -307,9 +307,9 @@ export async function saveDraft(input: z.infer<typeof saveSchema>): Promise<Save
         return { ok: false, code: "save_failed", message: "Couldn’t save. Retry." }
       }
     },
-    (result) => result.ok
+    (result) => (result.ok
       ? { "editor.outcome": "saved", "editor.server_revision": result.serverRevision }
-      : { "editor.outcome": result.code },
+      : { "editor.outcome": result.code }) as Record<string, string | number | boolean>,
   )
 }
 
@@ -460,9 +460,9 @@ export async function acquirePageLease(input: z.infer<typeof leaseSchema>): Prom
         holder: holder ? { name: holder.name || holder.email, expiresAt: holder.expiresAt.toISOString() } : undefined,
       }
     }),
-    (result) => result.ok
+    (result) => (result.ok
       ? { "editor.outcome": "acquired" }
-      : { "editor.outcome": result.code, "editor.lease_contended": result.code === "conflict" },
+      : { "editor.outcome": result.code, "editor.lease_contended": result.code === "conflict" }) as Record<string, string | number | boolean>,
   )
 }
 
