@@ -7,6 +7,48 @@ import { eq, and, count } from "drizzle-orm";
 import { requireTenantUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
+const slugify = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+/**
+ * `editor_pages` carries unique(project_id, slug), so deriving a slug straight
+ * from the page name fails with a 23505 the moment two pages share a name.
+ * Resolve a free slug up front by suffixing -2, -3, ... The editor's own
+ * createPage already does this; the two paths are consolidated separately.
+ */
+async function uniquePageSlug(
+  projectId: string,
+  tenantId: string,
+  base: string,
+  excludeId?: string,
+): Promise<string> {
+  const desired = base || `page-${Date.now().toString(36)}`;
+  const rows = await db
+    .select({ id: editorPages.id, slug: editorPages.slug })
+    .from(editorPages)
+    .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, tenantId)));
+
+  const taken = new Set(rows.filter((row) => row.id !== excludeId).map((row) => row.slug));
+  if (!taken.has(desired)) return desired;
+
+  for (let suffix = 2; suffix < 1000; suffix += 1) {
+    const candidate = `${desired}-${suffix}`;
+    if (!taken.has(candidate)) return candidate;
+  }
+  return `${desired}-${Date.now().toString(36)}`;
+}
+
+/**
+ * Postgres unique_violation. Still reachable as a race between the slug lookup
+ * and the write, so callers degrade to a readable message instead of throwing
+ * an unhandled rejection back through the server action.
+ */
+function isUniqueViolation(error: unknown): boolean {
+  const code = (error as { code?: string })?.code
+    ?? ((error as { cause?: { code?: string } })?.cause)?.code;
+  return code === "23505";
+}
+
 export async function renamePage(id: string, name: string): Promise<{ success?: boolean; error?: string }> {
   const user = await requireTenantUser();
   const [page] = await db.select({ projectId: editorPages.projectId, slug: editorPages.slug }).from(editorPages)
@@ -16,9 +58,17 @@ export async function renamePage(id: string, name: string): Promise<{ success?: 
     .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, user.tenantId))).limit(1);
   if (!project) return { success: false, error: "Project not found or access denied" };
   if (page.slug === "template-product") return { success: false, error: "Cannot rename reserved templates" };
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  await db.update(editorPages).set({ name, slug, updatedAt: new Date() })
-    .where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId)));
+
+  const slug = await uniquePageSlug(page.projectId, user.tenantId, slugify(name), id);
+  try {
+    await db.update(editorPages).set({ name, slug, updatedAt: new Date() })
+      .where(and(eq(editorPages.id, id), eq(editorPages.tenantId, user.tenantId)));
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      return { success: false, error: "A page with that name already exists" };
+    }
+    throw error;
+  }
   revalidatePath("/dashboard/pages");
   return { success: true };
 }
@@ -47,16 +97,34 @@ export async function createPage(projectId: string, pageName?: string): Promise<
   const { getTenantPlanLimits } = await import("@/lib/plan-limits");
   const limits = await getTenantPlanLimits(user.tenantId);
   const maxPages = limits.planName === "Free" ? 2 : limits.planName === "Growth" ? 10 : 999;
-  const [{ value: pageCount }] = await db.select({ value: count() }).from(editorPages).where(eq(editorPages.projectId, projectId));
+  const [{ value: pageCount }] = await db.select({ value: count() }).from(editorPages)
+    .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, user.tenantId)));
   if (pageCount >= maxPages) {
     return { success: false, error: `Page limit reached (${maxPages}). Upgrade your plan to create more pages.` };
   }
 
   const name = pageName?.trim() || "Untitled Page";
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `page-${Date.now().toString(36)}`;
-  const [page] = await db.insert(editorPages).values({
-    projectId, tenantId: user.tenantId, name, slug, data: [], isHomepage: false,
-  }).returning({ id: editorPages.id });
+  const slug = await uniquePageSlug(projectId, user.tenantId, slugify(name));
+
+  // Pages created here previously left `order` at its 0 default, so every
+  // dashboard-created page tied with every other one and the editor's page
+  // ordering became ambiguous. Append to the end, as the editor does.
+  const existing = await db.select({ order: editorPages.order }).from(editorPages)
+    .where(and(eq(editorPages.projectId, projectId), eq(editorPages.tenantId, user.tenantId)));
+  const nextOrder = existing.reduce((max, row) => Math.max(max, row.order ?? 0), -1) + 1;
+
+  let page: { id: string } | undefined;
+  try {
+    [page] = await db.insert(editorPages).values({
+      projectId, tenantId: user.tenantId, name, slug, order: nextOrder, data: [], isHomepage: false,
+    }).returning({ id: editorPages.id });
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      return { success: false, error: "A page with that name already exists" };
+    }
+    throw error;
+  }
+  if (!page) return { success: false, error: "Failed to create page" };
 
   revalidatePath("/dashboard/pages");
   return { id: page.id };
