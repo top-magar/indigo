@@ -10,7 +10,7 @@ import { EASE } from "./motion/reveal";
 const STREAM_EVENTS = ["page_view", "add_to_cart", "checkout_start", "purchase", "button_click", "search"];
 
 function EventStreamVisual() {
-  const [rows, setRows] = useState(() => STREAM_EVENTS.slice(0, 4).map((e, i) => ({ type: e, id: i })));
+  const [rows, setRows] = useState(() => STREAM_EVENTS.slice(0, 6).map((e, i) => ({ type: e, id: i })));
   const reduced = useMemo(
     () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
     [],
@@ -19,7 +19,7 @@ function EventStreamVisual() {
     if (reduced) return;
     let next = rows.length;
     const t = setInterval(() => {
-      setRows((prev) => [{ type: STREAM_EVENTS[next % STREAM_EVENTS.length], id: next }, ...prev].slice(0, 4));
+      setRows((prev) => [{ type: STREAM_EVENTS[next % STREAM_EVENTS.length], id: next }, ...prev].slice(0, 6));
       next += 1;
     }, 2600);
     return () => clearInterval(t);
@@ -111,20 +111,46 @@ function FunnelVisual() {
 
 /* ─── Heatmap (pointer response) ─────────────────────────────────────── */
 
+// Deterministic 10×5 heat pattern (0-3), pseudo-random but stable across renders.
+const HEAT_GRID = (() => {
+  let seed = 7;
+  const rnd = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  const rows: number[][] = [];
+  for (let r = 0; r < 5; r += 1) {
+    const row: number[] = [];
+    for (let c = 0; c < 10; c += 1) {
+      // center-weighted: hotter toward the middle columns
+      const centerBias = 1 - Math.abs(c - 4.5) / 5.5;
+      const v = rnd() + centerBias * 0.9;
+      row.push(v > 1.15 ? 3 : v > 0.75 ? 2 : v > 0.4 ? 1 : 0);
+    }
+    rows.push(row);
+  }
+  return rows;
+})();
+
 function HeatmapVisual() {
-  const [hot, setHot] = useState(2);
+  const [hot, setHot] = useState<{ r: number; c: number } | null>(null);
   return (
-    <div className="lv2-heat" onMouseLeave={() => setHot(2)}>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <motion.i
-          key={i}
-          className={i === hot ? "lv2-heat__cell lv2-heat__cell--hot" : "lv2-heat__cell"}
-          onMouseEnter={() => setHot(i)}
-          onFocus={() => setHot(i)}
-          animate={{ opacity: i === hot ? 1 : undefined }}
-          transition={{ duration: 0.2 }}
-        />
-      ))}
+    <div className="lv2-heat" onMouseLeave={() => setHot(null)}>
+      {HEAT_GRID.map((row, r) =>
+        row.map((heat, c) => (
+          <motion.i
+            key={`${r}-${c}`}
+            data-heat={heat}
+            className={`lv2-heat__cell ${hot?.r === r && hot?.c === c ? "lv2-heat__cell--hot" : ""}`}
+            onMouseEnter={() => setHot({ r, c })}
+            onFocus={() => setHot({ r, c })}
+            tabIndex={0}
+            aria-label={`Tap heat ${heat + 1} of 4`}
+            animate={{ opacity: hot && (hot.r !== r || hot.c !== c) ? 0.55 : 1 }}
+            transition={{ duration: 0.15 }}
+          />
+        )),
+      )}
     </div>
   );
 }
@@ -132,9 +158,10 @@ function HeatmapVisual() {
 /* ─── Cohort matrix (cell tooltip) ───────────────────────────────────── */
 
 const COHORT = [
-  { week: "Jan", cells: ["92%", "74%", "68%", "51%"] },
-  { week: "Feb", cells: ["88%", "70%", "54%", "42%"] },
-  { week: "Mar", cells: ["90%", "73%", "62%", "47%"] },
+  { week: "Jan", cells: ["92%", "74%", "68%", "51%", "44%", "39%"] },
+  { week: "Feb", cells: ["88%", "70%", "54%", "42%", "37%", "33%"] },
+  { week: "Mar", cells: ["90%", "73%", "62%", "47%", "40%", "35%"] },
+  { week: "Apr", cells: ["86%", "69%", "58%", "45%", "38%", "32%"] },
 ];
 
 function CohortVisual() {
@@ -144,7 +171,7 @@ function CohortVisual() {
       <table className="lv2-cohort">
         <thead>
           <tr>
-            <th>Week</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th>
+            <th>Week</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>W6</th>
           </tr>
         </thead>
         <tbody>
@@ -256,7 +283,7 @@ const cards = [
     id: "cohort",
     title: "Cohort analysis",
     description: "Track repeat purchase behaviour and retention cohorts over time.",
-    size: "lg" as const,
+    size: "full" as const,
     visual: <CohortVisual />,
   },
 ];
@@ -278,7 +305,13 @@ export function FeaturesSection() {
           {cards.map((card, i) => (
             <motion.article
               key={card.id}
-              className={`lv2-card lv2-bento__card ${card.size === "lg" ? "lv2-bento__card--lg" : "lv2-bento__card--sm"} lv2-card--hover`}
+              className={`lv2-card lv2-bento__card ${
+                card.size === "lg"
+                  ? "lv2-bento__card--lg"
+                  : card.size === "full"
+                    ? "lv2-bento__card--full"
+                    : "lv2-bento__card--sm"
+              } lv2-card--hover`}
               initial={{ opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}

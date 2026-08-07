@@ -4207,3 +4207,109 @@
 .lv2-page [id] {
   scroll-margin-top: 96px;
 }
+
+/* ═══ Round-3: features bento rebalance — widget fills, matrix fix ═══ */
+
+/* Full-width card (cohort) fills the last row — kills the 2-col hole. */
+.lv2-bento__card--full {
+  grid-column: span 6;
+}
+
+/* Widgets must fill their card: the visual wrapper aligns flex-end, which
+   shrink-wraps children that lack an explicit width. */
+.lv2-bento__visual > * {
+  width: 100%;
+}
+
+/* Event stream — window fills the tall card; rows stretch to distribute. */
+.lv2-bento__visual .lv2-mini-window {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.lv2-bento__visual .lv2-mini-window > div:last-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.lv2-bento__visual .lv2-mini-window .lv2-event-row {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Funnel — full width, slightly airier stages. */
+.lv2-funnel {
+  gap: 12px;
+}
+.lv2-funnel__stage {
+  padding: 10px 12px;
+}
+
+/* Heatmap — real 10×5 grid; neutralize the round-1 absolute-dot rules
+   (higher specificity so the later grid wins). */
+.lv2-bento__visual .lv2-heat {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  height: 100%;
+  min-height: 180px;
+}
+.lv2-bento__visual .lv2-heat i,
+.lv2-bento__visual .lv2-heat .lv2-heat__cell {
+  position: static;
+  width: auto;
+  height: auto;
+  left: auto;
+  top: auto;
+  border-radius: 3px;
+  opacity: 1;
+  animation: none;
+  cursor: crosshair;
+  border: 1px solid var(--lv2-line-soft);
+}
+.lv2-bento__visual .lv2-heat .lv2-heat__cell[data-heat="0"] {
+  background: var(--lv2-panel-3);
+}
+.lv2-bento__visual .lv2-heat .lv2-heat__cell[data-heat="1"] {
+  background: rgba(79, 57, 246, 0.18);
+  border-color: rgba(79, 57, 246, 0.35);
+}
+.lv2-bento__visual .lv2-heat .lv2-heat__cell[data-heat="2"] {
+  background: rgba(79, 57, 246, 0.38);
+  border-color: rgba(79, 57, 246, 0.55);
+}
+.lv2-bento__visual .lv2-heat .lv2-heat__cell[data-heat="3"] {
+  background: rgba(79, 57, 246, 0.6);
+  border-color: rgba(79, 57, 246, 0.75);
+}
+.lv2-bento__visual .lv2-heat .lv2-heat__cell--hot {
+  outline: 2px solid var(--lv2-highlight);
+  outline-offset: 1px;
+}
+
+/* Integrations — 2×2 grid fits the span-2 card (was 4×1 → 463px overflow). */
+.lv2-bento__visual .lv2-integrations-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-content: center;
+}
+.lv2-bento__visual .lv2-bento-integration {
+  min-width: 0;
+}
+
+/* Cohort — full-width card, table centers with a capped width. */
+.lv2-bento__visual .lv2-cohort-wrap {
+  display: flex;
+  justify-content: center;
+}
+.lv2-bento__visual .lv2-cohort {
+  width: 100%;
+  max-width: 640px;
+  align-self: center;
+}
+.lv2-bento__visual .lv2-cohort th,
+.lv2-bento__visual .lv2-cohort td {
+  padding: 9px 10px;
+}
