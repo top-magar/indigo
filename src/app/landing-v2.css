@@ -51,7 +51,7 @@
 
   --lv2-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  background: var(--lv2-bg);
+  background: transparent;
   color: var(--lv2-fg);
   font-family: var(--font-indigo-sans), ui-sans-serif, system-ui, sans-serif;
   min-height: 100vh;
@@ -93,6 +93,7 @@
 .lv2-section {
   padding-block: 128px;
   position: relative;
+  background: var(--lv2-bg);
 }
 
 .lv2-section--tight {
@@ -1159,6 +1160,7 @@
 .lv2-marquee-section {
   padding-block: 48px 88px;
   border-bottom: 1px solid var(--lv2-border);
+  background: var(--lv2-bg);
 }
 
 .lv2-marquee__label {
@@ -1946,6 +1948,7 @@
   text-align: center;
   padding-block: 140px;
   overflow: hidden;
+  background: var(--lv2-bg);
 }
 
 .lv2-final-cta__bg {
@@ -3333,7 +3336,7 @@
 
 .lv2-hero {
   text-align: left;
-  background: linear-gradient(180deg, var(--lv2-panel) 0%, var(--lv2-bg) 88%);
+  background: transparent;
   border-bottom: 1px solid var(--lv2-line);
 }
 

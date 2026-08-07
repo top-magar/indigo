@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./landing-v2.css";
 import { LandingV2Page as LandingV2 } from "@/components/landing-v2/landing-v2-page";
 import { sectionData } from "@/data/landing/section-data";
+import KineticGrid from "@/components/ui/kinetic-grid";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -53,7 +54,9 @@ export default function LandingV2Page() {
           __html: `(function(){try{var s=localStorage.getItem("lv2-theme");var t=s||(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";}})();`,
         }}
       />
-      <LandingV2 />
+      <KineticGrid>
+        <LandingV2 />
+      </KineticGrid>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
