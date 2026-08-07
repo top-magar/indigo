@@ -10,17 +10,20 @@ import { EASE } from "./motion/reveal";
 const STREAM_EVENTS = ["page_view", "add_to_cart", "checkout_start", "purchase", "button_click", "search"];
 
 function EventStreamVisual() {
-  const [rows, setRows] = useState(() => STREAM_EVENTS.slice(0, 6).map((e, i) => ({ type: e, id: i })));
+  const [events, setEvents] = useState(() => STREAM_EVENTS.slice(0, 6));
   const reduced = useMemo(
     () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
     [],
   );
   useEffect(() => {
     if (reduced) return;
-    let next = rows.length;
+    let next = STREAM_EVENTS.length;
     const t = setInterval(() => {
-      setRows((prev) => [{ type: STREAM_EVENTS[next % STREAM_EVENTS.length], id: next }, ...prev].slice(0, 6));
-      next += 1;
+      setEvents((prev) => {
+        const nextEvents = [STREAM_EVENTS[next % STREAM_EVENTS.length], ...prev.slice(0, 5)];
+        next += 1;
+        return nextEvents;
+      });
     }, 2600);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,21 +33,12 @@ function EventStreamVisual() {
     <div className="lv2-mini-window">
       <div className="lv2-mini-window__bar"><i /><i /><i /></div>
       <div>
-        <AnimatePresence initial={false}>
-          {rows.map((row, i) => (
-            <motion.div
-              key={row.id}
-              className="lv2-event-row"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <span>{row.type}</span>
-              <em>{i === 0 ? "now" : `${i}s`}</em>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {events.map((type, i) => (
+          <div key={i} className="lv2-event-row">
+            <span>{type}</span>
+            <em>{i === 0 ? "now" : `${i}s`}</em>
+          </div>
+        ))}
       </div>
     </div>
   );
