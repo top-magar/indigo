@@ -11,7 +11,7 @@
  */
 import { NextRequest, NextResponse } from "next/server"
 import { revalidatePath, revalidateTag } from "next/cache"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:revalidate");
 

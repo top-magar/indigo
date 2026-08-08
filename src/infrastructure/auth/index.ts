@@ -1,9 +1,10 @@
 /**
  * Authentication Utilities
  * 
- * Session auth: use @/lib/auth (getUser, requireUser, getAuthenticatedClient, authorizedAction)
- * This module only exports WebSocket authentication utilities.
+ * Session auth: use @/infrastructure/auth (getUser, requireUser, getAuthenticatedClient, authorizedAction)
  */
+
+export * from "./session";
 
 // WebSocket authentication
 export {
@@ -17,3 +18,4 @@ export {
   type TokenValidationResult,
   type TokenPayload,
 } from "./websocket-auth";
+

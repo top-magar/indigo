@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("products-import-actions");
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 
 import type { ImportProduct, ImportResult } from "./types";

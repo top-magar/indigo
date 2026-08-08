@@ -38,7 +38,7 @@ import {
   OrderStatusBadge,
   PaymentStatusBadge,
   FulfillmentStatusBadge,
-} from "@/components/dashboard/status-badge";
+} from "@/features/dashboard/components/status-badge";
 
 
 // ============================================================================

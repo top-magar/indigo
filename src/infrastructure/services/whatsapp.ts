@@ -1,4 +1,4 @@
-import { createLogger } from '@/lib/logger'
+import { createLogger } from '@/infrastructure/logger'
 
 const log = createLogger('services:whatsapp')
 

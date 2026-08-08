@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { getGiftCards } from "./actions";
 import { GiftCardsClient } from "./gift-cards-client";
 

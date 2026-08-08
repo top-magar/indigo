@@ -21,7 +21,7 @@ import {
     AddAddressDialog,
     EditCustomerDialog,
 } from "@/features/customers/components";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import type { Customer, CustomerAddress } from "@/app/dashboard/customers/types";
 import { formatCurrency } from "@/shared/utils";

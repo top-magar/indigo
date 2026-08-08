@@ -11,7 +11,7 @@ import type {
   NotificationType,
   CreateNotificationInput,
   UseNotificationsReturn,
-} from "@/components/dashboard/notifications/types";
+} from "@/features/dashboard/components/notifications/types";
 
 // Helper to generate unique IDs
 function generateId(): string {

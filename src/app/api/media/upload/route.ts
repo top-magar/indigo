@@ -10,8 +10,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '@/lib/auth';
-import { createLogger } from "@/lib/logger";
+import { getUser } from '@/infrastructure/auth';
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:media-upload");
 

@@ -10,7 +10,7 @@
 
 import { registerOTel } from "@vercel/otel"
 import { initializeServiceProviders } from "@/infrastructure/services/init"
-import { validateEnv } from "@/lib/env"
+import { validateEnv } from "@/infrastructure/env"
 import * as Sentry from "@sentry/nextjs"
 
 export async function register() {

@@ -9,7 +9,7 @@
  */
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
 import { orderConfirmationTemplate, orderNotificationTemplate, orderShippedTemplate, orderDeliveredTemplate } from './templates';

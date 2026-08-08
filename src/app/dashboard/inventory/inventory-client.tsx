@@ -55,13 +55,13 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
 import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import type { InventoryProduct, StockMovement } from "./types";
 import { StockLevelIndicator, StockBadge } from "./_components/helpers";
 

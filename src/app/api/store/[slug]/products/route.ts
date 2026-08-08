@@ -2,7 +2,7 @@ import { productRepository } from "@/features/products/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("api:store-slug-products");
 
 /**

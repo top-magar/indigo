@@ -5,7 +5,7 @@ import { tenants } from '@/db/schema/tenants'
 import { eq, and, lt, isNotNull, sql } from 'drizzle-orm'
 import { sendEmail } from '@/infrastructure/services/email/actions'
 import { abandonedCartTemplate } from '@/infrastructure/services/email/templates'
-import { createLogger } from '@/lib/logger'
+import { createLogger } from '@/infrastructure/logger'
 
 const log = createLogger('inngest:abandoned-cart')
 

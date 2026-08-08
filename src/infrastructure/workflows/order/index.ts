@@ -2,7 +2,7 @@ import { db } from "@/infrastructure/db";
 import { orders, orderItems } from "@/db/schema/orders";
 import { products } from "@/db/schema/products";
 import { eq, and, sql } from "drizzle-orm";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import type { OrderStatus, PaymentStatus } from "@/shared/types/status";
 
 const log = createLogger("workflows:order");

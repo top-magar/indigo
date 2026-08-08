@@ -1,4 +1,4 @@
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import Link from "next/link";
 import { ExternalLink, Globe, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";

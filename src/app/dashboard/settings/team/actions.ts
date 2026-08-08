@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { createLogger } from "@/infrastructure/logger";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 
@@ -17,7 +17,7 @@ export async function inviteTeamMember(formData: FormData): Promise<{ success?: 
     if (user.role !== "owner") return { success: false, error: "Only store owners can invite team members" };
 
     // Plan limit check
-    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const { checkPlanLimit } = await import("@/infrastructure/plan-limits");
     const limit = await checkPlanLimit(user.tenantId, "staff");
     if (!limit.allowed) return { success: false, error: limit.reason };
 

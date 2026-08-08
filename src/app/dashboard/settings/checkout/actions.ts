@@ -1,7 +1,7 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { createLogger } from "@/infrastructure/logger";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
 import { eq } from "drizzle-orm";

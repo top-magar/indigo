@@ -1,11 +1,11 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:categories");
 
 import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { expireCategoriesCache } from "@/features/store/data";

@@ -1,4 +1,4 @@
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { ensureTenantSite } from "@/features/editor/lib/site";
 import { db } from "@/infrastructure/db";
 import { editorProjects } from "@/db/schema/editor-projects";

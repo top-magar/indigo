@@ -15,7 +15,7 @@
  * ```
  */
 
-import { type RateLimitType, type RateLimitConfig } from "@/config/rate-limits";
+import { type RateLimitType, type RateLimitConfig } from "@/shared/config/rate-limits";
 import { 
   getRateLimiter, 
   getClientIp, 

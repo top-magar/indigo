@@ -42,7 +42,7 @@ export {
   DEFAULT_WIDGET_CACHE_CONFIG,
   type WidgetCacheKey,
   type WidgetCacheConfigEntry,
-} from "@/config/cache";
+} from "@/shared/config/cache";
 
 // Tenant-scoped cache invalidation with cross-tab sync
 export {

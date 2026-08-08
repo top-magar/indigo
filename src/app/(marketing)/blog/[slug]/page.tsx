@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getPostBySlug, getAllPosts } from "@/lib/mdx"
+import { getPostBySlug, getAllPosts } from "@/shared/mdx"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

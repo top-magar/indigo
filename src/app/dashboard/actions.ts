@@ -1,11 +1,11 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:dashboard");
 
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { redirect } from "next/navigation";
 import { startOfDay, endOfDay, subDays, startOfYear, format, eachDayOfInterval, startOfWeek, startOfMonth } from "date-fns";
 import type {

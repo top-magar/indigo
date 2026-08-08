@@ -1,6 +1,6 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:bulk-actions");
 
 import { z } from "zod";
@@ -8,14 +8,14 @@ import { createClient } from "@/infrastructure/supabase/server";
 
 const entityTypeSchema = z.enum(["products", "orders", "customers", "inventory"]);
 const bulkIdsSchema = z.array(z.string().uuid()).min(1, "At least one ID required");
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { productRepository } from "@/features/products/repositories";
 import { orderRepository } from "@/features/orders/repositories";
 import { customerRepository } from "@/features/customers/repositories";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
-import type { BulkActionResult, BulkActionError } from "@/components/dashboard/bulk-actions/bulk-action-types";
+import type { BulkActionResult, BulkActionError } from "@/features/dashboard/components/bulk-actions/bulk-action-types";
 
 /**
  * Get authenticated tenant context

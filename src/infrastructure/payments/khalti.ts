@@ -4,7 +4,7 @@
  * Flow: Server initiates → gets payment_url → redirect customer → Khalti callback → server verifies via lookup
  * Docs: https://docs.khalti.com/khalti-epayment/
  */
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 
 const log = createLogger("payments:khalti");
 

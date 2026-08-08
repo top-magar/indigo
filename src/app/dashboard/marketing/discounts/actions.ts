@@ -1,6 +1,6 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:marketing-discounts");
 
 import { db } from "@/infrastructure/db";
@@ -8,7 +8,7 @@ import { discounts, voucherCodes, discountUsages } from "@/db/schema";
 import { eq, and, desc, sql, ilike, or, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -219,7 +219,7 @@ export async function createDiscount(input: CreateDiscountInput) {
     }
 
     // Discounts require Growth+ plan
-    const { getTenantPlanLimits } = await import("@/lib/plan-limits");
+    const { getTenantPlanLimits } = await import("@/infrastructure/plan-limits");
     const limits = await getTenantPlanLimits(tenantId);
     if (limits.planName === "Free") {
         return { success: false, error: "Discounts require a paid plan. Upgrade to Growth to create discounts." };

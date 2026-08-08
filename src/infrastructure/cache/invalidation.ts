@@ -5,7 +5,7 @@
  * with cross-tab synchronization using BroadcastChannel API.
  */
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import {
   invalidateCacheByPrefix,
   invalidateCacheEntry,

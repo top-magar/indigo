@@ -4,7 +4,7 @@ import { and, eq, ilike, isNull, sql, count } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 import { getCacheService, withCache } from "@/infrastructure/services/cache";
-import { cacheKeyPatterns, cacheInvalidationPatterns } from "@/config/cache";
+import { cacheKeyPatterns, cacheInvalidationPatterns } from "@/shared/config/cache";
 
 export type CategoryCreateInput = Omit<
   typeof categories.$inferInsert,

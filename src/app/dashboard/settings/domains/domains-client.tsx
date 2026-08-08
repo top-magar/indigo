@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Globe, RefreshCw, ExternalLink, Copy, Shield } from "lucide-react";
 import { toast } from "sonner";
-import { AddDomainDialog, DomainCard } from "@/components/dashboard/domains";
+import { AddDomainDialog, DomainCard } from "@/features/dashboard/components/domains";
 
 import { createClient } from "@/infrastructure/supabase/client";
 

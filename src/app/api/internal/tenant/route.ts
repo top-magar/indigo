@@ -10,7 +10,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBySlug, resolveByDomain } from "@/infrastructure/tenant/resolver";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:internal-tenant");
 

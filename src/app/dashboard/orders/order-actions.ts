@@ -1,10 +1,10 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("orders-order-actions");
 
 import { validateId } from "@/shared/utils/validate-id";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { orders, orderItems, fulfillments, fulfillmentLines, orderTransactions, orderInvoices, orderEvents } from "@/db/schema/orders";
 import { products } from "@/db/schema/products";
@@ -453,7 +453,7 @@ export async function generateInvoice(orderId: string) {
     try {
         validateId(orderId, "Order ID");
         // Generate invoice number via RPC (keep supabase for RPC)
-        const { getAuthenticatedClient: getAC } = await import("@/lib/auth");
+        const { getAuthenticatedClient: getAC } = await import("@/infrastructure/auth");
         const { supabase } = await getAC();
         const { data: invoiceNumber } = await supabase.rpc("generate_invoice_number", { p_tenant_id: tenantId });
 

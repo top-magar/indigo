@@ -160,9 +160,9 @@ function CategorySection({
  *
  * @example
  * ```tsx
- * import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts";
+ * import { KeyboardShortcutsModal } from "@/features/dashboard/components/keyboard-shortcuts";
  * import { useKeyboardShortcutsHelp } from "@/hooks/use-keyboard-shortcuts";
- * import { defaultShortcutsConfig } from "@/components/dashboard/keyboard-shortcuts";
+ * import { defaultShortcutsConfig } from "@/features/dashboard/components/keyboard-shortcuts";
  *
  * function MyComponent() {
  *   const [open, setOpen] = useKeyboardShortcutsHelp();

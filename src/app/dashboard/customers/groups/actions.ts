@@ -1,7 +1,7 @@
 "use server"
 
 import { z } from "zod"
-import { getAuthenticatedClient } from "@/lib/auth"
+import { getAuthenticatedClient } from "@/infrastructure/auth"
 import { revalidatePath } from "next/cache"
 
 async function getAuthenticatedTenant() {

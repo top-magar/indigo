@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useTransition } from "react"
 import { useParams, useSearchParams, useRouter } from "next/navigation"
 import { createClient } from "@/infrastructure/supabase/client"
-import { ProductCard } from "@/components/store/product-card"
+import { ProductCard } from "@/features/store/components/product-card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"

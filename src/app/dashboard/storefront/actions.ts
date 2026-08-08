@@ -1,6 +1,6 @@
 "use server";
 
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { editorProjects } from "@/db/schema/editor-projects";
 import { eq, and } from "drizzle-orm";

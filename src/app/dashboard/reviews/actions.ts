@@ -1,10 +1,10 @@
 'use server';
 
 import { z } from 'zod';
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:reviews");
 
-import { getUser } from '@/lib/auth';
+import { getUser } from '@/infrastructure/auth';
 import { revalidatePath } from 'next/cache';
 import { reviewsRepository } from '@/features/reviews/repositories/reviews';
 import type { ReviewFilters } from '@/features/reviews/repositories/reviews';

@@ -9,7 +9,7 @@ import {
     AddValueDialog,
     EditValueDialog,
 } from "@/features/attributes/components";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import type { Attribute, AttributeValue } from "@/app/dashboard/attributes/types";
 
 interface AttributeDetailClientProps {

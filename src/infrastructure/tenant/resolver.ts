@@ -13,7 +13,7 @@
 import { eq, and, ne } from "drizzle-orm";
 import { tenants } from "../../db/schema/tenants";
 import { tenantDomains } from "../../db/schema/domains";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("infra:tenant-resolver");
 
 

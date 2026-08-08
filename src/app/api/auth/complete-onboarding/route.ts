@@ -1,7 +1,7 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:auth-complete-onboarding");
 

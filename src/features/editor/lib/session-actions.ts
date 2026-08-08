@@ -11,7 +11,7 @@ import { editorProjectVersions } from "@/db/schema/editor-project-versions"
 import { products } from "@/db/schema/products"
 import { tenants } from "@/db/schema/tenants"
 import { users } from "@/db/schema/users"
-import { authorizedAction, requireTenantUser } from "@/lib/auth"
+import { authorizedAction, requireTenantUser } from "@/infrastructure/auth"
 import type { Transaction } from "@/infrastructure/db"
 import { editorDocumentV2Schema, migrateEditorDocument, type EditorDocumentV2 } from "../core/document-v2";
 import { safeUrl } from "@/shared/utils/safe-url";

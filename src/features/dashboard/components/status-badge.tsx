@@ -13,7 +13,7 @@ import {
   type ProductStatus,
   type PaymentStatus,
   type FulfillmentStatus,
-} from "@/config/status";
+} from "@/shared/config/status";
 
 type StatusType = "order" | "product" | "payment" | "fulfillment";
 type StatusDotStatus = "success" | "error" | "warning" | "info" | "neutral" | "building";

@@ -1,11 +1,11 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:marketing");
 
 import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { products } from "@/db/schema/products";
 import { collections, collectionProducts } from "@/db/schema/collections";
@@ -154,7 +154,7 @@ export async function createDiscount(input: CreateDiscountInput): Promise<{ succ
     const tenantId = await getTenantId();
     if (!tenantId) return { success: false, error: "Unauthorized" };
 
-    const { getTenantPlanLimits } = await import("@/lib/plan-limits");
+    const { getTenantPlanLimits } = await import("@/infrastructure/plan-limits");
     const limits = await getTenantPlanLimits(tenantId);
     if (limits.planName === "Free") return { success: false, error: "Discounts require a paid plan. Upgrade to Growth." };
 

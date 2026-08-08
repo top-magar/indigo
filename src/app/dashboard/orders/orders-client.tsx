@@ -58,7 +58,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";

@@ -5,7 +5,7 @@ import { v4 } from "uuid"
 import { editorPages } from "@/db/schema/editor-pages"
 import { editorProjects } from "@/db/schema/editor-projects"
 import { tenants } from "@/db/schema/tenants"
-import { authorizedAction } from "@/lib/auth"
+import { authorizedAction } from "@/infrastructure/auth"
 import type { EditorDocumentV2 } from "../core/document-v2"
 import type { El } from "../core/types"
 

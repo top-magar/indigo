@@ -13,7 +13,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Savebar } from "@/components/dashboard";
+import { Savebar } from "@/features/dashboard/components";
 import { useFormDirty } from "@/hooks";
 import type { Product, ProductStatus } from "@/features/products/types";
 import { deleteProduct, updateProductStatus, updateProduct } from "../actions";
@@ -28,7 +28,7 @@ import {
     ProductSeoCard,
     ProductVariantsCard,
 } from "@/features/products/components";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 interface ProductDetailClientProps {

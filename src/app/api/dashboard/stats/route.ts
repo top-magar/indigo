@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { authorizedAction } from "@/lib/auth";
+import { authorizedAction } from "@/infrastructure/auth";
 import { orders, products, productVariants, inventoryLevels } from "@/db/schema";
 import { eq, desc, sql, and, lte, gt } from "drizzle-orm";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-stats");
 

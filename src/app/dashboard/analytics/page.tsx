@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { requireTenantUser } from "@/lib/auth";
-import { getTenantPlanLimits } from "@/lib/plan-limits";
+import { requireTenantUser } from "@/infrastructure/auth";
+import { getTenantPlanLimits } from "@/infrastructure/plan-limits";
 import { AnalyticsClient } from "./analytics-client";
 import { getAnalyticsData } from "./actions";
 import { Lock } from "lucide-react";

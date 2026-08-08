@@ -1,12 +1,12 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:media");
 
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -76,7 +76,7 @@ export async function uploadAsset(
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     // Check storage limit based on plan
-    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const { checkPlanLimit } = await import("@/infrastructure/plan-limits");
     const storageCheck = await checkPlanLimit(tenantId, "storage");
     if (!storageCheck.allowed) return { success: false, error: storageCheck.reason };
 

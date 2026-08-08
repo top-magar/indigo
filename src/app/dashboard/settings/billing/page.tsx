@@ -1,5 +1,5 @@
-import { requireTenantUser } from "@/lib/auth";
-import { getTenantPlanLimits } from "@/lib/plan-limits";
+import { requireTenantUser } from "@/infrastructure/auth";
+import { getTenantPlanLimits } from "@/infrastructure/plan-limits";
 import { db } from "@/infrastructure/db";
 import { plans, payments, invoices as invoicesTable } from "@/db/schema/billing";
 import { eq, desc } from "drizzle-orm";

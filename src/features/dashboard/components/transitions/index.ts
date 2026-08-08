@@ -6,7 +6,7 @@
  * 
  * @example
  * ```tsx
- * import { PageTransition, StaggerChildren, FadeIn } from "@/components/dashboard/transitions";
+ * import { PageTransition, StaggerChildren, FadeIn } from "@/features/dashboard/components/transitions";
  * 
  * // Page-level transition
  * <PageTransition>

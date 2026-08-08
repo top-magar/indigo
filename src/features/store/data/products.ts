@@ -12,7 +12,7 @@ import {
   getTenantCacheTag,
   CACHE_PROFILES,
 } from "@/features/store/data/cache"
-import { createLogger } from "@/lib/logger"
+import { createLogger } from "@/infrastructure/logger"
 const log = createLogger("features:store-products")
 
 export interface StoreProduct {

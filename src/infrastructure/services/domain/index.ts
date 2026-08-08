@@ -4,7 +4,7 @@
  * Requirements: 2.5, 6.1, 8.3
  */
 
-import { authorizedAction } from "@/lib/auth";
+import { authorizedAction } from "@/infrastructure/auth";
 import { tenantDomains, TenantDomain } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

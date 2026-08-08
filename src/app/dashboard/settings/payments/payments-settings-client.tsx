@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/utils";
 import { type PaymentSettings, updatePaymentSettings } from "./actions";
-import { HelpTooltip } from "@/components/dashboard";
+import { HelpTooltip } from "@/features/dashboard/components";
 
 // ─── Logos ────────────────────────────────────────────────
 const ESEWA_LOGO = "https://cdn.esewa.com.np/ui/images/esewa_og.png";

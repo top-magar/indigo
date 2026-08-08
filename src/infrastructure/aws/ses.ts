@@ -8,7 +8,7 @@
  * To exit sandbox mode, request production access in AWS Console.
  */
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import {
   SESClient,
   SendEmailCommand,

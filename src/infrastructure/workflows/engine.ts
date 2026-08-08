@@ -3,7 +3,7 @@
  * Inspired by MedusaJS's workflow SDK but adapted for Next.js/Supabase
  */
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 const log = createLogger("infra:workflows");

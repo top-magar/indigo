@@ -1,5 +1,5 @@
 import { createElement, type ElementType, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 type SectionHeadingProps = {
   /** One-based section number rendered inside the bracket block, e.g. 1 → `[ 01 of 07 ]`. */

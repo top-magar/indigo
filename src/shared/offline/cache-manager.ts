@@ -4,7 +4,7 @@ import type {
   CacheEntry,
   CacheConfig,
   CacheInvalidationStrategy,
-} from "@/components/dashboard/offline/offline-types";
+} from "@/features/dashboard/components/offline/offline-types";
 
 const DB_NAME = "indigo-offline-cache";
 const DB_VERSION = 1;

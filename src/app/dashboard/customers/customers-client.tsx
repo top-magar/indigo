@@ -20,7 +20,7 @@ import {
     Trash2,
 } from "lucide-react";
 import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/hooks";
-import { StickyBulkActionsBar } from "@/components/dashboard";
+import { StickyBulkActionsBar } from "@/features/dashboard/components";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { createCustomer } from "./actions";
@@ -58,8 +58,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";

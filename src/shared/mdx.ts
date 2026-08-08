@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("lib:mdx");
 
 /**

@@ -5,7 +5,7 @@
  */
 
 import type { ReactNode } from "react";
-import { SectionTabs, type Tab } from "@/components/dashboard/section-tabs";
+import { SectionTabs, type Tab } from "@/features/dashboard/components/section-tabs";
 
 export interface StatItem {
   label: string;

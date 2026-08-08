@@ -4,9 +4,9 @@ import { db } from "@/infrastructure/db";
 import { editorPages } from "@/db/schema/editor-pages";
 import { editorProjects } from "@/db/schema/editor-projects";
 import { eq, and, count } from "drizzle-orm";
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
-import { uniquePageSlug, isUniqueViolation } from "@/lib/page-utils";
+import { uniquePageSlug, isUniqueViolation } from "@/features/editor/lib/page-utils";
 
 const slugify = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -57,7 +57,7 @@ export async function createPage(projectId: string, pageName?: string): Promise<
   if (!project) return { success: false, error: "Project not found" };
 
   // Page limit: Free = 2, Growth = 10, Pro = unlimited
-  const { getTenantPlanLimits } = await import("@/lib/plan-limits");
+  const { getTenantPlanLimits } = await import("@/infrastructure/plan-limits");
   const limits = await getTenantPlanLimits(user.tenantId);
   const maxPages = limits.planName === "Free" ? 2 : limits.planName === "Growth" ? 10 : 999;
   const [{ value: pageCount }] = await db.select({ value: count() }).from(editorPages)

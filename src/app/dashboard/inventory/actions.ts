@@ -1,10 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:inventory");
 
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { inventoryRepository } from "@/features/inventory/repositories";
 import type { AdjustmentType } from "@/features/inventory/repositories";

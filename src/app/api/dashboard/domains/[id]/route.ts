@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDomainById, removeDomain, getDnsInstructions } from "@/infrastructure/services/domain";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-domains-id");
 

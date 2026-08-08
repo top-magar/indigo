@@ -4,7 +4,7 @@ import { useState, useMemo, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Mail, ShoppingCart, DollarSign, Users, Search, MoreHorizontal, Eye, Trash2 } from "lucide-react";
-import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
+import { EntityListPage, type StatItem } from "@/features/dashboard/components/templates";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";

@@ -5,7 +5,7 @@
  * Docs: https://developer.esewa.com.np/pages/Epay
  */
 import crypto from "crypto";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 
 const log = createLogger("payments:esewa");
 

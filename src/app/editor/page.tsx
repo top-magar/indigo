@@ -1,7 +1,7 @@
 import EditorClient from "@/features/editor/editor-client";
 import type { EditorProps } from "@/features/editor/core/types";
 import { redirect } from "next/navigation";
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { ensureTenantSite } from "@/features/editor/lib/site";
 import { loadEditorSession } from "@/features/editor/lib/session-actions";
 import { createClient } from "@/infrastructure/supabase/server";

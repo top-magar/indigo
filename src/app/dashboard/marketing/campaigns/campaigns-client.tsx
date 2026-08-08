@@ -87,9 +87,9 @@ import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/shared/utils";
-import { EntityListPage } from "@/components/dashboard/templates";
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
-import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar";
+import { EntityListPage } from "@/features/dashboard/components/templates";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
+import { StickyBulkActionsBar } from "@/features/dashboard/components/bulk-actions-bar";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];

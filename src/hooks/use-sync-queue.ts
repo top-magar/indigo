@@ -11,7 +11,7 @@ import type {
   SyncStatus,
   ConflictResolution,
   UseSyncQueueReturn,
-} from "@/components/dashboard/offline/offline-types";
+} from "@/features/dashboard/components/offline/offline-types";
 
 // Helper to generate unique IDs
 function generateId(): string {

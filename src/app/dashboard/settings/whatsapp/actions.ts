@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";
 import { eq } from "drizzle-orm";

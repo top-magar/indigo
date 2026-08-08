@@ -14,8 +14,8 @@ import { Search, Star, CheckCircle, MoreVertical, ThumbsDown, Trash2, RotateCcw 
 import { toast } from 'sonner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useConfirmDelete } from '@/hooks/use-confirm-dialog';
-import { BulkActionsBar } from '@/components/dashboard/bulk-actions-bar/bulk-actions-bar';
-import { DataTablePagination } from '@/components/dashboard/data-table/pagination';
+import { BulkActionsBar } from '@/features/dashboard/components/bulk-actions-bar/bulk-actions-bar';
+import { DataTablePagination } from '@/features/dashboard/components/data-table/pagination';
 import { formatRelativeTime } from '@/shared/utils';
 import type { SentimentStats, ReviewWithProduct } from '@/features/reviews/repositories/reviews';
 import { approveReview, rejectReview, deleteReview, bulkApproveReviews, reanalyzeReview } from './actions';

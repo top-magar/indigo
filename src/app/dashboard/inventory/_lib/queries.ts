@@ -1,4 +1,4 @@
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { inventoryRepository } from "@/features/inventory/repositories";
 import { categoryRepository } from "@/features/categories/repositories";
 import type { StockLevel } from "@/features/inventory/repositories";

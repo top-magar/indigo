@@ -28,7 +28,7 @@ import {
   extractUserFromToken,
   type WebSocketUser,
 } from "@/infrastructure/auth";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("api:ws");
 
 // ============================================================================

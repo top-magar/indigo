@@ -3,8 +3,8 @@
  * Handles bidirectional real-time communication for comments, live collaboration, and presence
  */
 
-import { createLogger } from "@/lib/logger";
-import type { NotificationType } from "@/components/dashboard/notifications/types";
+import { createLogger } from "@/infrastructure/logger";
+import type { NotificationType } from "@/features/dashboard/components/notifications/types";
 
 const log = createLogger("infra:websocket");
 

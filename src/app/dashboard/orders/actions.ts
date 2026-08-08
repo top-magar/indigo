@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:orders");
 
 import { createClient } from "@/infrastructure/supabase/server";
@@ -16,7 +16,7 @@ const cancelOrderSchema = z.object({
     orderId: z.string().min(1, "Order ID is required"),
     reason: z.string().optional().default(""),
 });
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure/workflows/order";
 import * as OrderService from "@/infrastructure/services/order";

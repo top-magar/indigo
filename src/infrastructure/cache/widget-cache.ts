@@ -15,7 +15,7 @@ import {
   DEFAULT_WIDGET_CACHE_CONFIG,
   type WidgetCacheKey,
   type WidgetCacheConfigEntry,
-} from "@/config/cache";
+} from "@/shared/config/cache";
 
 // Re-export for backwards compatibility
 export { WIDGET_CACHE_KEYS, WIDGET_CACHE_CONFIG };

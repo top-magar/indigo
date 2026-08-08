@@ -2,10 +2,10 @@
 
 import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { validateId } from "@/shared/utils/validate-id";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("attributes-attribute-actions");
 
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { db } from "@/infrastructure/db";
 import { attributes, attributeValues } from "@/db/schema/attributes";

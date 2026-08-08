@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { currencyOptions } from "@/shared/currency";
-import { HelpTooltip } from "@/components/dashboard";
+import { HelpTooltip } from "@/features/dashboard/components";
 import { updateStoreSettings, updateCurrencySettings, updateStoreSeoSettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 

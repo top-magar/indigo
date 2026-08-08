@@ -1,9 +1,9 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:marketing-campaigns");
 
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { db } from "@/infrastructure/db";
 import { campaigns, campaignRecipients, customerSegments } from "@/db/schema/campaigns";

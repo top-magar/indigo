@@ -14,7 +14,7 @@ import {
     BarChart3,
     Image as ImageIcon,
 } from "lucide-react";
-import { getOrderStatus } from "@/config/status";
+import { getOrderStatus } from "@/shared/config/status";
 import { Button } from "@/components/ui/button";
 import {
     Select,

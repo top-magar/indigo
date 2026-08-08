@@ -27,7 +27,7 @@ interface CheckoutSettings {
   refundPolicy: string;
 }
 
-import { ToggleRow } from "@/components/dashboard/toggle-row";
+import { ToggleRow } from "@/features/dashboard/components/toggle-row";
 
 export function CheckoutSettingsClient({ settings: initial, userRole }: { settings: CheckoutSettings; userRole: "owner" | "admin" | "staff" }) {
   const router = useRouter();

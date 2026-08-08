@@ -1,4 +1,4 @@
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { db } from "@/infrastructure/db";
 import { notificationPreferences } from "@/db/schema/notification-preferences";
 import { eq, and } from "drizzle-orm";

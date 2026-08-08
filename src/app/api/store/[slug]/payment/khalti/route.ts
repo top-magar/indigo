@@ -4,7 +4,7 @@ import { orders } from "@/db/schema/orders";
 import { tenants } from "@/db/schema/tenants";
 import { eq, and, sql } from "drizzle-orm";
 import { verifyKhaltiPayment } from "@/infrastructure/payments/khalti";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 

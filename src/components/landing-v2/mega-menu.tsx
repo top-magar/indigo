@@ -25,7 +25,7 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import type { MegaMenuItem, MegaMenuIcon } from "@/data/landing/navigation";
 
 /** Per-link icons from navigation data (kebab-case key → lucide icon). */

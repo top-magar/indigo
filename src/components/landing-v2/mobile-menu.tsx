@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { heroContent } from "@/data/landing/hero";
 import type { MobileMenuGroup } from "@/data/landing/navigation";
 

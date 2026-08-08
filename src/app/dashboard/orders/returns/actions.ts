@@ -2,7 +2,7 @@
 
 import { z } from "zod"
 import { sanitizeSearch } from "@/shared/utils/sanitize"
-import { getAuthenticatedClient } from "@/lib/auth"
+import { getAuthenticatedClient } from "@/infrastructure/auth"
 import { revalidatePath } from "next/cache"
 import type { ReturnStatus, ItemCondition } from "@/infrastructure/supabase/types"
 

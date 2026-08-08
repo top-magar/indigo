@@ -1,13 +1,13 @@
 import { createClient } from "@/infrastructure/supabase/server";
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import {
     SidebarProvider,
     Sidebar,
     SidebarRail,
     SidebarInset,
 } from "@/components/ui/sidebar";
-import { SidebarClient, DashboardHeader } from "@/components/dashboard";
-import { VerificationBanner } from "@/components/dashboard/verification-banner";
+import { SidebarClient, DashboardHeader } from "@/features/dashboard/components";
+import { VerificationBanner } from "@/features/dashboard/components/verification-banner";
 import { ConfirmDialogProvider } from "@/hooks";
 
 /**

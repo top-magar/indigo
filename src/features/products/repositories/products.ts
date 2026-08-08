@@ -4,7 +4,7 @@ import { eq, and, ilike, or, lte, gt, desc } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 import { getCacheService, withCache } from "@/infrastructure/services/cache";
-import { cacheKeyPatterns, cacheInvalidationPatterns } from "@/config/cache";
+import { cacheKeyPatterns, cacheInvalidationPatterns } from "@/shared/config/cache";
 
 /**
  * Product statistics

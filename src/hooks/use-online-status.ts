@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { UseOnlineStatusReturn } from "@/components/dashboard/offline/offline-types";
+import type { UseOnlineStatusReturn } from "@/features/dashboard/components/offline/offline-types";
 
 /**
  * Hook to track online/offline status with debouncing

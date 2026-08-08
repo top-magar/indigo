@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createLogger } from "@/lib/logger"
+import { createLogger } from "@/infrastructure/logger"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 import { createClient } from "@/infrastructure/supabase/server"
 import { createAdminClient } from "@/infrastructure/supabase/admin"

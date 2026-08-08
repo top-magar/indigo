@@ -42,8 +42,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { EntityListPage } from "@/components/dashboard/templates";
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { EntityListPage } from "@/features/dashboard/components/templates";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
 import type { CategoryWithCount } from "./types";

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { type TaxSettings, updateTaxSettings } from "./actions";
 
-import { ToggleRow } from "@/components/dashboard/toggle-row";
+import { ToggleRow } from "@/features/dashboard/components/toggle-row";
 
 export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSettings }) {
   const [s, setS] = useState(initialSettings);

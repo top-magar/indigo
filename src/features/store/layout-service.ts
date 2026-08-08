@@ -5,7 +5,7 @@ import { db } from "@/infrastructure/db"
 import { sql } from "drizzle-orm"
 import { createDefaultHomepageLayout } from "./default-layout"
 import type { PageLayout, StoreBlock } from "@/shared/types/blocks"
-import { createLogger } from "@/lib/logger"
+import { createLogger } from "@/infrastructure/logger"
 const log = createLogger("features:store-layout")
 
 export interface StoreLayoutRow {

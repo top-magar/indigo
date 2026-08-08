@@ -51,7 +51,7 @@ import {
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 
 interface SalesClientProps {
     initialSales: Discount[];

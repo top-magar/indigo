@@ -5,7 +5,7 @@ import { eq, ilike, or, lte, gt, desc, and, inArray, sql } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("features:inventory");
 
 const LOW_STOCK_THRESHOLD = 10;

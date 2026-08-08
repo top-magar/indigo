@@ -4,7 +4,7 @@
  */
 
 import { notificationEmitter } from "@/infrastructure/services/notification-emitter";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { createClient } from "@/infrastructure/supabase/server";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:notifications-stream");

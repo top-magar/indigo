@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import { toast } from "sonner";
 import {
     Plus,
@@ -51,8 +51,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { StickyBulkActionsBar } from "@/components/dashboard/bulk-actions-bar";
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { StickyBulkActionsBar } from "@/features/dashboard/components/bulk-actions-bar";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
 import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
 import type { Collection } from "@/infrastructure/supabase/types";

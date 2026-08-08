@@ -8,7 +8,7 @@ import { categories, products } from "@/db/schema/products"
 import { eq, and, isNull, asc, count, sql } from "drizzle-orm"
 import { revalidateTag, updateTag } from "next/cache"
 import { tagTenantCache, getTenantCacheTag, CACHE_PROFILES } from "@/features/store/data/cache"
-import { createLogger } from "@/lib/logger"
+import { createLogger } from "@/infrastructure/logger"
 const log = createLogger("features:store-categories")
 
 export interface StoreCategory {

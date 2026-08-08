@@ -1,5 +1,5 @@
 import "server-only";
-import { requireUser } from "@/lib/auth";
+import { requireUser } from "@/infrastructure/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/infrastructure/db";
 import { users } from "@/db/schema/users";

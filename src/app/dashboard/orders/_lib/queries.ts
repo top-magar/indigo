@@ -1,5 +1,5 @@
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { db } from "@/infrastructure/db";
 import { tenants } from "@/db/schema/tenants";

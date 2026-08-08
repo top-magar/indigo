@@ -21,8 +21,8 @@ import {
     X,
 } from "lucide-react";
 import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/hooks";
-import { StickyBulkActionsBar } from "@/components/dashboard";
-import type { DataTableFilterOption } from "@/components/dashboard";
+import { StickyBulkActionsBar } from "@/features/dashboard/components";
+import type { DataTableFilterOption } from "@/features/dashboard/components";
 import {
     Table,
     TableBody,
@@ -50,8 +50,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import { ImportDialog } from "./import";
 import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus, duplicateProduct, exportAllProducts } from "./actions";
 import { toast } from "sonner";
@@ -110,7 +110,7 @@ interface ProductsClientProps {
 }
 
 // Import centralized status configuration
-import { productStatusConfig } from "@/config/status";
+import { productStatusConfig } from "@/shared/config/status";
 import { StockBadge } from "./_components/helpers";
 
 export interface ProductsListViewProps {

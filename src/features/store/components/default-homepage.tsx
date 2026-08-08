@@ -1,5 +1,5 @@
 import { createClient } from "@/infrastructure/supabase/server"
-import { ProductCard } from "@/components/store/product-card"
+import { ProductCard } from "@/features/store/components/product-card"
 import Link from "next/link"
 import { storeHref } from "@/features/store/url"
 import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react"

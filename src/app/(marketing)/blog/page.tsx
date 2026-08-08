@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { getAllPosts } from "@/lib/mdx"
+import { getAllPosts } from "@/shared/mdx"
 
 export const metadata = {
   title: "Blog",

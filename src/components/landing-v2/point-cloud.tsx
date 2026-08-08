@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 /**
  * CTA data wave — a point-cloud / halftone data terrain built from thousands

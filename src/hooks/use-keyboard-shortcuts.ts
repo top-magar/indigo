@@ -5,7 +5,7 @@ import type {
   ShortcutRegistration,
   UseKeyboardShortcutsOptions,
   UseKeyboardShortcutsReturn,
-} from "@/components/dashboard/keyboard-shortcuts/types";
+} from "@/features/dashboard/components/keyboard-shortcuts/types";
 
 /**
  * Check if the current focus is in an input-like element

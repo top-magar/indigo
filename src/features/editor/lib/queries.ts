@@ -1,6 +1,6 @@
 'use server';
 
-import { authorizedAction, requireTenantUser } from '@/lib/auth';
+import { authorizedAction, requireTenantUser } from '@/infrastructure/auth';
 import { editorProjects } from '@/db/schema/editor-projects';
 import { editorPages } from '@/db/schema/editor-pages';
 import { editorReusableComponents } from '@/db/schema/editor-reusable-components';
@@ -10,7 +10,7 @@ import { collectionProducts, collections } from '@/db/schema/collections';
 import { plans, subscriptions } from '@/db/schema/billing';
 import { eq, and, asc, desc, sql, count } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { uniquePageSlug } from '@/lib/page-utils';
+import { uniquePageSlug } from '@/features/editor/lib/page-utils';
 
 function safeJsonParse(str: string, fallback: unknown = []): unknown {
   try { return JSON.parse(str); } catch { return fallback; }

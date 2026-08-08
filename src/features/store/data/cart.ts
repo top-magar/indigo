@@ -13,7 +13,7 @@ import { db } from "@/infrastructure/db"
 import { carts, cartItems, orders, orderItems, products, users, tenants } from "@/db/schema"
 import { eq, and, sql } from "drizzle-orm"
 import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from "@/infrastructure/services/email/actions"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("features:store-cart");
 
 // Cache profile for cart revalidation (short-lived, user-specific)

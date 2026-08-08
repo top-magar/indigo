@@ -22,7 +22,7 @@ import {
     CategorySubcategoriesCard,
     CategoryProductsCard,
 } from "@/features/categories/components";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import { deleteCategoryById } from "../category-actions";
 
 interface CategoryDetailClientProps {

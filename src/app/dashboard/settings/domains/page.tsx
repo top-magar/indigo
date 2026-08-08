@@ -1,5 +1,5 @@
-import { requireTenantUser } from "@/lib/auth";
-import { getTenantPlanLimits } from "@/lib/plan-limits";
+import { requireTenantUser } from "@/infrastructure/auth";
+import { getTenantPlanLimits } from "@/infrastructure/plan-limits";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import DomainsClient from "./domains-client";

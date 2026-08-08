@@ -1,6 +1,6 @@
 "use server";
 
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { plans } from "@/db/schema/billing";
 import { eq } from "drizzle-orm";

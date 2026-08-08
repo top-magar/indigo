@@ -3,7 +3,7 @@
 import { db } from "@/infrastructure/db";
 import { discounts, voucherCodes, discountUsages } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("features:discounts");
 
 interface CartItem {

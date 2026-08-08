@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react"
-import { ThemeProvider } from "@/components/store/theme-provider"
+import { ThemeProvider } from "@/features/store/components/theme-provider"
 import type { ThemeConfig } from "@/features/editor/lib/theme-utils"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { formatPrice } from "@/shared/currency"

@@ -12,9 +12,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
 import { useKeyboardShortcutsHelp } from "@/hooks";
-import { NotificationCenter } from "@/components/dashboard/notifications/notification-center";
-import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts/keyboard-shortcuts-modal";
-import type { ShortcutCategory } from "@/components/dashboard/keyboard-shortcuts/types";
+import { NotificationCenter } from "@/features/dashboard/components/notifications/notification-center";
+import { KeyboardShortcutsModal } from "@/features/dashboard/components/keyboard-shortcuts/keyboard-shortcuts-modal";
+import type { ShortcutCategory } from "@/features/dashboard/components/keyboard-shortcuts/types";
 
 // ─── Command Palette Data ────────────────────────────────
 

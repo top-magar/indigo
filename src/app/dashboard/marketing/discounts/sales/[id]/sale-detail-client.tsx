@@ -19,7 +19,7 @@ import {
     Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import {
     DiscountProducts,
     DiscountCollections,

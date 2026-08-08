@@ -21,7 +21,7 @@ import {
     CollectionSeoCard,
     CollectionProductsCard,
 } from "@/features/collections/components";
-import { EntityDetailPage } from "@/components/dashboard/templates";
+import { EntityDetailPage } from "@/features/dashboard/components/templates";
 import { updateCollectionStatus, deleteCollectionById } from "../collection-actions";
 
 interface CollectionDetailClientProps {

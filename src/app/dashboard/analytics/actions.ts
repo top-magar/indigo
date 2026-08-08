@@ -1,10 +1,10 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:analytics");
 
 
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { analyticsRepository } from "@/features/analytics/repositories";
 import { startOfDay, endOfDay, subDays, startOfYear } from "date-fns";
 import type {

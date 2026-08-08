@@ -8,7 +8,7 @@ import { eq, and, sql } from "drizzle-orm"
 import { getCartId, removeCartId } from "@/features/store/data/cookies"
 import { sendOrderConfirmationEmail, sendOrderNotificationEmail } from "@/infrastructure/services/email/actions"
 import { sendWhatsAppMessage, orderReceivedMessage } from "@/infrastructure/services/whatsapp"
-import { createLogger } from "@/lib/logger"
+import { createLogger } from "@/infrastructure/logger"
 import { NextResponse } from "next/server"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
@@ -101,7 +101,7 @@ export const POST = withRateLimit("checkout", async function POST(
     if ((tenant.settings as Record<string, unknown>)?.suspended) return NextResponse.json({ error: { message: "This store is currently unavailable" } }, { status: 403 })
 
     // Check order limit
-    const { getTenantPlanLimits } = await import("@/lib/plan-limits")
+    const { getTenantPlanLimits } = await import("@/infrastructure/plan-limits")
     const limits = await getTenantPlanLimits(tenant.id)
     if (limits.maxOrders !== null) {
       const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000)

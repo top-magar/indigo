@@ -13,7 +13,7 @@ import {
   type ChartType,
   type ExportOptions,
   type ExportResult,
-} from "@/components/dashboard/charts/chart-types";
+} from "@/features/dashboard/components/charts/chart-types";
 
 // ============================================================================
 // Default States

@@ -1,10 +1,10 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("actions:products");
 
 import { z } from "zod";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { products, categories } from "@/db/schema/products";
 import { collectionProducts } from "@/db/schema/collections";
@@ -41,7 +41,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
     try {
         const { tenantId, userId } = await getAuthenticatedTenant();
 
-        const { checkPlanLimit } = await import("@/lib/plan-limits");
+        const { checkPlanLimit } = await import("@/infrastructure/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
         if (!limit.allowed) return { success: false, error: limit.reason };
 
@@ -111,7 +111,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
     try {
         const { tenantId, userId } = await getAuthenticatedTenant();
 
-        const { checkPlanLimit } = await import("@/lib/plan-limits");
+        const { checkPlanLimit } = await import("@/infrastructure/plan-limits");
         const limit = await checkPlanLimit(tenantId, "products");
         if (!limit.allowed) return { success: false, error: limit.reason };
 
@@ -426,7 +426,7 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
 export async function duplicateProduct(productId: string) {
     const { tenantId } = await getAuthenticatedTenant();
 
-    const { checkPlanLimit } = await import("@/lib/plan-limits");
+    const { checkPlanLimit } = await import("@/infrastructure/plan-limits");
     const limit = await checkPlanLimit(tenantId, "products");
     if (!limit.allowed) return { success: false, error: limit.reason };
 

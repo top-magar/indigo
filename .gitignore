@@ -150,3 +150,8 @@ skills-lock.json
 
 # Local agent artifacts
 .hermes/
+
+# macOS artifacts
+._*
+.DS_Store
+._*

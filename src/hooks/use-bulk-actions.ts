@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef, useTransition } from "react";
 import { toast } from "sonner";
-import type { BulkActionResult, BulkActionContext } from "@/components/dashboard/bulk-actions/bulk-action-types";
+import type { BulkActionResult, BulkActionContext } from "@/features/dashboard/components/bulk-actions/bulk-action-types";
 
 interface Node {
   id: string;

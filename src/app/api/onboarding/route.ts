@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/infrastructure/db";
 import { tenants, users } from "@/db/schema";
 import { createClient } from "@/infrastructure/supabase/server";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:onboarding");
 

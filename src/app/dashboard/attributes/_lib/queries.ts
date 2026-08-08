@@ -1,4 +1,4 @@
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 
 // ─── Auth ────────────────────────────────────────────────
 

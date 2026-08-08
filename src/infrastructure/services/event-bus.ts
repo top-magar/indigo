@@ -3,7 +3,7 @@
  * Enables services to communicate asynchronously while remaining decoupled
  */
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 
 const log = createLogger("infra:event-bus");
 

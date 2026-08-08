@@ -2,11 +2,11 @@
 
 import { sanitizeSearch } from "@/shared/utils/sanitize";
 import { validateId } from "@/shared/utils/validate-id";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("collections-collection-actions");
 
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {

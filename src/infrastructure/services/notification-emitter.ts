@@ -3,8 +3,8 @@
  * Manages real-time notification broadcasting to connected SSE clients
  */
 
-import { createLogger } from "@/lib/logger";
-import type { CreateNotificationInput, NotificationType } from "@/components/dashboard/notifications/types";
+import { createLogger } from "@/infrastructure/logger";
+import type { CreateNotificationInput, NotificationType } from "@/features/dashboard/components/notifications/types";
 
 const log = createLogger("infra:notification-emitter");
 

@@ -13,7 +13,7 @@ import {
   type RateLimitType,
   type RateLimitConfig,
   getEffectiveRateLimitConfig,
-} from "@/config/rate-limits"
+} from "@/shared/config/rate-limits"
 
 export interface RateLimitResult {
   allowed: boolean

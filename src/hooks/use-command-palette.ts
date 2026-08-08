@@ -11,7 +11,7 @@ import type {
   CommandPaletteStore,
   CommandPaletteConfig,
   UseCommandPaletteReturn,
-} from "@/components/dashboard/command-palette/types";
+} from "@/features/dashboard/components/command-palette/types";
 
 // Default configuration
 const DEFAULT_CONFIG: CommandPaletteConfig = {

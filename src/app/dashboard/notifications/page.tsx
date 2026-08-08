@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { NotificationsPageClient } from "./notifications-client";
 
 export const metadata: Metadata = {

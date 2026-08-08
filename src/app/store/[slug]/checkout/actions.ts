@@ -3,7 +3,7 @@
 import { z } from "zod"
 import { updateCart, completeCart, retrieveCart } from "@/features/store/data/cart"
 import { redirect } from "next/navigation"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 import { createAdminClient } from "@/infrastructure/supabase/admin";
 const log = createLogger("store:checkout");
 

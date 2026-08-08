@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useNotificationStore } from "./use-notifications";
 import type { NotificationEvent, NotificationEventData } from "@/infrastructure/services/notification-emitter";
-import type { CreateNotificationInput } from "@/components/dashboard/notifications/types";
+import type { CreateNotificationInput } from "@/features/dashboard/components/notifications/types";
 import type { ConnectionStatus } from "@/shared/types/connection";
 
 /**

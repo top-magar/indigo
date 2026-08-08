@@ -10,7 +10,7 @@ import {
   withRetry,
   VercelAPIError,
 } from "./vercel-api";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("infra:domain-verification");
 
 

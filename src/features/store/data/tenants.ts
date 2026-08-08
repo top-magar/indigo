@@ -8,7 +8,7 @@ import { sudoDb } from "@/infrastructure/db"
 import { tenants, products, categories } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { cacheLife, cacheTag } from "next/cache"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("features:store-tenants");
 
 /**

@@ -1,10 +1,10 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("customers-customer-actions");
 
 import { validateId } from "@/shared/utils/validate-id";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 import { db } from "@/infrastructure/db";
 import { customers, addresses } from "@/db/schema/customers";

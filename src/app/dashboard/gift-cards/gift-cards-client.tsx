@@ -3,7 +3,7 @@
 import { useState, useMemo, useTransition } from "react";
 import { toast } from "sonner";
 import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight, Search, MoreHorizontal } from "lucide-react";
-import { EntityListPage } from "@/components/dashboard/templates";
+import { EntityListPage } from "@/features/dashboard/components/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ import {
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { DataTablePagination } from "@/features/dashboard/components/data-table/pagination";
 import { formatCurrency } from "@/shared/utils";
 import { type GiftCard, type GiftCardStats, createGiftCard, toggleGiftCardStatus } from "./actions";
 

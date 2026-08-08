@@ -4,7 +4,7 @@
 "use server"
 
 import { createClient } from "@/infrastructure/supabase/server"
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("features:store-discounts");
 
 interface CartItem {

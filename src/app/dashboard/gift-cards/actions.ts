@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { createLogger } from "@/lib/logger";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { createLogger } from "@/infrastructure/logger";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { revalidatePath } from "next/cache";
 
 const log = createLogger("gift-cards");

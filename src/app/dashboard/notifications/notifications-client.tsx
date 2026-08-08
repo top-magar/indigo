@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
-import { NotificationItem } from "@/components/dashboard/notifications/notification-item";
+import { NotificationItem } from "@/features/dashboard/components/notifications/notification-item";
 import { useNotifications } from "@/hooks/use-notifications";
-import type { Notification, NotificationCategory } from "@/components/dashboard/notifications/types";
+import type { Notification, NotificationCategory } from "@/features/dashboard/components/notifications/types";
 
 const TABS: { value: NotificationCategory; label: string }[] = [
   { value: "all", label: "All" },

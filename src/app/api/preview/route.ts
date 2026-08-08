@@ -1,7 +1,7 @@
 import { draftMode } from "next/headers"
 import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
-import { getUser } from "@/lib/auth"
+import { getUser } from "@/infrastructure/auth"
 import { createClient } from "@/infrastructure/supabase/server"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 

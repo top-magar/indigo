@@ -1,4 +1,4 @@
-import { requireTenantUser } from "@/lib/auth";
+import { requireTenantUser } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { tenantKyc } from "@/db/schema/tenant-kyc";
 import { eq } from "drizzle-orm";

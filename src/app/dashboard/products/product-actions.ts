@@ -1,10 +1,10 @@
 "use server";
 
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 const log = createLogger("products-product-actions");
 
 import { validateId } from "@/shared/utils/validate-id";
-import { getAuthenticatedClient } from "@/lib/auth";
+import { getAuthenticatedClient } from "@/infrastructure/auth";
 import { db } from "@/infrastructure/db";
 import { products, productVariants, inventoryLevels, categories } from "@/db/schema/products";
 import { collectionProducts, collections } from "@/db/schema/collections";

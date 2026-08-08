@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { db } from "@/infrastructure/db";
 import { orders } from "@/db/schema/orders";
 import { eq, and } from "drizzle-orm";
-import { createLogger } from "@/lib/logger";
+import { createLogger } from "@/infrastructure/logger";
 
 const log = createLogger("api:webhooks:stripe");
 

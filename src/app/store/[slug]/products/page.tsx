@@ -1,6 +1,6 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
-import { ProductCard } from "@/components/store/product-card"
+import { ProductCard } from "@/features/store/components/product-card"
 import { getAllTenantSlugs } from "@/features/store/data/tenants"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"

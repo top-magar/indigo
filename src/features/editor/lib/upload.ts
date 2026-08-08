@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/infrastructure/supabase/server';
-import { requireUser } from '@/lib/auth';
+import { requireUser } from '@/infrastructure/auth';
 
 const BUCKET = 'editor-assets';
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Children } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 type MarqueeProps = {
   children: ReactNode;

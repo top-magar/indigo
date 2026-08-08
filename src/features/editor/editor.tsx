@@ -21,7 +21,7 @@ import { LeftPanel, RightPanel } from "./panels";
 import { DragOverlayProvider } from "./canvas/drag-overlay";
 import { useCanvas } from "./canvas/use-canvas";
 import { useShortcuts } from "./core/use-shortcuts";
-import { ThemeProvider } from "@/components/store/theme-provider";
+import { ThemeProvider } from "@/features/store/components/theme-provider";
 import type { ThemeConfig } from "./lib/theme-utils";
 import { downloadHTML } from "./export/html";
 import ShortcutsOverlay from "./toolbar/shortcuts-overlay";
