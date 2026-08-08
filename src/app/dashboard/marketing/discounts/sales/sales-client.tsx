@@ -47,7 +47,7 @@ import {
     getStatusLabel,
     formatDiscountValueWithLabel,
     formatDateRange,
-} from "../utils";
+} from "@/features/discounts/lib/utils";
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";

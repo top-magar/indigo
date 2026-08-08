@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/shared/utils";
 import {
@@ -40,11 +40,11 @@ export function Header({
       style={{ borderColor: scrolled ? "var(--lv2-border-strong)" : undefined }}
     >
       <div className="lv2-container lv2-header__inner">
-        <Link href="/" aria-label="Go to Indigo home" className="lv2-brand">
+        <Link href="/" aria-label="Go to Cypon home" className="lv2-brand">
           <span className="lv2-brand__mark" aria-hidden>
-            <Menu />
+            <Sparkles />
           </span>
-          Indigo
+          CYPON
         </Link>
 
         <nav className="lv2-nav" aria-label="Main">
@@ -77,8 +77,8 @@ export function Header({
             </svg>
             <span>{starCount}</span>
           </a>
-          <Link href="/signup" className="lv2-btn lv2-btn--primary lv2-btn--sm">
-            Start Free
+          <Link href="/signup" className="lv2-btn lv2-btn--primary lv2-btn--sm lv2-bracket-box">
+            START FREE
           </Link>
           <button
             className="lv2-burger"

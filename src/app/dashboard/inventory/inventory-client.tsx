@@ -63,7 +63,7 @@ import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { EntityListPage } from "@/features/dashboard/components/templates";
 import type { InventoryProduct, StockMovement } from "./types";
-import { StockLevelIndicator, StockBadge } from "./_components/helpers";
+import { StockLevelIndicator, StockBadge } from "./_components/indicators";
 
 interface Category {
     id: string;

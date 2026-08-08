@@ -32,7 +32,7 @@ const pad = (value: number | string) => String(value).padStart(2, "0");
  * followed by an optional eyebrow, headline, and body copy.
  *
  * All visual styling is delegated to `lv2-*` classes (styled by the
- * landing-v2 stylesheet); only layout hooks are applied inline/Tailwind-safe.
+ * landing stylesheet); only layout hooks are applied inline/Tailwind-safe.
  */
 export function SectionHeading({
   index,

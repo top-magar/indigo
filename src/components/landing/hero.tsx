@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { heroContent } from "@/data/landing/hero";
-import { DashboardPreview } from "./dashboard-preview";
+import { StorefrontPreview } from "./storefront-preview";
 import { SectionHeading } from "./section-heading";
 import { Frame } from "./frame";
 import { EASE } from "./motion/reveal";
@@ -70,7 +70,7 @@ export function HeroSection() {
         transition={{ duration: 1, ease: EASE, delay: 0.45 }}
       >
         <Frame nodes>
-          <DashboardPreview />
+          <StorefrontPreview />
         </Frame>
       </motion.div>
     </section>

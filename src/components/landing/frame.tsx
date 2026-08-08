@@ -10,7 +10,7 @@ import { cn } from "@/shared/utils";
  *   - purple: active/selected state (featured pricing plan, primary CTAs)
  *
  * Brackets are drawn with CSS background gradients on ::before/::after so they
- * stay sharp at any size; hover extends them 2–3px (see landing-v2.css).
+ * stay sharp at any size; hover extends them 2–3px (see landing.css).
  * Edge nodes are hidden below 1024px.
  */
 export function Frame({

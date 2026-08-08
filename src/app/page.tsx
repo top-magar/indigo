@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./landing-v2.css";
-import { LandingV2Page as LandingV2 } from "@/components/landing-v2/landing-v2-page";
+import "./landing.css";
+import { LandingPage } from "@/components/landing/landing-page";
 import { sectionData } from "@/data/landing/section-data";
 import KineticGrid from "@/components/ui/kinetic-grid";
 
@@ -44,18 +44,14 @@ const geistMono = Geist_Mono({
   variable: "--font-indigo-mono",
 });
 
-export default function LandingV2Page() {
+import { Noise } from "@/components/landing/noise";
+
+export default function Page() {
   return (
     <div className={`lv2-page ${geistSans.variable} ${geistMono.variable}`}>
-      {/* Pre-paint theme boot: sets <html data-theme> before the landing renders,
-          so the light/dark token set is correct on first paint (no FOUC). */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `(function(){try{var s=localStorage.getItem("lv2-theme");var t=s||(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";}})();`,
-        }}
-      />
+      <Noise />
       <KineticGrid>
-        <LandingV2 />
+        <LandingPage />
       </KineticGrid>
       <script
         type="application/ld+json"

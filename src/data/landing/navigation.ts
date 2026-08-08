@@ -49,7 +49,7 @@ export type MobileMenuGroup = {
   links: MobileMenuLink[];
 };
 
-export const starCount = "4,309";
+export const starCount = "1,204";
 
 export const navigationItems: MegaMenuItem[] = [
   {
@@ -57,27 +57,27 @@ export const navigationItems: MegaMenuItem[] = [
     label: "Product",
     columns: [
       {
-        title: "Core Features",
+        title: "Build & Operate",
         links: [
-          { label: "Visual Storefront Editor", href: "#features", description: "Drag-and-drop pages and brand tokens", icon: "layout" },
-          { label: "Live Commerce Analytics", href: "#features", description: "Real-time event tracking and funnels", icon: "bar-chart" },
-          { label: "Checkout + Payments", href: "#features", description: "eSewa, Khalti, IME Pay, COD and more", icon: "credit-card" },
+          { label: "Visual Storefront", href: "#features", description: "Design without code", icon: "layout" },
+          { label: "Order Management", href: "#features", description: "Process and fulfill", icon: "package" },
+          { label: "Inventory sync", href: "#features", description: "Track stock in real-time", icon: "layers" },
         ],
       },
       {
-        title: "Advanced",
+        title: "Payments & Growth",
         links: [
-          { label: "Multi-Store Management", href: "#features", description: "Run several brands from one workspace", icon: "building" },
-          { label: "Inventory + Orders", href: "#features", description: "Product catalog and fulfillment", icon: "package" },
-          { label: "Predictive Insights", href: "#features", description: "Forecast demand and churn risk", icon: "sparkles" },
+          { label: "Local Payments", href: "#integrations", description: "eSewa, Khalti, IME Pay", icon: "credit-card" },
+          { label: "Commerce Analytics", href: "#features", description: "Understand your sales", icon: "bar-chart" },
+          { label: "Customer Profiles", href: "#features", description: "Track LTV and behavior", icon: "users" },
         ],
       },
     ],
     featured: {
-      label: "What’s new in Indigo",
-      href: "#blog",
-      description: "Reusable sections, improved publish previews, and local checkout improvements.",
-      icon: "star",
+      label: "What's New: Native eSewa",
+      href: "#integrations",
+      description: "Direct eSewa integration is now live for all merchants.",
+      icon: "sparkles",
     },
   },
   {
@@ -85,27 +85,27 @@ export const navigationItems: MegaMenuItem[] = [
     label: "Solutions",
     columns: [
       {
-        title: "By Team",
+        title: "By Business Size",
         links: [
-          { label: "Product Teams", href: "#solutions", description: "Launch pages without developer queues", icon: "layers" },
-          { label: "Merchants", href: "#solutions", description: "Sell, ship, and manage in one workspace", icon: "store" },
-          { label: "Engineering", href: "#solutions", description: "Extend flows and sync data cleanly", icon: "terminal" },
+          { label: "Emerging Sellers", href: "#solutions", description: "Launch your first store", icon: "store" },
+          { label: "Growing DTC Brands", href: "#solutions", description: "Scale your operations", icon: "building" },
+          { label: "Retail Teams", href: "#solutions", description: "Centralize your channels", icon: "users" },
         ],
       },
       {
-        title: "By Industry",
+        title: "Use Cases",
         links: [
-          { label: "Ecommerce", href: "#solutions", description: "Online stores, D2C brands, catalogs", icon: "shopping-bag" },
-          { label: "Fintech", href: "#solutions", description: "Subscription products and checkout flows", icon: "wallet" },
-          { label: "Marketplaces", href: "#solutions", description: "Multi-seller and multi-brand setups", icon: "store" },
+          { label: "Social Commerce", href: "#solutions", description: "Turn followers into buyers", icon: "star" },
+          { label: "Omnichannel", href: "#solutions", description: "Sync physical and digital", icon: "layout" },
+          { label: "B2B Wholesale", href: "#solutions", description: "Custom pricing tiers", icon: "package" },
         ],
       },
     ],
     featured: {
-      label: "Read merchant stories",
+      label: "Merchant Stories",
       href: "#testimonials",
-      description: "See how Nepali brands launched faster with Indigo.",
-      icon: "star",
+      description: "See how Nepali brands grow with Indigo.",
+      icon: "book",
     },
   },
   {
@@ -115,24 +115,24 @@ export const navigationItems: MegaMenuItem[] = [
       {
         title: "Learn",
         links: [
-          { label: "Documentation", href: "/coming-soon", description: "Setup, guides, and storefront reference", icon: "book" },
-          { label: "Blog", href: "/blog", description: "Practical advice for commerce teams", icon: "scroll" },
-          { label: "Changelog", href: "/coming-soon", description: "Latest releases and ship notes", icon: "list" },
+          { label: "Documentation", href: "/coming-soon", description: "Guides and tutorials", icon: "book" },
+          { label: "Commerce Blog", href: "/blog", description: "Strategies for growth", icon: "scroll" },
+          { label: "Changelog", href: "/coming-soon", description: "Platform updates", icon: "list" },
         ],
       },
       {
         title: "Connect",
         links: [
-          { label: "Help Center", href: "/coming-soon", description: "Answers and troubleshooting", icon: "life-buoy" },
-          { label: "Community", href: "/coming-soon", description: "Join other founders and builders", icon: "users" },
-          { label: "Status", href: "/coming-soon", description: "Platform availability and incidents", icon: "activity" },
+          { label: "Community", href: "/coming-soon", description: "Join other merchants", icon: "users" },
+          { label: "Partner Directory", href: "/coming-soon", description: "Find certified experts", icon: "star" },
+          { label: "Help Center", href: "/coming-soon", description: "Get support", icon: "life-buoy" },
         ],
       },
     ],
     featured: {
-      label: "Download the commerce playbook",
+      label: "Nepal E-commerce Report",
       href: "/coming-soon",
-      description: "Launch, optimize, and scale your storefront faster.",
+      description: "Read our 2026 state of commerce analysis.",
       icon: "download",
     },
   },
@@ -144,19 +144,18 @@ export const mobileMenu: MobileMenuGroup[] = [
     label: "Product",
     links: [
       { label: "Visual Storefront Editor", href: "#features" },
-      { label: "Live Commerce Analytics", href: "#features" },
-      { label: "Checkout + Payments", href: "#features" },
-      { label: "Inventory + Orders", href: "#features" },
+      { label: "Local Payments", href: "#integrations" },
+      { label: "Inventory & Orders", href: "#features" },
+      { label: "Commerce Analytics", href: "#features" },
     ],
   },
   {
     key: "solutions",
     label: "Solutions",
     links: [
-      { label: "Product Teams", href: "#solutions" },
-      { label: "Merchants", href: "#solutions" },
-      { label: "Ecommerce", href: "#solutions" },
-      { label: "Marketplaces", href: "#solutions" },
+      { label: "Emerging Sellers", href: "#solutions" },
+      { label: "Growing Brands", href: "#solutions" },
+      { label: "Retail Teams", href: "#solutions" },
     ],
   },
   {
@@ -165,7 +164,6 @@ export const mobileMenu: MobileMenuGroup[] = [
     links: [
       { label: "Documentation", href: "/coming-soon" },
       { label: "Blog", href: "/blog" },
-      { label: "Changelog", href: "/coming-soon" },
       { label: "Help Center", href: "/coming-soon" },
     ],
   },

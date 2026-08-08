@@ -26,7 +26,7 @@ export type BadgeProps = ComponentProps<"span"> &
  *
  * Variants are expressed as `lv2-*` class hooks (`lv2-badge--default`,
  * `lv2-badge--accent`, `lv2-badge--success`, `lv2-badge--warning`,
- * `lv2-badge--danger`, `lv2-badge--ghost`) so the landing-v2 stylesheet owns
+ * `lv2-badge--danger`, `lv2-badge--ghost`) so the landing stylesheet owns
  * all color and typography. Only inline layout hook (`inline-flex`) is applied
  * here.
  */

@@ -2,7 +2,7 @@ export { Header, NavigationShell } from "./header";
 export { MegaMenu } from "./mega-menu";
 export { MobileMenu } from "./mobile-menu";
 export { HeroSection } from "./hero";
-export { DashboardPreview } from "./dashboard-preview";
+export { StorefrontPreview } from "./storefront-preview";
 export { LogoMarquee } from "./logo-marquee";
 export { SectionHeading } from "./section-heading";
 export { Marquee } from "./marquee";

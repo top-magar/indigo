@@ -81,7 +81,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Campaign, CustomerSegment } from "../types";
-import { formatNumber, formatDate, formatDateTime, getStatusBadgeClass, getStatusLabel, exportToCSV } from "./_components/helpers";
+import { formatNumber, formatDate, formatDateTime, getStatusBadgeClass, getStatusLabel, exportToCSV } from "./_components/campaign-utils";
 import { deleteCampaign, pauseCampaign, sendCampaign, duplicateCampaign } from "../actions";
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";

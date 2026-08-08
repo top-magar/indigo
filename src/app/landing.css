@@ -168,18 +168,21 @@
   background: var(--lv2-accent);
   border-color: var(--lv2-accent);
   color: var(--lv2-accent-ink);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.4), inset 2px 2px 0px rgba(255, 255, 255, 0.2);
 }
 
 .lv2-btn--primary:hover {
   background: var(--lv2-accent-hover);
   border-color: var(--lv2-accent-hover);
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.4), inset 1px 1px 0px rgba(255, 255, 255, 0.2);
+  transform: translateY(1px);
 }
 
 .lv2-btn--ghost {
   background: transparent;
   border-color: var(--lv2-border-strong);
   color: var(--lv2-fg);
+  box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.2), inset 2px 2px 0px rgba(255, 255, 255, 0.05);
 }
 
 .lv2-btn--ghost:hover {
@@ -289,8 +292,9 @@
   background: var(--lv2-panel);
   border: 1px solid var(--lv2-border);
   border-radius: var(--lv2-radius-lg);
+  box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.2), inset 1px 1px 0px rgba(255, 255, 255, 0.05);
   transition: border-color 200ms var(--lv2-ease), transform 200ms var(--lv2-ease),
-    background-color 200ms var(--lv2-ease);
+    background-color 200ms var(--lv2-ease), box-shadow 200ms var(--lv2-ease);
 }
 
 .lv2-card--hover:hover {
@@ -429,11 +433,18 @@
 .lv2-brand__mark {
   width: 22px;
   height: 22px;
-  border-radius: 7px;
+  border-radius: 4px;
   background: var(--lv2-accent);
   display: grid;
   place-items: center;
   color: #fff;
+  animation: lv2-blink 1s step-end infinite;
+  box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.5), inset 2px 2px 0px rgba(255, 255, 255, 0.4);
+}
+
+@keyframes lv2-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
 }
 
 .lv2-brand__mark svg {
@@ -545,19 +556,18 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  /* The 8px hover gap lives INSIDE the anchor (padding-top): the pointer
-     crossing from trigger to panel never leaves the wrapper, so there is no
-     mouseleave dead zone between the two. */
   padding-top: 8px;
   z-index: 60;
 }
 
 .lv2-mega {
-  width: min(680px, calc(100vw - 32px));
+  width: min(880px, calc(100vw - 32px));
   background: var(--lv2-panel-2);
-  border: 1px solid var(--lv2-line-strong);
-  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--lv2-border-strong);
+  box-shadow: 0 12px 48px -12px rgba(0, 0, 0, 0.6);
   animation: lv2-mega-in 180ms var(--lv2-ease);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 @keyframes lv2-mega-in {
@@ -571,63 +581,34 @@
   }
 }
 
-/* Spec-sheet top bar */
-
-.lv2-mega__bar {
+.lv2-mega__layout {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 18px;
-  border-bottom: 1px solid var(--lv2-line-strong);
-  background: var(--lv2-bg);
-  font-family: var(--font-indigo-mono), ui-monospace, monospace;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--lv2-faint);
 }
 
-.lv2-mega__bar-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--lv2-muted);
+.lv2-mega__nav {
+  flex: 1;
 }
-
-.lv2-mega__bar-tag::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 6px;
-  height: 6px;
-  background: var(--lv2-highlight);
-}
-
-/* Column matrix — shared-border seams */
 
 .lv2-mega__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--lv2-line-soft);
+  height: 100%;
 }
 
 .lv2-mega__col {
   min-width: 0;
-  padding: 18px 14px 14px;
-  background: var(--lv2-panel-2);
+  padding: 32px 24px;
 }
 
 .lv2-mega__col-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 8px 10px;
+  padding: 0 8px 16px;
   font-family: var(--font-indigo-mono), ui-monospace, monospace;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--lv2-faint);
 }
@@ -640,81 +621,47 @@
   background: var(--lv2-highlight);
 }
 
-/* Links — numbered rows with corner brackets */
+/* Links */
 
 .lv2-mega__link {
-  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 10px 8px;
-  border-top: 1px solid var(--lv2-line-soft);
-  background-image:
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong)),
-    linear-gradient(var(--lv2-line-strong), var(--lv2-line-strong));
-  background-size:
-    10px 1px, 1px 10px, 10px 1px, 1px 10px,
-    10px 1px, 1px 10px, 10px 1px, 1px 10px;
-  background-position:
-    0 0, 0 0, 100% 0, 100% 0,
-    0 100%, 0 100%, 100% 100%, 100% 100%;
-  background-repeat: no-repeat;
+  gap: 16px;
+  padding: 12px 8px;
   text-decoration: none;
-  transition:
-    background-size 200ms var(--lv2-ease),
-    background-color 160ms var(--lv2-ease);
-}
-
-.lv2-mega__col > .lv2-mega__link:first-child {
-  border-top: 0;
+  transition: background-color 160ms var(--lv2-ease);
+  border-radius: 8px;
 }
 
 .lv2-mega__link:hover {
   background-color: var(--lv2-bg);
-  background-size:
-    16px 2px, 2px 16px, 16px 2px, 2px 16px,
-    16px 2px, 2px 16px, 16px 2px, 2px 16px;
-}
-
-.lv2-mega__index {
-  flex: 0 0 auto;
-  margin-top: 3px;
-  font-family: var(--font-indigo-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--lv2-faint);
 }
 
 .lv2-mega__icon {
   flex: 0 0 auto;
-  width: 30px;
-  height: 30px;
-  border-radius: 3px;
-  background: var(--lv2-accent-soft);
-  border: 1px solid var(--lv2-accent-border);
-  color: var(--lv2-highlight);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid var(--lv2-border);
   display: grid;
   place-items: center;
+  color: var(--lv2-fg);
+  transition: color 200ms var(--lv2-ease), border-color 200ms var(--lv2-ease);
 }
 
 .lv2-mega__icon svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 
 .lv2-mega__text {
   min-width: 0;
+  padding-top: 2px;
 }
 
 .lv2-mega__text strong {
   display: block;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--lv2-fg);
   margin-bottom: 2px;
@@ -722,46 +669,106 @@
 
 .lv2-mega__text span {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.45;
   color: var(--lv2-muted);
 }
 
-/* Featured strip */
-
-.lv2-mega__featured {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  border-top: 1px solid var(--lv2-line-strong);
-  background: var(--lv2-bg);
-  text-decoration: none;
-  transition: background-color 160ms var(--lv2-ease);
-}
-
-.lv2-mega__featured:hover {
-  background: var(--lv2-panel-2);
-}
-
-.lv2-mega__featured strong {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--lv2-fg);
-  margin-bottom: 2px;
-}
-
-.lv2-mega__featured span {
-  display: block;
-  font-size: 12px;
-  color: var(--lv2-muted);
-}
-
-.lv2-mega__featured svg {
-  margin-left: auto;
-  flex: 0 0 auto;
+.lv2-mega__link:hover .lv2-mega__icon {
+  border-color: var(--lv2-highlight);
   color: var(--lv2-highlight);
+}
+
+/* Featured right panel */
+
+.lv2-mega__featured-panel {
+  width: 340px;
+  flex: 0 0 auto;
+  padding: 32px 32px 32px 0;
+}
+
+.lv2-mega__card {
+  position: relative;
+  height: 100%;
+  min-height: 260px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 4px;
+  background-color: var(--lv2-accent);
+  background-image: radial-gradient(rgba(255,255,255,0.2) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+  color: #fff;
+}
+
+.lv2-mega__badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #fff;
+  color: var(--lv2-accent);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+
+.lv2-mega__card-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 64px;
+}
+
+.lv2-mega__card-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 24px;
+}
+
+.lv2-mega__card-link {
+  font-family: var(--font-indigo-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.lv2-mega__card-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Bracket accents */
+.lv2-bracket-box {
+  position: relative;
+}
+.lv2-bracket-box::before,
+.lv2-bracket-box::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+}
+.lv2-bracket-box::before {
+  top: -4px;
+  left: -4px;
+  border-top: 2px solid var(--lv2-accent);
+  border-left: 2px solid var(--lv2-accent);
+}
+.lv2-bracket-box::after {
+  bottom: -4px;
+  right: -4px;
+  border-bottom: 2px solid var(--lv2-accent);
+  border-right: 2px solid var(--lv2-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3915,7 +3922,7 @@
    <html data-theme="light">; this block re-maps every token so the whole
    page flips without touching component CSS. */
 
-[data-theme="light"] .lv2-page {
+html:not(.dark) .lv2-page {
   --lv2-bg: #ffffff;
   --lv2-surface-1: #fafafa;
   --lv2-surface-2: #f4f4f5;
@@ -3941,17 +3948,18 @@
   --lv2-success: #059669;
   --lv2-warning: #b45309;
   --lv2-danger: #dc2626;
+  color-scheme: light;
 }
 
-[data-theme="light"] body {
+html:not(.dark) body {
   background-color: #ffffff;
 }
 
-[data-theme="light"] .lv2-header {
+html:not(.dark) .lv2-header {
   background: rgba(255, 255, 255, 0.82);
 }
 
-[data-theme="light"] .lv2-grid-bg {
+html:not(.dark) .lv2-grid-bg {
   background-image:
     linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px);
@@ -3959,24 +3967,24 @@
 
 /* Dark rescue rule: outranks any later `background` shorthand (0,2,0) so the
    blueprint grid always renders on .lv2-hero / .lv2-dashboard in dark mode. */
-[data-theme="dark"] .lv2-grid-bg {
+html.dark .lv2-grid-bg {
   background-image:
     linear-gradient(to bottom, #2563eb0d 1px, transparent 1px),
     linear-gradient(to right, #2563eb0d 1px, transparent 1px);
 }
 
-[data-theme="light"] .lv2-heat {
+html:not(.dark) .lv2-heat {
   background:
     linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
     var(--lv2-panel-3);
 }
 
-[data-theme="light"] .lv2-dashboard {
+html:not(.dark) .lv2-dashboard {
   box-shadow: 0 40px 90px -30px rgb(9 9 11 / 0.25);
 }
 
-[data-theme="light"] .lv2-final-cta {
+html:not(.dark) .lv2-final-cta {
   background: linear-gradient(180deg, var(--lv2-bg), #f2efff 60%, #eae6ff);
 }
 

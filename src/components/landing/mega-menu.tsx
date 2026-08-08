@@ -202,58 +202,59 @@ export function MegaMenu({ item, open, onOpenChange, index, total }: MegaMenuPro
           aria-label={`${item.label} menu`}
         >
           <div ref={panelRef} className="lv2-mega" onKeyDown={onPanelKeyDown}>
-            <div className="lv2-mega__bar">
-              <span>{item.label}</span>
-              <span className="lv2-mega__bar-tag">
-                {`SHEET 0${index + 1}/0${total}`}
-              </span>
-            </div>
-
-            <div className="lv2-mega__grid">
-              {item.columns.map((column) => (
-                <div key={column.title} className="lv2-mega__col">
-                  <div className="lv2-mega__col-title">{column.title}</div>
-                  {column.links.map((link, linkIndex) => {
-                    const Icon = (link.icon && LINK_ICONS[link.icon]) || ArrowRight;
-                    return (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        className="lv2-mega__link"
-                        onClick={() => closeOnNavigate(link.href)}
-                      >
-                        <span className="lv2-mega__index" aria-hidden>
-                          {String(linkIndex + 1).padStart(2, "0")}
-                        </span>
-                        <span className="lv2-mega__icon" aria-hidden>
-                          <Icon />
-                        </span>
-                        <span className="lv2-mega__text">
-                          <strong>{link.label}</strong>
-                          {link.description ? <span>{link.description}</span> : null}
-                        </span>
-                      </a>
-                    );
-                  })}
+            <div className="lv2-mega__layout">
+              <div className="lv2-mega__nav">
+                <div className="lv2-mega__grid">
+                  {item.columns.map((column) => (
+                    <div key={column.title} className="lv2-mega__col">
+                      <div className="lv2-mega__col-title">{column.title}</div>
+                      {column.links.map((link) => {
+                        const Icon = (link.icon && LINK_ICONS[link.icon]) || ArrowRight;
+                        return (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            className="lv2-mega__link"
+                            onClick={() => closeOnNavigate(link.href)}
+                          >
+                            <span className="lv2-mega__icon" aria-hidden>
+                              <Icon />
+                            </span>
+                            <span className="lv2-mega__text">
+                              <strong>{link.label}</strong>
+                              {link.description ? <span>{link.description}</span> : null}
+                            </span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {item.featured ? (
-              <a
-                href={item.featured.href}
-                className="lv2-mega__featured"
-                onClick={() => closeOnNavigate(item.featured!.href)}
-              >
-                <span>
-                  <strong>{item.featured.label}</strong>
-                  {item.featured.description ? (
-                    <span>{item.featured.description}</span>
-                  ) : null}
-                </span>
-                <ArrowRight aria-hidden />
-              </a>
-            ) : null}
+              {item.featured ? (
+                <div className="lv2-mega__featured-panel">
+                  <div className="lv2-mega__card lv2-bracket-box">
+                    {(item.key === 'product' || item.key === 'resources') && (
+                      <span className="lv2-mega__badge">
+                        {item.key === 'product' ? 'LATEST' : 'FREE'}
+                      </span>
+                    )}
+                    <strong className="lv2-mega__card-title">{item.featured.label}</strong>
+                    {item.featured.description ? (
+                      <p className="lv2-mega__card-desc">{item.featured.description}</p>
+                    ) : null}
+                    <a
+                      href={item.featured.href}
+                      className="lv2-mega__card-link"
+                      onClick={() => closeOnNavigate(item.featured!.href)}
+                    >
+                      LEARN MORE <ArrowRight aria-hidden />
+                    </a>
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       ) : null}

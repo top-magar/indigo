@@ -10,7 +10,7 @@ export function LogoMarquee() {
         <h2 className="sr-only" id="trusted-heading">
           Trusted by merchants
         </h2>
-        <p className="lv2-marquee__label">Trusted by growing storefronts across Nepal</p>
+        <p className="lv2-marquee__label">Built around the tools Nepali merchants already use</p>
       </div>
       <Marquee label="Brand logos" gap={48} duration={38} className="lv2-marquee--flush">
         {heroLogos.map((logo) => (

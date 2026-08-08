@@ -1,5 +1,5 @@
 /**
- * Typed content data for landing-v2 sections.
+ * Typed content data for landing sections.
  *
  * Sections covered: metrics, integrations, differentiators, comparison,
  * pricing, testimonials, blog, FAQ. Components consume these types/values so
@@ -180,14 +180,14 @@ export const sectionData = {
     index: 1,
     total: TOTAL_SECTIONS,
     label: "Metrics",
-    eyebrow: "Measurable outcomes",
-    headline: "Data that drives real decisions.",
-    body: "Sample targets for the metrics merchants watch most — editable until production benchmarks are available.",
+    eyebrow: "By the numbers",
+    headline: "Built for scale, priced for growth.",
+    body: "No hidden fees, no artificial limits on local payments. We succeed when your store succeeds.",
     metrics: [
-      { id: "events", label: "Events tracked daily", value: "10M+", detail: "Storefront visits, clicks, and checkouts in one stream" },
-      { id: "reporting", label: "Faster reporting", value: "85%", detail: "From raw data to a publish-ready report" },
-      { id: "conversion", label: "Higher conversion", value: "3×", detail: "Sample uplift for stores acting on funnel insights" },
-      { id: "uptime", label: "Uptime guaranteed", value: "99.9%", detail: "Sample target for mission-critical storefronts" },
+      { id: "fees", label: "Transaction fees", value: "0%", detail: "Keep what you earn on our Growth plan" },
+      { id: "gateways", label: "Local gateways", value: "3+", detail: "eSewa, Khalti, IME Pay natively integrated" },
+      { id: "modules", label: "Connected modules", value: "30+", detail: "Logistics, marketing, and accounting sync" },
+      { id: "support", label: "Local support", value: "24/7", detail: "Kathmandu-based technical team" },
     ],
   } satisfies MetricsSection,
 

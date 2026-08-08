@@ -7,7 +7,7 @@ import type {
     Discount,
     VoucherCode,
     VoucherCodeStatus,
-} from "./types";
+} from "@/app/dashboard/marketing/discounts/types";
 
 // ============================================================================
 // STATUS HELPERS
@@ -322,4 +322,4 @@ export function searchDiscounts<T extends { name: string; description?: string |
 // EXPORT TYPE FOR VOUCHER CODE STATUS
 // ============================================================================
 
-export type { VoucherCodeStatus } from "./types";
+export type { VoucherCodeStatus } from "@/app/dashboard/marketing/discounts/types";

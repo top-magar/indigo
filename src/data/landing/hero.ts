@@ -28,19 +28,19 @@ export type LogoDatum = {
 };
 
 export const heroContent: HeroContent = {
-  badge: { label: "Run your store 10× smarter", href: "#metrics" },
-  headline: ["Smarter Commerce", "Starts with Live Data"],
-  body: "Track every storefront visit, checkout, and campaign from one place. Indigo gives Nepali merchants live analytics, structured pages, and payments that actually connect.",
-  primary: { label: "Request Demo", href: "/signup" },
-  secondary: { label: "Join Waitlist", href: "#pricing" },
+  badge: { label: "Commerce infrastructure for modern Nepali brands", href: "#" },
+  headline: ["Build your store.", "Run everything behind it."],
+  body: "Create a beautiful storefront, accept local payments, manage orders and inventory, and understand what's selling — all from one connected workspace.",
+  primary: { label: "Start free", href: "/signup" },
+  secondary: { label: "Watch demo", href: "#demo" },
   note: "No credit card required. Free plan available.",
 };
 
 export const heroLogos: LogoDatum[] = [
-  { name: "Nepali Payments", initials: "NP" },
-  { name: "Retail OS", initials: "RO" },
-  { name: "Product Analytics", initials: "PA" },
-  { name: "Cloud Stores", initials: "CS" },
-  { name: "Digital Brands", initials: "DB" },
-  { name: "Shipping Hub", initials: "SH" },
+  { name: "eSewa", initials: "eS" },
+  { name: "Khalti", initials: "KH" },
+  { name: "IME Pay", initials: "IP" },
+  { name: "FonePay", initials: "FP" },
+  { name: "Pathao", initials: "PT" },
+  { name: "ConnectIPS", initials: "CI" },
 ];

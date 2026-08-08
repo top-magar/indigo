@@ -22,7 +22,7 @@ import { HatchDivider } from "./hatch-divider";
  * Hatch dividers between sections form the engineering rhythm of the
  * technical construction grid.
  */
-export function LandingV2Page() {
+export function LandingPage() {
   return (
     <NavigationShell>
       <HeroSection />

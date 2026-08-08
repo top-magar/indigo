@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import "../../landing-v2.css";
+import "../../landing.css";
 
 export const metadata = {
   title: "Coming Soon — Indigo",
